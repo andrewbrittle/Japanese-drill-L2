@@ -1,0 +1,2040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japanese Drill</title>
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+    --text: #f8f6f2;
+    --text-muted: rgba(248,246,242,0.66);
+    --text-dim: rgba(248,246,242,0.42);
+    --accent: #e8c97a;
+    --accent-dim: rgba(232,201,122,0.12);
+    --green: #6fcf97;
+    --green-dim: rgba(111,207,151,0.12);
+    --red: #eb5757;
+    --red-dim: rgba(235,87,87,0.12);
+    --blue: #7eb8f7;
+    --blue-dim: rgba(126,184,247,0.1);
+    --purple: #b39ddb;
+    --purple-dim: rgba(179,157,219,0.12);
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-weight: 500;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+  }
+
+  .logo { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: var(--text); }
+  .logo span { color: var(--accent); }
+
+  .nav-pills { display: flex; gap: 6px; }
+  .nav-pill {
+    padding: 6px 14px; border-radius: 99px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
+  .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
+
+  .screen { width: 100%; max-width: 480px; display: none; }
+  .screen.visible { display: flex; flex-direction: column; gap: 1rem; }
+
+  /* Settings screen */
+  .settings-title { font-size: 22px; font-weight: 700; text-align: center; }
+  .settings-sub { font-size: 14px; font-weight: 500; color: var(--text-muted); text-align: center; }
+
+  .section-label {
+    font-size: 12px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-dim);
+    margin: 0.75rem 0 -0.5rem 0.25rem;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+
+  .group-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 0.875rem 1.25rem;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; transition: border-color 0.15s;
+    user-select: none;
+  }
+  .group-card:hover { border-color: var(--border-hover); }
+  .group-card.selected { border-color: var(--accent); background: var(--accent-dim); }
+
+  .group-info { display: flex; flex-direction: column; gap: 3px; }
+  .group-name { font-size: 15px; font-weight: 700; }
+  .group-chars { font-size: 20px; font-weight: 600; letter-spacing: 4px; color: var(--text-muted); margin-top: 4px; font-family: 'BIZ UDPGothic', sans-serif; }
+  .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); }
+
+  .toggle {
+    width: 40px; height: 22px; border-radius: 99px;
+    background: var(--surface2); border: 1px solid var(--border);
+    position: relative; transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .toggle::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--text-dim); transition: all 0.2s;
+  }
+  .group-card.selected .toggle { background: var(--accent); border-color: var(--accent); }
+  .group-card.selected .toggle::after { left: 21px; background: #0f0f0f; }
+
+  .quick-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .quick-btn {
+    flex: 1; min-width: 100px; padding: 9px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .quick-btn:hover { border-color: var(--border-hover); color: var(--text); }
+
+  .start-btn {
+    padding: 14px; border-radius: var(--radius); width: 100%;
+    background: var(--accent); border: none; color: #0f0f0f;
+    font-size: 16px; font-weight: 700; cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .start-btn:hover { opacity: 0.88; }
+  .start-btn:disabled { opacity: 0.35; cursor: default; }
+
+  /* Drill screen */
+  .progress-wrap { display: flex; align-items: center; gap: 12px; }
+  .progress-bar-bg { flex: 1; height: 3px; background: var(--surface2); border-radius: 99px; }
+  .progress-bar-fill { height: 3px; border-radius: 99px; background: var(--accent); transition: width 0.3s; }
+  .progress-label { font-size: 12px; font-weight: 600; color: var(--text-dim); white-space: nowrap; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .type-badge {
+    display: inline-block; font-size: 11px; padding: 3px 10px;
+    border-radius: 99px; margin-bottom: 1.25rem;
+    border: 1px solid;
+  }
+  .type-base { color: var(--text-muted); border-color: var(--border); }
+  .type-diacritic { color: var(--blue); border-color: rgba(126,184,247,0.3); background: var(--blue-dim); }
+  .type-kanji { color: var(--accent); border-color: rgba(232,201,122,0.3); background: var(--accent-dim); }
+  .type-survival { color: var(--purple); border-color: rgba(179,157,219,0.3); background: var(--purple-dim); }
+
+  .char-display { font-size: 100px; line-height: 1; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
+
+  .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; }
+
+  .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .opt {
+    padding: 13px 8px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; line-height: 1.35;
+  }
+  .opt:hover:not(:disabled) { border-color: var(--border-hover); background: #2a2a2a; }
+  .opt.correct { background: var(--green-dim); border-color: var(--green); color: var(--green); font-weight: 700; }
+  .opt.wrong { background: var(--red-dim); border-color: var(--red); color: var(--red); font-weight: 700; }
+  .opt:disabled { cursor: default; }
+  .opt .opt-jp { display: block; font-size: 17px; font-weight: 600; margin-bottom: 2px; font-family: 'BIZ UDPGothic', sans-serif; }
+  .opt .opt-rd { display: block; font-size: 11px; opacity: 0.6; }
+  .opt .opt-en { display: block; font-size: 12px; opacity: 0.75; }
+
+  .feedback {
+    min-height: 22px; font-size: 14px; font-weight: 500;
+    margin-top: 1rem; text-align: center;
+  }
+  .feedback.good { color: var(--green); }
+  .feedback.bad { color: var(--red); }
+
+  .next-btn {
+    padding: 12px; border-radius: var(--radius); width: 100%;
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); font-size: 14px; cursor: pointer;
+    transition: all 0.15s; margin-top: 0.5rem;
+    visibility: hidden;
+  }
+  .next-btn:hover { border-color: var(--border-hover); background: var(--surface2); }
+
+  /* Results screen */
+  .results-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+    text-align: center;
+  }
+  .score-big { font-size: 56px; font-weight: 700; color: var(--accent); }
+  .score-sub { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 4px; margin-bottom: 1.5rem; }
+  .missed-label { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-bottom: 0.75rem; }
+  .missed-chars { font-size: 32px; letter-spacing: 8px; line-height: 1.8; margin-bottom: 1.5rem; color: var(--red); font-family: 'BIZ UDPGothic', sans-serif; }
+  .no-missed { font-size: 14px; font-weight: 600; color: var(--green); margin-bottom: 1.5rem; }
+
+  .results-btns { display: flex; flex-direction: column; gap: 8px; }
+  .btn-primary {
+    padding: 13px; border-radius: var(--radius);
+    background: var(--accent); border: none;
+    color: #0f0f0f; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-secondary {
+    padding: 13px; border-radius: var(--radius);
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-secondary:hover { border-color: var(--border-hover); background: var(--surface2); }
+
+  /* Stats bar */
+  .stats-row { display: flex; gap: 8px; }
+  .stat-pill {
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.75rem;
+    text-align: center;
+  }
+  .stat-num { font-size: 20px; font-weight: 700; }
+  .stat-lbl { font-size: 11px; font-weight: 600; color: var(--text-dim); margin-top: 2px; }
+  .stat-num.green { color: var(--green); }
+  .stat-num.red { color: var(--red); }
+  .stat-num.gold { color: var(--accent); }
+
+  /* Match mode */
+  .match-card-select {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 0.875rem 1.25rem;
+    cursor: pointer; transition: border-color 0.15s; user-select: none;
+  }
+  #match-category-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .match-card-select:hover { border-color: var(--border-hover); }
+  .match-card-select.selected { border-color: var(--purple); background: var(--purple-dim); }
+  .match-card-select .group-name { font-size: 15px; font-weight: 700; }
+  .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
+  .toggle.on { background: var(--accent); border-color: var(--accent); }
+  .toggle.on::after { left: 21px; background: #0f0f0f; }
+
+  .round-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-align: center; }
+
+  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-items: stretch; }
+  .match-card {
+    padding: 10px 8px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: var(--surface2);
+    color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; text-align: center; min-height: 64px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    line-height: 1.3;
+  }
+  .match-card.jp .jp-text { font-size: 19px; font-weight: 600; font-family: 'BIZ UDPGothic', sans-serif; }
+  .match-card.jp .romaji-text { font-size: 11px; font-weight: 600; color: var(--text-dim); margin-top: 2px; }
+  .match-card.matched .romaji-text { color: var(--green); opacity: 0.8; }
+  .match-card.picked .romaji-text { color: var(--purple); }
+  .match-card.wrong .romaji-text { color: var(--red); }
+  .match-card:hover:not(:disabled) { border-color: var(--border-hover); background: #2a2a2a; }
+  .match-card.picked { border-color: var(--purple); background: var(--purple-dim); color: var(--purple); }
+  .match-card.matched { border-color: var(--green); background: var(--green-dim); color: var(--green); opacity: 0.6; cursor: default; }
+  .match-card.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
+  .match-card:disabled { cursor: default; }
+
+  .match-banner {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 2rem; text-align: center;
+  }
+  .match-banner .score-big { font-size: 40px; }
+
+  /* Katakana reference grid */
+  .kana-ref-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+  }
+  .kana-ref-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 4px;
+    text-align: center; display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+  }
+  .kana-ref-char {
+    font-family: 'BIZ UDPGothic', sans-serif;
+    font-size: 28px; font-weight: 600; color: var(--text);
+    line-height: 1;
+  }
+  .kana-ref-rom {
+    font-size: 11px; font-weight: 600; color: var(--text-muted);
+  }
+  .kana-ref-divider {
+    grid-column: 1 / -1;
+    height: 1px; background: var(--border); margin: 4px 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">日本語 <span>drill</span></div>
+  <div class="nav-pills">
+    <button class="nav-pill active" onclick="showSettings()">Hiragana</button>
+    <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSettings()">Katakana</button>
+    <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">Kanji</button>
+    <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
+    <button class="nav-pill" id="nav-match" onclick="tryResumeMatch()">Match</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- Hiragana settings screen -->
+  <div class="screen visible" id="screen-settings">
+    <div class="settings-title">Hiragana</div>
+    <div class="settings-sub">Select one or more groups, then start.</div>
+
+    <div class="quick-row">
+      <button class="quick-btn" onclick="selectPreset('hiragana')">All hiragana</button>
+    </div>
+
+    <div class="group-card" data-key="hiragana-base" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Hiragana — base</div>
+        <div class="group-chars">あいうえお かきくけこ…</div>
+        <div class="group-count">46 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="hiragana-diacritics" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Hiragana — dakuten ゛ / handakuten ゜</div>
+        <div class="group-chars">がざだば ぱぴぷぺぽ…</div>
+        <div class="group-count">25 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="hiragana-youon" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Hiragana — contracted sounds きゃ/しゃ</div>
+        <div class="group-chars">きゃきゅきょ しゃしゅしょ…</div>
+        <div class="group-count">33 combinations</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" id="direction-card" onclick="toggleDirection()" style="cursor:pointer; display:none;">
+      <div class="group-info">
+        <div class="group-name" id="direction-name">Kana → romaji</div>
+        <div class="group-count" id="direction-sub">See a character, pick the reading. Tap to reverse.</div>
+      </div>
+      <div class="toggle" id="direction-toggle"></div>
+    </div>
+
+    <div class="section-label">Reading challenge</div>
+    <div class="group-card" data-key="word-reading" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Reading hiragana words</div>
+        <div class="group-chars">みず えき といれ…</div>
+        <div class="group-count">10 random words per round</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="number-challenge" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Reading numbers 1–9,999</div>
+        <div class="group-chars">らんだむな すうじ</div>
+        <div class="group-count">5 random numbers per round</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startDrill()">Start drill</button>
+  </div>
+
+  <!-- Katakana settings screen -->
+  <div class="screen" id="screen-katakana-settings">
+    <div class="settings-title">Katakana</div>
+    <div class="settings-sub">New to katakana? Start with the reference chart.</div>
+
+    <div class="group-card" onclick="showKatakanaReference()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Katakana reference chart</div>
+        <div class="group-chars">ア イ ウ エ オ…</div>
+        <div class="group-count">View all 46 characters with readings</div>
+      </div>
+      <div style="font-size:20px; color:var(--text-muted);">→</div>
+    </div>
+
+    <div class="quick-row">
+      <button class="quick-btn" onclick="selectPreset('katakana')">All katakana</button>
+    </div>
+
+    <div class="group-card" data-key="katakana-base" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Katakana — base</div>
+        <div class="group-chars">アイウエオ カキクケコ…</div>
+        <div class="group-count">46 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="katakana-diacritics" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Katakana — dakuten ゛ / handakuten ゜</div>
+        <div class="group-chars">ガザダバ パピプペポ…</div>
+        <div class="group-count">26 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="katakana-youon" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Katakana — contracted sounds キャ/シャ</div>
+        <div class="group-chars">キャキュキョ シャシュショ…</div>
+        <div class="group-count">33 combinations</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" id="direction-card-kata" onclick="toggleDirection()" style="cursor:pointer; display:none;">
+      <div class="group-info">
+        <div class="group-name" id="direction-name-kata">Kana → romaji</div>
+        <div class="group-count" id="direction-sub-kata">See a character, pick the reading. Tap to reverse.</div>
+      </div>
+      <div class="toggle" id="direction-toggle-kata"></div>
+    </div>
+
+    <button class="start-btn" id="katana-start-btn" onclick="startDrill()">Start drill</button>
+  </div>
+
+  <!-- Katakana reference screen -->
+  <div class="screen" id="screen-katakana-ref">
+    <div class="settings-title">Katakana reference</div>
+    <div class="settings-sub">All 46 base characters with readings.</div>
+    <div id="katakana-ref-grid"></div>
+    <button class="btn-secondary" onclick="showKatakanaSettings()">← Back to Katakana</button>
+  </div>
+
+  <!-- Kanji settings screen -->
+  <div class="screen" id="screen-kanji-settings">
+    <div class="settings-title">Kanji</div>
+    <div class="settings-sub">Select one or more groups, then start.</div>
+
+    <div class="quick-row">
+      <button class="quick-btn" onclick="selectKanjiPreset()">All kanji</button>
+    </div>
+
+    <div class="group-card" data-key="kanji-numbers-time" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Numbers, days &amp; time</div>
+        <div class="group-chars">一二三四五 百千万半間</div>
+        <div class="group-count">30 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-nature-body" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Nature &amp; body parts</div>
+        <div class="group-chars">日山川水人大 口目耳</div>
+        <div class="group-count">14 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-directions-travel" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Directions, travel &amp; signage</div>
+        <div class="group-chars">上下左右中 駅道店病院</div>
+        <div class="group-count">45 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-food" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Food &amp; dining</div>
+        <div class="group-chars">食べる 飲む 魚 野菜…</div>
+        <div class="group-count">10 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-weather" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Weather</div>
+        <div class="group-chars">雨 晴れ 曇り 天気…</div>
+        <div class="group-count">9 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-people" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">People &amp; question words</div>
+        <div class="group-chars">私 何 誰 母 父 友 子</div>
+        <div class="group-count">9 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-general" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">General &amp; useful</div>
+        <div class="group-chars">国 名 本 語 外 長い…</div>
+        <div class="group-count">8 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="kanji-verbs" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Common verbs</div>
+        <div class="group-chars">見る 聞く 話す 読む…</div>
+        <div class="group-count">7 characters</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <button class="start-btn" id="kanji-start-btn" onclick="startDrill()">Start drill</button>
+  </div>
+
+  <!-- Drill screen -->
+  <div class="screen" id="screen-drill">
+    <div class="progress-wrap">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="prog-fill" style="width:0%"></div></div>
+      <div class="progress-label" id="prog-label">1 / 0</div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-pill"><div class="stat-num green" id="stat-correct">0</div><div class="stat-lbl">correct</div></div>
+      <div class="stat-pill"><div class="stat-num red" id="stat-wrong">0</div><div class="stat-lbl">wrong</div></div>
+      <div class="stat-pill"><div class="stat-num gold" id="stat-left">0</div><div class="stat-lbl">left</div></div>
+    </div>
+    <div class="card">
+      <div><span class="type-badge" id="q-badge">base</span></div>
+      <div class="char-display" id="q-char">あ</div>
+      <div class="prompt" id="q-prompt">What is this character?</div>
+      <div class="options" id="q-options"></div>
+      <div class="feedback" id="q-feedback"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+  </div>
+
+  <!-- Results screen -->
+  <div class="screen" id="screen-results">
+    <div class="results-card">
+      <div class="score-big" id="res-score">0/0</div>
+      <div class="score-sub" id="res-msg">—</div>
+      <div class="missed-label" id="res-missed-label"></div>
+      <div id="res-missed"></div>
+      <div class="results-btns">
+        <button class="btn-primary" onclick="startDrill()">Drill again</button>
+        <button class="btn-secondary" id="res-missed-btn" onclick="drillMissed()" style="display:none">Drill missed only</button>
+        <button class="btn-secondary" onclick="goBackToSettings()">Change groups</button>
+      </div>
+    </div>
+  </div>
+  <!-- Match settings screen -->
+  <div class="screen" id="screen-match-settings">
+    <div class="settings-title">Vocab matching</div>
+    <div class="settings-sub">Pick a word set, then tap a Japanese card and its English match.</div>
+    <div class="section-label">Lesson vocabulary</div>
+    <div id="match-category-list"></div>
+    <button class="start-btn" id="match-start-btn" onclick="startMatch()" disabled>Start matching</button>
+  </div>
+
+  <!-- Match game screen -->
+  <div class="screen" id="screen-match-game">
+    <div class="round-label" id="match-round-label">Round 1 / 1</div>
+    <div class="stats-row">
+      <div class="stat-pill"><div class="stat-num green" id="match-stat-matched">0</div><div class="stat-lbl">matched</div></div>
+      <div class="stat-pill"><div class="stat-num red" id="match-stat-mistakes">0</div><div class="stat-lbl">mistakes</div></div>
+      <div class="stat-pill"><div class="stat-num gold" id="match-stat-left">0</div><div class="stat-lbl">left</div></div>
+    </div>
+    <div class="match-grid" id="match-grid" style="display:grid;"></div>
+    <div id="match-round-complete" style="display:none; text-align:center;">
+      <button class="btn-primary" onclick="nextMatchRound()">Next round →</button>
+    </div>
+    <div id="match-finished" style="display:none;">
+      <div class="match-banner">
+        <div class="score-big" id="match-final-score">0 mistakes</div>
+        <div class="score-sub" id="match-final-msg">—</div>
+      </div>
+      <div class="results-btns" style="margin-top:1rem;">
+        <button class="btn-primary" onclick="startMatch()">Play again</button>
+        <button class="btn-secondary" onclick="showMatchSettings()">Change word set</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const DATA = {
+  'hiragana-base': [
+    {char:'あ',answer:'a',disp:'base',options:['a','i','u','e']},
+    {char:'い',answer:'i',disp:'base',options:['a','i','o','u']},
+    {char:'う',answer:'u',disp:'base',options:['e','o','u','i']},
+    {char:'え',answer:'e',disp:'base',options:['a','e','i','ya']},
+    {char:'お',answer:'o',disp:'base',options:['u','a','o','wo']},
+    {char:'か',answer:'ka',disp:'base',options:['ka','ga','ki','ku']},
+    {char:'き',answer:'ki',disp:'base',options:['ka','ki','gi','ke']},
+    {char:'く',answer:'ku',disp:'base',options:['ki','ku','gu','ko']},
+    {char:'け',answer:'ke',disp:'base',options:['ka','ke','ge','ko']},
+    {char:'こ',answer:'ko',disp:'base',options:['ku','ko','go','ke']},
+    {char:'さ',answer:'sa',disp:'base',options:['sa','za','shi','se']},
+    {char:'し',answer:'shi',disp:'base',options:['sa','shi','ji','so']},
+    {char:'す',answer:'su',disp:'base',options:['shi','su','zu','so']},
+    {char:'せ',answer:'se',disp:'base',options:['sa','se','ze','shi']},
+    {char:'そ',answer:'so',disp:'base',options:['su','se','so','sa']},
+    {char:'な',answer:'na',disp:'base',options:['na','ni','nu','ne']},
+    {char:'に',answer:'ni',disp:'base',options:['na','ni','nu','no']},
+    {char:'ぬ',answer:'nu',disp:'base',options:['ni','nu','ne','no']},
+    {char:'ね',answer:'ne',disp:'base',options:['na','ne','no','ni']},
+    {char:'の',answer:'no',disp:'base',options:['nu','na','no','ne']},
+    {char:'た',answer:'ta',disp:'base',options:['ta','da','chi','te']},
+    {char:'ち',answer:'chi',disp:'base',options:['ta','chi','ji','to']},
+    {char:'つ',answer:'tsu',disp:'base',options:['chi','tsu','zu','to']},
+    {char:'て',answer:'te',disp:'base',options:['ta','te','de','tsu']},
+    {char:'と',answer:'to',disp:'base',options:['chi','to','do','te']},
+    {char:'は',answer:'ha',disp:'base',options:['ha','ba','pa','he']},
+    {char:'ひ',answer:'hi',disp:'base',options:['ha','hi','bi','ho']},
+    {char:'ふ',answer:'fu',disp:'base',options:['hi','fu','bu','ho']},
+    {char:'へ',answer:'he',disp:'base',options:['ha','he','be','fu']},
+    {char:'ほ',answer:'ho',disp:'base',options:['hi','ho','bo','he']},
+    {char:'ま',answer:'ma',disp:'base',options:['ma','mi','mu','me']},
+    {char:'み',answer:'mi',disp:'base',options:['ma','mi','mu','mo']},
+    {char:'む',answer:'mu',disp:'base',options:['mi','mu','me','mo']},
+    {char:'め',answer:'me',disp:'base',options:['ma','me','mo','mi']},
+    {char:'も',answer:'mo',disp:'base',options:['mu','ma','mo','me']},
+    {char:'ら',answer:'ra',disp:'base',options:['ra','ri','ru','re']},
+    {char:'り',answer:'ri',disp:'base',options:['ra','ri','ru','ro']},
+    {char:'る',answer:'ru',disp:'base',options:['ri','ru','re','ro']},
+    {char:'れ',answer:'re',disp:'base',options:['ra','re','ro','ri']},
+    {char:'ろ',answer:'ro',disp:'base',options:['ru','ra','ro','re']},
+    {char:'や',answer:'ya',disp:'base',options:['ya','yu','yo','wa']},
+    {char:'ゆ',answer:'yu',disp:'base',options:['ya','yu','yo','wo']},
+    {char:'よ',answer:'yo',disp:'base',options:['yu','ya','yo','n']},
+    {char:'わ',answer:'wa',disp:'base',options:['wa','wo','ya','ra']},
+    {char:'を',answer:'wo',disp:'base',options:['wa','wo','o','no']},
+    {char:'ん',answer:'n',disp:'base',options:['n','na','ni','nu']},
+  ],
+  'hiragana-diacritics': [
+    {char:'が',answer:'ga',disp:'diacritic',options:['ga','ka','gi','gu']},
+    {char:'ぎ',answer:'gi',disp:'diacritic',options:['ka','gi','ki','ge']},
+    {char:'ぐ',answer:'gu',disp:'diacritic',options:['ki','gu','ku','go']},
+    {char:'げ',answer:'ge',disp:'diacritic',options:['ka','ge','ke','go']},
+    {char:'ご',answer:'go',disp:'diacritic',options:['ku','go','ko','ge']},
+    {char:'ざ',answer:'za',disp:'diacritic',options:['za','sa','ji','ze']},
+    {char:'じ',answer:'ji',disp:'diacritic',options:['za','ji','shi','zo']},
+    {char:'ず',answer:'zu',disp:'diacritic',options:['ji','zu','su','zo']},
+    {char:'ぜ',answer:'ze',disp:'diacritic',options:['za','ze','se','zo']},
+    {char:'ぞ',answer:'zo',disp:'diacritic',options:['zu','zo','so','ze']},
+    {char:'だ',answer:'da',disp:'diacritic',options:['da','ta','di','de']},
+    {char:'ぢ',answer:'di',disp:'diacritic',options:['da','di','chi','du']},
+    {char:'づ',answer:'du',disp:'diacritic',options:['di','du','tsu','do']},
+    {char:'で',answer:'de',disp:'diacritic',options:['da','de','te','do']},
+    {char:'ど',answer:'do',disp:'diacritic',options:['di','do','to','de']},
+    {char:'ば',answer:'ba',disp:'diacritic',options:['ba','ha','bi','bu']},
+    {char:'び',answer:'bi',disp:'diacritic',options:['ba','bi','hi','be']},
+    {char:'ぶ',answer:'bu',disp:'diacritic',options:['bi','bu','fu','bo']},
+    {char:'べ',answer:'be',disp:'diacritic',options:['ba','be','he','bo']},
+    {char:'ぼ',answer:'bo',disp:'diacritic',options:['bi','bo','ho','be']},
+    {char:'ぱ',answer:'pa',disp:'diacritic',options:['pa','ba','ha','pi']},
+    {char:'ぴ',answer:'pi',disp:'diacritic',options:['pa','pi','bi','hi']},
+    {char:'ぷ',answer:'pu',disp:'diacritic',options:['pi','pu','bu','fu']},
+    {char:'ぺ',answer:'pe',disp:'diacritic',options:['pa','pe','be','he']},
+    {char:'ぽ',answer:'po',disp:'diacritic',options:['pi','po','bo','ho']},
+  ],
+  'hiragana-youon': [
+    {char:'きゃ',answer:'kya',disp:'youon',options:['kya','sha','cha','nya']},
+    {char:'きゅ',answer:'kyu',disp:'youon',options:['kyu','shu','chu','nyu']},
+    {char:'きょ',answer:'kyo',disp:'youon',options:['kyo','sho','cho','nyo']},
+    {char:'しゃ',answer:'sha',disp:'youon',options:['sha','kya','cha','ja']},
+    {char:'しゅ',answer:'shu',disp:'youon',options:['shu','kyu','chu','ju']},
+    {char:'しょ',answer:'sho',disp:'youon',options:['sho','kyo','cho','jo']},
+    {char:'ちゃ',answer:'cha',disp:'youon',options:['cha','sha','ja','nya']},
+    {char:'ちゅ',answer:'chu',disp:'youon',options:['chu','shu','ju','nyu']},
+    {char:'ちょ',answer:'cho',disp:'youon',options:['cho','sho','jo','nyo']},
+    {char:'にゃ',answer:'nya',disp:'youon',options:['nya','mya','rya','hya']},
+    {char:'にゅ',answer:'nyu',disp:'youon',options:['nyu','myu','ryu','hyu']},
+    {char:'にょ',answer:'nyo',disp:'youon',options:['nyo','myo','ryo','hyo']},
+    {char:'ひゃ',answer:'hya',disp:'youon',options:['hya','mya','rya','nya']},
+    {char:'ひゅ',answer:'hyu',disp:'youon',options:['hyu','myu','ryu','nyu']},
+    {char:'ひょ',answer:'hyo',disp:'youon',options:['hyo','myo','ryo','nyo']},
+    {char:'みゃ',answer:'mya',disp:'youon',options:['mya','hya','rya','nya']},
+    {char:'みゅ',answer:'myu',disp:'youon',options:['myu','hyu','ryu','nyu']},
+    {char:'みょ',answer:'myo',disp:'youon',options:['myo','hyo','ryo','nyo']},
+    {char:'りゃ',answer:'rya',disp:'youon',options:['rya','mya','hya','gya']},
+    {char:'りゅ',answer:'ryu',disp:'youon',options:['ryu','myu','hyu','gyu']},
+    {char:'りょ',answer:'ryo',disp:'youon',options:['ryo','myo','hyo','gyo']},
+    {char:'ぎゃ',answer:'gya',disp:'youon',options:['gya','kya','ja','bya']},
+    {char:'ぎゅ',answer:'gyu',disp:'youon',options:['gyu','kyu','ju','byu']},
+    {char:'ぎょ',answer:'gyo',disp:'youon',options:['gyo','kyo','jo','byo']},
+    {char:'じゃ',answer:'ja',disp:'youon',options:['ja','sha','gya','bya']},
+    {char:'じゅ',answer:'ju',disp:'youon',options:['ju','shu','gyu','byu']},
+    {char:'じょ',answer:'jo',disp:'youon',options:['jo','sho','gyo','byo']},
+    {char:'びゃ',answer:'bya',disp:'youon',options:['bya','pya','gya','ja']},
+    {char:'びゅ',answer:'byu',disp:'youon',options:['byu','pyu','gyu','ju']},
+    {char:'びょ',answer:'byo',disp:'youon',options:['byo','pyo','gyo','jo']},
+    {char:'ぴゃ',answer:'pya',disp:'youon',options:['pya','bya','kya','hya']},
+    {char:'ぴゅ',answer:'pyu',disp:'youon',options:['pyu','byu','kyu','hyu']},
+    {char:'ぴょ',answer:'pyo',disp:'youon',options:['pyo','byo','kyo','hyo']},
+  ],
+  'katakana-base': [
+    {char:'ア',answer:'a',disp:'base',options:['a','i','u','e']},
+    {char:'イ',answer:'i',disp:'base',options:['a','i','o','u']},
+    {char:'ウ',answer:'u',disp:'base',options:['e','o','u','i']},
+    {char:'エ',answer:'e',disp:'base',options:['a','e','i','ya']},
+    {char:'オ',answer:'o',disp:'base',options:['u','a','o','wo']},
+    {char:'カ',answer:'ka',disp:'base',options:['ka','ga','ki','ku']},
+    {char:'キ',answer:'ki',disp:'base',options:['ka','ki','gi','ke']},
+    {char:'ク',answer:'ku',disp:'base',options:['ki','ku','gu','ko']},
+    {char:'ケ',answer:'ke',disp:'base',options:['ka','ke','ge','ko']},
+    {char:'コ',answer:'ko',disp:'base',options:['ku','ko','go','ke']},
+    {char:'サ',answer:'sa',disp:'base',options:['sa','za','shi','se']},
+    {char:'シ',answer:'shi',disp:'base',options:['sa','shi','ji','so']},
+    {char:'ス',answer:'su',disp:'base',options:['shi','su','zu','so']},
+    {char:'セ',answer:'se',disp:'base',options:['sa','se','ze','shi']},
+    {char:'ソ',answer:'so',disp:'base',options:['su','se','so','sa']},
+    {char:'タ',answer:'ta',disp:'base',options:['ta','da','chi','te']},
+    {char:'チ',answer:'chi',disp:'base',options:['ta','chi','ji','to']},
+    {char:'ツ',answer:'tsu',disp:'base',options:['chi','tsu','zu','to']},
+    {char:'テ',answer:'te',disp:'base',options:['ta','te','de','tsu']},
+    {char:'ト',answer:'to',disp:'base',options:['chi','to','do','te']},
+    {char:'ナ',answer:'na',disp:'base',options:['na','ni','nu','ne']},
+    {char:'ニ',answer:'ni',disp:'base',options:['na','ni','nu','no']},
+    {char:'ヌ',answer:'nu',disp:'base',options:['ni','nu','ne','no']},
+    {char:'ネ',answer:'ne',disp:'base',options:['na','ne','no','ni']},
+    {char:'ノ',answer:'no',disp:'base',options:['nu','na','no','ne']},
+    {char:'ハ',answer:'ha',disp:'base',options:['ha','ba','pa','he']},
+    {char:'ヒ',answer:'hi',disp:'base',options:['ha','hi','bi','ho']},
+    {char:'フ',answer:'fu',disp:'base',options:['hi','fu','bu','ho']},
+    {char:'ヘ',answer:'he',disp:'base',options:['ha','he','be','fu']},
+    {char:'ホ',answer:'ho',disp:'base',options:['hi','ho','bo','he']},
+    {char:'マ',answer:'ma',disp:'base',options:['ma','mi','mu','me']},
+    {char:'ミ',answer:'mi',disp:'base',options:['ma','mi','mu','mo']},
+    {char:'ム',answer:'mu',disp:'base',options:['mi','mu','me','mo']},
+    {char:'メ',answer:'me',disp:'base',options:['ma','me','mo','mi']},
+    {char:'モ',answer:'mo',disp:'base',options:['mu','ma','mo','me']},
+    {char:'ヤ',answer:'ya',disp:'base',options:['ya','yu','yo','wa']},
+    {char:'ユ',answer:'yu',disp:'base',options:['ya','yu','yo','wo']},
+    {char:'ヨ',answer:'yo',disp:'base',options:['yu','ya','yo','n']},
+    {char:'ラ',answer:'ra',disp:'base',options:['ra','ri','ru','re']},
+    {char:'リ',answer:'ri',disp:'base',options:['ra','ri','ru','ro']},
+    {char:'ル',answer:'ru',disp:'base',options:['ri','ru','re','ro']},
+    {char:'レ',answer:'re',disp:'base',options:['ra','re','ro','ri']},
+    {char:'ロ',answer:'ro',disp:'base',options:['ru','ra','ro','re']},
+    {char:'ワ',answer:'wa',disp:'base',options:['wa','wo','ya','ra']},
+    {char:'ヲ',answer:'wo',disp:'base',options:['wa','wo','o','no']},
+    {char:'ン',answer:'n',disp:'base',options:['n','na','ni','nu']},
+  ],
+  'katakana-diacritics': [
+    {char:'ガ',answer:'ga',disp:'diacritic',options:['ga','ka','gi','gu']},
+    {char:'ギ',answer:'gi',disp:'diacritic',options:['ka','gi','ki','ge']},
+    {char:'グ',answer:'gu',disp:'diacritic',options:['ki','gu','ku','go']},
+    {char:'ゲ',answer:'ge',disp:'diacritic',options:['ka','ge','ke','go']},
+    {char:'ゴ',answer:'go',disp:'diacritic',options:['ku','go','ko','ge']},
+    {char:'ザ',answer:'za',disp:'diacritic',options:['za','sa','ji','ze']},
+    {char:'ジ',answer:'ji',disp:'diacritic',options:['za','ji','shi','zo']},
+    {char:'ズ',answer:'zu',disp:'diacritic',options:['ji','zu','su','zo']},
+    {char:'ゼ',answer:'ze',disp:'diacritic',options:['za','ze','se','zo']},
+    {char:'ゾ',answer:'zo',disp:'diacritic',options:['zu','zo','so','ze']},
+    {char:'ダ',answer:'da',disp:'diacritic',options:['da','ta','di','de']},
+    {char:'ヂ',answer:'di',disp:'diacritic',options:['da','di','chi','du']},
+    {char:'ヅ',answer:'du',disp:'diacritic',options:['di','du','tsu','do']},
+    {char:'デ',answer:'de',disp:'diacritic',options:['da','de','te','do']},
+    {char:'ド',answer:'do',disp:'diacritic',options:['di','do','to','de']},
+    {char:'バ',answer:'ba',disp:'diacritic',options:['ba','ha','bi','bu']},
+    {char:'ビ',answer:'bi',disp:'diacritic',options:['ba','bi','hi','be']},
+    {char:'ブ',answer:'bu',disp:'diacritic',options:['bi','bu','fu','bo']},
+    {char:'ベ',answer:'be',disp:'diacritic',options:['ba','be','he','bo']},
+    {char:'ボ',answer:'bo',disp:'diacritic',options:['bi','bo','ho','be']},
+    {char:'ヴ',answer:'vu',disp:'diacritic',options:['vu','bu','fu','u']},
+    {char:'パ',answer:'pa',disp:'diacritic',options:['pa','ba','ha','pi']},
+    {char:'ピ',answer:'pi',disp:'diacritic',options:['pa','pi','bi','hi']},
+    {char:'プ',answer:'pu',disp:'diacritic',options:['pi','pu','bu','fu']},
+    {char:'ペ',answer:'pe',disp:'diacritic',options:['pa','pe','be','he']},
+    {char:'ポ',answer:'po',disp:'diacritic',options:['pi','po','bo','ho']},
+  ],
+  'katakana-youon': [
+    {char:'キャ',answer:'kya',disp:'youon',options:['kya','sha','cha','nya']},
+    {char:'キュ',answer:'kyu',disp:'youon',options:['kyu','shu','chu','nyu']},
+    {char:'キョ',answer:'kyo',disp:'youon',options:['kyo','sho','cho','nyo']},
+    {char:'シャ',answer:'sha',disp:'youon',options:['sha','kya','cha','ja']},
+    {char:'シュ',answer:'shu',disp:'youon',options:['shu','kyu','chu','ju']},
+    {char:'ショ',answer:'sho',disp:'youon',options:['sho','kyo','cho','jo']},
+    {char:'チャ',answer:'cha',disp:'youon',options:['cha','sha','ja','nya']},
+    {char:'チュ',answer:'chu',disp:'youon',options:['chu','shu','ju','nyu']},
+    {char:'チョ',answer:'cho',disp:'youon',options:['cho','sho','jo','nyo']},
+    {char:'ニャ',answer:'nya',disp:'youon',options:['nya','mya','rya','hya']},
+    {char:'ニュ',answer:'nyu',disp:'youon',options:['nyu','myu','ryu','hyu']},
+    {char:'ニョ',answer:'nyo',disp:'youon',options:['nyo','myo','ryo','hyo']},
+    {char:'ヒャ',answer:'hya',disp:'youon',options:['hya','mya','rya','nya']},
+    {char:'ヒュ',answer:'hyu',disp:'youon',options:['hyu','myu','ryu','nyu']},
+    {char:'ヒョ',answer:'hyo',disp:'youon',options:['hyo','myo','ryo','nyo']},
+    {char:'ミャ',answer:'mya',disp:'youon',options:['mya','hya','rya','nya']},
+    {char:'ミュ',answer:'myu',disp:'youon',options:['myu','hyu','ryu','nyu']},
+    {char:'ミョ',answer:'myo',disp:'youon',options:['myo','hyo','ryo','nyo']},
+    {char:'リャ',answer:'rya',disp:'youon',options:['rya','mya','hya','gya']},
+    {char:'リュ',answer:'ryu',disp:'youon',options:['ryu','myu','hyu','gyu']},
+    {char:'リョ',answer:'ryo',disp:'youon',options:['ryo','myo','hyo','gyo']},
+    {char:'ギャ',answer:'gya',disp:'youon',options:['gya','kya','ja','bya']},
+    {char:'ギュ',answer:'gyu',disp:'youon',options:['gyu','kyu','ju','byu']},
+    {char:'ギョ',answer:'gyo',disp:'youon',options:['gyo','kyo','jo','byo']},
+    {char:'ジャ',answer:'ja',disp:'youon',options:['ja','sha','gya','bya']},
+    {char:'ジュ',answer:'ju',disp:'youon',options:['ju','shu','gyu','byu']},
+    {char:'ジョ',answer:'jo',disp:'youon',options:['jo','sho','gyo','byo']},
+    {char:'ビャ',answer:'bya',disp:'youon',options:['bya','pya','gya','ja']},
+    {char:'ビュ',answer:'byu',disp:'youon',options:['byu','pyu','gyu','ju']},
+    {char:'ビョ',answer:'byo',disp:'youon',options:['byo','pyo','gyo','jo']},
+    {char:'ピャ',answer:'pya',disp:'youon',options:['pya','bya','kya','hya']},
+    {char:'ピュ',answer:'pyu',disp:'youon',options:['pyu','byu','kyu','hyu']},
+    {char:'ピョ',answer:'pyo',disp:'youon',options:['pyo','byo','kyo','hyo']},
+  ],
+  'kanji-numbers-time': [
+    {char:'一',answer:'one',disp:'survival',options:[{en:'one',jp:'一',rd:'ichi'},{en:'two',jp:'二',rd:'ni'},{en:'six',jp:'六',rd:'roku'},{en:'ten',jp:'十',rd:'juu'}]},
+    {char:'二',answer:'two',disp:'survival',options:[{en:'two',jp:'二',rd:'ni'},{en:'one',jp:'一',rd:'ichi'},{en:'three',jp:'三',rd:'san'},{en:'seven',jp:'七',rd:'shichi'}]},
+    {char:'三',answer:'three',disp:'survival',options:[{en:'three',jp:'三',rd:'san'},{en:'two',jp:'二',rd:'ni'},{en:'eight',jp:'八',rd:'hachi'},{en:'five',jp:'五',rd:'go'}]},
+    {char:'四',answer:'four',disp:'survival',options:[{en:'four',jp:'四',rd:'shi'},{en:'nine',jp:'九',rd:'ku'},{en:'three',jp:'三',rd:'san'},{en:'five',jp:'五',rd:'go'}]},
+    {char:'五',answer:'five',disp:'survival',options:[{en:'five',jp:'五',rd:'go'},{en:'one',jp:'一',rd:'ichi'},{en:'ten',jp:'十',rd:'juu'},{en:'four',jp:'四',rd:'shi'}]},
+    {char:'六',answer:'six',disp:'survival',options:[{en:'six',jp:'六',rd:'roku'},{en:'seven',jp:'七',rd:'shichi'},{en:'two',jp:'二',rd:'ni'},{en:'nine',jp:'九',rd:'ku'}]},
+    {char:'七',answer:'seven',disp:'survival',options:[{en:'seven',jp:'七',rd:'shichi'},{en:'six',jp:'六',rd:'roku'},{en:'eight',jp:'八',rd:'hachi'},{en:'one',jp:'一',rd:'ichi'}]},
+    {char:'八',answer:'eight',disp:'survival',options:[{en:'eight',jp:'八',rd:'hachi'},{en:'seven',jp:'七',rd:'shichi'},{en:'three',jp:'三',rd:'san'},{en:'ten',jp:'十',rd:'juu'}]},
+    {char:'九',answer:'nine',disp:'survival',options:[{en:'nine',jp:'九',rd:'ku'},{en:'four',jp:'四',rd:'shi'},{en:'six',jp:'六',rd:'roku'},{en:'eight',jp:'八',rd:'hachi'}]},
+    {char:'十',answer:'ten',disp:'survival',options:[{en:'ten',jp:'十',rd:'juu'},{en:'two',jp:'二',rd:'ni'},{en:'five',jp:'五',rd:'go'},{en:'seven',jp:'七',rd:'shichi'}]},
+    {char:'円',answer:'yen',disp:'survival',options:[{en:'yen',jp:'千円',rd:'sen en'},{en:'ten',jp:'十',rd:'juu'},{en:'3 minutes',jp:'三分',rd:'sanpun'},{en:'hour / time',jp:'時間',rd:'jikan'}]},
+    {char:'月',answer:'Monday / month',disp:'survival',options:[{en:'Monday / month',jp:'月曜日',rd:'getsuyoubi'},{en:'Tuesday',jp:'火曜日',rd:'kayoubi'},{en:'Wednesday',jp:'水曜日',rd:'suiyoubi'},{en:'Thursday',jp:'木曜日',rd:'mokuyoubi'}]},
+    {char:'火',answer:'Tuesday',disp:'survival',options:[{en:'Tuesday',jp:'火曜日',rd:'kayoubi'},{en:'Monday / month',jp:'月曜日',rd:'getsuyoubi'},{en:'Friday',jp:'金曜日',rd:'kinyoubi'},{en:'Wednesday',jp:'水曜日',rd:'suiyoubi'}]},
+    {char:'水',answer:'Wednesday',disp:'survival',options:[{en:'Wednesday',jp:'水曜日',rd:'suiyoubi'},{en:'Thursday',jp:'木曜日',rd:'mokuyoubi'},{en:'Tuesday',jp:'火曜日',rd:'kayoubi'},{en:'Saturday',jp:'土曜日',rd:'doyoubi'}]},
+    {char:'木',answer:'Thursday',disp:'survival',options:[{en:'Thursday',jp:'木曜日',rd:'mokuyoubi'},{en:'Wednesday',jp:'水曜日',rd:'suiyoubi'},{en:'Friday',jp:'金曜日',rd:'kinyoubi'},{en:'Sunday',jp:'日曜日',rd:'nichiyoubi'}]},
+    {char:'金',answer:'Friday / gold',disp:'survival',options:[{en:'Friday / gold',jp:'金曜日',rd:'kinyoubi'},{en:'Thursday',jp:'木曜日',rd:'mokuyoubi'},{en:'Saturday',jp:'土曜日',rd:'doyoubi'},{en:'Monday / month',jp:'月曜日',rd:'getsuyoubi'}]},
+    {char:'土',answer:'Saturday / earth',disp:'survival',options:[{en:'Saturday / earth',jp:'土曜日',rd:'doyoubi'},{en:'Friday / gold',jp:'金曜日',rd:'kinyoubi'},{en:'Sunday',jp:'日曜日',rd:'nichiyoubi'},{en:'Tuesday',jp:'火曜日',rd:'kayoubi'}]},
+    {char:'年',answer:'year',disp:'survival',options:[{en:'year',jp:'今年',rd:'kotoshi'},{en:'hour / time',jp:'時間',rd:'jikan'},{en:'3 minutes',jp:'三分',rd:'sanpun'},{en:'today', jp:'今日',rd:'kyou'}]},
+    {char:'今',answer:'now',disp:'survival',options:[{en:'now',jp:'今日',rd:'kyou'},{en:'year',jp:'年',rd:'nen'},{en:'before',jp:'午前',rd:'gozen'},{en:'after',jp:'午後',rd:'gogo'}]},
+    {char:'時',answer:'hour / time',disp:'survival',options:[{en:'hour / time',jp:'時間',rd:'jikan'},{en:'3 minutes',jp:'三分',rd:'sanpun'},{en:'today', jp:'今日',rd:'kyou'},{en:'this year', jp:'今年',rd:'kotoshi'}]},
+    {char:'分',answer:'minute',disp:'survival',options:[{en:'minute',jp:'三分',rd:'sanpun'},{en:'hour / time',jp:'時間',rd:'jikan'},{en:'before',jp:'午前',rd:'gozen'},{en:'this year', jp:'今年',rd:'kotoshi'}]},
+    {char:'前',answer:'before / front',disp:'survival',options:[{en:'before / front',jp:'午前',rd:'gozen'},{en:'after / back',jp:'午後',rd:'gogo'},{en:'today', jp:'今日',rd:'kyou'},{en:'3 minutes',jp:'三分',rd:'sanpun'}]},
+    {char:'後',answer:'after / back',disp:'survival',options:[{en:'after / back',jp:'午後',rd:'gogo'},{en:'before / front',jp:'午前',rd:'gozen'},{en:'hour / time',jp:'時間',rd:'jikan'},{en:'this year', jp:'今年',rd:'kotoshi'}]},
+    {char:'計',answer:'watch / clock (時計)',disp:'survival',options:[{en:'watch / clock (時計)',jp:'時計',rd:'tokei'},{en:'hour / time',jp:'時間',rd:'jikan'},{en:'3 minutes',jp:'三分',rd:'sanpun'},{en:'today', jp:'今日',rd:'kyou'}]},
+    {char:'百',answer:'hundred',disp:'kanji',options:[{en:'hundred',jp:'百',rd:'hyaku'},{en:'thousand',jp:'千',rd:'sen'},{en:'ten thousand',jp:'万',rd:'man'},{en:'yen',jp:'円',rd:'en'}]},
+    {char:'千',answer:'thousand',disp:'kanji',options:[{en:'thousand',jp:'千',rd:'sen'},{en:'hundred',jp:'百',rd:'hyaku'},{en:'ten thousand',jp:'万',rd:'man'},{en:'year',jp:'年',rd:'nen'}]},
+    {char:'万',answer:'ten thousand',disp:'kanji',options:[{en:'ten thousand',jp:'万',rd:'man'},{en:'thousand',jp:'千',rd:'sen'},{en:'hundred',jp:'百',rd:'hyaku'},{en:'yen',jp:'円',rd:'en'}]},
+    {char:'半',answer:'half',disp:'kanji',options:[{en:'half',jp:'半',rd:'han'},{en:'minute',jp:'分',rd:'fun'},{en:'hour / time',jp:'時',rd:'ji'},{en:'interval',jp:'間',rd:'kan'}]},
+    {char:'間',answer:'interval / hours (時間)',disp:'kanji',options:[{en:'interval / hours (時間)',jp:'時間',rd:'jikan'},{en:'half',jp:'半',rd:'han'},{en:'minute',jp:'分',rd:'fun'},{en:'now',jp:'今',rd:'ima'}]},
+    {char:'午',answer:'noon (午前/午後)',disp:'kanji',options:[{en:'noon (午前/午後)',jp:'午後',rd:'gogo'},{en:'before / front',jp:'前',rd:'mae'},{en:'after / back',jp:'後',rd:'ato'},{en:'now',jp:'今',rd:'ima'}]},
+  ],
+  'kanji-nature-body': [
+    {char:'日',answer:'sun / day',disp:'kanji',options:[{en:'sun / day',jp:'日本',rd:'nihon'},{en:'tree / wood',jp:'木',rd:'ki'},{en:'mouth',jp:'口',rd:'kuchi'},{en:'eye',jp:'目',rd:'me'}]},
+    {char:'山',answer:'mountain',disp:'kanji',options:[{en:'mountain',jp:'富士山',rd:'fujisan'},{en:'hand',jp:'手',rd:'te'},{en:'water',jp:'水',rd:'mizu'},{en:'big / great',jp:'大学',rd:'daigaku'}]},
+    {char:'川',answer:'river',disp:'kanji',options:[{en:'river',jp:'川',rd:'kawa'},{en:'mountain',jp:'山',rd:'yama'},{en:'water',jp:'水',rd:'mizu'},{en:'tree / wood',jp:'木',rd:'ki'}]},
+    {char:'水',answer:'water',disp:'kanji',options:[{en:'water',jp:'水',rd:'mizu'},{en:'foot / leg',jp:'足',rd:'ashi'},{en:'fire',jp:'火',rd:'hi'},{en:'ear',jp:'耳',rd:'mimi'}]},
+    {char:'人',answer:'person',disp:'kanji',options:[{en:'person',jp:'日本人',rd:'nihonjin'},{en:'mouth',jp:'口',rd:'kuchi'},{en:'big / great',jp:'大学',rd:'daigaku'},{en:'Mt. Fuji', jp:'富士山',rd:'fujisan'}]},
+    {char:'大',answer:'big / great',disp:'kanji',options:[{en:'big / great',jp:'大学',rd:'daigaku'},{en:'eye',jp:'目',rd:'me'},{en:'Japanese person', jp:'日本人',rd:'nihonjin'},{en:'sun / day',jp:'日本',rd:'nihon'}]},
+    {char:'小',answer:'small',disp:'kanji',options:[{en:'small',jp:'小学校',rd:'shougakkou'},{en:'big / great',jp:'大学',rd:'daigaku'},{en:'mountain',jp:'山',rd:'yama'},{en:'tree / wood',jp:'木',rd:'ki'}]},
+    {char:'火',answer:'fire',disp:'kanji',options:[{en:'fire',jp:'火',rd:'hi'},{en:'hand',jp:'手',rd:'te'},{en:'water',jp:'水',rd:'mizu'},{en:'Mt. Fuji', jp:'富士山',rd:'fujisan'}]},
+    {char:'木',answer:'tree / wood',disp:'kanji',options:[{en:'tree / wood',jp:'木',rd:'ki'},{en:'foot / leg',jp:'足',rd:'ashi'},{en:'fire',jp:'火',rd:'hi'},{en:'big / great',jp:'大学',rd:'daigaku'}]},
+    {char:'口',answer:'mouth',disp:'kanji',options:[{en:'mouth',jp:'口',rd:'kuchi'},{en:'eye',jp:'目',rd:'me'},{en:'ear',jp:'耳',rd:'mimi'},{en:'hand',jp:'手',rd:'te'}]},
+    {char:'目',answer:'eye',disp:'kanji',options:[{en:'eye',jp:'目',rd:'me'},{en:'mouth',jp:'口',rd:'kuchi'},{en:'foot / leg',jp:'足',rd:'ashi'},{en:'ear',jp:'耳',rd:'mimi'}]},
+    {char:'耳',answer:'ear',disp:'kanji',options:[{en:'ear',jp:'耳',rd:'mimi'},{en:'hand',jp:'手',rd:'te'},{en:'mouth',jp:'口',rd:'kuchi'},{en:'eye',jp:'目',rd:'me'}]},
+    {char:'手',answer:'hand',disp:'kanji',options:[{en:'hand',jp:'手',rd:'te'},{en:'foot / leg',jp:'足',rd:'ashi'},{en:'ear',jp:'耳',rd:'mimi'},{en:'mouth',jp:'口',rd:'kuchi'}]},
+    {char:'足',answer:'foot / leg',disp:'kanji',options:[{en:'foot / leg',jp:'足',rd:'ashi'},{en:'eye',jp:'目',rd:'me'},{en:'hand',jp:'手',rd:'te'},{en:'ear',jp:'耳',rd:'mimi'}]},
+  ],
+  'kanji-directions-travel': [
+    {char:'上',answer:'up / above',disp:'survival',options:[{en:'up / above',jp:'上手',rd:'jouzu'},{en:'down / below',jp:'地下鉄',rd:'chikatetsu'},{en:'turn left', jp:'左折',rd:'sasetsu'},{en:'turn right', jp:'右折',rd:'usetsu'}]},
+    {char:'下',answer:'down / below',disp:'survival',options:[{en:'down / below',jp:'地下鉄',rd:'chikatetsu'},{en:'up / above',jp:'上手',rd:'jouzu'},{en:'middle school', jp:'中学校',rd:'chuugakkou'},{en:'turn right', jp:'右折',rd:'usetsu'}]},
+    {char:'左',answer:'left',disp:'survival',options:[{en:'left',jp:'左折',rd:'sasetsu'},{en:'turn right', jp:'右折',rd:'usetsu'},{en:'up / above',jp:'上手',rd:'jouzu'},{en:'middle school', jp:'中学校',rd:'chuugakkou'}]},
+    {char:'右',answer:'right',disp:'survival',options:[{en:'right',jp:'右折',rd:'usetsu'},{en:'turn left', jp:'左折',rd:'sasetsu'},{en:'down / below',jp:'地下鉄',rd:'chikatetsu'},{en:'north exit', jp:'北口',rd:'kitaguchi'}]},
+    {char:'中',answer:'middle / inside',disp:'survival',options:[{en:'middle / inside',jp:'中学校',rd:'chuugakkou'},{en:'up / above',jp:'上手',rd:'jouzu'},{en:'Tokyo (東京)', jp:'東京',rd:'toukyou'},{en:'turn left', jp:'左折',rd:'sasetsu'}]},
+    {char:'東',answer:'east',disp:'survival',options:[{en:'east',jp:'東京',rd:'toukyou'},{en:'west exit', jp:'西口',rd:'nishiguchi'},{en:'south exit', jp:'南口',rd:'minamiguchi'},{en:'north exit', jp:'北口',rd:'kitaguchi'}]},
+    {char:'西',answer:'west',disp:'survival',options:[{en:'west',jp:'西口',rd:'nishiguchi'},{en:'Tokyo (東京)', jp:'東京',rd:'toukyou'},{en:'north exit', jp:'北口',rd:'kitaguchi'},{en:'middle school', jp:'中学校',rd:'chuugakkou'}]},
+    {char:'南',answer:'south',disp:'survival',options:[{en:'south',jp:'南口',rd:'minamiguchi'},{en:'north exit', jp:'北口',rd:'kitaguchi'},{en:'Tokyo (東京)', jp:'東京',rd:'toukyou'},{en:'west exit', jp:'西口',rd:'nishiguchi'}]},
+    {char:'北',answer:'north',disp:'survival',options:[{en:'north',jp:'北口',rd:'kitaguchi'},{en:'south exit', jp:'南口',rd:'minamiguchi'},{en:'west exit', jp:'西口',rd:'nishiguchi'},{en:'turn right', jp:'右折',rd:'usetsu'}]},
+    {char:'駅',answer:'station',disp:'survival',options:[{en:'station',jp:'東京駅',rd:'toukyou-eki'},{en:'train', jp:'電車',rd:'densha'},{en:'road / way',jp:'道',rd:'michi'},{en:'car',jp:'車',rd:'kuruma'}]},
+    {char:'電',answer:'electric',disp:'survival',options:[{en:'electric',jp:'電車',rd:'densha'},{en:'Tokyo Station', jp:'東京駅',rd:'toukyou-eki'},{en:'Yamanote Line', jp:'山手線',rd:'yamanote-sen'},{en:'airport',jp:'空港',rd:'kuukou'}]},
+    {char:'車',answer:'car / vehicle',disp:'survival',options:[{en:'car / vehicle',jp:'電車',rd:'densha'},{en:'Tokyo Station', jp:'東京駅',rd:'toukyou-eki'},{en:'road / way',jp:'道',rd:'michi'},{en:'Yamanote Line', jp:'山手線',rd:'yamanote-sen'}]},
+    {char:'線',answer:'line',disp:'survival',options:[{en:'line',jp:'山手線',rd:'yamanote-sen'},{en:'Tokyo Station', jp:'東京駅',rd:'toukyou-eki'},{en:'train', jp:'電車',rd:'densha'},{en:'road / way',jp:'道',rd:'michi'}]},
+    {char:'道',answer:'road / way',disp:'survival',options:[{en:'road / way',jp:'道',rd:'michi'},{en:'Yamanote Line', jp:'山手線',rd:'yamanote-sen'},{en:'train', jp:'電車',rd:'densha'},{en:'airport',jp:'空港',rd:'kuukou'}]},
+    {char:'空港',answer:'airport',disp:'survival',options:[{en:'airport',jp:'空港',rd:'kuukou'},{en:'Tokyo Station', jp:'東京駅',rd:'toukyou-eki'},{en:'road / way',jp:'道',rd:'michi'},{en:'Yamanote Line', jp:'山手線',rd:'yamanote-sen'}]},
+    {char:'店',answer:'shop / store',disp:'survival',options:[{en:'shop / store',jp:'お店',rd:'omise'},{en:'hospital', jp:'病院',rd:'byouin'},{en:'school', jp:'学校',rd:'gakkou'},{en:'park', jp:'公園',rd:'kouen'}]},
+    {char:'病',answer:'sick / illness',disp:'survival',options:[{en:'sick / illness',jp:'病院',rd:'byouin'},{en:'shop / store',jp:'お店',rd:'omise'},{en:'bank', jp:'銀行',rd:'ginkou'},{en:'school', jp:'学校',rd:'gakkou'}]},
+    {char:'院',answer:'institution',disp:'survival',options:[{en:'institution',jp:'病院',rd:'byouin'},{en:'park', jp:'公園',rd:'kouen'},{en:'shop / store',jp:'お店',rd:'omise'},{en:'school', jp:'学校',rd:'gakkou'}]},
+    {char:'校',answer:'school',disp:'survival',options:[{en:'school', jp:'学校',rd:'gakkou'},{en:'hospital', jp:'病院',rd:'byouin'},{en:'park', jp:'公園',rd:'kouen'},{en:'bank', jp:'銀行',rd:'ginkou'}]},
+    {char:'行',answer:'go / bank (銀行)',disp:'survival',options:[{en:'go / bank (銀行)',jp:'銀行',rd:'ginkou'},{en:'shop / store',jp:'お店',rd:'omise'},{en:'park', jp:'公園',rd:'kouen'},{en:'school', jp:'学校',rd:'gakkou'}]},
+    {char:'公園',answer:'park',disp:'survival',options:[{en:'park', jp:'公園',rd:'kouen'},{en:'school', jp:'学校',rd:'gakkou'},{en:'hospital', jp:'病院',rd:'byouin'},{en:'shop / store',jp:'お店',rd:'omise'}]},
+    {char:'止',answer:'stop',disp:'survival',options:[{en:'stop',jp:'止まれ',rd:'tomare'},{en:'danger',jp:'危険',rd:'kiken'},{en:'caution',jp:'注意',rd:'chuui'},{en:'danger',jp:'危険',rd:'kiken'}]},
+    {char:'危',answer:'danger',disp:'survival',options:[{en:'danger',jp:'危険',rd:'kiken'},{en:'stop',jp:'止まれ',rd:'tomare'},{en:'caution',jp:'注意',rd:'chuui'},{en:'open',jp:'開く',rd:'hiraku'}]},
+    {char:'険',answer:'risk / steep',disp:'survival',options:[{en:'risk / steep',jp:'危険',rd:'kiken'},{en:'caution',jp:'注意',rd:'chuui'},{en:'closed',jp:'閉まる',rd:'shimaru'},{en:'prohibited',jp:'禁止',rd:'kinshi'}]},
+    {char:'注',answer:'pour / focus (注意)',disp:'survival',options:[{en:'pour / focus (注意)',jp:'注意',rd:'chuui'},{en:'danger',jp:'危険',rd:'kiken'},{en:'push',jp:'押す',rd:'osu'},{en:'pull',jp:'引く',rd:'hiku'}]},
+    {char:'意',answer:'meaning / attention',disp:'survival',options:[{en:'meaning / attention',jp:'注意',rd:'chuui'},{en:'stop',jp:'止まれ',rd:'tomare'},{en:'open',jp:'開く',rd:'hiraku'},{en:'prohibited',jp:'禁止',rd:'kinshi'}]},
+    {char:'禁',answer:'prohibit',disp:'survival',options:[{en:'prohibit',jp:'禁止',rd:'kinshi'},{en:'danger',jp:'危険',rd:'kiken'},{en:'closed',jp:'閉まる',rd:'shimaru'},{en:'pull',jp:'引く',rd:'hiku'}]},
+    {char:'開',answer:'open',disp:'survival',options:[{en:'open',jp:'開く',rd:'hiraku'},{en:'closed',jp:'閉まる',rd:'shimaru'},{en:'push',jp:'押す',rd:'osu'},{en:'pull',jp:'引く',rd:'hiku'}]},
+    {char:'閉',answer:'closed',disp:'survival',options:[{en:'closed',jp:'閉まる',rd:'shimaru'},{en:'open',jp:'開く',rd:'hiraku'},{en:'prohibited',jp:'禁止',rd:'kinshi'},{en:'push',jp:'押す',rd:'osu'}]},
+    {char:'押',answer:'push',disp:'survival',options:[{en:'push',jp:'押す',rd:'osu'},{en:'pull',jp:'引く',rd:'hiku'},{en:'open',jp:'開く',rd:'hiraku'},{en:'closed',jp:'閉まる',rd:'shimaru'}]},
+    {char:'引',answer:'pull',disp:'survival',options:[{en:'pull',jp:'引く',rd:'hiku'},{en:'push',jp:'押す',rd:'osu'},{en:'closed',jp:'閉まる',rd:'shimaru'},{en:'danger',jp:'危険',rd:'kiken'}]},
+    {char:'入',answer:'enter (入口 entrance)',disp:'survival',options:[{en:'enter (入口 entrance)',jp:'入口',rd:'iriguchi'},{en:'exit',jp:'出口',rd:'deguchi'},{en:'pull',jp:'引く',rd:'hiku'},{en:'push',jp:'押す',rd:'osu'}]},
+    {char:'出',answer:'exit (出口)',disp:'survival',options:[{en:'exit (出口)',jp:'出口',rd:'deguchi'},{en:'entrance',jp:'入口',rd:'iriguchi'},{en:'station',jp:'駅',rd:'eki'},{en:'road / way',jp:'道',rd:'michi'}]},
+    {char:'階',answer:'floor / storey',disp:'survival',options:[{en:'floor / storey',jp:'二階',rd:'nikai'},{en:'shop / store',jp:'店',rd:'mise'},{en:'station',jp:'駅',rd:'eki'},{en:'hospital', jp:'病院',rd:'byouin'}]},
+    {char:'切符',answer:'ticket',disp:'survival',options:[{en:'ticket',jp:'切符',rd:'kippu'},{en:'station',jp:'駅',rd:'eki'},{en:'car / vehicle',jp:'車',rd:'kuruma'},{en:'line',jp:'線',rd:'sen'}]},
+    {char:'受付',answer:'reception',disp:'survival',options:[{en:'reception',jp:'受付',rd:'uketsuke'},{en:'classroom',jp:'教室',rd:'kyoushitsu'},{en:'canteen',jp:'食堂',rd:'shokudou'},{en:'meeting room',jp:'会議室',rd:'kaigishitsu'}]},
+    {char:'教室',answer:'classroom',disp:'survival',options:[{en:'classroom',jp:'教室',rd:'kyoushitsu'},{en:'reception',jp:'受付',rd:'uketsuke'},{en:'canteen',jp:'食堂',rd:'shokudou'},{en:'school', jp:'学校',rd:'gakkou'}]},
+    {char:'食堂',answer:'canteen / cafeteria',disp:'survival',options:[{en:'canteen / cafeteria',jp:'食堂',rd:'shokudou'},{en:'reception',jp:'受付',rd:'uketsuke'},{en:'classroom',jp:'教室',rd:'kyoushitsu'},{en:'meat',jp:'肉',rd:'niku'}]},
+    {char:'男',answer:'male',disp:'survival',options:[{en:'male',jp:'男',rd:'otoko'},{en:'female',jp:'女',rd:'onna'},{en:'person',jp:'人',rd:'hito'},{en:'big',jp:'大',rd:'dai'}]},
+    {char:'女',answer:'female',disp:'survival',options:[{en:'female',jp:'女',rd:'onna'},{en:'male',jp:'男',rd:'otoko'},{en:'person',jp:'人',rd:'hito'},{en:'small',jp:'小',rd:'shou'}]},
+    {char:'警告',answer:'warning',disp:'survival',options:[{en:'warning',jp:'警告',rd:'keikoku'},{en:'danger',jp:'危険',rd:'kiken'},{en:'caution',jp:'注意',rd:'chuui'},{en:'evacuate',jp:'避難',rd:'hinan'}]},
+    {char:'地震',answer:'earthquake',disp:'survival',options:[{en:'earthquake',jp:'地震',rd:'jishin'},{en:'tsunami',jp:'津波',rd:'tsunami'},{en:'evacuate',jp:'避難',rd:'hinan'},{en:'warning',jp:'警告',rd:'keikoku'}]},
+    {char:'津波',answer:'tsunami',disp:'survival',options:[{en:'tsunami',jp:'津波',rd:'tsunami'},{en:'earthquake',jp:'地震',rd:'jishin'},{en:'rain',jp:'雨',rd:'ame'},{en:'evacuate',jp:'避難',rd:'hinan'}]},
+    {char:'避難',answer:'evacuate',disp:'survival',options:[{en:'evacuate',jp:'避難',rd:'hinan'},{en:'earthquake',jp:'地震',rd:'jishin'},{en:'tsunami',jp:'津波',rd:'tsunami'},{en:'danger',jp:'危険',rd:'kiken'}]},
+    {char:'地下',answer:'underground / basement',disp:'survival',options:[{en:'underground / basement',jp:'地下',rd:'chika'},{en:'floor / storey',jp:'二階',rd:'nikai'},{en:'station',jp:'駅',rd:'eki'},{en:'exit',jp:'出口',rd:'deguchi'}]},
+  ],
+  'kanji-food': [
+    {char:'食べる',answer:'eat',disp:'survival',options:[{en:'eat',jp:'食べる',rd:'taberu'},{en:'drink',jp:'飲む',rd:'nomu'},{en:'canteen',jp:'食堂',rd:'shokudou'},{en:'meat',jp:'肉',rd:'niku'}]},
+    {char:'飲む',answer:'drink',disp:'survival',options:[{en:'drink',jp:'飲む',rd:'nomu'},{en:'eat',jp:'食べる',rd:'taberu'},{en:'water',jp:'水',rd:'mizu'},{en:'cooking', jp:'料理',rd:'ryouri'}]},
+    {char:'魚',answer:'fish',disp:'survival',options:[{en:'fish',jp:'魚',rd:'sakana'},{en:'meat',jp:'肉',rd:'niku'},{en:'vegetable',jp:'野菜',rd:'yasai'},{en:'rice / meal',jp:'ご飯',rd:'gohan'}]},
+    {char:'野菜',answer:'vegetable',disp:'survival',options:[{en:'vegetable',jp:'野菜',rd:'yasai'},{en:'fish',jp:'魚',rd:'sakana'},{en:'meat',jp:'肉',rd:'niku'},{en:'fruit', jp:'果物',rd:'kudamono'}]},
+    {char:'ご飯',answer:'rice / meal',disp:'survival',options:[{en:'rice / meal',jp:'ご飯',rd:'gohan'},{en:'breakfast',jp:'朝食',rd:'choushoku'},{en:'vegetable',jp:'野菜',rd:'yasai'},{en:'cooking', jp:'料理',rd:'ryouri'}]},
+    {char:'朝食',answer:'breakfast',disp:'survival',options:[{en:'breakfast',jp:'朝食',rd:'choushoku'},{en:'lunch',jp:'昼食',rd:'chuushoku'},{en:'dinner',jp:'夕食',rd:'yuushoku'},{en:'rice / meal',jp:'ご飯',rd:'gohan'}]},
+    {char:'昼食',answer:'lunch',disp:'survival',options:[{en:'lunch',jp:'昼食',rd:'chuushoku'},{en:'breakfast',jp:'朝食',rd:'choushoku'},{en:'dinner',jp:'夕食',rd:'yuushoku'},{en:'canteen',jp:'食堂',rd:'shokudou'}]},
+    {char:'夕食',answer:'dinner',disp:'survival',options:[{en:'dinner',jp:'夕食',rd:'yuushoku'},{en:'lunch',jp:'昼食',rd:'chuushoku'},{en:'breakfast',jp:'朝食',rd:'choushoku'},{en:'rice / meal',jp:'ご飯',rd:'gohan'}]},
+    {char:'高い',answer:'expensive / high',disp:'survival',options:[{en:'expensive / high',jp:'高い',rd:'takai'},{en:'cheap',jp:'安い',rd:'yasui'},{en:'big',jp:'大',rd:'dai'},{en:'small',jp:'小',rd:'shou'}]},
+    {char:'安い',answer:'cheap',disp:'survival',options:[{en:'cheap',jp:'安い',rd:'yasui'},{en:'expensive / high',jp:'高い',rd:'takai'},{en:'yen',jp:'円',rd:'en'},{en:'small',jp:'小',rd:'shou'}]},
+  ],
+  'kanji-weather': [
+    {char:'雨',answer:'rain',disp:'survival',options:[{en:'rain',jp:'雨',rd:'ame'},{en:'snow',jp:'雪',rd:'yuki'},{en:'sunny',jp:'晴れ',rd:'hare'},{en:'cloudy',jp:'曇り',rd:'kumori'}]},
+    {char:'晴れ',answer:'sunny',disp:'survival',options:[{en:'sunny',jp:'晴れ',rd:'hare'},{en:'rain',jp:'雨',rd:'ame'},{en:'cloudy',jp:'曇り',rd:'kumori'},{en:'hot',jp:'暑い',rd:'atsui'}]},
+    {char:'曇り',answer:'cloudy',disp:'survival',options:[{en:'cloudy',jp:'曇り',rd:'kumori'},{en:'sunny',jp:'晴れ',rd:'hare'},{en:'rain',jp:'雨',rd:'ame'},{en:'snow',jp:'雪',rd:'yuki'}]},
+    {char:'暑い',answer:'hot',disp:'survival',options:[{en:'hot',jp:'暑い',rd:'atsui'},{en:'cold',jp:'寒い',rd:'samui'},{en:'sunny',jp:'晴れ',rd:'hare'},{en:'expensive',jp:'高い',rd:'takai'}]},
+    {char:'寒い',answer:'cold',disp:'survival',options:[{en:'cold',jp:'寒い',rd:'samui'},{en:'hot',jp:'暑い',rd:'atsui'},{en:'snow',jp:'雪',rd:'yuki'},{en:'rain',jp:'雨',rd:'ame'}]},
+    {char:'雪',answer:'snow',disp:'survival',options:[{en:'snow',jp:'雪',rd:'yuki'},{en:'rain',jp:'雨',rd:'ame'},{en:'cold',jp:'寒い',rd:'samui'},{en:'cloudy',jp:'曇り',rd:'kumori'}]},
+    {char:'天気',answer:'weather',disp:'kanji',options:[{en:'weather',jp:'天気',rd:'tenki'},{en:'rain',jp:'雨',rd:'ame'},{en:'spirit / feeling',jp:'気',rd:'ki'},{en:'sunny',jp:'晴れ',rd:'hare'}]},
+    {char:'気',answer:'spirit / feeling',disp:'kanji',options:[{en:'spirit / feeling',jp:'気',rd:'ki'},{en:'water',jp:'水',rd:'mizu'},{en:'heavens / sky',jp:'天',rd:'ten'},{en:'water',jp:'水',rd:'mizu'}]},
+    {char:'天',answer:'heavens / sky',disp:'kanji',options:[{en:'heavens / sky',jp:'天',rd:'ten'},{en:'spirit / feeling',jp:'気',rd:'ki'},{en:'rain',jp:'雨',rd:'ame'},{en:'rain',jp:'雨',rd:'ame'}]},
+  ],
+  'kanji-people': [
+    {char:'私',answer:'I / me',disp:'kanji',options:[{en:'I / me',jp:'私',rd:'watashi'},{en:'student',jp:'学生',rd:'gakusei'},{en:'teacher',jp:'先生',rd:'sensei'},{en:'who',jp:'誰',rd:'dare'}]},
+    {char:'何',answer:'what',disp:'kanji',options:[{en:'what',jp:'何',rd:'nan'},{en:'who',jp:'誰',rd:'dare'},{en:'I / me',jp:'私',rd:'watashi'},{en:'where',jp:'どこ',rd:'doko'}]},
+    {char:'誰',answer:'who',disp:'kanji',options:[{en:'who',jp:'誰',rd:'dare'},{en:'what',jp:'何',rd:'nan'},{en:'student',jp:'学生',rd:'gakusei'},{en:'I / me',jp:'私',rd:'watashi'}]},
+    {char:'学生',answer:'student',disp:'kanji',options:[{en:'student',jp:'学生',rd:'gakusei'},{en:'teacher',jp:'先生',rd:'sensei'},{en:'school', jp:'学校',rd:'gakkou'},{en:'classroom',jp:'教室',rd:'kyoushitsu'}]},
+    {char:'先生',answer:'teacher',disp:'kanji',options:[{en:'teacher',jp:'先生',rd:'sensei'},{en:'student',jp:'学生',rd:'gakusei'},{en:'I / me',jp:'私',rd:'watashi'},{en:'who',jp:'誰',rd:'dare'}]},
+    {char:'母',answer:'mother',disp:'kanji',options:[{en:'mother',jp:'母',rd:'haha'},{en:'father',jp:'父',rd:'chichi'},{en:'friend',jp:'友',rd:'tomo'},{en:'child',jp:'子',rd:'ko'}]},
+    {char:'父',answer:'father',disp:'kanji',options:[{en:'father',jp:'父',rd:'chichi'},{en:'mother',jp:'母',rd:'haha'},{en:'friend',jp:'友',rd:'tomo'},{en:'child',jp:'子',rd:'ko'}]},
+    {char:'友',answer:'friend',disp:'kanji',options:[{en:'friend',jp:'友',rd:'tomo'},{en:'mother',jp:'母',rd:'haha'},{en:'father',jp:'父',rd:'chichi'},{en:'child',jp:'子',rd:'ko'}]},
+    {char:'子',answer:'child',disp:'kanji',options:[{en:'child',jp:'子',rd:'ko'},{en:'friend',jp:'友',rd:'tomo'},{en:'student',jp:'学生',rd:'gakusei'},{en:'mother',jp:'母',rd:'haha'}]},
+  ],
+  'kanji-general': [
+    {char:'国',answer:'country',disp:'kanji',options:[{en:'country',jp:'国',rd:'kuni'},{en:'outside',jp:'外',rd:'soto'},{en:'name',jp:'名',rd:'na'},{en:'language',jp:'語',rd:'go'}]},
+    {char:'名',answer:'name',disp:'kanji',options:[{en:'name',jp:'名',rd:'na'},{en:'country',jp:'国',rd:'kuni'},{en:'book',jp:'本',rd:'hon'},{en:'child',jp:'子',rd:'ko'}]},
+    {char:'本',answer:'book',disp:'kanji',options:[{en:'book',jp:'本',rd:'hon'},{en:'name',jp:'名',rd:'na'},{en:'language',jp:'語',rd:'go'},{en:'language',jp:'語',rd:'go'}]},
+    {char:'語',answer:'language',disp:'kanji',options:[{en:'language',jp:'語',rd:'go'},{en:'book',jp:'本',rd:'hon'},{en:'country',jp:'国',rd:'kuni'},{en:'name',jp:'名',rd:'na'}]},
+    {char:'外',answer:'outside',disp:'kanji',options:[{en:'outside',jp:'外',rd:'soto'},{en:'inside / middle',jp:'中',rd:'naka'},{en:'country',jp:'国',rd:'kuni'},{en:'left',jp:'左',rd:'hidari'}]},
+    {char:'長い',answer:'long',disp:'kanji',options:[{en:'long',jp:'長い',rd:'nagai'},{en:'short',jp:'短い',rd:'mijikai'},{en:'big',jp:'大',rd:'dai'},{en:'small',jp:'小',rd:'shou'}]},
+    {char:'短い',answer:'short',disp:'kanji',options:[{en:'short',jp:'短い',rd:'mijikai'},{en:'long',jp:'長い',rd:'nagai'},{en:'small',jp:'小',rd:'shou'},{en:'cheap',jp:'安い',rd:'yasui'}]},
+    {char:'毎',answer:'every (毎日 every day)',disp:'kanji',options:[{en:'every (毎日 every day)',jp:'毎日',rd:'mainichi'},{en:'now',jp:'今',rd:'ima'},{en:'year',jp:'年',rd:'nen'},{en:'week',jp:'週',rd:'shuu'}]},
+  ],
+  'kanji-verbs': [
+    {char:'見る',answer:'to see',disp:'kanji',options:[{en:'to see',jp:'見る',rd:'miru'},{en:'to hear / ask',jp:'聞く',rd:'kiku'},{en:'to talk',jp:'話す',rd:'hanasu'},{en:'to read',jp:'読む',rd:'yomu'}]},
+    {char:'聞く',answer:'to hear / ask',disp:'kanji',options:[{en:'to hear / ask',jp:'聞く',rd:'kiku'},{en:'to see',jp:'見る',rd:'miru'},{en:'to talk',jp:'話す',rd:'hanasu'},{en:'to write',jp:'書く',rd:'kaku'}]},
+    {char:'話す',answer:'to talk',disp:'kanji',options:[{en:'to talk',jp:'話す',rd:'hanasu'},{en:'to hear / ask',jp:'聞く',rd:'kiku'},{en:'to read',jp:'読む',rd:'yomu'},{en:'to see',jp:'見る',rd:'miru'}]},
+    {char:'読む',answer:'to read',disp:'kanji',options:[{en:'to read',jp:'読む',rd:'yomu'},{en:'to write',jp:'書く',rd:'kaku'},{en:'to talk',jp:'話す',rd:'hanasu'},{en:'to see',jp:'見る',rd:'miru'}]},
+    {char:'書く',answer:'to write',disp:'kanji',options:[{en:'to write',jp:'書く',rd:'kaku'},{en:'to read',jp:'読む',rd:'yomu'},{en:'to hear / ask',jp:'聞く',rd:'kiku'},{en:'to talk',jp:'話す',rd:'hanasu'}]},
+    {char:'来る',answer:'to come',disp:'kanji',options:[{en:'to come',jp:'来る',rd:'kuru'},{en:'to go', jp:'行く',rd:'iku'},{en:'to rest',jp:'休む',rd:'yasumu'},{en:'to see',jp:'見る',rd:'miru'}]},
+    {char:'休む',answer:'to rest / day off',disp:'kanji',options:[{en:'to rest / day off',jp:'休む',rd:'yasumu'},{en:'to come',jp:'来る',rd:'kuru'},{en:'to go', jp:'行く',rd:'iku'},{en:'to talk',jp:'話す',rd:'hanasu'}]},
+  ],
+};
+
+const VOCAB = {
+  'vocab-greetings': {
+    label: 'Greetings & phrases',
+    chars: 'はじめまして こんにちは…',
+    items: [
+      {jp:'はじめまして', romaji:'hajimemashite', en:'Nice to meet you'},
+      {jp:'おはようございます', romaji:'ohayou gozaimasu', en:'Good morning'},
+      {jp:'こんにちは', romaji:'konnichiwa', en:'Hello'},
+      {jp:'こんばんは', romaji:'konbanwa', en:'Good evening'},
+      {jp:'おやすみなさい', romaji:'oyasuminasai', en:'Good night'},
+      {jp:'さようなら', romaji:'sayounara', en:'Goodbye'},
+      {jp:'またあした', romaji:'mata ashita', en:'See you tomorrow'},
+      {jp:'すみません', romaji:'sumimasen', en:'Excuse me / sorry'},
+      {jp:'ありがとうございました', romaji:'arigatou gozaimashita', en:'Thank you very much'},
+      {jp:'どういたしまして', romaji:'douitashimashite', en:"You're welcome"},
+      {jp:'おねがいします', romaji:'onegai shimasu', en:'Please'},
+      {jp:'どうぞよろしくおねがいします', romaji:'douzo yoroshiku onegaishimasu', en:'I look forward to working with you'},
+      {jp:'よろしくおねがいします', romaji:'yoroshiku onegaishimasu', en:'Nice to meet you / please treat me well'},
+      {jp:'いいえ', romaji:'iie', en:'No / not at all'},
+      {jp:'いただきます', romaji:'itadakimasu', en:'(said before eating)'},
+      {jp:'ごちそうさまでした', romaji:'gochisousama deshita', en:'Thank you for the meal (after eating)'},
+      {jp:'いってらっしゃい', romaji:'itterasshai', en:'Take care (to someone leaving)'},
+      {jp:'おかえりなさい', romaji:'okaerinasai', en:'Welcome home'},
+      {jp:'いってきます', romaji:'ittekimasu', en:"I'm off (leaving home)"},
+      {jp:'ただいま', romaji:'tadaima', en:"I'm home"},
+      {jp:'わかりますか', romaji:'wakarimasu ka', en:'Do you understand?'},
+      {jp:'はい、わかります', romaji:'hai wakarimasu', en:'Yes, I understand'},
+      {jp:'いいえ、わかりません', romaji:'iie wakarimasen', en:"No, I don't understand"},
+      {jp:'もういちどおねがいします', romaji:'mou ichido onegaishimasu', en:'Once more please'},
+      {jp:'ゆっくりいってください', romaji:'yukkuri itte kudasai', en:'Please speak slowly'},
+      {jp:'ちょっとまってください', romaji:'chotto matte kudasai', en:'Please wait'},
+      {jp:'ちがいます', romaji:'chigaimasu', en:"That's wrong / That's different"},
+    ],
+  },
+  'vocab-countries': {
+    label: 'Countries',
+    chars: 'にほん ふらんす…',
+    items: [
+      {jp:'にほん', romaji:'nihon', en:'Japan'},
+      {jp:'ちゅうごく', romaji:'chuugoku', en:'China'},
+      {jp:'かんこく', romaji:'kankoku', en:'Korea'},
+      {jp:'ふらんす', romaji:'furansu', en:'France'},
+      {jp:'いぎりす', romaji:'igirisu', en:'UK / England'},
+      {jp:'いたりあ', romaji:'itaria', en:'Italy'},
+      {jp:'あめりか', romaji:'amerika', en:'USA'},
+      {jp:'まれーしあ', romaji:'mareeshia', en:'Malaysia'},
+      {jp:'いらん', romaji:'iran', en:'Iran'},
+      {jp:'どいつ', romaji:'doitsu', en:'Germany'},
+      {jp:'ぽーらんど', romaji:'poorando', en:'Poland'},
+      {jp:'すいす', romaji:'suisu', en:'Switzerland'},
+      {jp:'いんど', romaji:'indo', en:'India'},
+      {jp:'いんどねしあ', romaji:'indoneshia', en:'Indonesia'},
+      {jp:'えじぷと', romaji:'ejiputo', en:'Egypt'},
+      {jp:'おーすとらりあ', romaji:'oosutoraria', en:'Australia'},
+      {jp:'かなだ', romaji:'kanada', en:'Canada'},
+      {jp:'さうじあらびあ', romaji:'saujiarabia', en:'Saudi Arabia'},
+      {jp:'しんがぽーる', romaji:'shingapooru', en:'Singapore'},
+      {jp:'すぺいん', romaji:'supein', en:'Spain'},
+      {jp:'たい', romaji:'tai', en:'Thailand'},
+      {jp:'ふぃりぴん', romaji:'firipin', en:'Philippines'},
+      {jp:'ぶらじる', romaji:'burajiru', en:'Brazil'},
+      {jp:'べとなむ', romaji:'betonamu', en:'Vietnam'},
+      {jp:'めきしこ', romaji:'mekishiko', en:'Mexico'},
+      {jp:'ろしあ', romaji:'roshia', en:'Russia'},
+    ],
+  },
+  'vocab-occupations': {
+    label: 'Occupations',
+    chars: 'せんせい いしゃ…',
+    items: [
+      {jp:'せんせい', romaji:'sensei', en:'teacher / instructor'},
+      {jp:'がくせい', romaji:'gakusei', en:'student'},
+      {jp:'かいしゃいん', romaji:'kaishain', en:'company employee'},
+      {jp:'ぎんこういん', romaji:'ginkouin', en:'banker'},
+      {jp:'いしゃ', romaji:'isha', en:'doctor'},
+      {jp:'けんきゅうしゃ', romaji:'kenkyuusha', en:'researcher'},
+      {jp:'えんじにあ', romaji:'enjinia', en:'engineer'},
+      {jp:'べんごし', romaji:'bengoshi', en:'lawyer'},
+      {jp:'かいけいし', romaji:'kaikeishi', en:'accountant'},
+      {jp:'ひしょ', romaji:'hisho', en:'secretary'},
+      {jp:'きょうし', romaji:'kyoushi', en:'teacher (formal)'},
+      {jp:'こむいん', romaji:'komuin', en:'civil servant'},
+      {jp:'でざいなー', romaji:'dezainaa', en:'designer'},
+      {jp:'しゃいん', romaji:'shain', en:'staff member / employee'},
+    ],
+  },
+  'vocab-objects': {
+    label: 'Everyday items',
+    chars: 'かさ ほん とけい…',
+    items: [
+      {jp:'かさ', romaji:'kasa', en:'umbrella'},
+      {jp:'いす', romaji:'isu', en:'chair'},
+      {jp:'とけい', romaji:'tokei', en:'watch / clock'},
+      {jp:'じしょ', romaji:'jisho', en:'dictionary'},
+      {jp:'ほん', romaji:'hon', en:'book'},
+      {jp:'ざっし', romaji:'zasshi', en:'magazine'},
+      {jp:'けいたい', romaji:'keitai', en:'mobile phone'},
+      {jp:'ちず', romaji:'chizu', en:'map'},
+      {jp:'りょうり', romaji:'ryouri', en:'cooking'},
+      {jp:'かばん', romaji:'kaban', en:'bag'},
+      {jp:'かぎ', romaji:'kagi', en:'key'},
+      {jp:'ぼーるぺん', romaji:'boorupen', en:'ballpoint pen'},
+      {jp:'えんぴつ', romaji:'empitsu', en:'pencil'},
+      {jp:'れきし', romaji:'rekishi', en:'history'},
+      {jp:'くるま', romaji:'kuruma', en:'car'},
+      {jp:'にく', romaji:'niku', en:'meat'},
+      {jp:'さいふ', romaji:'saifu', en:'purse / wallet'},
+      {jp:'じてんしゃ', romaji:'jitensha', en:'bicycle'},
+      {jp:'かめら', romaji:'kamera', en:'camera'},
+      {jp:'かーど', romaji:'kaado', en:'card'},
+      {jp:'こんぴゅーたー', romaji:'konpyuutaa', en:'computer'},
+      {jp:'こーひー', romaji:'koohii', en:'coffee'},
+      {jp:'しゃーぷぺんしる', romaji:'shaapupenshiru', en:'mechanical pencil'},
+      {jp:'しんぶん', romaji:'shinbun', en:'newspaper'},
+      {jp:'ちょこれーと', romaji:'chokoreeto', en:'chocolate'},
+      {jp:'つくえ', romaji:'tsukue', en:'desk'},
+      {jp:'てちょう', romaji:'techou', en:'pocket notebook'},
+      {jp:'てれび', romaji:'terebi', en:'television'},
+      {jp:'のーと', romaji:'nooto', en:'notebook'},
+      {jp:'めいし', romaji:'meishi', en:'business card'},
+      {jp:'らじお', romaji:'rajio', en:'radio'},
+      {jp:'ぺん', romaji:'pen', en:'pen'},
+      {jp:'てーぷ', romaji:'teepu', en:'tape'},
+      {jp:'たばこ', romaji:'tabako', en:'cigarettes'},
+      {jp:'わいん', romaji:'wain', en:'wine'},
+    ],
+  },
+  'vocab-clothing': {
+    label: 'Clothing & accessories',
+    chars: 'くつ ぼうし じーんず…',
+    items: [
+      {jp:'くつ', romaji:'kutsu', en:'shoes'},
+      {jp:'ぼうし', romaji:'boushi', en:'hat'},
+      {jp:'じーんず', romaji:'jiinzu', en:'jeans'},
+      {jp:'ねくたい', romaji:'nekutai', en:'necktie'},
+    ],
+  },
+  'vocab-places': {
+    label: 'Places & around the building',
+    chars: 'がっこう えき かいだん…',
+    items: [
+      {jp:'がっこう', romaji:'gakkou', en:'school'},
+      {jp:'ゆうびんきょく', romaji:'yuubinkyoku', en:'post office'},
+      {jp:'くに', romaji:'kuni', en:'country / nation'},
+      {jp:'うち', romaji:'uchi', en:'home / house'},
+      {jp:'じむしょ', romaji:'jimusho', en:'office'},
+      {jp:'おふぃす', romaji:'ofisu', en:'office (loanword)'},
+      {jp:'しょくどう', romaji:'shokudou', en:'canteen / cafeteria'},
+      {jp:'うけつけ', romaji:'uketsuke', en:'reception'},
+      {jp:'かいぎしつ', romaji:'kaigishitsu', en:'meeting room'},
+      {jp:'へや', romaji:'heya', en:'room'},
+      {jp:'きょうしつ', romaji:'kyoushitsu', en:'classroom'},
+      {jp:'といれ', romaji:'toire', en:'toilet'},
+      {jp:'かい', romaji:'kai', en:'floor / storey'},
+      {jp:'うりば', romaji:'uriba', en:'sales counter / department'},
+      {jp:'かいだん', romaji:'kaidan', en:'stairs'},
+      {jp:'えれべーたー', romaji:'erebeetaa', en:'elevator / lift'},
+      {jp:'えすかれーたー', romaji:'esukareetaa', en:'escalator'},
+      {jp:'でぱーと', romaji:'depaato', en:'department store'},
+      {jp:'えき', romaji:'eki', en:'station'},
+    ],
+  },
+  'vocab-location': {
+    label: 'Location words',
+    chars: 'ここ そこ あそこ どこ',
+    items: [
+      {jp:'ここ', romaji:'koko', en:'here'},
+      {jp:'そこ', romaji:'soko', en:'there'},
+      {jp:'あそこ', romaji:'asoko', en:'over there'},
+      {jp:'どこ', romaji:'doko', en:'where'},
+    ],
+  },
+  'vocab-questions': {
+    label: 'Question words',
+    chars: 'なん だれ',
+    items: [
+      {jp:'なん', romaji:'nan', en:'what'},
+      {jp:'だれ', romaji:'dare', en:'who'},
+    ],
+  },
+  'vocab-bignumbers': {
+    label: 'Tens, hundreds & thousands',
+    chars: 'にじゅう ひゃく せん まん…',
+    items: [
+      {jp:'にじゅう', romaji:'nijuu', en:'20'},
+      {jp:'さんじゅう', romaji:'sanjuu', en:'30'},
+      {jp:'よんじゅう', romaji:'yonjuu', en:'40'},
+      {jp:'ごじゅう', romaji:'gojuu', en:'50'},
+      {jp:'ろくじゅう', romaji:'rokujuu', en:'60'},
+      {jp:'ななじゅう', romaji:'nanajuu', en:'70'},
+      {jp:'はちじゅう', romaji:'hachijuu', en:'80'},
+      {jp:'きゅうじゅう', romaji:'kyuujuu', en:'90'},
+      {jp:'ひゃく', romaji:'hyaku', en:'100'},
+      {jp:'にひゃく', romaji:'nihyaku', en:'200'},
+      {jp:'さんびゃく', romaji:'sanbyaku', en:'300'},
+      {jp:'よんひゃく', romaji:'yonhyaku', en:'400'},
+      {jp:'ごひゃく', romaji:'gohyaku', en:'500'},
+      {jp:'ろっぴゃく', romaji:'roppyaku', en:'600'},
+      {jp:'ななひゃく', romaji:'nanahyaku', en:'700'},
+      {jp:'はっぴゃく', romaji:'happyaku', en:'800'},
+      {jp:'きゅうひゃく', romaji:'kyuuhyaku', en:'900'},
+      {jp:'せん', romaji:'sen', en:'1,000'},
+      {jp:'にせん', romaji:'nisen', en:'2,000'},
+      {jp:'さんぜん', romaji:'sanzen', en:'3,000'},
+      {jp:'よんせん', romaji:'yonsen', en:'4,000'},
+      {jp:'ごせん', romaji:'gosen', en:'5,000'},
+      {jp:'ろくせん', romaji:'rokusen', en:'6,000'},
+      {jp:'ななせん', romaji:'nanasen', en:'7,000'},
+      {jp:'はっせん', romaji:'hassen', en:'8,000'},
+      {jp:'きゅうせん', romaji:'kyuusen', en:'9,000'},
+      {jp:'まん', romaji:'man', en:'10,000'},
+      {jp:'じゅうまん', romaji:'juuman', en:'100,000'},
+      {jp:'ひゃくまん', romaji:'hyakuman', en:'1,000,000'},
+      {jp:'いちおく', romaji:'ichioku', en:'100,000,000'},
+    ],
+  },
+  'vocab-numbers': {
+    label: 'Numbers 1–10',
+    chars: 'いち に さん…',
+    items: [
+      {jp:'いち', romaji:'ichi', en:'1'},
+      {jp:'に', romaji:'ni', en:'2'},
+      {jp:'さん', romaji:'san', en:'3'},
+      {jp:'よん', romaji:'yon', en:'4'},
+      {jp:'ご', romaji:'go', en:'5'},
+      {jp:'ろく', romaji:'roku', en:'6'},
+      {jp:'なな', romaji:'nana', en:'7'},
+      {jp:'はち', romaji:'hachi', en:'8'},
+      {jp:'きゅう', romaji:'kyuu', en:'9'},
+      {jp:'じゅう', romaji:'juu', en:'10'},
+    ],
+  },
+  'vocab-colours': {
+    label: 'Colours (not covered in lessons)',
+    chars: 'あか あお きいろ…',
+    items: [
+      {jp:'あか', romaji:'aka', en:'red'},
+      {jp:'あお', romaji:'ao', en:'blue'},
+      {jp:'きいろ', romaji:'kiiro', en:'yellow'},
+      {jp:'みどり', romaji:'midori', en:'green'},
+      {jp:'くろ', romaji:'kuro', en:'black'},
+      {jp:'しろ', romaji:'shiro', en:'white'},
+      {jp:'ちゃいろ', romaji:'chairo', en:'brown'},
+      {jp:'むらさき', romaji:'murasaki', en:'purple'},
+      {jp:'ぴんく', romaji:'pinku', en:'pink'},
+      {jp:'おれんじ', romaji:'orenji', en:'orange'},
+    ],
+  },
+};
+
+// Word reading drill pool — hiragana words → romaji
+// Combines lesson vocab + survival words for trip
+const WORD_POOL = [
+  // From existing Match vocab (hiragana only, excluding katakana loanwords)
+  {jp:'はじめまして',rom:'hajimemashite',en:'nice to meet you'},
+  {jp:'おはようございます',rom:'ohayou gozaimasu',en:'good morning'},
+  {jp:'こんにちは',rom:'konnichiwa',en:'hello'},
+  {jp:'こんばんは',rom:'konbanwa',en:'good evening'},
+  {jp:'おやすみなさい',rom:'oyasuminasai',en:'good night'},
+  {jp:'さようなら',rom:'sayounara',en:'goodbye'},
+  {jp:'またあした',rom:'mata ashita',en:'see you tomorrow'},
+  {jp:'すみません',rom:'sumimasen',en:'excuse me'},
+  {jp:'ありがとうございます',rom:'arigatou gozaimasu',en:'thank you'},
+  {jp:'どういたしまして',rom:'douitashimashite',en:"you're welcome"},
+  {jp:'おねがいします',rom:'onegai shimasu',en:'please'},
+  {jp:'いいえ',rom:'iie',en:'no'},
+  {jp:'いってきます',rom:'ittekimasu',en:"i'm off"},
+  {jp:'いってらっしゃい',rom:'itterasshai',en:'take care'},
+  {jp:'ただいま',rom:'tadaima',en:"i'm home"},
+  {jp:'おかえりなさい',rom:'okaerinasai',en:'welcome home'},
+  {jp:'いただきます',rom:'itadakimasu',en:'(before eating)'},
+  {jp:'ごちそうさまでした',rom:'gochisousama deshita',en:'(after eating)'},
+  {jp:'にほん',rom:'nihon',en:'japan'},
+  {jp:'ちゅうごく',rom:'chuugoku',en:'china'},
+  {jp:'かんこく',rom:'kankoku',en:'korea'},
+  {jp:'せんせい',rom:'sensei',en:'teacher'},
+  {jp:'がくせい',rom:'gakusei',en:'student'},
+  {jp:'かいしゃいん',rom:'kaishain',en:'company employee'},
+  {jp:'ぎんこういん',rom:'ginkouin',en:'banker'},
+  {jp:'いしゃ',rom:'isha',en:'doctor'},
+  {jp:'けんきゅうしゃ',rom:'kenkyuusha',en:'researcher'},
+  {jp:'べんごし',rom:'bengoshi',en:'lawyer'},
+  {jp:'かいけいし',rom:'kaikeishi',en:'accountant'},
+  {jp:'ひしょ',rom:'hisho',en:'secretary'},
+  {jp:'きょうし',rom:'kyoushi',en:'teacher (formal)'},
+  {jp:'こむいん',rom:'komuin',en:'civil servant'},
+  {jp:'かさ',rom:'kasa',en:'umbrella'},
+  {jp:'いす',rom:'isu',en:'chair'},
+  {jp:'とけい',rom:'tokei',en:'watch / clock'},
+  {jp:'じしょ',rom:'jisho',en:'dictionary'},
+  {jp:'ほん',rom:'hon',en:'book'},
+  {jp:'ざっし',rom:'zasshi',en:'magazine'},
+  {jp:'けいたい',rom:'keitai',en:'mobile phone'},
+  {jp:'ちず',rom:'chizu',en:'map'},
+  {jp:'りょうり',rom:'ryouri',en:'cooking'},
+  {jp:'かばん',rom:'kaban',en:'bag'},
+  {jp:'かぎ',rom:'kagi',en:'key'},
+  {jp:'えんぴつ',rom:'empitsu',en:'pencil'},
+  {jp:'れきし',rom:'rekishi',en:'history'},
+  {jp:'くるま',rom:'kuruma',en:'car'},
+  {jp:'にく',rom:'niku',en:'meat'},
+  {jp:'さいふ',rom:'saifu',en:'purse / wallet'},
+  {jp:'じてんしゃ',rom:'jitensha',en:'bicycle'},
+  {jp:'しんぶん',rom:'shinbun',en:'newspaper'},
+  {jp:'つくえ',rom:'tsukue',en:'desk'},
+  {jp:'てちょう',rom:'techou',en:'notebook'},
+  {jp:'めいし',rom:'meishi',en:'business card'},
+  {jp:'がっこう',rom:'gakkou',en:'school'},
+  {jp:'ゆうびんきょく',rom:'yuubinkyoku',en:'post office'},
+  {jp:'じむしょ',rom:'jimusho',en:'office'},
+  {jp:'しょくどう',rom:'shokudou',en:'canteen'},
+  {jp:'うけつけ',rom:'uketsuke',en:'reception'},
+  {jp:'かいぎしつ',rom:'kaigishitsu',en:'meeting room'},
+  {jp:'へや',rom:'heya',en:'room'},
+  {jp:'きょうしつ',rom:'kyoushitsu',en:'classroom'},
+  {jp:'といれ',rom:'toire',en:'toilet'},
+  {jp:'かいだん',rom:'kaidan',en:'stairs'},
+  {jp:'でぱーと',rom:'depaato',en:'department store'},
+  {jp:'えき',rom:'eki',en:'station'},
+  {jp:'ここ',rom:'koko',en:'here'},
+  {jp:'そこ',rom:'soko',en:'there'},
+  {jp:'あそこ',rom:'asoko',en:'over there'},
+  {jp:'どこ',rom:'doko',en:'where'},
+  {jp:'なん',rom:'nan',en:'what'},
+  {jp:'だれ',rom:'dare',en:'who'},
+  {jp:'あか',rom:'aka',en:'red'},
+  {jp:'あお',rom:'ao',en:'blue'},
+  {jp:'きいろ',rom:'kiiro',en:'yellow'},
+  {jp:'みどり',rom:'midori',en:'green'},
+  {jp:'くろ',rom:'kuro',en:'black'},
+  {jp:'しろ',rom:'shiro',en:'white'},
+  {jp:'ちゃいろ',rom:'chairo',en:'brown'},
+  {jp:'むらさき',rom:'murasaki',en:'purple'},
+  // Survival words for Japan trip
+  {jp:'みず',rom:'mizu',en:'water'},
+  {jp:'おちゃ',rom:'ocha',en:'green tea'},
+  {jp:'さけ',rom:'sake',en:'sake / alcohol'},
+  {jp:'すし',rom:'sushi',en:'sushi'},
+  {jp:'てんぷら',rom:'tenpura',en:'tempura'},
+  {jp:'そば',rom:'soba',en:'soba noodles'},
+  {jp:'うどん',rom:'udon',en:'udon noodles'},
+  {jp:'らーめん',rom:'raamen',en:'ramen'},
+  {jp:'おみやげ',rom:'omiyage',en:'souvenir'},
+  {jp:'やすみ',rom:'yasumi',en:'rest / day off / closed'},
+  {jp:'いくら',rom:'ikura',en:'how much'},
+  {jp:'ください',rom:'kudasai',en:'please give me'},
+  {jp:'きょう',rom:'kyou',en:'today'},
+  {jp:'あした',rom:'ashita',en:'tomorrow'},
+  {jp:'きのう',rom:'kinou',en:'yesterday'},
+  {jp:'いま',rom:'ima',en:'now'},
+  {jp:'つぎ',rom:'tsugi',en:'next'},
+  {jp:'のりかえ',rom:'norikae',en:'transfer / change trains'},
+  {jp:'きっぷ',rom:'kippu',en:'ticket'},
+  {jp:'でぐち',rom:'deguchi',en:'exit'},
+  {jp:'いりぐち',rom:'iriguchi',en:'entrance'},
+  {jp:'ふん',rom:'fun',en:'minutes'},
+  {jp:'じかん',rom:'jikan',en:'hours / time'},
+  {jp:'まち',rom:'machi',en:'town'},
+  {jp:'みせ',rom:'mise',en:'shop'},
+  {jp:'たべもの',rom:'tabemono',en:'food'},
+  {jp:'のみもの',rom:'nomimono',en:'drink'},
+  {jp:'たかい',rom:'takai',en:'expensive'},
+  {jp:'やすい',rom:'yasui',en:'cheap'},
+  {jp:'おおきい',rom:'ookii',en:'big'},
+  {jp:'ちいさい',rom:'chiisai',en:'small'},
+  {jp:'わかりません',rom:'wakarimasen',en:"i don't understand"},
+  {jp:'たすけて',rom:'tasukete',en:'help!'},
+  {jp:'いたい',rom:'itai',en:'it hurts / ouch'},
+  {jp:'くすり',rom:'kusuri',en:'medicine'},
+  {jp:'びょういん',rom:'byouin',en:'hospital'},
+  {jp:'けいさつ',rom:'keisatsu',en:'police'},
+  {jp:'くに',rom:'kuni',en:'country / nation'},
+  {jp:'くつ',rom:'kutsu',en:'shoes'},
+  {jp:'うち',rom:'uchi',en:'home / house'},
+  {jp:'ねくたい',rom:'nekutai',en:'necktie'},
+  {jp:'わいん',rom:'wain',en:'wine'},
+  {jp:'たばこ',rom:'tabako',en:'cigarettes'},
+  {jp:'ぺん',rom:'pen',en:'pen'},
+  {jp:'てーぷ',rom:'teepu',en:'tape'},
+  {jp:'じーんず',rom:'jiinzu',en:'jeans'},
+  {jp:'ぼうし',rom:'boushi',en:'hat'},
+  {jp:'すいす',rom:'suisu',en:'Switzerland'},
+  {jp:'かい',rom:'kai',en:'floor / storey'},
+  {jp:'うりば',rom:'uriba',en:'sales counter / department'},
+  {jp:'わかりますか',rom:'wakarimasu ka',en:'do you understand?'},
+  {jp:'はい、わかります',rom:'hai wakarimasu',en:'yes, I understand'},
+  {jp:'いいえ、わかりません',rom:'iie wakarimasen',en:"no, I don't understand"},
+  {jp:'もういちどおねがいします',rom:'mou ichido onegaishimasu',en:'once more please'},
+  {jp:'ゆっくりいってください',rom:'yukkuri itte kudasai',en:'please speak slowly'},
+  {jp:'ちょっとまってください',rom:'chotto matte kudasai',en:'please wait'},
+  {jp:'ちがいます',rom:'chigaimasu',en:"that's wrong / different"},
+  {jp:'あさ',rom:'asa',en:'morning'},
+  {jp:'よる',rom:'yoru',en:'evening / night'},
+  {jp:'まいにち',rom:'mainichi',en:'every day'},
+  {jp:'ともだち',rom:'tomodachi',en:'friend'},
+];
+
+const BADGE_LABELS = {
+  'hiragana-base': 'hiragana base',
+  'hiragana-diacritics': 'hiragana ゛゜',
+  'hiragana-youon': 'hiragana きゃ',
+  'katakana-base': 'katakana base',
+  'katakana-diacritics': 'katakana ゛゜',
+  'katakana-youon': 'katakana キャ',
+  'kanji-numbers-time': 'numbers / time',
+  'kanji-nature-body': 'nature / body',
+  'kanji-directions-travel': 'directions / travel',
+  'kanji-food': 'food / dining',
+  'kanji-weather': 'weather',
+  'kanji-people': 'people / questions',
+  'kanji-general': 'general',
+  'kanji-verbs': 'verbs',
+};
+
+const ALL_KEYS = Object.keys(DATA);
+const HIRAGANA_KEYS = ['hiragana-base','hiragana-diacritics','hiragana-youon'];
+const KATAKANA_KEYS = ['katakana-base','katakana-diacritics','katakana-youon'];
+const KANJI_KEYS = ['kanji-numbers-time','kanji-nature-body','kanji-directions-travel','kanji-food','kanji-weather','kanji-people','kanji-general','kanji-verbs'];
+
+const selected = new Set(['hiragana-base']);
+let deck = [], current = 0, score = 0, wrong = 0, answered = false, missed = [];
+let reversed = false;
+
+function toggleDirection() {
+  reversed = !reversed;
+  const label = reversed ? 'Romaji → kana' : 'Kana → romaji';
+  const sub = reversed ? 'See a reading, pick the character. Tap to reverse.' : 'See a character, pick the reading. Tap to reverse.';
+  ['direction-card', 'direction-card-kata'].forEach(id => {
+    const card = document.getElementById(id);
+    if (card) card.classList.toggle('selected', reversed);
+  });
+  document.getElementById('direction-name').textContent = label;
+  document.getElementById('direction-sub').textContent = sub;
+  document.getElementById('direction-name-kata').textContent = label;
+  document.getElementById('direction-sub-kata').textContent = sub;
+}
+
+function updateDirectionVisibility() {
+  const kanaKeys = [...HIRAGANA_KEYS, ...KATAKANA_KEYS];
+  const hasKana = kanaKeys.some(k => selected.has(k));
+  // Update both direction cards (one per screen)
+  ['direction-card', 'direction-card-kata'].forEach(id => {
+    const card = document.getElementById(id);
+    if (!card) return;
+    card.style.display = hasKana ? 'flex' : 'none';
+  });
+  if (!hasKana && reversed) {
+    reversed = false;
+    ['direction-card', 'direction-card-kata'].forEach(id => {
+      const card = document.getElementById(id);
+      if (card) card.classList.remove('selected');
+    });
+    document.getElementById('direction-name').textContent = 'Kana → romaji';
+    document.getElementById('direction-sub').textContent = 'See a character, pick the reading. Tap to reverse.';
+    document.getElementById('direction-name-kata').textContent = 'Kana → romaji';
+    document.getElementById('direction-sub-kata').textContent = 'See a character, pick the reading. Tap to reverse.';
+  }
+}
+
+function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+function toggleGroup(card) {
+  const key = card.dataset.key;
+  if (selected.has(key)) {
+    selected.delete(key);
+  } else {
+    const isExclusive = key === 'number-challenge' || key === 'word-reading';
+    if (isExclusive) {
+      selected.clear();
+    } else {
+      selected.delete('number-challenge');
+      selected.delete('word-reading');
+      const isKanji = key.startsWith('kanji-');
+      [...selected].forEach(k => {
+        if (k.startsWith('kanji-') !== isKanji) selected.delete(k);
+      });
+    }
+    selected.add(key);
+  }
+  syncCardUI();
+}
+
+function syncCardUI() {
+  document.querySelectorAll('.group-card[data-key]').forEach(card => {
+    card.classList.toggle('selected', selected.has(card.dataset.key));
+  });
+  document.querySelectorAll('.start-btn').forEach(b => b.disabled = selected.size === 0);
+  updateDirectionVisibility();
+}
+
+function selectPreset(preset) {
+  selected.clear();
+  if (preset === 'hiragana') HIRAGANA_KEYS.forEach(k => selected.add(k));
+  else if (preset === 'katakana') KATAKANA_KEYS.forEach(k => selected.add(k));
+  syncCardUI();
+}
+
+function selectKanjiPreset() {
+  selected.clear();
+  KANJI_KEYS.forEach(k => selected.add(k));
+  syncCardUI();
+}
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
+  document.getElementById('screen-' + id).classList.add('visible');
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  if (id === 'settings') document.querySelectorAll('.nav-pill')[0].classList.add('active');
+  else if (id === 'katakana-settings' || id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
+  else if (id === 'kanji-settings') document.querySelectorAll('.nav-pill')[2].classList.add('active');
+  else if (id === 'match-settings' || id === 'match-game') document.querySelectorAll('.nav-pill')[4].classList.add('active');
+  else document.querySelectorAll('.nav-pill')[3].classList.add('active');
+}
+
+let lastSettingsScreen = 'settings';
+
+function showSettings() { showScreen('settings'); }
+function showKanjiSettings() { showScreen('kanji-settings'); }
+function showKatakanaSettings() { showScreen('katakana-settings'); }
+function goBackToSettings() { showScreen(lastSettingsScreen); }
+
+function tryResume() {
+  if (deck.length > 0 && current < deck.length) showScreen('drill');
+  else goBackToSettings();
+}
+
+function tryResumeKanji() {
+  showKanjiSettings();
+}
+
+/* ---------- Number challenge ---------- */
+const HIRA_TO_ROMA = {
+  'いち':'ichi','に':'ni','さん':'san','よん':'yon','ご':'go','ろく':'roku','なな':'nana','はち':'hachi','きゅう':'kyuu','じゅう':'juu',
+  'にじゅう':'nijuu','さんじゅう':'sanjuu','よんじゅう':'yonjuu','ごじゅう':'gojuu','ろくじゅう':'rokujuu','ななじゅう':'nanajuu','はちじゅう':'hachijuu','きゅうじゅう':'kyuujuu',
+  'ひゃく':'hyaku','にひゃく':'nihyaku','さんびゃく':'sanbyaku','よんひゃく':'yonhyaku','ごひゃく':'gohyaku','ろっぴゃく':'roppyaku','ななひゃく':'nanahyaku','はっぴゃく':'happyaku','きゅうひゃく':'kyuuhyaku',
+  'せん':'sen','にせん':'nisen','さんぜん':'sanzen','よんせん':'yonsen','ごせん':'gosen','ろくせん':'rokusen','ななせん':'nanasen','はっせん':'hassen','きゅうせん':'kyuusen',
+};
+
+function numReadingToRomaji(reading) {
+  const keys = Object.keys(HIRA_TO_ROMA).sort((a,b) => b.length - a.length);
+  return reading.split(' ').map(part => {
+    let r = part, result = '';
+    while (r.length > 0) {
+      const match = keys.find(k => r.startsWith(k));
+      if (match) { result += HIRA_TO_ROMA[match]; r = r.slice(match.length); }
+      else { result += r[0]; r = r.slice(1); }
+    }
+    return result;
+  }).join(' ');
+}
+function numToJapanese(n) {
+  if (n === 0) return 'ぜろ';
+  const ones = ['','いち','に','さん','よん','ご','ろく','なな','はち','きゅう'];
+  const tens = ['','じゅう','にじゅう','さんじゅう','よんじゅう','ごじゅう','ろくじゅう','ななじゅう','はちじゅう','きゅうじゅう'];
+  const hyaku = ['','ひゃく','にひゃく','さんびゃく','よんひゃく','ごひゃく','ろっぴゃく','ななひゃく','はっぴゃく','きゅうひゃく'];
+  const sen   = ['','せん','にせん','さんぜん','よんせん','ごせん','ろくせん','ななせん','はっせん','きゅうせん'];
+
+  const s = Math.floor(n / 1000);
+  const h = Math.floor((n % 1000) / 100);
+  const t = Math.floor((n % 100) / 10);
+  const o = n % 10;
+
+  const parts = [];
+  if (s) parts.push(sen[s]);
+  if (h) parts.push(hyaku[h]);
+  if (t) parts.push(tens[t]);
+  if (o) parts.push(ones[o]);
+  return parts.join(' ');
+}
+
+function genNumberDistractors(n) {
+  // Generate 3 plausible wrong readings by mutating one component
+  const mutations = [];
+  const s = Math.floor(n / 1000);
+  const h = Math.floor((n % 1000) / 100);
+  const t = Math.floor((n % 100) / 10);
+  const o = n % 10;
+
+  // Try swapping each non-zero component with a close alternative
+  const candidates = new Set();
+  const tries = [
+    [s, h, t, o === 0 ? 0 : (o % 9) + 1],
+    [s, h, t === 0 ? 0 : (t % 9) + 1, o],
+    [s, h === 0 ? 0 : (h % 9) + 1, t, o],
+    [s === 0 ? 0 : (s % 9) + 1, h, t, o],
+    [s, h, t === 0 ? 1 : 0, o],
+    [s, h === 0 ? 1 : 0, t, o],
+    [s === 0 ? 1 : 0, h, t, o],
+  ];
+  for (const [ts, th, tt, to] of tries) {
+    const candidate = ts * 1000 + th * 100 + tt * 10 + to;
+    if (candidate !== n && candidate > 0 && candidate <= 9999) {
+      candidates.add(candidate);
+      if (candidates.size >= 3) break;
+    }
+  }
+  // Pad if needed
+  while (candidates.size < 3) {
+    const r = Math.floor(Math.random() * 9999) + 1;
+    if (r !== n) candidates.add(r);
+  }
+  return [...candidates].slice(0, 3).map(c => numToJapanese(c));
+}
+
+function startWordReading() {
+  lastSettingsScreen = 'settings';
+  const pool = shuffle([...WORD_POOL]);
+  const selected10 = pool.slice(0, 10);
+  const wordDeck = selected10.map(item => {
+    const correct = item.rom;
+    const distractors = shuffle(WORD_POOL.filter(w => w.rom !== correct)).slice(0, 3).map(w => w.rom);
+    const opts = shuffle([correct, ...distractors]);
+    return {
+      char: item.jp,
+      answer: correct,
+      disp: 'word',
+      groupKey: 'word-reading',
+      options: opts.map(o => ({en: o, jp: o, rd: o})),
+      hint: item.en,
+    };
+  });
+  deck = wordDeck;
+  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
+}
+
+function startNumberChallenge() {
+  lastSettingsScreen = 'settings';
+  const nums = [];
+  while (nums.length < 5) {
+    const n = Math.floor(Math.random() * 9999) + 1;
+    if (!nums.includes(n)) nums.push(n);
+  }
+  const numDeck = nums.map(n => {
+    const correct = numToJapanese(n);
+    const distractors = genNumberDistractors(n);
+    const opts = shuffle([correct, ...distractors]);
+    return {
+      char: n.toLocaleString(),
+      answer: correct,
+      disp: 'number',
+      groupKey: 'numbers',
+      options: opts.map(o => ({en: o, jp: o, rd: o})),
+    };
+  });
+  deck = numDeck;
+  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
+}
+
+/* ---------- end Number challenge ---------- */
+
+function buildDeck() {
+  let d = [];
+  selected.forEach(k => { if (DATA[k]) DATA[k].forEach(q => d.push(Object.assign({groupKey: k}, q))); });
+  return shuffle(d);
+}
+
+function startDrill(customDeck) {
+  if (!customDeck && selected.has('number-challenge')) {
+    startNumberChallenge();
+    return;
+  }
+  if (!customDeck && selected.has('word-reading')) {
+    startWordReading();
+    return;
+  }
+  lastSettingsScreen = customDeck ? lastSettingsScreen : (
+    [...selected].some(k => k.startsWith('kanji-')) ? 'kanji-settings' :
+    [...selected].some(k => k.startsWith('katakana-')) ? 'katakana-settings' : 'settings'
+  );
+  deck = customDeck || buildDeck();
+  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
+}
+
+let missedItems = []; // stores full question objects for number challenge missed items
+
+function drillMissed() {
+  const missedSet = new Set(missed);
+  // Rebuild regular DATA items
+  const all = [];
+  Object.keys(DATA).forEach(k => DATA[k].forEach(q => all.push(Object.assign({groupKey: k}, q))));
+  const regularMissed = all.filter(q => missedSet.has(q.char));
+  // Add any stored number challenge missed items
+  const numberMissed = missedItems.filter(q => missedSet.has(q.char));
+  startDrill(shuffle([...regularMissed, ...numberMissed]));
+}
+
+function renderQuestion() {
+  if (current >= deck.length) { showResults(); return; }
+  const q = deck[current];
+  const pct = Math.round((current / deck.length) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('prog-label').textContent = (current + 1) + ' / ' + deck.length;
+  document.getElementById('stat-correct').textContent = score;
+  document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-left').textContent = deck.length - current;
+
+  const badge = document.getElementById('q-badge');
+  badge.textContent = q.disp === 'number' ? 'numbers' : q.disp === 'word' ? 'word reading' : (BADGE_LABELS[q.groupKey] || q.groupKey);
+  let badgeClass = 'base';
+  if (q.disp === 'diacritic') badgeClass = 'diacritic';
+  else if (q.disp === 'kanji') badgeClass = 'kanji';
+  else if (q.disp === 'survival') badgeClass = 'survival';
+  else if (q.disp === 'number') badgeClass = 'kanji';
+  badge.className = 'type-badge type-' + badgeClass;
+
+  document.getElementById('q-feedback').textContent = '';
+  document.getElementById('q-feedback').className = 'feedback';
+  document.getElementById('next-btn').style.visibility = 'hidden';
+  answered = false;
+
+  const isKanjiLike = q.disp === 'kanji' || q.disp === 'survival';
+  const isNumber = q.disp === 'number';
+  const isWord = q.disp === 'word';
+  const charDisplay = document.getElementById('q-char');
+  const container = document.getElementById('q-options');
+  container.innerHTML = '';
+
+  if (isWord) {
+    charDisplay.style.fontFamily = "'BIZ UDPGothic', sans-serif";
+    const len = [...q.char].length;
+    charDisplay.style.fontSize = len <= 4 ? '72px' : len <= 6 ? '56px' : '40px';
+    charDisplay.textContent = q.char;
+    document.getElementById('q-prompt').textContent = 'How do you read this word?';
+    q.options.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.textContent = o.en;
+      btn.onclick = () => choose(btn, o.en, q.answer, q.char);
+      container.appendChild(btn);
+    });
+  } else if (isNumber) {
+    charDisplay.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    charDisplay.style.fontSize = '72px';
+    charDisplay.textContent = q.char;
+    document.getElementById('q-prompt').textContent = 'How do you read this number in Japanese?';
+    q.options.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      const romaji = numReadingToRomaji(o.en);
+      btn.innerHTML = `<span class="opt-jp">${o.en}</span><span class="opt-rd">${romaji}</span>`;
+      btn.onclick = () => choose(btn, o.en, q.answer, q.char);
+      container.appendChild(btn);
+    });
+  } else if (!isKanjiLike && reversed) {
+    // Romaji -> kana mode
+    charDisplay.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    charDisplay.style.fontSize = '56px';
+    charDisplay.textContent = q.answer;
+    document.getElementById('q-prompt').textContent = 'Which character is this?';
+
+    // Build 4 distinct kana options: correct answer + 3 random distractors
+    // pulled from the same group(s) currently in the deck, so there's always enough to choose from.
+    const poolGroups = [...new Set(deck.map(item => item.groupKey))];
+    let pool = [];
+    poolGroups.forEach(gk => { pool.push(...DATA[gk]); });
+    // Fallback: if pool is too small (shouldn't happen with kana groups), widen to all kana data
+    if (pool.length < 4) {
+      [...HIRAGANA_KEYS, ...KATAKANA_KEYS].forEach(gk => { pool.push(...DATA[gk]); });
+    }
+    const otherChars = pool
+      .map(item => item.char)
+      .filter(c => c !== q.char);
+    const distractors = shuffle([...new Set(otherChars)]).slice(0, 3);
+    const opts = shuffle([q.char, ...distractors]);
+
+    opts.forEach(kanaChar => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
+      btn.style.fontSize = '28px';
+      btn.textContent = kanaChar;
+      btn.onclick = () => choose(btn, kanaChar, q.char, q.char);
+      container.appendChild(btn);
+    });
+  } else {
+    // Normal mode: character -> romaji/meaning
+    charDisplay.style.fontFamily = "'BIZ UDPGothic', sans-serif";
+    const len = [...q.char].length;
+    charDisplay.style.fontSize = len <= 2 ? '100px' : len === 3 ? '72px' : '56px';
+    charDisplay.textContent = q.char;
+    document.getElementById('q-prompt').textContent = isKanjiLike ? 'What does this kanji mean?' : 'What is this character?';
+
+    const opts = shuffle(q.options);
+    opts.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      const val = isKanjiLike ? o.en : o;
+      if (isKanjiLike) {
+        btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">(${o.rd})</span><span class="opt-en">${o.en}</span>`;
+      } else {
+        btn.textContent = o;
+      }
+      btn.onclick = () => choose(btn, val, q.answer, q.char);
+      container.appendChild(btn);
+    });
+  }
+}
+
+function choose(btn, selectedVal, answer, char) {
+  if (answered) return;
+  answered = true;
+  document.querySelectorAll('.opt').forEach(b => {
+    b.disabled = true;
+    const v = b.querySelector('.opt-en')
+      ? b.querySelector('.opt-en').textContent.trim()
+      : b.querySelector('.opt-jp')
+        ? b.querySelector('.opt-jp').textContent.trim()
+        : b.textContent.trim();
+    if (v === answer) b.classList.add('correct');
+  });
+  const fb = document.getElementById('q-feedback');
+  const currentQ = deck[current];
+  const hint = currentQ && currentQ.hint ? ` (${currentQ.hint})` : '';
+  if (selectedVal === answer) {
+    score++;
+    btn.classList.add('correct');
+    fb.textContent = 'Correct!' + hint;
+    fb.className = 'feedback good';
+  } else {
+    btn.classList.add('wrong');
+    fb.textContent = `Not quite — the answer is "${answer}"` + hint;
+    fb.className = 'feedback bad';
+    wrong++;
+    if (!missed.includes(char)) {
+      missed.push(char);
+      if (currentQ && (currentQ.disp === 'number' || currentQ.disp === 'word')) missedItems.push(currentQ);
+    }
+  }
+  document.getElementById('stat-correct').textContent = score;
+  document.getElementById('stat-wrong').textContent = wrong;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.style.visibility = 'visible';
+  nextBtn.textContent = current + 1 < deck.length ? 'Next →' : 'See results →';
+}
+
+function nextQuestion() { current++; renderQuestion(); }
+
+function showResults() {
+  showScreen('results');
+  const total = deck.length;
+  const pct = Math.round((score / total) * 100);
+  const msg = pct === 100 ? 'Perfect score!' : pct >= 80 ? 'Great work!' : pct >= 60 ? 'Getting there!' : 'Keep drilling!';
+  document.getElementById('res-score').textContent = score + '/' + total;
+  document.getElementById('res-msg').textContent = msg + ' (' + pct + '%)';
+  const missedEl = document.getElementById('res-missed');
+  const missedBtn = document.getElementById('res-missed-btn');
+  const missedLabel = document.getElementById('res-missed-label');
+  if (missed.length > 0) {
+    missedLabel.textContent = 'Focus on these:';
+    missedEl.innerHTML = '<div class="missed-chars">' + missed.join(' ') + '</div>';
+    missedBtn.style.display = 'block';
+  } else {
+    missedLabel.textContent = '';
+    missedEl.innerHTML = '<div class="no-missed">No mistakes — excellent!</div>';
+    missedBtn.style.display = 'none';
+  }
+}
+
+/* ---------- Vocab matching mode ---------- */
+let matchCategoryKey = null;
+let matchRounds = [];
+let matchRoundIndex = 0;
+let matchPicked = { left: null, right: null };
+let matchMatchedIds = new Set();
+let matchMistakes = 0;
+let matchTotalPairs = 0;
+let matchTotalMatched = 0;
+
+function showKatakanaReference() {
+  showScreen('katakana-ref');
+  buildKatakanaRefGrid();
+}
+
+function buildKatakanaRefGrid() {
+  const container = document.getElementById('katakana-ref-grid');
+  if (container.children.length > 0) return; // already built
+
+  // All 46 katakana in traditional a-i-u-e-o order, grouped by row
+  const rows = [
+    [['ア','a'],['イ','i'],['ウ','u'],['エ','e'],['オ','o']],
+    [['カ','ka'],['キ','ki'],['ク','ku'],['ケ','ke'],['コ','ko']],
+    [['サ','sa'],['シ','shi'],['ス','su'],['セ','se'],['ソ','so']],
+    [['タ','ta'],['チ','chi'],['ツ','tsu'],['テ','te'],['ト','to']],
+    [['ナ','na'],['ニ','ni'],['ヌ','nu'],['ネ','ne'],['ノ','no']],
+    [['ハ','ha'],['ヒ','hi'],['フ','fu'],['ヘ','he'],['ホ','ho']],
+    [['マ','ma'],['ミ','mi'],['ム','mu'],['メ','me'],['モ','mo']],
+    [['ヤ','ya'],[null,null],['ユ','yu'],[null,null],['ヨ','yo']],
+    [['ラ','ra'],['リ','ri'],['ル','ru'],['レ','re'],['ロ','ro']],
+    [['ワ','wa'],[null,null],[null,null],[null,null],['ヲ','wo']],
+    [['ン','n'],[null,null],[null,null],[null,null],[null,null]],
+  ];
+
+  const grid = document.createElement('div');
+  grid.className = 'kana-ref-grid';
+
+  rows.forEach((row, i) => {
+    row.forEach(([char, rom]) => {
+      const card = document.createElement('div');
+      if (char) {
+        card.className = 'kana-ref-card';
+        card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+      } else {
+        card.className = 'kana-ref-card';
+        card.style.background = 'transparent';
+        card.style.border = '1px solid transparent';
+      }
+      grid.appendChild(card);
+    });
+    // Add divider between rows (except after last)
+    if (i < rows.length - 1) {
+      const div = document.createElement('div');
+      div.className = 'kana-ref-divider';
+      grid.appendChild(div);
+    }
+  });
+
+  container.appendChild(grid);
+}
+
+function buildMatchCategoryList() {
+  const container = document.getElementById('match-category-list');
+  container.innerHTML = '';
+  Object.keys(VOCAB).forEach(key => {
+    const v = VOCAB[key];
+    const card = document.createElement('div');
+    card.className = 'match-card-select';
+    card.dataset.key = key;
+    card.innerHTML = `<div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${v.items.length} words</div>`;
+    card.onclick = () => selectMatchCategory(key, card);
+    container.appendChild(card);
+  });
+}
+
+function selectMatchCategory(key, card) {
+  matchCategoryKey = key;
+  document.querySelectorAll('.match-card-select').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('match-start-btn').disabled = false;
+}
+
+function showMatchSettings() {
+  showScreen('match-settings');
+}
+
+function tryResumeMatch() {
+  if (matchCategoryKey && matchRounds.length > 0) showScreen('match-game');
+  else showMatchSettings();
+}
+
+function startMatch() {
+  if (!matchCategoryKey) return;
+  const items = shuffle(VOCAB[matchCategoryKey].items.map((it, i) => Object.assign({id: matchCategoryKey + '-' + i}, it)));
+  matchRounds = [];
+  for (let i = 0; i < items.length; i += 6) matchRounds.push(items.slice(i, i + 6));
+  matchRoundIndex = 0;
+  matchMistakes = 0;
+  matchTotalMatched = 0;
+  matchTotalPairs = items.length;
+  document.getElementById('match-finished').style.display = 'none';
+  document.getElementById('match-grid').style.display = 'grid';
+  showScreen('match-game');
+  renderMatchRound();
+}
+
+function renderMatchRound() {
+  const round = matchRounds[matchRoundIndex];
+  matchPicked = { left: null, right: null };
+  matchMatchedIds = new Set();
+
+  document.getElementById('match-round-label').textContent = `Round ${matchRoundIndex + 1} / ${matchRounds.length}`;
+  document.getElementById('match-round-complete').style.display = 'none';
+  document.getElementById('match-grid').style.display = 'grid';
+  updateMatchStats();
+
+  const grid = document.getElementById('match-grid');
+  grid.innerHTML = '';
+
+  const leftItems = shuffle(round);
+  const rightItems = shuffle(round);
+
+  for (let i = 0; i < round.length; i++) {
+    const lit = leftItems[i];
+    const lbtn = document.createElement('button');
+    lbtn.className = 'match-card jp';
+    lbtn.innerHTML = `<span class="jp-text">${lit.jp}</span><span class="romaji-text">${lit.romaji}</span>`;
+    lbtn.onclick = () => pickMatchCard('left', lit.id, lbtn);
+    lbtn.dataset.id = lit.id;
+    grid.appendChild(lbtn);
+
+    const rit = rightItems[i];
+    const rbtn = document.createElement('button');
+    rbtn.className = 'match-card en';
+    rbtn.textContent = rit.en;
+    rbtn.onclick = () => pickMatchCard('right', rit.id, rbtn);
+    rbtn.dataset.id = rit.id;
+    grid.appendChild(rbtn);
+  }
+}
+
+function updateMatchStats() {
+  document.getElementById('match-stat-matched').textContent = matchTotalMatched;
+  document.getElementById('match-stat-mistakes').textContent = matchMistakes;
+  const round = matchRounds[matchRoundIndex] || [];
+  document.getElementById('match-stat-left').textContent = round.length - matchMatchedIds.size;
+}
+
+function pickMatchCard(side, id, btn) {
+  if (matchMatchedIds.has(id)) return;
+  if (matchPicked[side] && matchPicked[side].id === id) return;
+
+  if (matchPicked[side]) matchPicked[side].btn.classList.remove('picked');
+  matchPicked[side] = { id, btn };
+  btn.classList.add('picked');
+
+  const other = side === 'left' ? 'right' : 'left';
+  if (!matchPicked[other]) return;
+
+  const a = matchPicked.left, b = matchPicked.right;
+  if (a.id === b.id) {
+    a.btn.classList.remove('picked'); b.btn.classList.remove('picked');
+    a.btn.classList.add('matched'); b.btn.classList.add('matched');
+    a.btn.disabled = true; b.btn.disabled = true;
+    matchMatchedIds.add(a.id);
+    matchTotalMatched++;
+    matchPicked = { left: null, right: null };
+    updateMatchStats();
+    const round = matchRounds[matchRoundIndex];
+    if (matchMatchedIds.size === round.length) {
+      setTimeout(() => {
+        if (matchRoundIndex + 1 < matchRounds.length) {
+          document.getElementById('match-round-complete').style.display = 'block';
+        } else {
+          finishMatch();
+        }
+      }, 300);
+    }
+  } else {
+    matchMistakes++;
+    a.btn.classList.add('wrong'); b.btn.classList.add('wrong');
+    updateMatchStats();
+    setTimeout(() => {
+      a.btn.classList.remove('picked', 'wrong');
+      b.btn.classList.remove('picked', 'wrong');
+      matchPicked = { left: null, right: null };
+    }, 500);
+  }
+}
+
+function nextMatchRound() {
+  matchRoundIndex++;
+  renderMatchRound();
+}
+
+function finishMatch() {
+  document.getElementById('match-grid').style.display = 'none';
+  document.getElementById('match-round-complete').style.display = 'none';
+  document.getElementById('match-finished').style.display = 'block';
+  const msg = matchMistakes === 0 ? 'Perfect — no mistakes!' : matchMistakes <= 2 ? 'Great work!' : 'Good effort — try again for fewer mistakes.';
+  document.getElementById('match-final-score').textContent = matchTotalPairs + ' pairs · ' + matchMistakes + ' mistake' + (matchMistakes === 1 ? '' : 's');
+  document.getElementById('match-final-msg').textContent = msg;
+}
+
+buildMatchCategoryList();
+syncCardUI();
+
+updateDirectionVisibility();
+</script>
+</body>
+</html>
