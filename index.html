@@ -459,6 +459,13 @@
     <div class="settings-title">Katakana reference</div>
     <div class="settings-sub">Tap a row to select it for drilling.</div>
     <div id="katakana-ref-grid"></div>
+    <div class="group-card" id="direction-card-ref" onclick="toggleDirection()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name" id="direction-name-ref">Kana → romaji</div>
+        <div class="group-count" id="direction-sub-ref">See a character, pick the reading. Tap to reverse.</div>
+      </div>
+      <div class="toggle" id="direction-toggle-ref"></div>
+    </div>
     <button class="start-btn" id="kata-ref-drill-btn" onclick="drillKatakanaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
     <button class="btn-secondary" onclick="showKatakanaSettings()">← Back to Katakana</button>
   </div>
@@ -1436,7 +1443,7 @@ function toggleDirection() {
   reversed = !reversed;
   const label = reversed ? 'Romaji → kana' : 'Kana → romaji';
   const sub = reversed ? 'See a reading, pick the character. Tap to reverse.' : 'See a character, pick the reading. Tap to reverse.';
-  ['direction-card', 'direction-card-kata'].forEach(id => {
+  ['direction-card', 'direction-card-kata', 'direction-card-ref'].forEach(id => {
     const card = document.getElementById(id);
     if (card) card.classList.toggle('selected', reversed);
   });
@@ -1444,6 +1451,8 @@ function toggleDirection() {
   document.getElementById('direction-sub').textContent = sub;
   document.getElementById('direction-name-kata').textContent = label;
   document.getElementById('direction-sub-kata').textContent = sub;
+  document.getElementById('direction-name-ref').textContent = label;
+  document.getElementById('direction-sub-ref').textContent = sub;
 }
 
 function updateDirectionVisibility() {
@@ -1457,7 +1466,7 @@ function updateDirectionVisibility() {
   });
   if (!hasKana && reversed) {
     reversed = false;
-    ['direction-card', 'direction-card-kata'].forEach(id => {
+    ['direction-card', 'direction-card-kata', 'direction-card-ref'].forEach(id => {
       const card = document.getElementById(id);
       if (card) card.classList.remove('selected');
     });
@@ -1465,6 +1474,8 @@ function updateDirectionVisibility() {
     document.getElementById('direction-sub').textContent = 'See a character, pick the reading. Tap to reverse.';
     document.getElementById('direction-name-kata').textContent = 'Kana → romaji';
     document.getElementById('direction-sub-kata').textContent = 'See a character, pick the reading. Tap to reverse.';
+    document.getElementById('direction-name-ref').textContent = 'Kana → romaji';
+    document.getElementById('direction-sub-ref').textContent = 'See a character, pick the reading. Tap to reverse.';
   }
 }
 
@@ -1624,7 +1635,7 @@ function genNumberDistractors(n) {
 }
 
 function startWordReading() {
-  lastSettingsScreen = 'settings';
+  lastSettingsScreen = 'katakana-settings';
   const pool = shuffle([...WORD_POOL]);
   const selected10 = pool.slice(0, 10);
   const wordDeck = selected10.map(item => {
@@ -1647,7 +1658,7 @@ function startWordReading() {
 }
 
 function startNumberChallenge() {
-  lastSettingsScreen = 'settings';
+  lastSettingsScreen = 'katakana-settings';
   const nums = [];
   while (nums.length < 5) {
     const n = Math.floor(Math.random() * 9999) + 1;
@@ -1690,7 +1701,7 @@ function startDrill(customDeck, deckBuilder) {
   }
   lastSettingsScreen = customDeck ? lastSettingsScreen : (
     [...selected].some(k => k.startsWith('kanji-')) ? 'kanji-settings' :
-    [...selected].some(k => k.startsWith('katakana-')) ? 'katakana-settings' : 'settings'
+    [...selected].some(k => k.startsWith('katakana-') || k === 'number-challenge' || k === 'word-reading') ? 'katakana-settings' : 'settings'
   );
   lastDeckBuilder = deckBuilder || (customDeck ? (() => shuffle(customDeck)) : null);
   deck = customDeck || buildDeck();
@@ -1963,6 +1974,16 @@ const selectedKatakanaRows = new Set();
 function showKatakanaReference() {
   showScreen('katakana-ref');
   buildKatakanaRefGrid();
+  syncDirectionCardRef();
+}
+
+function syncDirectionCardRef() {
+  const label = reversed ? 'Romaji → kana' : 'Kana → romaji';
+  const sub = reversed ? 'See a reading, pick the character. Tap to reverse.' : 'See a character, pick the reading. Tap to reverse.';
+  const card = document.getElementById('direction-card-ref');
+  if (card) card.classList.toggle('selected', reversed);
+  document.getElementById('direction-name-ref').textContent = label;
+  document.getElementById('direction-sub-ref').textContent = sub;
 }
 
 function buildKatakanaRefGrid() {
