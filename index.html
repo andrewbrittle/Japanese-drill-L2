@@ -582,7 +582,7 @@
       <div class="missed-label" id="res-missed-label"></div>
       <div id="res-missed"></div>
       <div class="results-btns">
-        <button class="btn-primary" onclick="startDrill()">Drill again</button>
+        <button class="btn-primary" onclick="drillAgain()">Drill again</button>
         <button class="btn-secondary" id="res-missed-btn" onclick="drillMissed()" style="display:none">Drill missed only</button>
         <button class="btn-secondary" onclick="goBackToSettings()">Change groups</button>
       </div>
@@ -1429,6 +1429,7 @@ const KANJI_KEYS = ['kanji-numbers-time','kanji-nature-body','kanji-directions-t
 
 const selected = new Set(['katakana-base']);
 let deck = [], current = 0, score = 0, wrong = 0, answered = false, missed = [];
+let lastDeckBuilder = null;
 let reversed = false;
 
 function toggleDirection() {
@@ -1510,12 +1511,15 @@ function selectPreset(preset) {
   syncCardUI();
 }
 
-function startRandomKanji() {
+function buildRandomKanjiPool() {
   const allKanji = [];
   KANJI_KEYS.forEach(k => DATA[k].forEach(q => allKanji.push(Object.assign({groupKey: k}, q))));
-  const pool = shuffle(allKanji).slice(0, 20);
+  return shuffle(allKanji).slice(0, 20);
+}
+
+function startRandomKanji() {
   lastSettingsScreen = 'kanji-settings';
-  startDrill(pool);
+  startDrill(buildRandomKanjiPool(), buildRandomKanjiPool);
 }
 
 function showScreen(id) {
@@ -1675,7 +1679,7 @@ function buildDeck() {
   return shuffle(d);
 }
 
-function startDrill(customDeck) {
+function startDrill(customDeck, deckBuilder) {
   if (!customDeck && selected.has('number-challenge')) {
     startNumberChallenge();
     return;
@@ -1688,10 +1692,16 @@ function startDrill(customDeck) {
     [...selected].some(k => k.startsWith('kanji-')) ? 'kanji-settings' :
     [...selected].some(k => k.startsWith('katakana-')) ? 'katakana-settings' : 'settings'
   );
+  lastDeckBuilder = deckBuilder || (customDeck ? (() => shuffle(customDeck)) : null);
   deck = customDeck || buildDeck();
   current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
+}
+
+function drillAgain() {
+  if (lastDeckBuilder) startDrill(lastDeckBuilder());
+  else startDrill();
 }
 
 let missedItems = []; // stores full question objects for number challenge missed items
@@ -2017,10 +2027,7 @@ function drillKatakanaSelection() {
     });
   });
   lastSettingsScreen = 'katakana-ref';
-  deck = shuffle(customDeck);
-  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
-  showScreen('drill');
-  renderQuestion();
+  startDrill(shuffle(customDeck));
 }
 
 function buildMatchCategoryList() {
