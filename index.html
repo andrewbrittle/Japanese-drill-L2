@@ -53,12 +53,14 @@
   .logo { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: var(--text); }
   .logo span { color: var(--accent); }
 
-  .nav-pills { display: flex; gap: 6px; }
+  .nav-pills { display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
+  .nav-pills::-webkit-scrollbar { display: none; }
   .nav-pill {
     padding: 5px 10px; border-radius: 99px;
     border: 1px solid var(--border); background: transparent;
     color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
     transition: all 0.15s; font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
+    white-space: nowrap;
   }
   .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
   .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
