@@ -449,8 +449,16 @@
   <!-- Hiragana reference screen -->
   <div class="screen" id="screen-hiragana-ref">
     <div class="settings-title">Hiragana reference</div>
-    <div class="settings-sub">All 46 base characters with readings.</div>
+    <div class="settings-sub">Tap a row to select it for drilling.</div>
     <div id="hiragana-ref-grid"></div>
+    <div class="group-card" id="direction-card-ref-hira" onclick="toggleDirection()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name" id="direction-name-ref-hira">Kana → romaji</div>
+        <div class="group-count" id="direction-sub-ref-hira">See a character, pick the reading. Tap to reverse.</div>
+      </div>
+      <div class="toggle" id="direction-toggle-ref-hira"></div>
+    </div>
+    <button class="start-btn" id="hira-ref-drill-btn" onclick="drillHiraganaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
     <button class="btn-secondary" onclick="showSettings()">← Back to Hiragana</button>
   </div>
 
@@ -660,16 +668,16 @@ const DATA = {
     {char:'す',answer:'su',disp:'base',options:['shi','su','zu','so']},
     {char:'せ',answer:'se',disp:'base',options:['sa','se','ze','shi']},
     {char:'そ',answer:'so',disp:'base',options:['su','se','so','sa']},
-    {char:'な',answer:'na',disp:'base',options:['na','ni','nu','ne']},
-    {char:'に',answer:'ni',disp:'base',options:['na','ni','nu','no']},
-    {char:'ぬ',answer:'nu',disp:'base',options:['ni','nu','ne','no']},
-    {char:'ね',answer:'ne',disp:'base',options:['na','ne','no','ni']},
-    {char:'の',answer:'no',disp:'base',options:['nu','na','no','ne']},
     {char:'た',answer:'ta',disp:'base',options:['ta','da','chi','te']},
     {char:'ち',answer:'chi',disp:'base',options:['ta','chi','ji','to']},
     {char:'つ',answer:'tsu',disp:'base',options:['chi','tsu','zu','to']},
     {char:'て',answer:'te',disp:'base',options:['ta','te','de','tsu']},
     {char:'と',answer:'to',disp:'base',options:['chi','to','do','te']},
+    {char:'な',answer:'na',disp:'base',options:['na','ni','nu','ne']},
+    {char:'に',answer:'ni',disp:'base',options:['na','ni','nu','no']},
+    {char:'ぬ',answer:'nu',disp:'base',options:['ni','nu','ne','no']},
+    {char:'ね',answer:'ne',disp:'base',options:['na','ne','no','ni']},
+    {char:'の',answer:'no',disp:'base',options:['nu','na','no','ne']},
     {char:'は',answer:'ha',disp:'base',options:['ha','ba','pa','he']},
     {char:'ひ',answer:'hi',disp:'base',options:['ha','hi','bi','ho']},
     {char:'ふ',answer:'fu',disp:'base',options:['hi','fu','bu','ho']},
@@ -680,14 +688,14 @@ const DATA = {
     {char:'む',answer:'mu',disp:'base',options:['mi','mu','me','mo']},
     {char:'め',answer:'me',disp:'base',options:['ma','me','mo','mi']},
     {char:'も',answer:'mo',disp:'base',options:['mu','ma','mo','me']},
+    {char:'や',answer:'ya',disp:'base',options:['ya','yu','yo','wa']},
+    {char:'ゆ',answer:'yu',disp:'base',options:['ya','yu','yo','wo']},
+    {char:'よ',answer:'yo',disp:'base',options:['yu','ya','yo','n']},
     {char:'ら',answer:'ra',disp:'base',options:['ra','ri','ru','re']},
     {char:'り',answer:'ri',disp:'base',options:['ra','ri','ru','ro']},
     {char:'る',answer:'ru',disp:'base',options:['ri','ru','re','ro']},
     {char:'れ',answer:'re',disp:'base',options:['ra','re','ro','ri']},
     {char:'ろ',answer:'ro',disp:'base',options:['ru','ra','ro','re']},
-    {char:'や',answer:'ya',disp:'base',options:['ya','yu','yo','wa']},
-    {char:'ゆ',answer:'yu',disp:'base',options:['ya','yu','yo','wo']},
-    {char:'よ',answer:'yo',disp:'base',options:['yu','ya','yo','n']},
     {char:'わ',answer:'wa',disp:'base',options:['wa','wo','ya','ra']},
     {char:'を',answer:'wo',disp:'base',options:['wa','wo','o','no']},
     {char:'ん',answer:'n',disp:'base',options:['n','na','ni','nu']},
@@ -1443,7 +1451,7 @@ function toggleDirection() {
   reversed = !reversed;
   const label = reversed ? 'Romaji → kana' : 'Kana → romaji';
   const sub = reversed ? 'See a reading, pick the character. Tap to reverse.' : 'See a character, pick the reading. Tap to reverse.';
-  ['direction-card', 'direction-card-kata', 'direction-card-ref'].forEach(id => {
+  ['direction-card', 'direction-card-kata', 'direction-card-ref', 'direction-card-ref-hira'].forEach(id => {
     const card = document.getElementById(id);
     if (card) card.classList.toggle('selected', reversed);
   });
@@ -1453,6 +1461,8 @@ function toggleDirection() {
   document.getElementById('direction-sub-kata').textContent = sub;
   document.getElementById('direction-name-ref').textContent = label;
   document.getElementById('direction-sub-ref').textContent = sub;
+  document.getElementById('direction-name-ref-hira').textContent = label;
+  document.getElementById('direction-sub-ref-hira').textContent = sub;
 }
 
 function updateDirectionVisibility() {
@@ -1466,7 +1476,7 @@ function updateDirectionVisibility() {
   });
   if (!hasKana && reversed) {
     reversed = false;
-    ['direction-card', 'direction-card-kata', 'direction-card-ref'].forEach(id => {
+    ['direction-card', 'direction-card-kata', 'direction-card-ref', 'direction-card-ref-hira'].forEach(id => {
       const card = document.getElementById(id);
       if (card) card.classList.remove('selected');
     });
@@ -1476,6 +1486,8 @@ function updateDirectionVisibility() {
     document.getElementById('direction-sub-kata').textContent = 'See a character, pick the reading. Tap to reverse.';
     document.getElementById('direction-name-ref').textContent = 'Kana → romaji';
     document.getElementById('direction-sub-ref').textContent = 'See a character, pick the reading. Tap to reverse.';
+    document.getElementById('direction-name-ref-hira').textContent = 'Kana → romaji';
+    document.getElementById('direction-sub-ref-hira').textContent = 'See a character, pick the reading. Tap to reverse.';
   }
 }
 
@@ -1913,11 +1925,29 @@ let matchTotalMatched = 0;
 function showHiraganaReference() {
   showScreen('hiragana-ref');
   buildHiraganaRefGrid();
+  syncDirectionCardRefHira();
 }
+
+// Map each displayed row to the DATA['hiragana-base'] indices it contains.
+const HIRA_ROW_DATA_INDICES = [
+  [0,1,2,3,4],       // a:  あ い う え お
+  [5,6,7,8,9],       // ka: か き く け こ
+  [10,11,12,13,14],  // sa: さ し す せ そ
+  [15,16,17,18,19],  // ta: た ち つ て と
+  [20,21,22,23,24],  // na: な に ぬ ね の
+  [25,26,27,28,29],  // ha: は ひ ふ へ ほ
+  [30,31,32,33,34],  // ma: ま み む め も
+  [35,36,37],        // ya: や ゆ よ
+  [38,39,40,41,42],  // ra: ら り る れ ろ
+  [43,44],           // wa: わ を
+  [45],              // n:  ん
+];
+const selectedHiraganaRows = new Set();
 
 function buildHiraganaRefGrid() {
   const container = document.getElementById('hiragana-ref-grid');
   if (container.children.length > 0) return;
+
   const rows = [
     [['あ','a'],['い','i'],['う','u'],['え','e'],['お','o']],
     [['か','ka'],['き','ki'],['く','ku'],['け','ke'],['こ','ko']],
@@ -1931,28 +1961,61 @@ function buildHiraganaRefGrid() {
     [['わ','wa'],[null,null],[null,null],[null,null],['を','wo']],
     [['ん','n'],[null,null],[null,null],[null,null],[null,null]],
   ];
+
   const grid = document.createElement('div');
   grid.className = 'kana-ref-grid';
-  rows.forEach((row, i) => {
-    row.forEach(([char, rom]) => {
+
+  rows.forEach((rowData, rowIdx) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'kana-ref-row';
+    rowEl.dataset.row = rowIdx;
+    rowEl.onclick = () => toggleHiraganaRow(rowIdx, rowEl);
+
+    rowData.forEach(([char, rom]) => {
       const card = document.createElement('div');
-      if (char) {
-        card.className = 'kana-ref-card';
-        card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
-      } else {
-        card.className = 'kana-ref-card';
-        card.style.background = 'transparent';
-        card.style.border = '1px solid transparent';
-      }
-      grid.appendChild(card);
+      card.className = char ? 'kana-ref-card' : 'kana-ref-card empty';
+      if (char) card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+      rowEl.appendChild(card);
     });
-    if (i < rows.length - 1) {
-      const div = document.createElement('div');
-      div.className = 'kana-ref-divider';
-      grid.appendChild(div);
-    }
+
+    grid.appendChild(rowEl);
   });
+
   container.appendChild(grid);
+}
+
+function toggleHiraganaRow(rowIdx, rowEl) {
+  if (selectedHiraganaRows.has(rowIdx)) {
+    selectedHiraganaRows.delete(rowIdx);
+    rowEl.classList.remove('selected');
+  } else {
+    selectedHiraganaRows.add(rowIdx);
+    rowEl.classList.add('selected');
+  }
+  document.getElementById('hira-ref-drill-btn').disabled = selectedHiraganaRows.size === 0;
+}
+
+function drillHiraganaSelection() {
+  if (selectedHiraganaRows.size === 0) return;
+  const hiraganaData = DATA['hiragana-base'];
+  const customDeck = [];
+  [...selectedHiraganaRows].sort((a, b) => a - b).forEach(rowIdx => {
+    HIRA_ROW_DATA_INDICES[rowIdx].forEach(dataIdx => {
+      const entry = hiraganaData[dataIdx];
+      if (entry) customDeck.push(Object.assign({ groupKey: 'hiragana-base' }, entry));
+    });
+  });
+  lastSettingsScreen = 'hiragana-ref';
+  startDrill(shuffle(customDeck));
+}
+
+function syncDirectionCardRefHira() {
+  const label = reversed ? 'Romaji → kana' : 'Kana → romaji';
+  const sub = reversed ? 'See a reading, pick the character. Tap to reverse.' : 'See a character, pick the reading. Tap to reverse.';
+  const card = document.getElementById('direction-card-ref-hira');
+  if (card) card.classList.toggle('selected', reversed);
+  document.getElementById('direction-name-ref-hira').textContent = label;
+  document.getElementById('direction-sub-ref-hira').textContent = sub;
 }
 
 // Map each row index to the DATA['katakana-base'] character indices it contains
