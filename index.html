@@ -55,10 +55,10 @@
 
   .nav-pills { display: flex; gap: 6px; }
   .nav-pill {
-    padding: 6px 14px; border-radius: 99px;
+    padding: 5px 10px; border-radius: 99px;
     border: 1px solid var(--border); background: transparent;
-    color: var(--text-muted); font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s;
+    color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s; font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
   }
   .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
   .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
@@ -265,18 +265,37 @@
   }
   .match-banner .score-big { font-size: 40px; }
 
+  /* Level filter pills on Match screen */
+  .level-filter-row { display: flex; gap: 8px; }
+  .level-pill {
+    padding: 6px 18px; border-radius: 99px; border: 1px solid var(--border);
+    background: transparent; color: var(--text-muted);
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .level-pill:disabled { opacity: 0.35; cursor: default; }
+
   /* Katakana reference grid */
   .kana-ref-grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
   }
+  .kana-ref-row {
+    display: flex; gap: 6px;
+    border-radius: var(--radius); border: 1px solid transparent;
+    padding: 4px; cursor: pointer; transition: all 0.15s; user-select: none;
+  }
+  .kana-ref-row:hover { border-color: var(--border-hover); }
+  .kana-ref-row.selected { border-color: var(--accent); background: var(--accent-dim); }
   .kana-ref-card {
-    background: var(--surface); border: 1px solid var(--border);
+    flex: 1; background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 10px 4px;
     text-align: center; display: flex; flex-direction: column;
-    align-items: center; gap: 4px;
+    align-items: center; gap: 4px; min-width: 0;
   }
+  .kana-ref-row.selected .kana-ref-card { background: transparent; border-color: transparent; }
+  .kana-ref-card.empty { background: transparent; border-color: transparent; }
   .kana-ref-char {
     font-family: 'BIZ UDPGothic', sans-serif;
     font-size: 28px; font-weight: 600; color: var(--text);
@@ -285,10 +304,6 @@
   .kana-ref-rom {
     font-size: 11px; font-weight: 600; color: var(--text-muted);
   }
-  .kana-ref-divider {
-    grid-column: 1 / -1;
-    height: 1px; background: var(--border); margin: 4px 0;
-  }
 </style>
 </head>
 <body>
@@ -296,8 +311,8 @@
 <header>
   <div class="logo">日本語 <span>drill</span></div>
   <div class="nav-pills">
-    <button class="nav-pill active" onclick="showSettings()">Hiragana</button>
-    <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSettings()">Katakana</button>
+    <button class="nav-pill" onclick="showSettings()">ひらがな</button>
+    <button class="nav-pill active" id="nav-katakana" onclick="showKatakanaSettings()">カタカナ</button>
     <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">Kanji</button>
     <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
     <button class="nav-pill" id="nav-match" onclick="tryResumeMatch()">Match</button>
@@ -307,12 +322,17 @@
 <main>
 
   <!-- Hiragana settings screen -->
-  <div class="screen visible" id="screen-settings">
+  <div class="screen" id="screen-settings">
     <div class="settings-title">Hiragana</div>
     <div class="settings-sub">Select one or more groups, then start.</div>
 
-    <div class="quick-row">
-      <button class="quick-btn" onclick="selectPreset('hiragana')">All hiragana</button>
+    <div class="group-card" onclick="showHiraganaReference()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Hiragana reference chart</div>
+        <div class="group-chars">あ い う え お…</div>
+        <div class="group-count">View all 46 characters with readings</div>
+      </div>
+      <div style="font-size:20px; color:var(--text-muted);">→</div>
     </div>
 
     <div class="group-card" data-key="hiragana-base" onclick="toggleGroup(this)">
@@ -350,32 +370,13 @@
       <div class="toggle" id="direction-toggle"></div>
     </div>
 
-    <div class="section-label">Reading challenge</div>
-    <div class="group-card" data-key="word-reading" onclick="toggleGroup(this)">
-      <div class="group-info">
-        <div class="group-name">Reading hiragana words</div>
-        <div class="group-chars">みず えき といれ…</div>
-        <div class="group-count">10 random words per round</div>
-      </div>
-      <div class="toggle"></div>
-    </div>
-
-    <div class="group-card" data-key="number-challenge" onclick="toggleGroup(this)">
-      <div class="group-info">
-        <div class="group-name">Reading numbers 1–9,999</div>
-        <div class="group-chars">らんだむな すうじ</div>
-        <div class="group-count">5 random numbers per round</div>
-      </div>
-      <div class="toggle"></div>
-    </div>
-
     <button class="start-btn" id="start-btn" onclick="startDrill()">Start drill</button>
   </div>
 
   <!-- Katakana settings screen -->
-  <div class="screen" id="screen-katakana-settings">
+  <div class="screen visible" id="screen-katakana-settings">
     <div class="settings-title">Katakana</div>
-    <div class="settings-sub">New to katakana? Start with the reference chart.</div>
+    <div class="settings-sub">Select one or more groups, then start.</div>
 
     <div class="group-card" onclick="showKatakanaReference()" style="cursor:pointer;">
       <div class="group-info">
@@ -384,10 +385,6 @@
         <div class="group-count">View all 46 characters with readings</div>
       </div>
       <div style="font-size:20px; color:var(--text-muted);">→</div>
-    </div>
-
-    <div class="quick-row">
-      <button class="quick-btn" onclick="selectPreset('katakana')">All katakana</button>
     </div>
 
     <div class="group-card" data-key="katakana-base" onclick="toggleGroup(this)">
@@ -425,14 +422,42 @@
       <div class="toggle" id="direction-toggle-kata"></div>
     </div>
 
+    <div class="section-label">Reading challenge</div>
+    <div class="group-card" data-key="word-reading" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Reading words — hiragana and katakana</div>
+        <div class="group-chars">みず えき といれ…</div>
+        <div class="group-count">10 random words per round</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
+    <div class="group-card" data-key="number-challenge" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Reading numbers 1–9,999</div>
+        <div class="group-chars">らんだむな すうじ</div>
+        <div class="group-count">5 random numbers per round</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
     <button class="start-btn" id="katana-start-btn" onclick="startDrill()">Start drill</button>
+  </div>
+
+  <!-- Hiragana reference screen -->
+  <div class="screen" id="screen-hiragana-ref">
+    <div class="settings-title">Hiragana reference</div>
+    <div class="settings-sub">All 46 base characters with readings.</div>
+    <div id="hiragana-ref-grid"></div>
+    <button class="btn-secondary" onclick="showSettings()">← Back to Hiragana</button>
   </div>
 
   <!-- Katakana reference screen -->
   <div class="screen" id="screen-katakana-ref">
     <div class="settings-title">Katakana reference</div>
-    <div class="settings-sub">All 46 base characters with readings.</div>
+    <div class="settings-sub">Tap a row to select it for drilling.</div>
     <div id="katakana-ref-grid"></div>
+    <button class="start-btn" id="kata-ref-drill-btn" onclick="drillKatakanaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
     <button class="btn-secondary" onclick="showKatakanaSettings()">← Back to Katakana</button>
   </div>
 
@@ -559,6 +584,18 @@
   <div class="screen" id="screen-match-settings">
     <div class="settings-title">Vocab matching</div>
     <div class="settings-sub">Pick a word set, then tap a Japanese card and its English match.</div>
+
+    <div class="level-filter-row">
+      <button class="level-pill active" id="level-pill-1">Level 1</button>
+      <button class="level-pill" id="level-pill-2" disabled>Level 2</button>
+    </div>
+
+    <div class="match-card-select" onclick="startRandomMatch()" style="cursor:pointer;">
+      <div class="group-name">Random matching</div>
+      <div class="group-chars">らんだむな ことば</div>
+      <div class="group-count">20 random words per round, from all categories</div>
+    </div>
+
     <div class="section-label">Lesson vocabulary</div>
     <div id="match-category-list"></div>
     <button class="start-btn" id="match-start-btn" onclick="startMatch()" disabled>Start matching</button>
@@ -1382,7 +1419,7 @@ const HIRAGANA_KEYS = ['hiragana-base','hiragana-diacritics','hiragana-youon'];
 const KATAKANA_KEYS = ['katakana-base','katakana-diacritics','katakana-youon'];
 const KANJI_KEYS = ['kanji-numbers-time','kanji-nature-body','kanji-directions-travel','kanji-food','kanji-weather','kanji-people','kanji-general','kanji-verbs'];
 
-const selected = new Set(['hiragana-base']);
+const selected = new Set(['katakana-base']);
 let deck = [], current = 0, score = 0, wrong = 0, answered = false, missed = [];
 let reversed = false;
 
@@ -1430,14 +1467,19 @@ function toggleGroup(card) {
     selected.delete(key);
   } else {
     const isExclusive = key === 'number-challenge' || key === 'word-reading';
+    const isKanji = key.startsWith('kanji-');
+    const isHiragana = key.startsWith('hiragana-');
+    const isKatakana = key.startsWith('katakana-');
     if (isExclusive) {
       selected.clear();
     } else {
       selected.delete('number-challenge');
       selected.delete('word-reading');
-      const isKanji = key.startsWith('kanji-');
+      // Clear opposing families
       [...selected].forEach(k => {
-        if (k.startsWith('kanji-') !== isKanji) selected.delete(k);
+        if (isKanji && !k.startsWith('kanji-')) selected.delete(k);
+        else if (isHiragana && !k.startsWith('hiragana-')) selected.delete(k);
+        else if (isKatakana && !k.startsWith('katakana-')) selected.delete(k);
       });
     }
     selected.add(key);
@@ -1470,7 +1512,7 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
   document.getElementById('screen-' + id).classList.add('visible');
   document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-  if (id === 'settings') document.querySelectorAll('.nav-pill')[0].classList.add('active');
+  if (id === 'settings' || id === 'hiragana-ref') document.querySelectorAll('.nav-pill')[0].classList.add('active');
   else if (id === 'katakana-settings' || id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
   else if (id === 'kanji-settings') document.querySelectorAll('.nav-pill')[2].classList.add('active');
   else if (id === 'match-settings' || id === 'match-game') document.querySelectorAll('.nav-pill')[4].classList.add('active');
@@ -1837,6 +1879,67 @@ let matchMistakes = 0;
 let matchTotalPairs = 0;
 let matchTotalMatched = 0;
 
+function showHiraganaReference() {
+  showScreen('hiragana-ref');
+  buildHiraganaRefGrid();
+}
+
+function buildHiraganaRefGrid() {
+  const container = document.getElementById('hiragana-ref-grid');
+  if (container.children.length > 0) return;
+  const rows = [
+    [['あ','a'],['い','i'],['う','u'],['え','e'],['お','o']],
+    [['か','ka'],['き','ki'],['く','ku'],['け','ke'],['こ','ko']],
+    [['さ','sa'],['し','shi'],['す','su'],['せ','se'],['そ','so']],
+    [['た','ta'],['ち','chi'],['つ','tsu'],['て','te'],['と','to']],
+    [['な','na'],['に','ni'],['ぬ','nu'],['ね','ne'],['の','no']],
+    [['は','ha'],['ひ','hi'],['ふ','fu'],['へ','he'],['ほ','ho']],
+    [['ま','ma'],['み','mi'],['む','mu'],['め','me'],['も','mo']],
+    [['や','ya'],[null,null],['ゆ','yu'],[null,null],['よ','yo']],
+    [['ら','ra'],['り','ri'],['る','ru'],['れ','re'],['ろ','ro']],
+    [['わ','wa'],[null,null],[null,null],[null,null],['を','wo']],
+    [['ん','n'],[null,null],[null,null],[null,null],[null,null]],
+  ];
+  const grid = document.createElement('div');
+  grid.className = 'kana-ref-grid';
+  rows.forEach((row, i) => {
+    row.forEach(([char, rom]) => {
+      const card = document.createElement('div');
+      if (char) {
+        card.className = 'kana-ref-card';
+        card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+      } else {
+        card.className = 'kana-ref-card';
+        card.style.background = 'transparent';
+        card.style.border = '1px solid transparent';
+      }
+      grid.appendChild(card);
+    });
+    if (i < rows.length - 1) {
+      const div = document.createElement('div');
+      div.className = 'kana-ref-divider';
+      grid.appendChild(div);
+    }
+  });
+  container.appendChild(grid);
+}
+
+// Map each row index to the DATA['katakana-base'] character indices it contains
+const KATA_ROW_DATA_INDICES = [
+  [0,1,2,3,4],      // a:  ア イ ウ エ オ
+  [5,6,7,8,9],      // ka: カ キ ク ケ コ
+  [10,11,12,13,14], // sa: サ シ ス セ ソ
+  [15,16,17,18,19], // ta: タ チ ツ テ ト
+  [20,21,22,23,24], // na: ナ ニ ヌ ネ ノ
+  [25,26,27,28,29], // ha: ハ ヒ フ ヘ ホ
+  [30,31,32,33,34], // ma: マ ミ ム メ モ
+  [35,36,37],       // ya: ヤ ユ ヨ
+  [38,39,40,41,42], // ra: ラ リ ル レ ロ
+  [43,44],          // wa: ワ ヲ
+  [45],             // n:  ン
+];
+const selectedKatakanaRows = new Set();
+
 function showKatakanaReference() {
   showScreen('katakana-ref');
   buildKatakanaRefGrid();
@@ -1844,9 +1947,8 @@ function showKatakanaReference() {
 
 function buildKatakanaRefGrid() {
   const container = document.getElementById('katakana-ref-grid');
-  if (container.children.length > 0) return; // already built
+  if (container.children.length > 0) return;
 
-  // All 46 katakana in traditional a-i-u-e-o order, grouped by row
   const rows = [
     [['ア','a'],['イ','i'],['ウ','u'],['エ','e'],['オ','o']],
     [['カ','ka'],['キ','ki'],['ク','ku'],['ケ','ke'],['コ','ko']],
@@ -1864,28 +1966,51 @@ function buildKatakanaRefGrid() {
   const grid = document.createElement('div');
   grid.className = 'kana-ref-grid';
 
-  rows.forEach((row, i) => {
-    row.forEach(([char, rom]) => {
+  rows.forEach((rowData, rowIdx) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'kana-ref-row';
+    rowEl.dataset.row = rowIdx;
+    rowEl.onclick = () => toggleKatakanaRow(rowIdx, rowEl);
+
+    rowData.forEach(([char, rom]) => {
       const card = document.createElement('div');
-      if (char) {
-        card.className = 'kana-ref-card';
-        card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
-      } else {
-        card.className = 'kana-ref-card';
-        card.style.background = 'transparent';
-        card.style.border = '1px solid transparent';
-      }
-      grid.appendChild(card);
+      card.className = char ? 'kana-ref-card' : 'kana-ref-card empty';
+      if (char) card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+      rowEl.appendChild(card);
     });
-    // Add divider between rows (except after last)
-    if (i < rows.length - 1) {
-      const div = document.createElement('div');
-      div.className = 'kana-ref-divider';
-      grid.appendChild(div);
-    }
+
+    grid.appendChild(rowEl);
   });
 
   container.appendChild(grid);
+}
+
+function toggleKatakanaRow(rowIdx, rowEl) {
+  if (selectedKatakanaRows.has(rowIdx)) {
+    selectedKatakanaRows.delete(rowIdx);
+    rowEl.classList.remove('selected');
+  } else {
+    selectedKatakanaRows.add(rowIdx);
+    rowEl.classList.add('selected');
+  }
+  document.getElementById('kata-ref-drill-btn').disabled = selectedKatakanaRows.size === 0;
+}
+
+function drillKatakanaSelection() {
+  if (selectedKatakanaRows.size === 0) return;
+  const katakanaData = DATA['katakana-base'];
+  const customDeck = [];
+  [...selectedKatakanaRows].sort((a, b) => a - b).forEach(rowIdx => {
+    KATA_ROW_DATA_INDICES[rowIdx].forEach(dataIdx => {
+      const entry = katakanaData[dataIdx];
+      if (entry) customDeck.push(Object.assign({ groupKey: 'katakana-base' }, entry));
+    });
+  });
+  lastSettingsScreen = 'katakana-ref';
+  deck = shuffle(customDeck);
+  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
 }
 
 function buildMatchCategoryList() {
@@ -1916,6 +2041,27 @@ function showMatchSettings() {
 function tryResumeMatch() {
   if (matchCategoryKey && matchRounds.length > 0) showScreen('match-game');
   else showMatchSettings();
+}
+
+function startRandomMatch() {
+  // Pull all vocab items from all categories, shuffle, take 20
+  const allItems = [];
+  Object.keys(VOCAB).forEach(key => {
+    VOCAB[key].items.forEach((item, i) => {
+      allItems.push(Object.assign({id: key + '-' + i}, item));
+    });
+  });
+  const pool = shuffle(allItems).slice(0, 20);
+  matchRounds = [];
+  for (let i = 0; i < pool.length; i += 6) matchRounds.push(pool.slice(i, i + 6));
+  matchRoundIndex = 0;
+  matchMistakes = 0;
+  matchTotalMatched = 0;
+  matchTotalPairs = pool.length;
+  document.getElementById('match-finished').style.display = 'none';
+  document.getElementById('match-grid').style.display = 'grid';
+  showScreen('match-game');
+  renderMatchRound();
 }
 
 function startMatch() {
