@@ -468,9 +468,15 @@
     <div class="settings-title">Kanji</div>
     <div class="settings-sub">Select one or more groups, then start.</div>
 
-    <div class="quick-row">
-      <button class="quick-btn" onclick="selectKanjiPreset()">All kanji</button>
+    <div class="group-card" onclick="startRandomKanji()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Random kanji</div>
+        <div class="group-chars">らんだむな 漢字</div>
+        <div class="group-count">20 random kanji per round, from all categories</div>
+      </div>
     </div>
+
+    <div class="section-label">Core kanji</div>
 
     <div class="group-card" data-key="kanji-numbers-time" onclick="toggleGroup(this)">
       <div class="group-info">
@@ -1504,10 +1510,12 @@ function selectPreset(preset) {
   syncCardUI();
 }
 
-function selectKanjiPreset() {
-  selected.clear();
-  KANJI_KEYS.forEach(k => selected.add(k));
-  syncCardUI();
+function startRandomKanji() {
+  const allKanji = [];
+  KANJI_KEYS.forEach(k => DATA[k].forEach(q => allKanji.push(Object.assign({groupKey: k}, q))));
+  const pool = shuffle(allKanji).slice(0, 20);
+  lastSettingsScreen = 'kanji-settings';
+  startDrill(pool);
 }
 
 function showScreen(id) {
