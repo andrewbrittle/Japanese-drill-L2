@@ -443,6 +443,15 @@
       <div class="toggle"></div>
     </div>
 
+    <div class="group-card" data-key="time-challenge" onclick="toggleGroup(this)">
+      <div class="group-info">
+        <div class="group-name">Reading times — hours &amp; half hours</div>
+        <div class="group-chars">ごぜん くじ はん</div>
+        <div class="group-count">10 random times per round, with gozen/gogo and kara/made</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
     <button class="start-btn" id="katana-start-btn" onclick="startDrill()">Start drill</button>
   </div>
 
@@ -609,14 +618,14 @@
     <div class="settings-sub">Pick a word set, then tap a Japanese card and its English match.</div>
 
     <div class="level-filter-row">
-      <button class="level-pill active" id="level-pill-1">Level 1</button>
-      <button class="level-pill" id="level-pill-2" disabled>Level 2</button>
+      <button class="level-pill active" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
+      <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
     </div>
 
     <div class="match-card-select" onclick="startRandomMatch()" style="cursor:pointer;">
       <div class="group-name">Random matching</div>
       <div class="group-chars">らんだむな ことば</div>
-      <div class="group-count">20 random words per round, from all categories</div>
+      <div class="group-count" id="random-match-count">20 random words per round, from all Level 1 categories</div>
     </div>
 
     <div class="section-label">Lesson vocabulary</div>
@@ -1025,6 +1034,7 @@ const DATA = {
 
 const VOCAB = {
   'vocab-greetings': {
+    level: 1,
     label: 'Greetings & phrases',
     chars: 'はじめまして こんにちは…',
     items: [
@@ -1058,6 +1068,7 @@ const VOCAB = {
     ],
   },
   'vocab-countries': {
+    level: 1,
     label: 'Countries',
     chars: 'にほん ふらんす…',
     items: [
@@ -1090,6 +1101,7 @@ const VOCAB = {
     ],
   },
   'vocab-occupations': {
+    level: 1,
     label: 'Occupations',
     chars: 'せんせい いしゃ…',
     items: [
@@ -1110,6 +1122,7 @@ const VOCAB = {
     ],
   },
   'vocab-objects': {
+    level: 1,
     label: 'Everyday items',
     chars: 'かさ ほん とけい…',
     items: [
@@ -1151,6 +1164,7 @@ const VOCAB = {
     ],
   },
   'vocab-clothing': {
+    level: 1,
     label: 'Clothing & accessories',
     chars: 'くつ ぼうし じーんず…',
     items: [
@@ -1161,6 +1175,7 @@ const VOCAB = {
     ],
   },
   'vocab-places': {
+    level: 1,
     label: 'Places & around the building',
     chars: 'がっこう えき かいだん…',
     items: [
@@ -1186,6 +1201,7 @@ const VOCAB = {
     ],
   },
   'vocab-location': {
+    level: 1,
     label: 'Location words',
     chars: 'ここ そこ あそこ どこ',
     items: [
@@ -1196,6 +1212,7 @@ const VOCAB = {
     ],
   },
   'vocab-questions': {
+    level: 1,
     label: 'Question words',
     chars: 'なん だれ',
     items: [
@@ -1204,6 +1221,7 @@ const VOCAB = {
     ],
   },
   'vocab-bignumbers': {
+    level: 1,
     label: 'Tens, hundreds & thousands',
     chars: 'にじゅう ひゃく せん まん…',
     items: [
@@ -1240,6 +1258,7 @@ const VOCAB = {
     ],
   },
   'vocab-numbers': {
+    level: 1,
     label: 'Numbers 1–10',
     chars: 'いち に さん…',
     items: [
@@ -1256,6 +1275,7 @@ const VOCAB = {
     ],
   },
   'vocab-colours': {
+    level: 1,
     label: 'Colours (not covered in lessons)',
     chars: 'あか あお きいろ…',
     items: [
@@ -1269,6 +1289,36 @@ const VOCAB = {
       {jp:'むらさき', romaji:'murasaki', en:'purple'},
       {jp:'ぴんく', romaji:'pinku', en:'pink'},
       {jp:'おれんじ', romaji:'orenji', en:'orange'},
+    ],
+  },
+  'vocab-cities': {
+    level: 2,
+    label: 'Cities',
+    chars: 'とうきょう ろんどん…',
+    items: [
+      {jp:'とうきょう', romaji:'toukyou', en:'Tokyo'},
+      {jp:'ろんどん', romaji:'rondon', en:'London'},
+      {jp:'ぱり', romaji:'pari', en:'Paris'},
+      {jp:'もすくわ', romaji:'mosukuwa', en:'Moscow'},
+      {jp:'そうる', romaji:'souru', en:'Seoul'},
+      {jp:'ばんこく', romaji:'bankoku', en:'Bangkok'},
+      {jp:'しんがぽーる', romaji:'shingapooru', en:'Singapore'},
+      {jp:'しどにー', romaji:'shidonii', en:'Sydney'},
+      {jp:'ほのるる', romaji:'honoruru', en:'Honolulu'},
+      {jp:'とろんと', romaji:'toronto', en:'Toronto'},
+      {jp:'ろさんぜるす', romaji:'rosanzerusu', en:'Los Angeles'},
+      {jp:'めきしこしてぃー', romaji:'mekishiko shitii', en:'Mexico City'},
+      {jp:'にゅーよーく', romaji:'nyuuyooku', en:'New York'},
+      {jp:'さんぱうろ', romaji:'sanpauro', en:'Sao Paulo'},
+    ],
+  },
+  'vocab-time-connectors': {
+    level: 2,
+    label: 'From / until (kara / made)',
+    chars: 'から まで',
+    items: [
+      {jp:'から', romaji:'kara', en:'from'},
+      {jp:'まで', romaji:'made', en:'until'},
     ],
   },
 };
@@ -1498,7 +1548,7 @@ function toggleGroup(card) {
   if (selected.has(key)) {
     selected.delete(key);
   } else {
-    const isExclusive = key === 'number-challenge' || key === 'word-reading';
+    const isExclusive = key === 'number-challenge' || key === 'word-reading' || key === 'time-challenge';
     const isKanji = key.startsWith('kanji-');
     const isHiragana = key.startsWith('hiragana-');
     const isKatakana = key.startsWith('katakana-');
@@ -1507,6 +1557,7 @@ function toggleGroup(card) {
     } else {
       selected.delete('number-challenge');
       selected.delete('word-reading');
+      selected.delete('time-challenge');
       // Clear opposing families
       [...selected].forEach(k => {
         if (isKanji && !k.startsWith('kanji-')) selected.delete(k);
@@ -1696,6 +1747,112 @@ function startNumberChallenge() {
 
 /* ---------- end Number challenge ---------- */
 
+/* ---------- Time challenge ---------- */
+const HOUR_KANA = ['','いち','に','さん','よ','ご','ろく','しち','はち','く','じゅう','じゅういち','じゅうに'];
+const HOUR_ROMAJI = ['','ichi','ni','san','yo','go','roku','shichi','hachi','ku','juu','juuichi','juuni'];
+
+function timeToKana(hour, half, ampm, frame) {
+  const ampmK = ampm === 'gozen' ? 'ごぜん' : 'ごご';
+  let s = `${ampmK} ${HOUR_KANA[hour]}じ${half ? ' はん' : ''}`;
+  if (frame === 'kara') s += ' から';
+  else if (frame === 'made') s += ' まで';
+  return s;
+}
+
+function timeToRomaji(hour, half, ampm, frame) {
+  const ampmR = ampm === 'gozen' ? 'gozen' : 'gogo';
+  let s = `${ampmR} ${HOUR_ROMAJI[hour]}ji${half ? ' han' : ''}`;
+  if (frame === 'kara') s += ' kara';
+  else if (frame === 'made') s += ' made';
+  return s;
+}
+
+function formatTimeDigital(hour, half, ampm, frame) {
+  const mins = half ? '30' : '00';
+  const ap = ampm === 'gozen' ? 'AM' : 'PM';
+  const base = `${hour}:${mins} ${ap}`;
+  if (frame === 'kara') return `From ${base}`;
+  if (frame === 'made') return `Until ${base}`;
+  return base;
+}
+
+function genTimeDistractors(hour, half, ampm, frame) {
+  const key = (h, hf, ap, fr) => `${h}-${hf}-${ap}-${fr}`;
+  const seen = new Set([key(hour, half, ampm, frame)]);
+  const distractors = [];
+
+  const tryAdd = (h, hf, ap, fr) => {
+    const k = key(h, hf, ap, fr);
+    if (!seen.has(k)) { seen.add(k); distractors.push({ hour: h, half: hf, ampm: ap, frame: fr }); return true; }
+    return false;
+  };
+
+  // 1) Different hour/half, same am/pm and frame — tests time reading itself
+  const hourOptions = shuffle([
+    [hour === 12 ? 1 : hour + 1, half],
+    [hour === 1 ? 12 : hour - 1, half],
+    [hour, !half],
+  ]);
+  for (const [h, hf] of hourOptions) { if (tryAdd(h, hf, ampm, frame)) break; }
+
+  // 2) Same time & frame, opposite am/pm — tests gozen/gogo
+  const oppAmpm = ampm === 'gozen' ? 'gogo' : 'gozen';
+  tryAdd(hour, half, oppAmpm, frame);
+
+  // 3) Same time & am/pm, different frame — tests kara/made (can't just match on the time)
+  const otherFrames = shuffle(['none', 'kara', 'made'].filter(f => f !== frame));
+  for (const fr of otherFrames) { if (tryAdd(hour, half, ampm, fr)) break; }
+
+  // Fallback padding (shouldn't normally trigger)
+  while (distractors.length < 3) {
+    const h = Math.floor(Math.random() * 12) + 1;
+    const hf = Math.random() < 0.5;
+    const ap = Math.random() < 0.5 ? 'gozen' : 'gogo';
+    const fr = ['none', 'kara', 'made'][Math.floor(Math.random() * 3)];
+    tryAdd(h, hf, ap, fr);
+  }
+
+  return distractors.slice(0, 3);
+}
+
+function startTimeChallenge() {
+  lastSettingsScreen = 'katakana-settings';
+  const usedKeys = new Set();
+  const times = [];
+  while (times.length < 10) {
+    const hour = Math.floor(Math.random() * 12) + 1;
+    const half = Math.random() < 0.5;
+    const ampm = Math.random() < 0.5 ? 'gozen' : 'gogo';
+    const frame = ['none', 'kara', 'made'][Math.floor(Math.random() * 3)];
+    const key = hour + '-' + half + '-' + ampm + '-' + frame;
+    if (usedKeys.has(key)) continue;
+    usedKeys.add(key);
+    times.push({ hour, half, ampm, frame });
+  }
+  const timeDeck = times.map(t => {
+    const correctKana = timeToKana(t.hour, t.half, t.ampm, t.frame);
+    const correctRomaji = timeToRomaji(t.hour, t.half, t.ampm, t.frame);
+    const distractorCombos = genTimeDistractors(t.hour, t.half, t.ampm, t.frame);
+    const distractorOpts = distractorCombos.map(d => ({
+      kana: timeToKana(d.hour, d.half, d.ampm, d.frame),
+      romaji: timeToRomaji(d.hour, d.half, d.ampm, d.frame),
+    }));
+    const allOpts = shuffle([{ kana: correctKana, romaji: correctRomaji }, ...distractorOpts]);
+    return {
+      char: formatTimeDigital(t.hour, t.half, t.ampm, t.frame),
+      answer: correctKana,
+      disp: 'time',
+      groupKey: 'time-challenge',
+      options: allOpts.map(o => ({ en: o.kana, jp: o.kana, rd: o.romaji })),
+    };
+  });
+  deck = timeDeck;
+  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
+}
+/* ---------- end Time challenge ---------- */
+
 function buildDeck() {
   let d = [];
   selected.forEach(k => { if (DATA[k]) DATA[k].forEach(q => d.push(Object.assign({groupKey: k}, q))); });
@@ -1709,6 +1866,10 @@ function startDrill(customDeck, deckBuilder) {
   }
   if (!customDeck && selected.has('word-reading')) {
     startWordReading();
+    return;
+  }
+  if (!customDeck && selected.has('time-challenge')) {
+    startTimeChallenge();
     return;
   }
   lastSettingsScreen = customDeck ? lastSettingsScreen : (
@@ -1751,12 +1912,12 @@ function renderQuestion() {
   document.getElementById('stat-left').textContent = deck.length - current;
 
   const badge = document.getElementById('q-badge');
-  badge.textContent = q.disp === 'number' ? 'numbers' : q.disp === 'word' ? 'word reading' : (BADGE_LABELS[q.groupKey] || q.groupKey);
+  badge.textContent = q.disp === 'number' ? 'numbers' : q.disp === 'word' ? 'word reading' : q.disp === 'time' ? 'time reading' : (BADGE_LABELS[q.groupKey] || q.groupKey);
   let badgeClass = 'base';
   if (q.disp === 'diacritic') badgeClass = 'diacritic';
   else if (q.disp === 'kanji') badgeClass = 'kanji';
   else if (q.disp === 'survival') badgeClass = 'survival';
-  else if (q.disp === 'number') badgeClass = 'kanji';
+  else if (q.disp === 'number' || q.disp === 'time') badgeClass = 'kanji';
   badge.className = 'type-badge type-' + badgeClass;
 
   document.getElementById('q-feedback').textContent = '';
@@ -1767,6 +1928,7 @@ function renderQuestion() {
   const isKanjiLike = q.disp === 'kanji' || q.disp === 'survival';
   const isNumber = q.disp === 'number';
   const isWord = q.disp === 'word';
+  const isTime = q.disp === 'time';
   const charDisplay = document.getElementById('q-char');
   const container = document.getElementById('q-options');
   container.innerHTML = '';
@@ -1794,6 +1956,19 @@ function renderQuestion() {
       btn.className = 'opt';
       const romaji = numReadingToRomaji(o.en);
       btn.innerHTML = `<span class="opt-jp">${o.en}</span><span class="opt-rd">${romaji}</span>`;
+      btn.onclick = () => choose(btn, o.en, q.answer, q.char);
+      container.appendChild(btn);
+    });
+  } else if (isTime) {
+    charDisplay.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    const len = q.char.length;
+    charDisplay.style.fontSize = len <= 8 ? '56px' : len <= 13 ? '40px' : '36px';
+    charDisplay.textContent = q.char;
+    document.getElementById('q-prompt').textContent = 'How do you say this time in Japanese?';
+    q.options.forEach(o => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">${o.rd}</span>`;
       btn.onclick = () => choose(btn, o.en, q.answer, q.char);
       container.appendChild(btn);
     });
@@ -1879,7 +2054,7 @@ function choose(btn, selectedVal, answer, char) {
     wrong++;
     if (!missed.includes(char)) {
       missed.push(char);
-      if (currentQ && (currentQ.disp === 'number' || currentQ.disp === 'word')) missedItems.push(currentQ);
+      if (currentQ && (currentQ.disp === 'number' || currentQ.disp === 'word' || currentQ.disp === 'time')) missedItems.push(currentQ);
     }
   }
   document.getElementById('stat-correct').textContent = score;
@@ -2114,11 +2289,24 @@ function drillKatakanaSelection() {
   startDrill(shuffle(customDeck));
 }
 
+let currentMatchLevel = 1;
+
+function setMatchLevel(level) {
+  currentMatchLevel = level;
+  document.getElementById('level-pill-1').classList.toggle('active', level === 1);
+  document.getElementById('level-pill-2').classList.toggle('active', level === 2);
+  document.getElementById('random-match-count').textContent = `20 random words per round, from all Level ${level} categories`;
+  matchCategoryKey = null;
+  document.getElementById('match-start-btn').disabled = true;
+  buildMatchCategoryList();
+}
+
 function buildMatchCategoryList() {
   const container = document.getElementById('match-category-list');
   container.innerHTML = '';
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
+    if ((v.level || 1) !== currentMatchLevel) return;
     const card = document.createElement('div');
     card.className = 'match-card-select';
     card.dataset.key = key;
@@ -2145,9 +2333,10 @@ function tryResumeMatch() {
 }
 
 function startRandomMatch() {
-  // Pull all vocab items from all categories, shuffle, take 20
+  // Pull vocab items from categories at the current level, shuffle, take 20
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
+    if ((VOCAB[key].level || 1) !== currentMatchLevel) return;
     VOCAB[key].items.forEach((item, i) => {
       allItems.push(Object.assign({id: key + '-' + i}, item));
     });
