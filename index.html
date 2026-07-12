@@ -165,8 +165,8 @@
   .opt.wrong { background: var(--red-dim); border-color: var(--red); color: var(--red); font-weight: 700; }
   .opt:disabled { cursor: default; }
   .opt .opt-jp { display: block; font-size: 17px; font-weight: 600; margin-bottom: 2px; font-family: 'BIZ UDPGothic', sans-serif; }
-  .opt .opt-rd { display: block; font-size: 11px; opacity: 0.6; }
-  .opt .opt-en { display: block; font-size: 12px; opacity: 0.75; }
+  .opt .opt-rd { display: block; font-size: 13px; font-weight: 600; opacity: 0.85; }
+  .opt .opt-en { display: block; font-size: 11px; opacity: 0.5; }
 
   .feedback {
     min-height: 22px; font-size: 14px; font-weight: 500;
@@ -609,9 +609,16 @@
       <div class="stat-pill"><div class="stat-num blue" id="stat-hints">0</div><div class="stat-lbl">hints</div></div>
       <div class="stat-pill"><div class="stat-num gold" id="stat-left">0</div><div class="stat-lbl">left</div></div>
     </div>
+    <div class="card">
       <div style="text-align:center;"><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
-      <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">🔊</button>
+      <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="3 9 8 9 12 5 12 19 8 15 3 15" fill="currentColor" stroke="currentColor"></polygon>
+          <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+          <path d="M18.5 5.5a9 9 0 0 1 0 13"></path>
+        </svg>
+      </button>
       <div class="prompt" id="q-prompt">What is this character?</div>
       <div class="options" id="q-options"></div>
       <div class="feedback" id="q-feedback"></div>
@@ -1970,14 +1977,68 @@ if (SPEECH_SUPPORTED) {
   window.speechSynthesis.getVoices();
 }
 
+// Explicit hiragana readings for every kanji/survival item, keyed by "char|answer"
+// (unique across the whole kanji dataset). Needed because feeding a bare kanji
+// character to the browser's TTS is unreliable — kanji can have multiple possible
+// readings, and the engine often guesses wrong or truncates. Some entries here are
+// compound-word readings (e.g. 日|sun / day → にほん, testing "Japan" in context)
+// rather than the character's isolated reading — that matches what the app's own
+// answer options already test, so the audio says exactly what's shown on screen.
+const KANJI_READINGS = {
+  '一|one': 'いち', '二|two': 'に', '三|three': 'さん', '四|four': 'し', '五|five': 'ご',
+  '六|six': 'ろく', '七|seven': 'しち', '八|eight': 'はち', '九|nine': 'く', '十|ten': 'じゅう',
+  '円|yen': 'せんえん', '月|Monday / month': 'げつようび', '火|Tuesday': 'かようび',
+  '水|Wednesday': 'すいようび', '木|Thursday': 'もくようび', '金|Friday / gold': 'きんようび',
+  '土|Saturday / earth': 'どようび', '年|year': 'ことし', '今|now': 'きょう', '時|hour / time': 'じかん',
+  '分|minute': 'さんぷん', '前|before / front': 'ごぜん', '後|after / back': 'ごご',
+  '計|watch / clock (時計)': 'とけい', '百|hundred': 'ひゃく', '千|thousand': 'せん', '万|ten thousand': 'まん',
+  '半|half': 'はん', '間|interval / hours (時間)': 'じかん', '午|noon (午前/午後)': 'ごご',
+
+  '日|sun / day': 'にほん', '山|mountain': 'ふじさん', '川|river': 'かわ', '水|water': 'みず',
+  '人|person': 'にほんじん', '大|big / great': 'だいがく', '小|small': 'しょうがっこう', '火|fire': 'ひ',
+  '木|tree / wood': 'き', '口|mouth': 'くち', '目|eye': 'め', '耳|ear': 'みみ', '手|hand': 'て', '足|foot / leg': 'あし',
+
+  '上|up / above': 'じょうず', '下|down / below': 'ちかてつ', '左|left': 'させつ', '右|right': 'うせつ',
+  '中|middle / inside': 'ちゅうがっこう', '東|east': 'とうきょう', '西|west': 'にしぐち', '南|south': 'みなみぐち',
+  '北|north': 'きたぐち', '駅|station': 'とうきょうえき', '電|electric': 'でんしゃ', '車|car / vehicle': 'でんしゃ',
+  '線|line': 'やまのてせん', '道|road / way': 'みち', '空港|airport': 'くうこう', '店|shop / store': 'おみせ',
+  '病|sick / illness': 'びょういん', '院|institution': 'びょういん', '校|school': 'がっこう',
+  '行|go / bank (銀行)': 'ぎんこう', '公園|park': 'こうえん', '止|stop': 'とまれ', '危|danger': 'きけん',
+  '険|risk / steep': 'きけん', '注|pour / focus (注意)': 'ちゅうい', '意|meaning / attention': 'ちゅうい',
+  '禁|prohibit': 'きんし', '開|open': 'ひらく', '閉|closed': 'しまる', '押|push': 'おす', '引|pull': 'ひく',
+  '入|enter (入口 entrance)': 'いりぐち', '出|exit (出口)': 'でぐち', '階|floor / storey': 'にかい',
+  '切符|ticket': 'きっぷ', '受付|reception': 'うけつけ', '教室|classroom': 'きょうしつ',
+  '食堂|canteen / cafeteria': 'しょくどう', '男|male': 'おとこ', '女|female': 'おんな',
+  '警告|warning': 'けいこく', '地震|earthquake': 'じしん', '津波|tsunami': 'つなみ',
+  '避難|evacuate': 'ひなん', '地下|underground / basement': 'ちか',
+
+  '食べる|eat': 'たべる', '飲む|drink': 'のむ', '魚|fish': 'さかな', '野菜|vegetable': 'やさい',
+  'ご飯|rice / meal': 'ごはん', '朝食|breakfast': 'ちょうしょく', '昼食|lunch': 'ちゅうしょく',
+  '夕食|dinner': 'ゆうしょく', '高い|expensive / high': 'たかい', '安い|cheap': 'やすい',
+
+  '雨|rain': 'あめ', '晴れ|sunny': 'はれ', '曇り|cloudy': 'くもり', '暑い|hot': 'あつい',
+  '寒い|cold': 'さむい', '雪|snow': 'ゆき', '天気|weather': 'てんき', '気|spirit / feeling': 'き', '天|heavens / sky': 'てん',
+
+  '私|I / me': 'わたし', '何|what': 'なん', '誰|who': 'だれ', '学生|student': 'がくせい',
+  '先生|teacher': 'せんせい', '母|mother': 'はは', '父|father': 'ちち', '友|friend': 'とも', '子|child': 'こ',
+
+  '国|country': 'くに', '名|name': 'な', '本|book': 'ほん', '語|language': 'ご', '外|outside': 'そと',
+  '長い|long': 'ながい', '短い|short': 'みじかい', '毎|every (毎日 every day)': 'まいにち',
+
+  '見る|to see': 'みる', '聞く|to hear / ask': 'きく', '話す|to talk': 'はなす', '読む|to read': 'よむ',
+  '書く|to write': 'かく', '来る|to come': 'くる', '休む|to rest / day off': 'やすむ',
+};
+
 // Works out what Japanese text should actually be spoken for the current
 // question, since the character on screen isn't always the pronounceable side
 // (e.g. reversed mode shows romaji; number/time questions show digits).
 function getSpeechText(q) {
   if (q.disp === 'number' || q.disp === 'time' || q.disp === 'word') return q.answer;
-  // kana (base/diacritic/youon) and kanji/survival characters — speak the
-  // character itself; kana is pure phonetic script, and kanji relies on the
-  // browser's own Japanese reading dictionary rather than a romaji reconstruction
+  if (q.disp === 'kanji' || q.disp === 'survival') {
+    const reading = KANJI_READINGS[q.char + '|' + q.answer];
+    return reading || q.char;
+  }
+  // base / diacritic / youon kana — pure phonetic script, safe to speak as-is
   return q.char;
 }
 
@@ -2124,7 +2185,7 @@ function renderQuestion() {
       btn.className = 'opt';
       const val = isKanjiLike ? o.en : o;
       if (isKanjiLike) {
-        btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">(${o.rd})</span><span class="opt-en">${o.en}</span>`;
+        btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">${o.rd}</span><span class="opt-en">(${o.en})</span>`;
       } else if (showHiragana) {
         btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
         btn.style.fontSize = '28px';
