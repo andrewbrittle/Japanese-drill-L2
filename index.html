@@ -424,6 +424,14 @@
       <div class="toggle" id="direction-toggle-kata"></div>
     </div>
 
+    <div class="group-card" id="hiragana-answers-card" onclick="toggleHiraganaOnKatakana()" style="cursor:pointer; display:none;">
+      <div class="group-info">
+        <div class="group-name">Show hiragana on answers</div>
+        <div class="group-count">Match the katakana to its hiragana equivalent instead of romaji</div>
+      </div>
+      <div class="toggle" id="hiragana-answers-toggle"></div>
+    </div>
+
     <div class="section-label">Reading challenge</div>
     <div class="group-card" data-key="word-reading" onclick="toggleGroup(this)">
       <div class="group-info">
@@ -1503,6 +1511,13 @@ const BADGE_LABELS = {
 const ALL_KEYS = Object.keys(DATA);
 const HIRAGANA_KEYS = ['hiragana-base','hiragana-diacritics','hiragana-youon'];
 const KATAKANA_KEYS = ['katakana-base','katakana-diacritics','katakana-youon'];
+
+// Maps a romaji reading (e.g. 'ka') to its hiragana character (e.g. 'か'),
+// used when showing hiragana instead of romaji on katakana answer options.
+// Note: katakana-only sounds with no hiragana equivalent (e.g. 'vu' for ヴ)
+// simply fall back to displaying romaji.
+const ROMAJI_TO_HIRAGANA = {};
+HIRAGANA_KEYS.forEach(k => DATA[k].forEach(item => { ROMAJI_TO_HIRAGANA[item.answer] = item.char; }));
 const KANJI_KEYS = ['kanji-numbers-time','kanji-nature-body','kanji-directions-travel','kanji-food','kanji-weather','kanji-people','kanji-general','kanji-verbs'];
 
 const selected = new Set(['katakana-base']);
@@ -1526,6 +1541,20 @@ function toggleDirection() {
   document.getElementById('direction-sub-ref').textContent = sub;
   document.getElementById('direction-name-ref-hira').textContent = label;
   document.getElementById('direction-sub-ref-hira').textContent = sub;
+  updateHiraganaAnswersVisibility();
+}
+
+let showHiraganaOnKatakana = false;
+
+function toggleHiraganaOnKatakana() {
+  showHiraganaOnKatakana = !showHiraganaOnKatakana;
+  document.getElementById('hiragana-answers-card').classList.toggle('selected', showHiraganaOnKatakana);
+}
+
+function updateHiraganaAnswersVisibility() {
+  const hasKatakana = KATAKANA_KEYS.some(k => selected.has(k));
+  const card = document.getElementById('hiragana-answers-card');
+  if (card) card.style.display = (hasKatakana && !reversed) ? 'flex' : 'none';
 }
 
 function updateDirectionVisibility() {
@@ -1552,6 +1581,7 @@ function updateDirectionVisibility() {
     document.getElementById('direction-name-ref-hira').textContent = 'Kana → romaji';
     document.getElementById('direction-sub-ref-hira').textContent = 'See a character, pick the reading. Tap to reverse.';
   }
+  updateHiraganaAnswersVisibility();
 }
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
@@ -2024,6 +2054,7 @@ function renderQuestion() {
     charDisplay.textContent = q.char;
     document.getElementById('q-prompt').textContent = isKanjiLike ? 'What does this kanji mean?' : 'What is this character?';
 
+    const showHiragana = !isKanjiLike && showHiraganaOnKatakana && q.groupKey && q.groupKey.startsWith('katakana-');
     const opts = shuffle(q.options);
     opts.forEach(o => {
       const btn = document.createElement('button');
@@ -2031,6 +2062,10 @@ function renderQuestion() {
       const val = isKanjiLike ? o.en : o;
       if (isKanjiLike) {
         btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">(${o.rd})</span><span class="opt-en">${o.en}</span>`;
+      } else if (showHiragana) {
+        btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
+        btn.style.fontSize = '28px';
+        btn.textContent = ROMAJI_TO_HIRAGANA[o] || o;
       } else {
         btn.textContent = o;
       }
