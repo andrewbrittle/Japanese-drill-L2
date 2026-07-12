@@ -149,9 +149,9 @@
   .type-kanji { color: var(--accent); border-color: rgba(232,201,122,0.3); background: var(--accent-dim); }
   .type-survival { color: var(--purple); border-color: rgba(179,157,219,0.3); background: var(--purple-dim); }
 
-  .char-display { font-size: 100px; line-height: 1; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
+  .char-display { font-size: 100px; line-height: 1; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; text-align: center; }
 
-  .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; }
+  .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; text-align: center; }
 
   .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .opt {
@@ -235,6 +235,7 @@
   .stat-num.green { color: var(--green); }
   .stat-num.red { color: var(--red); }
   .stat-num.gold { color: var(--accent); }
+  .stat-num.blue { color: var(--blue); }
 
   /* Match mode */
   .match-card-select {
@@ -605,10 +606,10 @@
     <div class="stats-row">
       <div class="stat-pill"><div class="stat-num green" id="stat-correct">0</div><div class="stat-lbl">correct</div></div>
       <div class="stat-pill"><div class="stat-num red" id="stat-wrong">0</div><div class="stat-lbl">wrong</div></div>
+      <div class="stat-pill"><div class="stat-num blue" id="stat-hints">0</div><div class="stat-lbl">hints</div></div>
       <div class="stat-pill"><div class="stat-num gold" id="stat-left">0</div><div class="stat-lbl">left</div></div>
     </div>
-    <div class="card">
-      <div><span class="type-badge" id="q-badge">base</span></div>
+      <div style="text-align:center;"><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
       <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">🔊</button>
       <div class="prompt" id="q-prompt">What is this character?</div>
@@ -1533,7 +1534,8 @@ HIRAGANA_KEYS.forEach(k => DATA[k].forEach(item => { ROMAJI_TO_HIRAGANA[item.ans
 const KANJI_KEYS = ['kanji-numbers-time','kanji-nature-body','kanji-directions-travel','kanji-food','kanji-weather','kanji-people','kanji-general','kanji-verbs'];
 
 const selected = new Set(['katakana-base']);
-let deck = [], current = 0, score = 0, wrong = 0, answered = false, missed = [];
+let deck = [], current = 0, score = 0, wrong = 0, hints = 0, answered = false, missed = [];
+let hintUsedThisQuestion = false;
 let lastDeckBuilder = null;
 let reversed = false;
 
@@ -1770,7 +1772,7 @@ function startWordReading() {
     };
   });
   deck = wordDeck;
-  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
 }
@@ -1795,7 +1797,7 @@ function startNumberChallenge() {
     };
   });
   deck = numDeck;
-  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
 }
@@ -1902,7 +1904,7 @@ function startTimeChallenge() {
     };
   });
   deck = timeDeck;
-  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
 }
@@ -1933,7 +1935,7 @@ function startDrill(customDeck, deckBuilder) {
   );
   lastDeckBuilder = deckBuilder || (customDeck ? (() => shuffle(customDeck)) : null);
   deck = customDeck || buildDeck();
-  current = 0; score = 0; wrong = 0; answered = false; missed = []; missedItems = [];
+  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
 }
@@ -1983,6 +1985,11 @@ function speakCurrent() {
   if (!SPEECH_SUPPORTED || answered) return;
   const q = deck[current];
   if (!q) return;
+  if (!hintUsedThisQuestion) {
+    hintUsedThisQuestion = true;
+    hints++;
+    document.getElementById('stat-hints').textContent = hints;
+  }
   const text = getSpeechText(q);
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
@@ -1999,6 +2006,7 @@ function renderQuestion() {
   document.getElementById('prog-label').textContent = (current + 1) + ' / ' + deck.length;
   document.getElementById('stat-correct').textContent = score;
   document.getElementById('stat-wrong').textContent = wrong;
+  document.getElementById('stat-hints').textContent = hints;
   document.getElementById('stat-left').textContent = deck.length - current;
 
   const badge = document.getElementById('q-badge');
@@ -2014,6 +2022,7 @@ function renderQuestion() {
   document.getElementById('q-feedback').className = 'feedback';
   document.getElementById('next-btn').style.visibility = 'hidden';
   answered = false;
+  hintUsedThisQuestion = false;
 
   const speakBtn = document.getElementById('speak-btn');
   if (speakBtn) {
@@ -2176,7 +2185,7 @@ function showResults() {
   const pct = Math.round((score / total) * 100);
   const msg = pct === 100 ? 'Perfect score!' : pct >= 80 ? 'Great work!' : pct >= 60 ? 'Getting there!' : 'Keep drilling!';
   document.getElementById('res-score').textContent = score + '/' + total;
-  document.getElementById('res-msg').textContent = msg + ' (' + pct + '%)';
+  document.getElementById('res-msg').textContent = msg + ' (' + pct + '%)' + (hints > 0 ? ' · ' + hints + ' hint' + (hints === 1 ? '' : 's') + ' used' : '');
   const missedEl = document.getElementById('res-missed');
   const missedBtn = document.getElementById('res-missed-btn');
   const missedLabel = document.getElementById('res-missed-label');
