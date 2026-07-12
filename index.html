@@ -184,6 +184,17 @@
   }
   .next-btn:hover { border-color: var(--border-hover); background: var(--surface2); }
 
+  .speak-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 44px; height: 44px; border-radius: 50%; margin: 0.4rem auto 0.6rem;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); font-size: 20px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .speak-btn:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .speak-btn:disabled { opacity: 0.35; cursor: default; }
+  .speak-btn:disabled:hover { border-color: var(--border); background: var(--surface2); }
+
   /* Results screen */
   .results-card {
     background: var(--surface); border: 1px solid var(--border);
@@ -599,6 +610,7 @@
     <div class="card">
       <div><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
+      <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">🔊</button>
       <div class="prompt" id="q-prompt">What is this character?</div>
       <div class="options" id="q-options"></div>
       <div class="feedback" id="q-feedback"></div>
@@ -1944,6 +1956,41 @@ function drillMissed() {
   startDrill(shuffle([...regularMissed, ...numberMissed]));
 }
 
+const SPEECH_SUPPORTED = ('speechSynthesis' in window);
+
+// Chrome/Safari sometimes clip the very start of the first utterance while the
+// speech engine "warms up". Priming it silently as soon as the page loads
+// means it's already warm by the time the hint button is actually tapped.
+if (SPEECH_SUPPORTED) {
+  const primer = new SpeechSynthesisUtterance(' ');
+  primer.volume = 0;
+  window.speechSynthesis.speak(primer);
+  window.speechSynthesis.getVoices();
+}
+
+// Works out what Japanese text should actually be spoken for the current
+// question, since the character on screen isn't always the pronounceable side
+// (e.g. reversed mode shows romaji; number/time questions show digits).
+function getSpeechText(q) {
+  if (q.disp === 'number' || q.disp === 'time' || q.disp === 'word') return q.answer;
+  // kana (base/diacritic/youon) and kanji/survival characters — speak the
+  // character itself; kana is pure phonetic script, and kanji relies on the
+  // browser's own Japanese reading dictionary rather than a romaji reconstruction
+  return q.char;
+}
+
+function speakCurrent() {
+  if (!SPEECH_SUPPORTED || answered) return;
+  const q = deck[current];
+  if (!q) return;
+  const text = getSpeechText(q);
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'ja-JP';
+  utter.rate = 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
 function renderQuestion() {
   if (current >= deck.length) { showResults(); return; }
   const q = deck[current];
@@ -1967,6 +2014,13 @@ function renderQuestion() {
   document.getElementById('q-feedback').className = 'feedback';
   document.getElementById('next-btn').style.visibility = 'hidden';
   answered = false;
+
+  const speakBtn = document.getElementById('speak-btn');
+  if (speakBtn) {
+    speakBtn.style.display = SPEECH_SUPPORTED ? 'inline-flex' : 'none';
+    speakBtn.disabled = false;
+  }
+  if (SPEECH_SUPPORTED) window.speechSynthesis.cancel();
 
   const isKanjiLike = q.disp === 'kanji' || q.disp === 'survival';
   const isNumber = q.disp === 'number';
@@ -2078,6 +2132,8 @@ function renderQuestion() {
 function choose(btn, selectedVal, answer, char) {
   if (answered) return;
   answered = true;
+  const speakBtn = document.getElementById('speak-btn');
+  if (speakBtn) speakBtn.disabled = true;
   document.querySelectorAll('.opt').forEach(b => {
     b.disabled = true;
     const v = b.querySelector('.opt-en')
