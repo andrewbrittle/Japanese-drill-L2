@@ -91,7 +91,6 @@
   .group-card:hover { border-color: var(--border-hover); }
   .group-card.selected { border-color: var(--accent); background: var(--accent-dim); }
   .group-card.emphasis { border-color: var(--accent); }
-  .group-card.emphasis:hover { background: var(--accent-dim); }
 
   .group-info { display: flex; flex-direction: column; gap: 3px; }
   .group-name { font-size: 15px; font-weight: 700; }
@@ -2431,6 +2430,8 @@ function updateSelectAllHiraganaLabel() {
   const allSelected = set.size === section.rows.length;
   document.getElementById('hiragana-select-all-label').textContent =
     (allSelected ? 'Deselect all — ' : 'Select all — ') + section.label;
+  const card = document.getElementById('hiragana-select-all-card');
+  if (card) card.classList.toggle('selected', allSelected);
 }
 
 function toggleKanaSectionRow(section, containerId, rowIdx, rowEl) {
