@@ -310,10 +310,11 @@
   }
   .kana-ref-row.selected .kana-ref-card { background: transparent; border-color: transparent; }
   .kana-ref-card.empty { background: transparent; border-color: transparent; }
-  .kana-ref-card.score-neg2 { background: rgba(235,87,87,0.22); }
-  .kana-ref-card.score-neg1 { background: rgba(235,87,87,0.10); }
-  .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.10); }
-  .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.22); }
+  .kana-ref-card.score-neg2 { background: rgba(235,87,87,0.45); }
+  .kana-ref-card.score-neg1 { background: rgba(235,87,87,0.22); }
+  .kana-ref-card.score-neutral { background: rgba(126,184,247,0.16); }
+  .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.22); }
+  .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.45); }
   .kana-ref-char {
     font-family: 'BIZ UDPGothic', sans-serif;
     font-size: 28px; font-weight: 600; color: var(--text);
@@ -1673,6 +1674,8 @@ function showScreen(id) {
   else if (id === 'kanji-settings') document.querySelectorAll('.nav-pill')[2].classList.add('active');
   else if (id === 'match-settings' || id === 'match-game') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
+  if (id === 'hiragana-ref') refreshKanaScoreShading('hiragana-ref-grid');
+  else if (id === 'katakana-ref') refreshKanaScoreShading('katakana-ref-grid');
 }
 
 let lastSettingsScreen = 'katakana-settings';
@@ -2004,12 +2007,14 @@ function recordKanaResult(q, correct) {
   saveKanaScores();
 }
 
-function kanaScoreClass(score) {
+function kanaScoreClass(char) {
+  if (!(char in kanaScores)) return ''; // never drilled — no shading at all
+  const score = kanaScores[char];
   if (score <= -2) return 'score-neg2';
   if (score === -1) return 'score-neg1';
+  if (score === 0) return 'score-neutral'; // drilled, but currently balanced
   if (score === 1) return 'score-pos1';
-  if (score >= 2) return 'score-pos2';
-  return '';
+  return 'score-pos2';
 }
 
 // Reference grids are built once and cached, but scores change as drilling
@@ -2019,8 +2024,8 @@ function refreshKanaScoreShading(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.querySelectorAll('.kana-ref-card[data-char]').forEach(card => {
-    card.classList.remove('score-neg2', 'score-neg1', 'score-pos1', 'score-pos2');
-    const scoreClass = kanaScoreClass(kanaScores[card.dataset.char] || 0);
+    card.classList.remove('score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2');
+    const scoreClass = kanaScoreClass(card.dataset.char);
     if (scoreClass) card.classList.add(scoreClass);
   });
 }
@@ -2386,7 +2391,7 @@ function buildHiraganaRefGrid() {
       if (char) {
         card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
         card.dataset.char = char;
-        const scoreClass = kanaScoreClass(kanaScores[char] || 0);
+        const scoreClass = kanaScoreClass(char);
         if (scoreClass) card.classList.add(scoreClass);
       }
       rowEl.appendChild(card);
@@ -2497,7 +2502,7 @@ function buildKatakanaRefGrid() {
       if (char) {
         card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
         card.dataset.char = char;
-        const scoreClass = kanaScoreClass(kanaScores[char] || 0);
+        const scoreClass = kanaScoreClass(char);
         if (scoreClass) card.classList.add(scoreClass);
       }
       rowEl.appendChild(card);
