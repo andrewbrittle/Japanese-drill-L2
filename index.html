@@ -437,6 +437,12 @@
       <button class="level-pill" data-section="diacritics" onclick="switchHiraganaSection('diacritics')">Dakuten / handakuten</button>
       <button class="level-pill" data-section="youon" onclick="switchHiraganaSection('youon')">Contracted</button>
     </div>
+    <div class="group-card" id="hiragana-select-all-card" onclick="toggleSelectAllHiragana()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name" id="hiragana-select-all-label">Select all — Base</div>
+      </div>
+      <div style="font-size:20px; color:var(--text-muted);">→</div>
+    </div>
     <div id="hiragana-grid-base"></div>
     <div id="hiragana-grid-diacritics" style="display:none;"></div>
     <div id="hiragana-grid-youon" style="display:none;"></div>
@@ -2365,6 +2371,7 @@ function showHiraganaReference() {
     refreshKanaScoreShading('hiragana-grid-' + key);
   });
   syncDirectionCardRefHira();
+  updateSelectAllHiraganaLabel();
 }
 
 // Shared by hiragana and katakana reference screens: builds a selectable,
@@ -2400,6 +2407,30 @@ function buildKanaSectionGrid(containerId, section) {
   container.appendChild(grid);
 }
 
+function toggleSelectAllHiragana() {
+  const section = HIRAGANA_SECTIONS[activeHiraganaSection];
+  const set = hiraganaSelectedRows[activeHiraganaSection];
+  const grid = document.getElementById('hiragana-grid-' + activeHiraganaSection);
+  const allSelected = set.size === section.rows.length;
+  if (allSelected) {
+    set.clear();
+    if (grid) grid.querySelectorAll('.kana-ref-row').forEach(r => r.classList.remove('selected'));
+  } else {
+    section.rows.forEach((_, idx) => set.add(idx));
+    if (grid) grid.querySelectorAll('.kana-ref-row').forEach(r => r.classList.add('selected'));
+  }
+  document.getElementById('hira-ref-drill-btn').disabled = set.size === 0;
+  updateSelectAllHiraganaLabel();
+}
+
+function updateSelectAllHiraganaLabel() {
+  const section = HIRAGANA_SECTIONS[activeHiraganaSection];
+  const set = hiraganaSelectedRows[activeHiraganaSection];
+  const allSelected = set.size === section.rows.length;
+  document.getElementById('hiragana-select-all-label').textContent =
+    (allSelected ? 'Deselect all — ' : 'Select all — ') + section.label;
+}
+
 function toggleKanaSectionRow(section, containerId, rowIdx, rowEl) {
   const sectionKey = Object.keys(HIRAGANA_SECTIONS).find(k => HIRAGANA_SECTIONS[k] === section);
   const set = hiraganaSelectedRows[sectionKey];
@@ -2411,6 +2442,7 @@ function toggleKanaSectionRow(section, containerId, rowIdx, rowEl) {
     rowEl.classList.add('selected');
   }
   document.getElementById('hira-ref-drill-btn').disabled = set.size === 0;
+  updateSelectAllHiraganaLabel();
 }
 
 function switchHiraganaSection(sectionKey) {
@@ -2423,6 +2455,7 @@ function switchHiraganaSection(sectionKey) {
     if (el) el.style.display = key === sectionKey ? 'block' : 'none';
   });
   document.getElementById('hira-ref-drill-btn').disabled = hiraganaSelectedRows[sectionKey].size === 0;
+  updateSelectAllHiraganaLabel();
 }
 
 function drillHiraganaSelection() {
