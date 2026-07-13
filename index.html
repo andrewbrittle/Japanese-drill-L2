@@ -508,6 +508,13 @@
       </div>
       <div class="toggle" id="direction-toggle-ref"></div>
     </div>
+    <div class="group-card" id="hiragana-answers-card-ref" onclick="toggleHiraganaOnKatakana()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Show hiragana on answers</div>
+        <div class="group-count">Match the katakana to its hiragana equivalent instead of romaji</div>
+      </div>
+      <div class="toggle" id="hiragana-answers-toggle-ref"></div>
+    </div>
     <button class="start-btn" id="kata-ref-drill-btn" onclick="drillKatakanaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
     <button class="btn-secondary" onclick="showKatakanaSettings()">← Back to Katakana</button>
   </div>
@@ -1575,12 +1582,16 @@ let showHiraganaOnKatakana = false;
 function toggleHiraganaOnKatakana() {
   showHiraganaOnKatakana = !showHiraganaOnKatakana;
   document.getElementById('hiragana-answers-card').classList.toggle('selected', showHiraganaOnKatakana);
+  const refCard = document.getElementById('hiragana-answers-card-ref');
+  if (refCard) refCard.classList.toggle('selected', showHiraganaOnKatakana);
 }
 
 function updateHiraganaAnswersVisibility() {
   const hasKatakana = KATAKANA_KEYS.some(k => selected.has(k));
   const card = document.getElementById('hiragana-answers-card');
   if (card) card.style.display = (hasKatakana && !reversed) ? 'flex' : 'none';
+  const refCard = document.getElementById('hiragana-answers-card-ref');
+  if (refCard) refCard.style.display = reversed ? 'none' : 'flex';
 }
 
 function updateDirectionVisibility() {
@@ -2458,6 +2469,9 @@ function showKatakanaReference() {
   buildKatakanaRefGrid();
   refreshKanaScoreShading('katakana-ref-grid');
   syncDirectionCardRef();
+  updateHiraganaAnswersVisibility();
+  const refCard = document.getElementById('hiragana-answers-card-ref');
+  if (refCard) refCard.classList.toggle('selected', showHiraganaOnKatakana);
 }
 
 function syncDirectionCardRef() {
