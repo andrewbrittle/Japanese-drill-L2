@@ -310,6 +310,10 @@
   }
   .kana-ref-row.selected .kana-ref-card { background: transparent; border-color: transparent; }
   .kana-ref-card.empty { background: transparent; border-color: transparent; }
+  .kana-ref-card.score-neg2 { background: rgba(235,87,87,0.22); }
+  .kana-ref-card.score-neg1 { background: rgba(235,87,87,0.10); }
+  .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.10); }
+  .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.22); }
   .kana-ref-char {
     font-family: 'BIZ UDPGothic', sans-serif;
     font-size: 28px; font-weight: 600; color: var(--text);
@@ -1967,6 +1971,60 @@ function drillMissed() {
 
 const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 
+/* ---------- Kana confidence tracking (on-device only, no sync) ---------- */
+// Tracks a -2..+2 score per single kana character, based on right/wrong
+// answers during hiragana/katakana drilling (base/diacritic/youon groups
+// only — not word/number/time/kanji). Shown as tile shading on the
+// reference screens; doesn't affect drilling, scoring, or selection.
+const KANA_SCORE_KEY = 'jpDrillKanaScores';
+let kanaScores = {};
+try {
+  kanaScores = JSON.parse(localStorage.getItem(KANA_SCORE_KEY)) || {};
+} catch (e) {
+  kanaScores = {};
+}
+
+function saveKanaScores() {
+  try {
+    localStorage.setItem(KANA_SCORE_KEY, JSON.stringify(kanaScores));
+  } catch (e) {
+    // localStorage unavailable (private browsing, storage full, etc.) — fail silently
+  }
+}
+
+function isTrackedKanaItem(q) {
+  return !!(q && (q.disp === 'base' || q.disp === 'diacritic' || q.disp === 'youon') &&
+    q.groupKey && (q.groupKey.startsWith('hiragana-') || q.groupKey.startsWith('katakana-')));
+}
+
+function recordKanaResult(q, correct) {
+  if (!isTrackedKanaItem(q)) return;
+  const cur = kanaScores[q.char] || 0;
+  kanaScores[q.char] = correct ? Math.min(2, cur + 1) : Math.max(-2, cur - 1);
+  saveKanaScores();
+}
+
+function kanaScoreClass(score) {
+  if (score <= -2) return 'score-neg2';
+  if (score === -1) return 'score-neg1';
+  if (score === 1) return 'score-pos1';
+  if (score >= 2) return 'score-pos2';
+  return '';
+}
+
+// Reference grids are built once and cached, but scores change as drilling
+// happens elsewhere — this re-applies shading to the existing tiles each time
+// the reference screen is shown, without touching row-selection state.
+function refreshKanaScoreShading(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.querySelectorAll('.kana-ref-card[data-char]').forEach(card => {
+    card.classList.remove('score-neg2', 'score-neg1', 'score-pos1', 'score-pos2');
+    const scoreClass = kanaScoreClass(kanaScores[card.dataset.char] || 0);
+    if (scoreClass) card.classList.add(scoreClass);
+  });
+}
+
 // Chrome/Safari sometimes clip the very start of the first utterance while the
 // speech engine "warms up". Priming it silently as soon as the page loads
 // means it's already warm by the time the hint button is actually tapped.
@@ -2216,6 +2274,7 @@ function choose(btn, selectedVal, answer, char) {
   const fb = document.getElementById('q-feedback');
   const currentQ = deck[current];
   const hint = currentQ && currentQ.hint ? ` (${currentQ.hint})` : '';
+  recordKanaResult(currentQ, selectedVal === answer);
   if (selectedVal === answer) {
     score++;
     btn.classList.add('correct');
@@ -2274,6 +2333,7 @@ let matchTotalMatched = 0;
 function showHiraganaReference() {
   showScreen('hiragana-ref');
   buildHiraganaRefGrid();
+  refreshKanaScoreShading('hiragana-ref-grid');
   syncDirectionCardRefHira();
 }
 
@@ -2323,7 +2383,12 @@ function buildHiraganaRefGrid() {
     rowData.forEach(([char, rom]) => {
       const card = document.createElement('div');
       card.className = char ? 'kana-ref-card' : 'kana-ref-card empty';
-      if (char) card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+      if (char) {
+        card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+        card.dataset.char = char;
+        const scoreClass = kanaScoreClass(kanaScores[char] || 0);
+        if (scoreClass) card.classList.add(scoreClass);
+      }
       rowEl.appendChild(card);
     });
 
@@ -2386,6 +2451,7 @@ const selectedKatakanaRows = new Set();
 function showKatakanaReference() {
   showScreen('katakana-ref');
   buildKatakanaRefGrid();
+  refreshKanaScoreShading('katakana-ref-grid');
   syncDirectionCardRef();
 }
 
@@ -2428,7 +2494,12 @@ function buildKatakanaRefGrid() {
     rowData.forEach(([char, rom]) => {
       const card = document.createElement('div');
       card.className = char ? 'kana-ref-card' : 'kana-ref-card empty';
-      if (char) card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+      if (char) {
+        card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
+        card.dataset.char = char;
+        const scoreClass = kanaScoreClass(kanaScores[char] || 0);
+        if (scoreClass) card.classList.add(scoreClass);
+      }
       rowEl.appendChild(card);
     });
 
