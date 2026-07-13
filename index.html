@@ -80,6 +80,7 @@
     margin: 0.75rem 0 -0.5rem 0.25rem;
   }
   .section-label:first-of-type { margin-top: 0; }
+  #match-read-view, #match-vocab-view { display: flex; flex-direction: column; gap: 1rem; }
 
   .group-card {
     background: var(--surface); border: 1px solid var(--border);
@@ -335,7 +336,7 @@
     <button class="nav-pill active" id="nav-katakana" onclick="showKatakanaSettings()">カタカナ</button>
     <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">漢字</button>
     <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
-    <button class="nav-pill" id="nav-match" onclick="tryResumeMatch()">Match</button>
+    <button class="nav-pill" id="nav-match" onclick="tryResumeMatch()">Read</button>
   </div>
 </header>
 
@@ -398,34 +399,6 @@
       <div class="toggle" id="hiragana-answers-toggle"></div>
     </div>
 
-    <div class="section-label">Reading challenge</div>
-    <div class="group-card" data-key="word-reading" onclick="toggleGroup(this)">
-      <div class="group-info">
-        <div class="group-name">Reading words — hiragana and katakana</div>
-        <div class="group-chars">みず えき といれ…</div>
-        <div class="group-count">10 random words per round</div>
-      </div>
-      <div class="toggle"></div>
-    </div>
-
-    <div class="group-card" data-key="number-challenge" onclick="toggleGroup(this)">
-      <div class="group-info">
-        <div class="group-name">Reading numbers 1–9,999</div>
-        <div class="group-chars">らんだむな すうじ</div>
-        <div class="group-count">5 random numbers per round</div>
-      </div>
-      <div class="toggle"></div>
-    </div>
-
-    <div class="group-card" data-key="time-challenge" onclick="toggleGroup(this)">
-      <div class="group-info">
-        <div class="group-name">Reading times — hours &amp; half hours</div>
-        <div class="group-chars">ごぜん くじ はん</div>
-        <div class="group-count">10 random times per round, with gozen/gogo and kara/made</div>
-      </div>
-      <div class="toggle"></div>
-    </div>
-
     <button class="start-btn" id="katana-start-btn" onclick="startDrill()">Start drill</button>
   </div>
 
@@ -484,14 +457,6 @@
   <div class="screen" id="screen-kanji-settings">
     <div class="settings-title">Kanji</div>
     <div class="settings-sub">Select one or more groups, then start.</div>
-
-    <div class="group-card" onclick="startRandomKanji()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name">Random kanji</div>
-        <div class="group-chars">らんだむな 漢字</div>
-        <div class="group-count">20 random kanji per round, from all categories</div>
-      </div>
-    </div>
 
     <div class="section-label">Core kanji</div>
 
@@ -615,27 +580,62 @@
   </div>
   <!-- Match settings screen -->
   <div class="screen" id="screen-match-settings">
-    <div class="settings-title">Vocab matching</div>
-    <div class="settings-sub">Pick a word set, then tap a Japanese card and its English match.</div>
+    <div class="settings-title">Read</div>
+    <div class="settings-sub">Pick a word set, or try a random reading challenge.</div>
 
     <div class="level-filter-row">
-      <button class="level-pill active" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
+      <button class="level-pill active" id="level-pill-read" onclick="setMatchLevel('read')">Read</button>
+      <button class="level-pill" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
       <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
     </div>
 
-    <div class="match-card-select" onclick="startRandomMatch()" style="cursor:pointer;">
-      <div class="group-name">Random matching</div>
-      <div class="group-chars">らんだむな ことば</div>
-      <div class="group-count" id="random-match-count">20 random words per round, from all Level 1 categories</div>
+    <div id="match-read-view">
+      <div class="group-card" onclick="startWordReading()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading words — from Level 1 and Level 2</div>
+          <div class="group-chars">みず えき といれ…</div>
+          <div class="group-count">20 random words per round</div>
+        </div>
+      </div>
+      <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading numbers — 1 to 9,999</div>
+          <div class="group-chars">らんだむな すうじ</div>
+          <div class="group-count">5 random numbers per round</div>
+        </div>
+      </div>
+      <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading times — hours &amp; half hours</div>
+          <div class="group-chars">ごぜん くじ はん</div>
+          <div class="group-count">10 random times per round, with gozen/gogo and kara/made</div>
+        </div>
+      </div>
+      <div class="group-card" onclick="startRandomKanji()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Random kanji</div>
+          <div class="group-chars">らんだむな 漢字</div>
+          <div class="group-count">20 random kanji per round, from all categories</div>
+        </div>
+      </div>
     </div>
 
-    <div class="section-label">Lesson vocabulary</div>
-    <div id="match-category-list"></div>
-    <button class="start-btn" id="match-start-btn" onclick="startMatch()" disabled>Start matching</button>
+    <div id="match-vocab-view" style="display:none;">
+      <div class="match-card-select" onclick="startRandomMatch()" style="cursor:pointer;">
+        <div class="group-name">Random matching</div>
+        <div class="group-chars">らんだむな ことば</div>
+        <div class="group-count" id="random-match-count">20 random words per round, from all Level 1 categories</div>
+      </div>
+
+      <div class="section-label">Lesson vocabulary</div>
+      <div id="match-category-list"></div>
+      <button class="start-btn" id="match-start-btn" onclick="startMatch()" disabled>Start matching</button>
+    </div>
   </div>
 
   <!-- Match game screen -->
   <div class="screen" id="screen-match-game">
+    <div class="settings-sub" style="margin-bottom:0.75rem;">Read each word, then find its match.</div>
     <div class="round-label" id="match-round-label">Round 1 / 1</div>
     <div class="stats-row">
       <div class="stat-pill"><div class="stat-num green" id="match-stat-matched">0</div><div class="stat-lbl">matched</div></div>
@@ -656,6 +656,7 @@
         <button class="btn-secondary" onclick="showMatchSettings()">Change word set</button>
       </div>
     </div>
+    <button class="btn-secondary" onclick="quitMatch()" style="margin-top:0.75rem;">Quit</button>
   </div>
 
 </main>
@@ -1581,23 +1582,13 @@ function toggleGroup(card) {
   if (selected.has(key)) {
     selected.delete(key);
   } else {
-    const isExclusive = key === 'number-challenge' || key === 'word-reading' || key === 'time-challenge';
     const isKanji = key.startsWith('kanji-');
-    const isHiragana = key.startsWith('hiragana-');
     const isKatakana = key.startsWith('katakana-');
-    if (isExclusive) {
-      selected.clear();
-    } else {
-      selected.delete('number-challenge');
-      selected.delete('word-reading');
-      selected.delete('time-challenge');
-      // Clear opposing families
-      [...selected].forEach(k => {
-        if (isKanji && !k.startsWith('kanji-')) selected.delete(k);
-        else if (isHiragana && !k.startsWith('hiragana-')) selected.delete(k);
-        else if (isKatakana && !k.startsWith('katakana-')) selected.delete(k);
-      });
-    }
+    // Clear opposing families
+    [...selected].forEach(k => {
+      if (isKanji && !k.startsWith('kanji-')) selected.delete(k);
+      else if (isKatakana && !k.startsWith('katakana-')) selected.delete(k);
+    });
     selected.add(key);
   }
   syncCardUI();
@@ -1625,7 +1616,7 @@ function buildRandomKanjiPool() {
 }
 
 function startRandomKanji() {
-  lastSettingsScreen = 'kanji-settings';
+  lastSettingsScreen = 'match-settings';
   startDrill(buildRandomKanjiPool(), buildRandomKanjiPool);
 }
 
@@ -1732,9 +1723,9 @@ function genNumberDistractors(n) {
 }
 
 function startWordReading() {
-  lastSettingsScreen = 'katakana-settings';
+  lastSettingsScreen = 'match-settings';
   const pool = shuffle([...WORD_POOL]);
-  const selected10 = pool.slice(0, 10);
+  const selected10 = pool.slice(0, 20);
   const wordDeck = selected10.map(item => {
     const correct = item.rom;
     const distractors = shuffle(WORD_POOL.filter(w => w.rom !== correct)).slice(0, 3).map(w => w.rom);
@@ -1755,7 +1746,7 @@ function startWordReading() {
 }
 
 function startNumberChallenge() {
-  lastSettingsScreen = 'katakana-settings';
+  lastSettingsScreen = 'match-settings';
   const nums = [];
   while (nums.length < 5) {
     const n = Math.floor(Math.random() * 9999) + 1;
@@ -1850,7 +1841,7 @@ function genTimeDistractors(hour, half, ampm, frame) {
 }
 
 function startTimeChallenge() {
-  lastSettingsScreen = 'katakana-settings';
+  lastSettingsScreen = 'match-settings';
   const usedKeys = new Set();
   const times = [];
   while (times.length < 10) {
@@ -1894,21 +1885,9 @@ function buildDeck() {
 }
 
 function startDrill(customDeck, deckBuilder) {
-  if (!customDeck && selected.has('number-challenge')) {
-    startNumberChallenge();
-    return;
-  }
-  if (!customDeck && selected.has('word-reading')) {
-    startWordReading();
-    return;
-  }
-  if (!customDeck && selected.has('time-challenge')) {
-    startTimeChallenge();
-    return;
-  }
   lastSettingsScreen = customDeck ? lastSettingsScreen : (
     [...selected].some(k => k.startsWith('kanji-')) ? 'kanji-settings' :
-    [...selected].some(k => k.startsWith('katakana-') || k === 'number-challenge' || k === 'word-reading') ? 'katakana-settings' : 'hiragana-ref'
+    [...selected].some(k => k.startsWith('katakana-')) ? 'katakana-settings' : 'hiragana-ref'
   );
   lastDeckBuilder = deckBuilder || (customDeck ? (() => shuffle(customDeck)) : null);
   deck = customDeck || buildDeck();
@@ -2059,12 +2038,12 @@ const KANJI_READINGS = {
 // question, since the character on screen isn't always the pronounceable side
 // (e.g. reversed mode shows romaji; number/time questions show digits).
 function getSpeechText(q) {
-  if (q.disp === 'number' || q.disp === 'time' || q.disp === 'word') return q.answer;
+  if (q.disp === 'number' || q.disp === 'time') return q.answer;
   if (q.disp === 'kanji' || q.disp === 'survival') {
     const reading = KANJI_READINGS[q.char + '|' + q.answer];
     return reading || q.char;
   }
-  // base / diacritic / youon kana — pure phonetic script, safe to speak as-is
+  // word / base / diacritic / youon — q.char is already proper kana/kanji script here
   return q.char;
 }
 
@@ -2591,12 +2570,16 @@ function drillKatakanaSelection() {
   startDrill(shuffle(customDeck));
 }
 
-let currentMatchLevel = 1;
+let currentMatchLevel = 'read';
 
 function setMatchLevel(level) {
   currentMatchLevel = level;
+  document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
   document.getElementById('level-pill-2').classList.toggle('active', level === 2);
+  document.getElementById('match-read-view').style.display = level === 'read' ? 'flex' : 'none';
+  document.getElementById('match-vocab-view').style.display = level === 'read' ? 'none' : 'flex';
+  if (level === 'read') return;
   document.getElementById('random-match-count').textContent = `20 random words per round, from all Level ${level} categories`;
   matchCategoryKey = null;
   document.getElementById('match-start-btn').disabled = true;
@@ -2627,6 +2610,12 @@ function selectMatchCategory(key, card) {
 
 function showMatchSettings() {
   showScreen('match-settings');
+}
+
+function quitMatch() {
+  matchCategoryKey = null;
+  matchRounds = [];
+  showMatchSettings();
 }
 
 function tryResumeMatch() {
