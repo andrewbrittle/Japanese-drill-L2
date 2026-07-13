@@ -90,6 +90,8 @@
   }
   .group-card:hover { border-color: var(--border-hover); }
   .group-card.selected { border-color: var(--accent); background: var(--accent-dim); }
+  .group-card.emphasis { border-color: var(--accent); }
+  .group-card.emphasis:hover { background: var(--accent-dim); }
 
   .group-info { display: flex; flex-direction: column; gap: 3px; }
   .group-name { font-size: 15px; font-weight: 700; }
@@ -437,7 +439,7 @@
       <button class="level-pill" data-section="diacritics" onclick="switchHiraganaSection('diacritics')">Dakuten / handakuten</button>
       <button class="level-pill" data-section="youon" onclick="switchHiraganaSection('youon')">Contracted</button>
     </div>
-    <div class="group-card" id="hiragana-select-all-card" onclick="toggleSelectAllHiragana()" style="cursor:pointer;">
+    <div class="group-card emphasis" id="hiragana-select-all-card" onclick="toggleSelectAllHiragana()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name" id="hiragana-select-all-label">Select all — Base</div>
       </div>
