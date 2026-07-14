@@ -1390,7 +1390,10 @@ let activeKanjiSection = 'numbers-time';
 
 function showKanjiReference() {
   showScreen('kanji-ref');
-  KANJI_SECTION_KEYS.forEach(key => buildKanjiTileGrid(key));
+  KANJI_SECTION_KEYS.forEach(key => {
+    buildKanjiTileGrid(key);
+    refreshKanaScoreShading('kanji-grid-' + key);
+  });
   updateSelectAllKanjiLabel();
 }
 
@@ -1409,6 +1412,10 @@ function buildKanjiTileGrid(sectionKey) {
     const tile = document.createElement('div');
     tile.className = 'kana-ref-card';
     tile.innerHTML = `<span class="kana-ref-char">${item.char}</span><span class="kana-ref-rom">${item.answer}</span>`;
+    const scoreKey = item.char + '|' + item.answer;
+    tile.dataset.scoreKey = scoreKey;
+    const scoreClass = kanaScoreClass(scoreKey);
+    if (scoreClass) tile.classList.add(scoreClass);
     tile.onclick = () => toggleKanjiTile(sectionKey, idx, tile);
     grid.appendChild(tile);
   });
@@ -1502,6 +1509,7 @@ function showScreen(id) {
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
   if (id === 'hiragana-ref') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
   else if (id === 'katakana-ref') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
+  else if (id === 'kanji-ref') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
 }
 
 let lastSettingsScreen = 'match-settings';
@@ -1802,21 +1810,34 @@ function saveKanaScores() {
   }
 }
 
-function isTrackedKanaItem(q) {
-  return !!(q && (q.disp === 'base' || q.disp === 'diacritic' || q.disp === 'youon') &&
+function isTrackedItem(q) {
+  const isKana = !!(q && (q.disp === 'base' || q.disp === 'diacritic' || q.disp === 'youon') &&
     q.groupKey && (q.groupKey.startsWith('hiragana-') || q.groupKey.startsWith('katakana-')));
+  const isKanji = !!(q && (q.disp === 'kanji' || q.disp === 'survival'));
+  return isKana || isKanji;
+}
+
+// Kana characters always mean the same sound, so the character itself is a
+// safe score key. A few kanji (火/水/木, etc.) are reused across categories
+// with genuinely different meanings (Tuesday vs fire, for example) — for
+// those, character alone would silently blend two different scores together,
+// so kanji use char+answer as the key instead.
+function getScoreKey(q) {
+  if (q.disp === 'kanji' || q.disp === 'survival') return q.char + '|' + q.answer;
+  return q.char;
 }
 
 function recordKanaResult(q, correct) {
-  if (!isTrackedKanaItem(q)) return;
-  const cur = kanaScores[q.char] || 0;
-  kanaScores[q.char] = correct ? Math.min(2, cur + 1) : Math.max(-2, cur - 1);
+  if (!isTrackedItem(q)) return;
+  const key = getScoreKey(q);
+  const cur = kanaScores[key] || 0;
+  kanaScores[key] = correct ? Math.min(2, cur + 1) : Math.max(-2, cur - 1);
   saveKanaScores();
 }
 
-function kanaScoreClass(char) {
-  if (!(char in kanaScores)) return ''; // never drilled — no shading at all
-  const score = kanaScores[char];
+function kanaScoreClass(key) {
+  if (!(key in kanaScores)) return ''; // never drilled — no shading at all
+  const score = kanaScores[key];
   if (score <= -2) return 'score-neg2';
   if (score === -1) return 'score-neg1';
   if (score === 0) return 'score-neutral'; // drilled, but currently balanced
@@ -1830,9 +1851,9 @@ function kanaScoreClass(char) {
 function refreshKanaScoreShading(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
-  container.querySelectorAll('.kana-ref-card[data-char]').forEach(card => {
+  container.querySelectorAll('.kana-ref-card[data-score-key]').forEach(card => {
     card.classList.remove('score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2');
-    const scoreClass = kanaScoreClass(card.dataset.char);
+    const scoreClass = kanaScoreClass(card.dataset.scoreKey);
     if (scoreClass) card.classList.add(scoreClass);
   });
 }
@@ -2087,7 +2108,8 @@ function choose(btn, selectedVal, answer, char) {
   const currentQ = deck[current];
   const hint = currentQ && currentQ.hint ? ` (${currentQ.hint})` : '';
   recordKanaResult(currentQ, selectedVal === answer);
-  const showingHiragana = !reversed && showHiraganaOnKatakana && isTrackedKanaItem(currentQ) &&
+  const isKanaItem = currentQ && (currentQ.disp === 'base' || currentQ.disp === 'diacritic' || currentQ.disp === 'youon');
+  const showingHiragana = !reversed && showHiraganaOnKatakana && isKanaItem &&
     currentQ.groupKey && currentQ.groupKey.startsWith('katakana-');
   const displayAnswer = showingHiragana ? (ROMAJI_TO_HIRAGANA[answer] || answer) : answer;
   if (selectedVal === answer) {
@@ -2239,7 +2261,7 @@ function buildKanaSectionGrid(containerId, section) {
       card.className = char ? 'kana-ref-card' : 'kana-ref-card empty';
       if (char) {
         card.innerHTML = `<span class="kana-ref-char">${char}</span><span class="kana-ref-rom">${rom}</span>`;
-        card.dataset.char = char;
+        card.dataset.scoreKey = char;
         const scoreClass = kanaScoreClass(char);
         if (scoreClass) card.classList.add(scoreClass);
       }
