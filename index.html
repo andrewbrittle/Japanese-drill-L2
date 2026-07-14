@@ -112,15 +112,6 @@
   .group-card.selected .toggle { background: var(--accent); border-color: var(--accent); }
   .group-card.selected .toggle::after { left: 21px; background: #0f0f0f; }
 
-  .quick-row { display: flex; gap: 8px; flex-wrap: wrap; }
-  .quick-btn {
-    flex: 1; min-width: 100px; padding: 9px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--surface);
-    color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s;
-  }
-  .quick-btn:hover { border-color: var(--border-hover); color: var(--text); }
-
   .start-btn {
     padding: 14px; border-radius: var(--radius); width: 100%;
     background: var(--accent); border: none; color: #0f0f0f;
@@ -250,8 +241,6 @@
   .match-card-select.selected { border-color: var(--purple); background: var(--purple-dim); }
   .match-card-select .group-name { font-size: 15px; font-weight: 700; }
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
-  .toggle.on { background: var(--accent); border-color: var(--accent); }
-  .toggle.on::after { left: 21px; background: #0f0f0f; }
 
   .round-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-align: center; }
 
@@ -317,6 +306,10 @@
   .kana-ref-card.score-neutral { background: rgba(126,184,247,0.16); }
   .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.22); }
   .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.45); }
+  .kana-ref-card.selected { border-color: var(--accent); background: var(--accent-dim); cursor: pointer; }
+  .pill-grid-2row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .kanji-tile-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .kanji-tile-grid .kana-ref-card { flex: 1 1 30%; min-width: 0; cursor: pointer; }
   .kana-ref-char {
     font-family: 'BIZ UDPGothic', sans-serif;
     font-size: 28px; font-weight: 600; color: var(--text);
@@ -407,77 +400,38 @@
   </div>
 
   <!-- Kanji settings screen -->
-  <div class="screen" id="screen-kanji-settings">
+  <div class="screen" id="screen-kanji-ref">
     <div class="settings-title">Kanji</div>
-    <div class="settings-sub">Select a group, then start.</div>
+    <div class="settings-sub">Tap a character to select it for drilling.</div>
 
-    <div class="section-label">Core kanji</div>
-
-    <div class="group-card" data-key="kanji-numbers-time" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">Numbers, days &amp; time</div>
-        <div class="group-chars">一二三四五 百千万半間</div>
-        <div class="group-count">30 characters</div>
-      </div>
+    <div class="pill-grid-2row" id="kanji-section-pills">
+      <button class="level-pill active" data-section="numbers-time" onclick="switchKanjiSection('numbers-time')">Numbers</button>
+      <button class="level-pill" data-section="nature-body" onclick="switchKanjiSection('nature-body')">Nature</button>
+      <button class="level-pill" data-section="food" onclick="switchKanjiSection('food')">Food</button>
+      <button class="level-pill" data-section="weather" onclick="switchKanjiSection('weather')">Weather</button>
+      <button class="level-pill" data-section="directions-travel" onclick="switchKanjiSection('directions-travel')">Travel</button>
+      <button class="level-pill" data-section="people" onclick="switchKanjiSection('people')">People</button>
+      <button class="level-pill" data-section="general" onclick="switchKanjiSection('general')">General</button>
+      <button class="level-pill" data-section="verbs" onclick="switchKanjiSection('verbs')">Verbs</button>
     </div>
 
-    <div class="group-card" data-key="kanji-nature-body" onclick="selectKanjiCategory(this)">
+    <div class="group-card emphasis" id="kanji-select-all-card" onclick="toggleSelectAllKanji()" style="cursor:pointer;">
       <div class="group-info">
-        <div class="group-name">Nature &amp; body parts</div>
-        <div class="group-chars">日山川水人大 口目耳</div>
-        <div class="group-count">14 characters</div>
+        <div class="group-name" id="kanji-select-all-label">Select all — Numbers</div>
       </div>
+      <div style="font-size:20px; color:var(--text-muted);">→</div>
     </div>
 
-    <div class="group-card" data-key="kanji-directions-travel" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">Directions, travel &amp; signage</div>
-        <div class="group-chars">上下左右中 駅道店病院</div>
-        <div class="group-count">45 characters</div>
-      </div>
-    </div>
+    <div id="kanji-grid-numbers-time"></div>
+    <div id="kanji-grid-nature-body" style="display:none;"></div>
+    <div id="kanji-grid-directions-travel" style="display:none;"></div>
+    <div id="kanji-grid-food" style="display:none;"></div>
+    <div id="kanji-grid-weather" style="display:none;"></div>
+    <div id="kanji-grid-people" style="display:none;"></div>
+    <div id="kanji-grid-general" style="display:none;"></div>
+    <div id="kanji-grid-verbs" style="display:none;"></div>
 
-    <div class="group-card" data-key="kanji-food" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">Food &amp; dining</div>
-        <div class="group-chars">食べる 飲む 魚 野菜…</div>
-        <div class="group-count">10 characters</div>
-      </div>
-    </div>
-
-    <div class="group-card" data-key="kanji-weather" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">Weather</div>
-        <div class="group-chars">雨 晴れ 曇り 天気…</div>
-        <div class="group-count">9 characters</div>
-      </div>
-    </div>
-
-    <div class="group-card" data-key="kanji-people" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">People &amp; question words</div>
-        <div class="group-chars">私 何 誰 母 父 友 子</div>
-        <div class="group-count">9 characters</div>
-      </div>
-    </div>
-
-    <div class="group-card" data-key="kanji-general" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">General &amp; useful</div>
-        <div class="group-chars">国 名 本 語 外 長い…</div>
-        <div class="group-count">8 characters</div>
-      </div>
-    </div>
-
-    <div class="group-card" data-key="kanji-verbs" onclick="selectKanjiCategory(this)">
-      <div class="group-info">
-        <div class="group-name">Common verbs</div>
-        <div class="group-chars">見る 聞く 話す 読む…</div>
-        <div class="group-count">7 characters</div>
-      </div>
-    </div>
-
-    <button class="start-btn" id="kanji-start-btn" onclick="startDrill()" disabled>Start drill</button>
+    <button class="start-btn" id="kanji-ref-drill-btn" onclick="drillKanjiSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
 
   <!-- Drill screen -->
@@ -1367,7 +1321,6 @@ const BADGE_LABELS = {
   'kanji-verbs': 'verbs',
 };
 
-const ALL_KEYS = Object.keys(DATA);
 const HIRAGANA_KEYS = ['hiragana-base','hiragana-diacritics','hiragana-youon'];
 const KATAKANA_KEYS = ['katakana-base','katakana-diacritics','katakana-youon'];
 
@@ -1419,40 +1372,112 @@ function updateDirectionVisibility() {
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
 
-function toggleGroup(card) {
-  const key = card.dataset.key;
-  if (selected.has(key)) {
-    selected.delete(key);
-  } else {
-    const isKatakana = key.startsWith('katakana-');
-    // Clear opposing families
-    [...selected].forEach(k => {
-      if (isKatakana && !k.startsWith('katakana-')) selected.delete(k);
-    });
-    selected.add(key);
-  }
-  syncCardUI();
+const KANJI_SECTIONS = {
+  'numbers-time': { label: 'Numbers', dataKey: 'kanji-numbers-time' },
+  'nature-body': { label: 'Nature', dataKey: 'kanji-nature-body' },
+  'directions-travel': { label: 'Travel', dataKey: 'kanji-directions-travel' },
+  'food': { label: 'Food', dataKey: 'kanji-food' },
+  'weather': { label: 'Weather', dataKey: 'kanji-weather' },
+  'people': { label: 'People', dataKey: 'kanji-people' },
+  'general': { label: 'General', dataKey: 'kanji-general' },
+  'verbs': { label: 'Verbs', dataKey: 'kanji-verbs' },
+};
+const KANJI_SECTION_KEYS = Object.keys(KANJI_SECTIONS);
+
+const kanjiSelectedTiles = {};
+KANJI_SECTION_KEYS.forEach(k => { kanjiSelectedTiles[k] = new Set(); });
+let activeKanjiSection = 'numbers-time';
+
+function showKanjiReference() {
+  showScreen('kanji-ref');
+  KANJI_SECTION_KEYS.forEach(key => buildKanjiTileGrid(key));
+  updateSelectAllKanjiLabel();
 }
 
-function selectKanjiCategory(card) {
-  selected.clear();
-  selected.add(card.dataset.key);
-  syncCardUI();
-}
+// Individual-tile selection, unlike kana's row-selection — kanji categories
+// are thematic groupings with no internal structure to select by row.
+function buildKanjiTileGrid(sectionKey) {
+  const container = document.getElementById('kanji-grid-' + sectionKey);
+  if (!container || container.children.length > 0) return;
+  const section = KANJI_SECTIONS[sectionKey];
+  const data = DATA[section.dataKey];
 
-function syncCardUI() {
-  document.querySelectorAll('.group-card[data-key]').forEach(card => {
-    card.classList.toggle('selected', selected.has(card.dataset.key));
+  const grid = document.createElement('div');
+  grid.className = 'kanji-tile-grid';
+
+  data.forEach((item, idx) => {
+    const tile = document.createElement('div');
+    tile.className = 'kana-ref-card';
+    tile.innerHTML = `<span class="kana-ref-char">${item.char}</span><span class="kana-ref-rom">${item.answer}</span>`;
+    tile.onclick = () => toggleKanjiTile(sectionKey, idx, tile);
+    grid.appendChild(tile);
   });
-  document.querySelectorAll('.start-btn').forEach(b => b.disabled = selected.size === 0);
-  updateDirectionVisibility();
+
+  container.appendChild(grid);
 }
 
-function selectPreset(preset) {
-  selected.clear();
-  if (preset === 'hiragana') HIRAGANA_KEYS.forEach(k => selected.add(k));
-  else if (preset === 'katakana') KATAKANA_KEYS.forEach(k => selected.add(k));
-  syncCardUI();
+function toggleKanjiTile(sectionKey, idx, tileEl) {
+  const set = kanjiSelectedTiles[sectionKey];
+  if (set.has(idx)) {
+    set.delete(idx);
+    tileEl.classList.remove('selected');
+  } else {
+    set.add(idx);
+    tileEl.classList.add('selected');
+  }
+  document.getElementById('kanji-ref-drill-btn').disabled = set.size === 0;
+  updateSelectAllKanjiLabel();
+}
+
+function switchKanjiSection(sectionKey) {
+  activeKanjiSection = sectionKey;
+  document.querySelectorAll('#kanji-section-pills .level-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.section === sectionKey);
+  });
+  KANJI_SECTION_KEYS.forEach(key => {
+    const el = document.getElementById('kanji-grid-' + key);
+    if (el) el.style.display = key === sectionKey ? 'flex' : 'none';
+  });
+  document.getElementById('kanji-ref-drill-btn').disabled = kanjiSelectedTiles[sectionKey].size === 0;
+  updateSelectAllKanjiLabel();
+}
+
+function toggleSelectAllKanji() {
+  const section = KANJI_SECTIONS[activeKanjiSection];
+  const total = DATA[section.dataKey].length;
+  const set = kanjiSelectedTiles[activeKanjiSection];
+  const grid = document.getElementById('kanji-grid-' + activeKanjiSection);
+  const allSelected = set.size === total;
+  if (allSelected) {
+    set.clear();
+    if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.remove('selected'));
+  } else {
+    for (let i = 0; i < total; i++) set.add(i);
+    if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.add('selected'));
+  }
+  document.getElementById('kanji-ref-drill-btn').disabled = set.size === 0;
+  updateSelectAllKanjiLabel();
+}
+
+function updateSelectAllKanjiLabel() {
+  const section = KANJI_SECTIONS[activeKanjiSection];
+  const total = DATA[section.dataKey].length;
+  const set = kanjiSelectedTiles[activeKanjiSection];
+  const allSelected = set.size === total;
+  document.getElementById('kanji-select-all-label').textContent =
+    (allSelected ? 'Deselect all — ' : 'Select all — ') + section.label;
+}
+
+function drillKanjiSelection() {
+  const section = KANJI_SECTIONS[activeKanjiSection];
+  const selectedIdx = kanjiSelectedTiles[activeKanjiSection];
+  if (selectedIdx.size === 0) return;
+  const data = DATA[section.dataKey];
+  const customDeck = [...selectedIdx].sort((a, b) => a - b).map(idx =>
+    Object.assign({ groupKey: section.dataKey }, data[idx])
+  );
+  lastSettingsScreen = 'kanji-ref';
+  startDrill(shuffle(customDeck));
 }
 
 function buildRandomKanjiPool() {
@@ -1472,7 +1497,7 @@ function showScreen(id) {
   document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
   if (id === 'hiragana-ref') document.querySelectorAll('.nav-pill')[0].classList.add('active');
   else if (id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
-  else if (id === 'kanji-settings') document.querySelectorAll('.nav-pill')[2].classList.add('active');
+  else if (id === 'kanji-ref') document.querySelectorAll('.nav-pill')[2].classList.add('active');
   else if (id === 'match-settings' || id === 'match-game') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
   if (id === 'hiragana-ref') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
@@ -1481,16 +1506,14 @@ function showScreen(id) {
 
 let lastSettingsScreen = 'match-settings';
 
-function showKanjiSettings() { showScreen('kanji-settings'); }
+function tryResumeKanji() {
+  showKanjiReference();
+}
 function goBackToSettings() { showScreen(lastSettingsScreen); }
 
 function tryResume() {
   if (deck.length > 0 && current < deck.length) showScreen('drill');
   else goBackToSettings();
-}
-
-function tryResumeKanji() {
-  showKanjiSettings();
 }
 
 /* ---------- Number challenge ---------- */
@@ -1730,9 +1753,7 @@ function buildDeck() {
 }
 
 function startDrill(customDeck, deckBuilder) {
-  lastSettingsScreen = customDeck ? lastSettingsScreen : (
-    [...selected].some(k => k.startsWith('kanji-')) ? 'kanji-settings' : 'hiragana-ref'
-  );
+  lastSettingsScreen = customDeck ? lastSettingsScreen : 'hiragana-ref';
   lastDeckBuilder = deckBuilder || (customDeck ? (() => shuffle(customDeck)) : null);
   deck = customDeck || buildDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
@@ -2687,7 +2708,6 @@ function finishMatch() {
 }
 
 buildMatchCategoryList();
-syncCardUI();
 
 updateDirectionVisibility();
 </script>
