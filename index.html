@@ -563,6 +563,27 @@
           <div class="group-count">20 random kanji per round, from all categories</div>
         </div>
       </div>
+      <div class="group-card" onclick="startColoursMatch()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Colours</div>
+          <div class="group-chars">あか あお きいろ…</div>
+          <div class="group-count">Not covered in lessons — 10 words</div>
+        </div>
+      </div>
+      <div class="group-card" onclick="startTripPrepMatch()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Useful words for the trip</div>
+          <div class="group-chars">みず すし きっぷ…</div>
+          <div class="group-count">Not covered in lessons — 27 words</div>
+        </div>
+      </div>
+      <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Random matching — everything</div>
+          <div class="group-chars">らんだむな ぜんぶ</div>
+          <div class="group-count">20 random words per round, from every category</div>
+        </div>
+      </div>
     </div>
 
     <div id="match-vocab-view" style="display:none;">
@@ -1012,6 +1033,10 @@ const VOCAB = {
       {jp:'ゆっくりいってください', romaji:'yukkuri itte kudasai', en:'Please speak slowly'},
       {jp:'ちょっとまってください', romaji:'chotto matte kudasai', en:'Please wait'},
       {jp:'ちがいます', romaji:'chigaimasu', en:"That's wrong / That's different"},
+      {jp:'ありがとうございます', romaji:'arigatou gozaimasu', en:'Thank you'},
+      {jp:'ください', romaji:'kudasai', en:'Please give me'},
+      {jp:'わかりません', romaji:'wakarimasen', en:"I don't understand"},
+      {jp:'ともだち', romaji:'tomodachi', en:'Friend'},
     ],
   },
   'vocab-countries': {
@@ -1158,6 +1183,7 @@ const VOCAB = {
       {jp:'そこ', romaji:'soko', en:'there'},
       {jp:'あそこ', romaji:'asoko', en:'over there'},
       {jp:'どこ', romaji:'doko', en:'where'},
+      {jp:'いくら', romaji:'ikura', en:'how much'},
     ],
   },
   'vocab-numbers': {
@@ -1208,8 +1234,8 @@ const VOCAB = {
     ],
   },
   'vocab-colours': {
-    level: 1,
-    label: 'Colours (not covered in lessons)',
+    level: 'extra',
+    label: 'Colours',
     chars: 'あか あお きいろ…',
     items: [
       {jp:'あか', romaji:'aka', en:'red'},
@@ -1263,172 +1289,66 @@ const VOCAB = {
       {jp:'ごご', romaji:'gogo', en:'PM / afternoon (after noon)'},
     ],
   },
+  'vocab-time-words': {
+    level: 2,
+    label: 'Time words',
+    chars: 'きょう あした きのう…',
+    items: [
+      {jp:'きょう', romaji:'kyou', en:'today'},
+      {jp:'あした', romaji:'ashita', en:'tomorrow'},
+      {jp:'きのう', romaji:'kinou', en:'yesterday'},
+      {jp:'いま', romaji:'ima', en:'now'},
+      {jp:'つぎ', romaji:'tsugi', en:'next'},
+      {jp:'ふん', romaji:'fun', en:'minutes'},
+      {jp:'じかん', romaji:'jikan', en:'hours / time'},
+      {jp:'あさ', romaji:'asa', en:'morning'},
+      {jp:'よる', romaji:'yoru', en:'evening / night'},
+      {jp:'まいにち', romaji:'mainichi', en:'every day'},
+    ],
+  },
+  'vocab-trip-prep': {
+    level: 'extra',
+    label: 'Useful words for the trip',
+    chars: 'みず すし きっぷ…',
+    items: [
+      {jp:'みず', romaji:'mizu', en:'water'},
+      {jp:'おちゃ', romaji:'ocha', en:'green tea'},
+      {jp:'さけ', romaji:'sake', en:'sake / alcohol'},
+      {jp:'すし', romaji:'sushi', en:'sushi'},
+      {jp:'てんぷら', romaji:'tenpura', en:'tempura'},
+      {jp:'そば', romaji:'soba', en:'soba noodles'},
+      {jp:'うどん', romaji:'udon', en:'udon noodles'},
+      {jp:'らーめん', romaji:'raamen', en:'ramen'},
+      {jp:'おみやげ', romaji:'omiyage', en:'souvenir'},
+      {jp:'たべもの', romaji:'tabemono', en:'food'},
+      {jp:'のみもの', romaji:'nomimono', en:'drink'},
+      {jp:'やすみ', romaji:'yasumi', en:'rest / day off / closed'},
+      {jp:'のりかえ', romaji:'norikae', en:'transfer / change trains'},
+      {jp:'きっぷ', romaji:'kippu', en:'ticket'},
+      {jp:'でぐち', romaji:'deguchi', en:'exit'},
+      {jp:'いりぐち', romaji:'iriguchi', en:'entrance'},
+      {jp:'まち', romaji:'machi', en:'town'},
+      {jp:'みせ', romaji:'mise', en:'shop'},
+      {jp:'たかい', romaji:'takai', en:'expensive'},
+      {jp:'やすい', romaji:'yasui', en:'cheap'},
+      {jp:'おおきい', romaji:'ookii', en:'big'},
+      {jp:'ちいさい', romaji:'chiisai', en:'small'},
+      {jp:'たすけて', romaji:'tasukete', en:'help!'},
+      {jp:'いたい', romaji:'itai', en:'it hurts / ouch'},
+      {jp:'くすり', romaji:'kusuri', en:'medicine'},
+      {jp:'びょういん', romaji:'byouin', en:'hospital'},
+      {jp:'けいさつ', romaji:'keisatsu', en:'police'},
+    ],
+  },
 };
 
-// Word reading drill pool — hiragana words → romaji
-// Combines lesson vocab + survival words for trip
-const WORD_POOL = [
-  // From existing Match vocab (hiragana only, excluding katakana loanwords)
-  {jp:'はじめまして',rom:'hajimemashite',en:'nice to meet you'},
-  {jp:'おはようございます',rom:'ohayou gozaimasu',en:'good morning'},
-  {jp:'こんにちは',rom:'konnichiwa',en:'hello'},
-  {jp:'こんばんは',rom:'konbanwa',en:'good evening'},
-  {jp:'おやすみなさい',rom:'oyasuminasai',en:'good night'},
-  {jp:'さようなら',rom:'sayounara',en:'goodbye'},
-  {jp:'またあした',rom:'mata ashita',en:'see you tomorrow'},
-  {jp:'すみません',rom:'sumimasen',en:'excuse me'},
-  {jp:'ありがとうございます',rom:'arigatou gozaimasu',en:'thank you'},
-  {jp:'どういたしまして',rom:'douitashimashite',en:"you're welcome"},
-  {jp:'おねがいします',rom:'onegai shimasu',en:'please'},
-  {jp:'いいえ',rom:'iie',en:'no'},
-  {jp:'いってきます',rom:'ittekimasu',en:"i'm off"},
-  {jp:'いってらっしゃい',rom:'itterasshai',en:'take care'},
-  {jp:'ただいま',rom:'tadaima',en:"i'm home"},
-  {jp:'おかえりなさい',rom:'okaerinasai',en:'welcome home'},
-  {jp:'いただきます',rom:'itadakimasu',en:'(before eating)'},
-  {jp:'ごちそうさまでした',rom:'gochisousama deshita',en:'(after eating)'},
-  {jp:'にほん',rom:'nihon',en:'japan'},
-  {jp:'ちゅうごく',rom:'chuugoku',en:'china'},
-  {jp:'かんこく',rom:'kankoku',en:'korea'},
-  {jp:'せんせい',rom:'sensei',en:'teacher'},
-  {jp:'がくせい',rom:'gakusei',en:'student'},
-  {jp:'かいしゃいん',rom:'kaishain',en:'company employee'},
-  {jp:'ぎんこういん',rom:'ginkouin',en:'banker'},
-  {jp:'いしゃ',rom:'isha',en:'doctor'},
-  {jp:'けんきゅうしゃ',rom:'kenkyuusha',en:'researcher'},
-  {jp:'べんごし',rom:'bengoshi',en:'lawyer'},
-  {jp:'かいけいし',rom:'kaikeishi',en:'accountant'},
-  {jp:'ひしょ',rom:'hisho',en:'secretary'},
-  {jp:'きょうし',rom:'kyoushi',en:'teacher (formal)'},
-  {jp:'こむいん',rom:'komuin',en:'civil servant'},
-  {jp:'かさ',rom:'kasa',en:'umbrella'},
-  {jp:'いす',rom:'isu',en:'chair'},
-  {jp:'とけい',rom:'tokei',en:'watch / clock'},
-  {jp:'じしょ',rom:'jisho',en:'dictionary'},
-  {jp:'ほん',rom:'hon',en:'book'},
-  {jp:'ざっし',rom:'zasshi',en:'magazine'},
-  {jp:'けいたい',rom:'keitai',en:'mobile phone'},
-  {jp:'ちず',rom:'chizu',en:'map'},
-  {jp:'りょうり',rom:'ryouri',en:'cooking'},
-  {jp:'かばん',rom:'kaban',en:'bag'},
-  {jp:'かぎ',rom:'kagi',en:'key'},
-  {jp:'えんぴつ',rom:'empitsu',en:'pencil'},
-  {jp:'れきし',rom:'rekishi',en:'history'},
-  {jp:'くるま',rom:'kuruma',en:'car'},
-  {jp:'にく',rom:'niku',en:'meat'},
-  {jp:'さいふ',rom:'saifu',en:'purse / wallet'},
-  {jp:'じてんしゃ',rom:'jitensha',en:'bicycle'},
-  {jp:'しんぶん',rom:'shinbun',en:'newspaper'},
-  {jp:'つくえ',rom:'tsukue',en:'desk'},
-  {jp:'てちょう',rom:'techou',en:'notebook'},
-  {jp:'めいし',rom:'meishi',en:'business card'},
-  {jp:'がっこう',rom:'gakkou',en:'school'},
-  {jp:'ゆうびんきょく',rom:'yuubinkyoku',en:'post office'},
-  {jp:'じむしょ',rom:'jimusho',en:'office'},
-  {jp:'しょくどう',rom:'shokudou',en:'canteen'},
-  {jp:'うけつけ',rom:'uketsuke',en:'reception'},
-  {jp:'かいぎしつ',rom:'kaigishitsu',en:'meeting room'},
-  {jp:'へや',rom:'heya',en:'room'},
-  {jp:'きょうしつ',rom:'kyoushitsu',en:'classroom'},
-  {jp:'といれ',rom:'toire',en:'toilet'},
-  {jp:'かいだん',rom:'kaidan',en:'stairs'},
-  {jp:'でぱーと',rom:'depaato',en:'department store'},
-  {jp:'えき',rom:'eki',en:'station'},
-  {jp:'ここ',rom:'koko',en:'here'},
-  {jp:'そこ',rom:'soko',en:'there'},
-  {jp:'あそこ',rom:'asoko',en:'over there'},
-  {jp:'どこ',rom:'doko',en:'where'},
-  {jp:'なん',rom:'nan',en:'what'},
-  {jp:'だれ',rom:'dare',en:'who'},
-  {jp:'あか',rom:'aka',en:'red'},
-  {jp:'あお',rom:'ao',en:'blue'},
-  {jp:'きいろ',rom:'kiiro',en:'yellow'},
-  {jp:'みどり',rom:'midori',en:'green'},
-  {jp:'くろ',rom:'kuro',en:'black'},
-  {jp:'しろ',rom:'shiro',en:'white'},
-  {jp:'ちゃいろ',rom:'chairo',en:'brown'},
-  {jp:'むらさき',rom:'murasaki',en:'purple'},
-  // Survival words for Japan trip
-  {jp:'みず',rom:'mizu',en:'water'},
-  {jp:'おちゃ',rom:'ocha',en:'green tea'},
-  {jp:'さけ',rom:'sake',en:'sake / alcohol'},
-  {jp:'すし',rom:'sushi',en:'sushi'},
-  {jp:'てんぷら',rom:'tenpura',en:'tempura'},
-  {jp:'そば',rom:'soba',en:'soba noodles'},
-  {jp:'うどん',rom:'udon',en:'udon noodles'},
-  {jp:'らーめん',rom:'raamen',en:'ramen'},
-  {jp:'おみやげ',rom:'omiyage',en:'souvenir'},
-  {jp:'やすみ',rom:'yasumi',en:'rest / day off / closed'},
-  {jp:'いくら',rom:'ikura',en:'how much'},
-  {jp:'ください',rom:'kudasai',en:'please give me'},
-  {jp:'きょう',rom:'kyou',en:'today'},
-  {jp:'あした',rom:'ashita',en:'tomorrow'},
-  {jp:'きのう',rom:'kinou',en:'yesterday'},
-  {jp:'いま',rom:'ima',en:'now'},
-  {jp:'つぎ',rom:'tsugi',en:'next'},
-  {jp:'のりかえ',rom:'norikae',en:'transfer / change trains'},
-  {jp:'きっぷ',rom:'kippu',en:'ticket'},
-  {jp:'でぐち',rom:'deguchi',en:'exit'},
-  {jp:'いりぐち',rom:'iriguchi',en:'entrance'},
-  {jp:'ふん',rom:'fun',en:'minutes'},
-  {jp:'じかん',rom:'jikan',en:'hours / time'},
-  {jp:'まち',rom:'machi',en:'town'},
-  {jp:'みせ',rom:'mise',en:'shop'},
-  {jp:'たべもの',rom:'tabemono',en:'food'},
-  {jp:'のみもの',rom:'nomimono',en:'drink'},
-  {jp:'たかい',rom:'takai',en:'expensive'},
-  {jp:'やすい',rom:'yasui',en:'cheap'},
-  {jp:'おおきい',rom:'ookii',en:'big'},
-  {jp:'ちいさい',rom:'chiisai',en:'small'},
-  {jp:'わかりません',rom:'wakarimasen',en:"i don't understand"},
-  {jp:'たすけて',rom:'tasukete',en:'help!'},
-  {jp:'いたい',rom:'itai',en:'it hurts / ouch'},
-  {jp:'くすり',rom:'kusuri',en:'medicine'},
-  {jp:'びょういん',rom:'byouin',en:'hospital'},
-  {jp:'けいさつ',rom:'keisatsu',en:'police'},
-  {jp:'くに',rom:'kuni',en:'country / nation'},
-  {jp:'くつ',rom:'kutsu',en:'shoes'},
-  {jp:'うち',rom:'uchi',en:'home / house'},
-  {jp:'ねくたい',rom:'nekutai',en:'necktie'},
-  {jp:'わいん',rom:'wain',en:'wine'},
-  {jp:'たばこ',rom:'tabako',en:'cigarettes'},
-  {jp:'ぺん',rom:'pen',en:'pen'},
-  {jp:'てーぷ',rom:'teepu',en:'tape'},
-  {jp:'じーんず',rom:'jiinzu',en:'jeans'},
-  {jp:'ぼうし',rom:'boushi',en:'hat'},
-  {jp:'すいす',rom:'suisu',en:'Switzerland'},
-  {jp:'かい',rom:'kai',en:'floor / storey'},
-  {jp:'うりば',rom:'uriba',en:'sales counter / department'},
-  {jp:'わかりますか',rom:'wakarimasu ka',en:'do you understand?'},
-  {jp:'はい、わかります',rom:'hai wakarimasu',en:'yes, I understand'},
-  {jp:'いいえ、わかりません',rom:'iie wakarimasen',en:"no, I don't understand"},
-  {jp:'もういちどおねがいします',rom:'mou ichido onegaishimasu',en:'once more please'},
-  {jp:'ゆっくりいってください',rom:'yukkuri itte kudasai',en:'please speak slowly'},
-  {jp:'ちょっとまってください',rom:'chotto matte kudasai',en:'please wait'},
-  {jp:'ちがいます',rom:'chigaimasu',en:"that's wrong / different"},
-  {jp:'あさ',rom:'asa',en:'morning'},
-  {jp:'よる',rom:'yoru',en:'evening / night'},
-  {jp:'まいにち',rom:'mainichi',en:'every day'},
-  {jp:'ともだち',rom:'tomodachi',en:'friend'},
-  {jp:'とうきょう',rom:'toukyou',en:'Tokyo'},
-  {jp:'ろんどん',rom:'rondon',en:'London'},
-  {jp:'ぱり',rom:'pari',en:'Paris'},
-  {jp:'もすくわ',rom:'mosukuwa',en:'Moscow'},
-  {jp:'そうる',rom:'souru',en:'Seoul'},
-  {jp:'ばんこく',rom:'bankoku',en:'Bangkok'},
-  {jp:'しんがぽーる',rom:'shingapooru',en:'Singapore'},
-  {jp:'しどにー',rom:'shidonii',en:'Sydney'},
-  {jp:'ほのるる',rom:'honoruru',en:'Honolulu'},
-  {jp:'とろんと',rom:'toronto',en:'Toronto'},
-  {jp:'ろさんぜるす',rom:'rosanzerusu',en:'Los Angeles'},
-  {jp:'めきしこしてぃー',rom:'mekishiko shitii',en:'Mexico City'},
-  {jp:'にゅーよーく',rom:'nyuuyooku',en:'New York'},
-  {jp:'さんぱうろ',rom:'sanpauro',en:'Sao Paulo'},
-  {jp:'から',rom:'kara',en:'from'},
-  {jp:'まで',rom:'made',en:'until'},
-  {jp:'ごぜん',rom:'gozen',en:'AM / morning (before noon)'},
-  {jp:'ごご',rom:'gogo',en:'PM / afternoon (after noon)'},
-];
+// Word reading drill pool — derived from VOCAB so every word only needs
+// entering once. Draws from every category regardless of level (word-reading
+// has never been level-filtered), using each item's own romaji/en fields.
+const WORD_POOL = Object.keys(VOCAB).reduce((pool, key) => {
+  VOCAB[key].items.forEach(item => pool.push({ jp: item.jp, romaji: item.romaji, en: item.en }));
+  return pool;
+}, []);
 
 const BADGE_LABELS = {
   'hiragana-base': 'hiragana base',
@@ -1652,8 +1572,8 @@ function startWordReading() {
   const pool = shuffle([...WORD_POOL]);
   const selected10 = pool.slice(0, 20);
   const wordDeck = selected10.map(item => {
-    const correct = item.rom;
-    const distractors = shuffle(WORD_POOL.filter(w => w.rom !== correct)).slice(0, 3).map(w => w.rom);
+    const correct = item.romaji;
+    const distractors = shuffle(WORD_POOL.filter(w => w.romaji !== correct)).slice(0, 3).map(w => w.romaji);
     const opts = shuffle([correct, ...distractors]);
     return {
       char: item.jp,
@@ -2590,6 +2510,37 @@ function startRandomMatch() {
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
     if ((VOCAB[key].level || 1) !== currentMatchLevel) return;
+    VOCAB[key].items.forEach((item, i) => {
+      allItems.push(Object.assign({id: key + '-' + i}, item));
+    });
+  });
+  const pool = shuffle(allItems).slice(0, 20);
+  matchRounds = [];
+  for (let i = 0; i < pool.length; i += 6) matchRounds.push(pool.slice(i, i + 6));
+  matchRoundIndex = 0;
+  matchMistakes = 0;
+  matchTotalMatched = 0;
+  matchTotalPairs = pool.length;
+  document.getElementById('match-finished').style.display = 'none';
+  document.getElementById('match-grid').style.display = 'grid';
+  showScreen('match-game');
+  renderMatchRound();
+}
+
+function startColoursMatch() {
+  matchCategoryKey = 'vocab-colours';
+  startMatch();
+}
+
+function startTripPrepMatch() {
+  matchCategoryKey = 'vocab-trip-prep';
+  startMatch();
+}
+
+function startRandomMatchEverything() {
+  // Pull vocab items from every category regardless of level, shuffle, take 20
+  const allItems = [];
+  Object.keys(VOCAB).forEach(key => {
     VOCAB[key].items.forEach((item, i) => {
       allItems.push(Object.assign({id: key + '-' + i}, item));
     });
