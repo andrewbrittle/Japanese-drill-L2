@@ -2134,7 +2134,13 @@ function choose(btn, selectedVal, answer, char) {
   });
   const fb = document.getElementById('q-feedback');
   const currentQ = deck[current];
-  const hint = currentQ && currentQ.hint ? ` (${currentQ.hint})` : '';
+  let hint = currentQ && currentQ.hint ? ` (${currentQ.hint})` : '';
+  if (!hint && currentQ && (currentQ.disp === 'kanji' || currentQ.disp === 'survival')) {
+    const correctOpt = currentQ.options.find(o => o.en === currentQ.answer);
+    if (correctOpt && correctOpt.jp && correctOpt.jp !== currentQ.char) {
+      hint = ` (example: ${correctOpt.jp})`;
+    }
+  }
   recordKanaResult(currentQ, selectedVal === answer);
   const isKanaItem = currentQ && (currentQ.disp === 'base' || currentQ.disp === 'diacritic' || currentQ.disp === 'youon');
   const showingHiragana = !reversed && showHiraganaOnKatakana && isKanaItem &&
