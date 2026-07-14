@@ -567,19 +567,19 @@
         <div class="group-info">
           <div class="group-name">Colours</div>
           <div class="group-chars">あか あお きいろ…</div>
-          <div class="group-count">Not covered in lessons — 10 words</div>
+          <div class="group-count">Not covered in lessons — 10 words per round</div>
         </div>
       </div>
       <div class="group-card" onclick="startTripPrepMatch()" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Useful words for the trip</div>
           <div class="group-chars">みず すし きっぷ…</div>
-          <div class="group-count">Not covered in lessons — 27 words</div>
+          <div class="group-count">Not covered in lessons — 20 random words per round</div>
         </div>
       </div>
       <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
         <div class="group-info">
-          <div class="group-name">Random matching — everything</div>
+          <div class="group-name">Reading words — everything</div>
           <div class="group-chars">らんだむな ぜんぶ</div>
           <div class="group-count">20 random words per round, from every category</div>
         </div>
@@ -2527,35 +2527,50 @@ function startRandomMatch() {
   renderMatchRound();
 }
 
+function buildVocabReadingDeck(items, groupKey) {
+  const pool = shuffle([...items]).slice(0, 20);
+  return pool.map(item => {
+    const correct = item.romaji;
+    const distractors = shuffle(items.filter(w => w.romaji !== correct)).slice(0, 3).map(w => w.romaji);
+    const opts = shuffle([correct, ...distractors]);
+    return {
+      char: item.jp,
+      answer: correct,
+      disp: 'word',
+      groupKey: groupKey,
+      options: opts.map(o => ({en: o, jp: o, rd: o})),
+      hint: item.en,
+    };
+  });
+}
+
+function startVocabReadingDeck(items, groupKey) {
+  lastSettingsScreen = 'match-settings';
+  deck = buildVocabReadingDeck(items, groupKey);
+  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
+}
+
+function startVocabReading(categoryKey) {
+  startVocabReadingDeck(VOCAB[categoryKey].items, categoryKey);
+}
+
 function startColoursMatch() {
-  matchCategoryKey = 'vocab-colours';
-  startMatch();
+  startVocabReading('vocab-colours');
 }
 
 function startTripPrepMatch() {
-  matchCategoryKey = 'vocab-trip-prep';
-  startMatch();
+  startVocabReading('vocab-trip-prep');
 }
 
 function startRandomMatchEverything() {
-  // Pull vocab items from every category regardless of level, shuffle, take 20
+  // Pull vocab items from every category regardless of level
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
-    VOCAB[key].items.forEach((item, i) => {
-      allItems.push(Object.assign({id: key + '-' + i}, item));
-    });
+    VOCAB[key].items.forEach(item => allItems.push(item));
   });
-  const pool = shuffle(allItems).slice(0, 20);
-  matchRounds = [];
-  for (let i = 0; i < pool.length; i += 6) matchRounds.push(pool.slice(i, i + 6));
-  matchRoundIndex = 0;
-  matchMistakes = 0;
-  matchTotalMatched = 0;
-  matchTotalPairs = pool.length;
-  document.getElementById('match-finished').style.display = 'none';
-  document.getElementById('match-grid').style.display = 'grid';
-  showScreen('match-game');
-  renderMatchRound();
+  startVocabReadingDeck(allItems, 'random-everything');
 }
 
 function startMatch() {
