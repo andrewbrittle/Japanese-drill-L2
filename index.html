@@ -822,6 +822,19 @@ const DATA = {
     {char:'木',answer:'Thursday',disp:'survival',options:[{en:'Thursday',jp:'木曜日',rd:'mokuyoubi'},{en:'Wednesday',jp:'水曜日',rd:'suiyoubi'},{en:'Friday',jp:'金曜日',rd:'kinyoubi'},{en:'Sunday',jp:'日曜日',rd:'nichiyoubi'}]},
     {char:'金',answer:'Friday / gold',disp:'survival',options:[{en:'Friday / gold',jp:'金曜日',rd:'kinyoubi'},{en:'Thursday',jp:'木曜日',rd:'mokuyoubi'},{en:'Saturday',jp:'土曜日',rd:'doyoubi'},{en:'Monday / month',jp:'月曜日',rd:'getsuyoubi'}]},
     {char:'土',answer:'Saturday / earth',disp:'survival',options:[{en:'Saturday / earth',jp:'土曜日',rd:'doyoubi'},{en:'Friday / gold',jp:'金曜日',rd:'kinyoubi'},{en:'Sunday',jp:'日曜日',rd:'nichiyoubi'},{en:'Tuesday',jp:'火曜日',rd:'kayoubi'}]},
+    {char:'日',answer:'Sunday',disp:'survival',options:[{en:'Sunday',jp:'日曜日',rd:'nichiyoubi'},{en:'Saturday / earth',jp:'土曜日',rd:'doyoubi'},{en:'Monday / month',jp:'月曜日',rd:'getsuyoubi'},{en:'Wednesday',jp:'水曜日',rd:'suiyoubi'}]},
+    {char:'一月',answer:'January',disp:'survival',options:[{en:'January',jp:'一月',rd:'ichigatsu'},{en:'February',jp:'二月',rd:'nigatsu'},{en:'December',jp:'十二月',rd:'juunigatsu'},{en:'March',jp:'三月',rd:'sangatsu'}]},
+    {char:'二月',answer:'February',disp:'survival',options:[{en:'February',jp:'二月',rd:'nigatsu'},{en:'January',jp:'一月',rd:'ichigatsu'},{en:'March',jp:'三月',rd:'sangatsu'},{en:'December',jp:'十二月',rd:'juunigatsu'}]},
+    {char:'三月',answer:'March',disp:'survival',options:[{en:'March',jp:'三月',rd:'sangatsu'},{en:'February',jp:'二月',rd:'nigatsu'},{en:'April',jp:'四月',rd:'shigatsu'},{en:'January',jp:'一月',rd:'ichigatsu'}]},
+    {char:'四月',answer:'April',disp:'survival',options:[{en:'April',jp:'四月',rd:'shigatsu'},{en:'March',jp:'三月',rd:'sangatsu'},{en:'May',jp:'五月',rd:'gogatsu'},{en:'September',jp:'九月',rd:'kugatsu'}]},
+    {char:'五月',answer:'May',disp:'survival',options:[{en:'May',jp:'五月',rd:'gogatsu'},{en:'April',jp:'四月',rd:'shigatsu'},{en:'June',jp:'六月',rd:'rokugatsu'},{en:'March',jp:'三月',rd:'sangatsu'}]},
+    {char:'六月',answer:'June',disp:'survival',options:[{en:'June',jp:'六月',rd:'rokugatsu'},{en:'May',jp:'五月',rd:'gogatsu'},{en:'July',jp:'七月',rd:'shichigatsu'},{en:'August',jp:'八月',rd:'hachigatsu'}]},
+    {char:'七月',answer:'July',disp:'survival',options:[{en:'July',jp:'七月',rd:'shichigatsu'},{en:'June',jp:'六月',rd:'rokugatsu'},{en:'August',jp:'八月',rd:'hachigatsu'},{en:'September',jp:'九月',rd:'kugatsu'}]},
+    {char:'八月',answer:'August',disp:'survival',options:[{en:'August',jp:'八月',rd:'hachigatsu'},{en:'July',jp:'七月',rd:'shichigatsu'},{en:'September',jp:'九月',rd:'kugatsu'},{en:'June',jp:'六月',rd:'rokugatsu'}]},
+    {char:'九月',answer:'September',disp:'survival',options:[{en:'September',jp:'九月',rd:'kugatsu'},{en:'August',jp:'八月',rd:'hachigatsu'},{en:'October',jp:'十月',rd:'juugatsu'},{en:'April',jp:'四月',rd:'shigatsu'}]},
+    {char:'十月',answer:'October',disp:'survival',options:[{en:'October',jp:'十月',rd:'juugatsu'},{en:'September',jp:'九月',rd:'kugatsu'},{en:'November',jp:'十一月',rd:'juuichigatsu'},{en:'August',jp:'八月',rd:'hachigatsu'}]},
+    {char:'十一月',answer:'November',disp:'survival',options:[{en:'November',jp:'十一月',rd:'juuichigatsu'},{en:'October',jp:'十月',rd:'juugatsu'},{en:'December',jp:'十二月',rd:'juunigatsu'},{en:'September',jp:'九月',rd:'kugatsu'}]},
+    {char:'十二月',answer:'December',disp:'survival',options:[{en:'December',jp:'十二月',rd:'juunigatsu'},{en:'November',jp:'十一月',rd:'juuichigatsu'},{en:'January',jp:'一月',rd:'ichigatsu'},{en:'October',jp:'十月',rd:'juugatsu'}]},
     {char:'年',answer:'year',disp:'survival',options:[{en:'year',jp:'今年',rd:'kotoshi'},{en:'hour / time',jp:'時間',rd:'jikan'},{en:'3 minutes',jp:'三分',rd:'sanpun'},{en:'today', jp:'今日',rd:'kyou'}]},
     {char:'今',answer:'now',disp:'survival',options:[{en:'now',jp:'今日',rd:'kyou'},{en:'year',jp:'年',rd:'nen'},{en:'before',jp:'午前',rd:'gozen'},{en:'after',jp:'午後',rd:'gogo'}]},
     {char:'時',answer:'hour / time',disp:'survival',options:[{en:'hour / time',jp:'時間',rd:'jikan'},{en:'3 minutes',jp:'三分',rd:'sanpun'},{en:'today', jp:'今日',rd:'kyou'},{en:'this year', jp:'今年',rd:'kotoshi'}]},
@@ -1598,11 +1611,10 @@ function genNumberDistractors(n) {
   return [...candidates].slice(0, 3).map(c => numToJapanese(c));
 }
 
-function startWordReading() {
-  lastSettingsScreen = 'match-settings';
+function buildWordReadingDeck() {
   const pool = shuffle([...WORD_POOL]);
   const selected10 = pool.slice(0, 20);
-  const wordDeck = selected10.map(item => {
+  return selected10.map(item => {
     const correct = item.romaji;
     const distractors = shuffle(WORD_POOL.filter(w => w.romaji !== correct)).slice(0, 3).map(w => w.romaji);
     const opts = shuffle([correct, ...distractors]);
@@ -1615,20 +1627,24 @@ function startWordReading() {
       hint: item.en,
     };
   });
-  deck = wordDeck;
+}
+
+function startWordReading() {
+  lastSettingsScreen = 'match-settings';
+  lastDeckBuilder = buildWordReadingDeck;
+  deck = buildWordReadingDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
 }
 
-function startNumberChallenge() {
-  lastSettingsScreen = 'match-settings';
+function buildNumberChallengeDeck() {
   const nums = [];
   while (nums.length < 5) {
     const n = Math.floor(Math.random() * 9999) + 1;
     if (!nums.includes(n)) nums.push(n);
   }
-  const numDeck = nums.map(n => {
+  return nums.map(n => {
     const correct = numToJapanese(n);
     const distractors = genNumberDistractors(n);
     const opts = shuffle([correct, ...distractors]);
@@ -1640,7 +1656,12 @@ function startNumberChallenge() {
       options: opts.map(o => ({en: o, jp: o, rd: o})),
     };
   });
-  deck = numDeck;
+}
+
+function startNumberChallenge() {
+  lastSettingsScreen = 'match-settings';
+  lastDeckBuilder = buildNumberChallengeDeck;
+  deck = buildNumberChallengeDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
@@ -1716,8 +1737,7 @@ function genTimeDistractors(hour, half, ampm, frame) {
   return distractors.slice(0, 3);
 }
 
-function startTimeChallenge() {
-  lastSettingsScreen = 'match-settings';
+function buildTimeChallengeDeck() {
   const usedKeys = new Set();
   const times = [];
   while (times.length < 10) {
@@ -1730,7 +1750,7 @@ function startTimeChallenge() {
     usedKeys.add(key);
     times.push({ hour, half, ampm, frame });
   }
-  const timeDeck = times.map(t => {
+  return times.map(t => {
     const correctKana = timeToKana(t.hour, t.half, t.ampm, t.frame);
     const correctRomaji = timeToRomaji(t.hour, t.half, t.ampm, t.frame);
     const distractorCombos = genTimeDistractors(t.hour, t.half, t.ampm, t.frame);
@@ -1747,7 +1767,12 @@ function startTimeChallenge() {
       options: allOpts.map(o => ({ en: o.kana, jp: o.kana, rd: o.romaji })),
     };
   });
-  deck = timeDeck;
+}
+
+function startTimeChallenge() {
+  lastSettingsScreen = 'match-settings';
+  lastDeckBuilder = buildTimeChallengeDeck;
+  deck = buildTimeChallengeDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
@@ -1880,7 +1905,10 @@ const KANJI_READINGS = {
   '六|six': 'ろく', '七|seven': 'しち', '八|eight': 'はち', '九|nine': 'く', '十|ten': 'じゅう',
   '円|yen': 'せんえん', '月|Monday / month': 'げつようび', '火|Tuesday': 'かようび',
   '水|Wednesday': 'すいようび', '木|Thursday': 'もくようび', '金|Friday / gold': 'きんようび',
-  '土|Saturday / earth': 'どようび', '年|year': 'ことし', '今|now': 'きょう', '時|hour / time': 'じかん',
+  '土|Saturday / earth': 'どようび', '日|Sunday': 'にちようび', '年|year': 'ことし', '今|now': 'きょう', '時|hour / time': 'じかん',
+  '一月|January': 'いちがつ', '二月|February': 'にがつ', '三月|March': 'さんがつ', '四月|April': 'しがつ',
+  '五月|May': 'ごがつ', '六月|June': 'ろくがつ', '七月|July': 'しちがつ', '八月|August': 'はちがつ',
+  '九月|September': 'くがつ', '十月|October': 'じゅうがつ', '十一月|November': 'じゅういちがつ', '十二月|December': 'じゅうにがつ',
   '分|minute': 'さんぷん', '前|before / front': 'ごぜん', '後|after / back': 'ごご',
   '計|watch / clock (時計)': 'とけい', '百|hundred': 'ひゃく', '千|thousand': 'せん', '万|ten thousand': 'まん',
   '半|half': 'はん', '間|interval / hours (時間)': 'じかん', '午|noon (午前/午後)': 'ごご',
@@ -2081,7 +2109,7 @@ function renderQuestion() {
       const val = isKanjiLike ? o.en : o;
       btn.dataset.value = val;
       if (isKanjiLike) {
-        btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">${o.rd}</span><span class="opt-en">(${o.en})</span>`;
+        btn.innerHTML = `<span class="opt-rd">${o.rd}</span><span class="opt-en">(${o.en})</span>`;
       } else if (showHiragana) {
         btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
         btn.style.fontSize = '28px';
@@ -2589,6 +2617,7 @@ function buildVocabReadingDeck(items, groupKey) {
 
 function startVocabReadingDeck(items, groupKey) {
   lastSettingsScreen = 'match-settings';
+  lastDeckBuilder = () => buildVocabReadingDeck(items, groupKey);
   deck = buildVocabReadingDeck(items, groupKey);
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
