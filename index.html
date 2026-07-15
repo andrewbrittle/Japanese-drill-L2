@@ -143,6 +143,7 @@
   .type-survival { color: var(--purple); border-color: rgba(179,157,219,0.3); background: var(--purple-dim); }
 
   .char-display { font-size: 100px; line-height: 1; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; text-align: center; }
+  .alt-form { font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
 
   .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; text-align: center; }
 
@@ -241,34 +242,6 @@
   .match-card-select.selected { border-color: var(--purple); background: var(--purple-dim); }
   .match-card-select .group-name { font-size: 15px; font-weight: 700; }
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
-
-  .round-label { font-size: 13px; font-weight: 600; color: var(--text-muted); text-align: center; }
-
-  .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 10px; align-items: stretch; }
-  .match-card {
-    padding: 10px 8px; border-radius: var(--radius);
-    border: 1px solid var(--border); background: var(--surface2);
-    color: var(--text); font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: all 0.15s; text-align: center; min-height: 64px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    line-height: 1.3;
-  }
-  .match-card.jp .jp-text { font-size: 19px; font-weight: 600; font-family: 'BIZ UDPGothic', sans-serif; }
-  .match-card.jp .romaji-text { font-size: 11px; font-weight: 600; color: var(--text-dim); margin-top: 2px; }
-  .match-card.matched .romaji-text { color: var(--green); opacity: 0.8; }
-  .match-card.picked .romaji-text { color: var(--purple); }
-  .match-card.wrong .romaji-text { color: var(--red); }
-  .match-card:hover:not(:disabled) { border-color: var(--border-hover); background: #2a2a2a; }
-  .match-card.picked { border-color: var(--purple); background: var(--purple-dim); color: var(--purple); }
-  .match-card.matched { border-color: var(--green); background: var(--green-dim); color: var(--green); opacity: 0.6; cursor: default; }
-  .match-card.wrong { border-color: var(--red); background: var(--red-dim); color: var(--red); }
-  .match-card:disabled { cursor: default; }
-
-  .match-banner {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); padding: 2rem; text-align: center;
-  }
-  .match-banner .score-big { font-size: 40px; }
 
   /* Level filter pills on Match screen */
   .level-filter-row { display: flex; gap: 8px; }
@@ -457,6 +430,7 @@
     <div class="card">
       <div style="text-align:center;"><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
+      <div class="alt-form" id="q-alt-form" style="display:none;"></div>
       <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="3 9 8 9 12 5 12 19 8 15 3 15" fill="currentColor" stroke="currentColor"></polygon>
@@ -557,35 +531,11 @@
 
       <div class="section-label">Lesson vocabulary</div>
       <div id="match-category-list"></div>
-      <button class="start-btn" id="match-start-btn" onclick="startMatch()" disabled>Start matching</button>
+      <button class="start-btn" id="match-start-btn" onclick="startLevelVocabReading()" disabled>Start</button>
     </div>
   </div>
 
   <!-- Match game screen -->
-  <div class="screen" id="screen-match-game">
-    <div class="settings-sub" style="margin-bottom:0.75rem;">Read each word, then find its match.</div>
-    <div class="round-label" id="match-round-label">Round 1 / 1</div>
-    <div class="stats-row">
-      <div class="stat-pill"><div class="stat-num green" id="match-stat-matched">0</div><div class="stat-lbl">matched</div></div>
-      <div class="stat-pill"><div class="stat-num red" id="match-stat-mistakes">0</div><div class="stat-lbl">mistakes</div></div>
-      <div class="stat-pill"><div class="stat-num gold" id="match-stat-left">0</div><div class="stat-lbl">left</div></div>
-    </div>
-    <div class="match-grid" id="match-grid" style="display:grid;"></div>
-    <div id="match-round-complete" style="display:none; text-align:center;">
-      <button class="btn-primary" onclick="nextMatchRound()">Next round →</button>
-    </div>
-    <div id="match-finished" style="display:none;">
-      <div class="match-banner">
-        <div class="score-big" id="match-final-score">0 mistakes</div>
-        <div class="score-sub" id="match-final-msg">—</div>
-      </div>
-      <div class="results-btns" style="margin-top:1rem;">
-        <button class="btn-primary" onclick="startMatch()">Play again</button>
-        <button class="btn-secondary" onclick="showMatchSettings()">Change word set</button>
-      </div>
-    </div>
-    <button class="btn-secondary" onclick="quitMatch()" style="margin-top:0.75rem;">Quit</button>
-  </div>
 
 </main>
 
@@ -1026,18 +976,18 @@ const VOCAB = {
       {jp:'いぎりす', romaji:'igirisu', en:'UK / England'},
       {jp:'いたりあ', romaji:'itaria', en:'Italy'},
       {jp:'あめりか', romaji:'amerika', en:'USA'},
-      {jp:'まれーしあ', romaji:'mareeshia', en:'Malaysia'},
+      {jp:'マレーシア', romaji:'mareeshia', en:'Malaysia', altForm:'まれーしあ'},
       {jp:'いらん', romaji:'iran', en:'Iran'},
       {jp:'どいつ', romaji:'doitsu', en:'Germany'},
-      {jp:'ぽーらんど', romaji:'poorando', en:'Poland'},
+      {jp:'ポーランド', romaji:'poorando', en:'Poland', altForm:'ぽーらんど'},
       {jp:'すいす', romaji:'suisu', en:'Switzerland'},
       {jp:'いんど', romaji:'indo', en:'India'},
       {jp:'いんどねしあ', romaji:'indoneshia', en:'Indonesia'},
       {jp:'えじぷと', romaji:'ejiputo', en:'Egypt'},
-      {jp:'おーすとらりあ', romaji:'oosutoraria', en:'Australia'},
+      {jp:'オーストラリア', romaji:'oosutoraria', en:'Australia', altForm:'おーすとらりあ'},
       {jp:'かなだ', romaji:'kanada', en:'Canada'},
       {jp:'さうじあらびあ', romaji:'saujiarabia', en:'Saudi Arabia'},
-      {jp:'しんがぽーる', romaji:'shingapooru', en:'Singapore'},
+      {jp:'シンガポール', romaji:'shingapooru', en:'Singapore', altForm:'しんがぽーる'},
       {jp:'すぺいん', romaji:'supein', en:'Spain'},
       {jp:'たい', romaji:'tai', en:'Thailand'},
       {jp:'ふぃりぴん', romaji:'firipin', en:'Philippines'},
@@ -1064,7 +1014,7 @@ const VOCAB = {
       {jp:'ひしょ', romaji:'hisho', en:'secretary'},
       {jp:'きょうし', romaji:'kyoushi', en:'teacher (formal)'},
       {jp:'こむいん', romaji:'komuin', en:'civil servant'},
-      {jp:'でざいなー', romaji:'dezainaa', en:'designer'},
+      {jp:'デザイナー', romaji:'dezainaa', en:'designer', altForm:'でざいなー'},
       {jp:'しゃいん', romaji:'shain', en:'staff member / employee'},
     ],
   },
@@ -1084,7 +1034,7 @@ const VOCAB = {
       {jp:'りょうり', romaji:'ryouri', en:'cooking'},
       {jp:'かばん', romaji:'kaban', en:'bag'},
       {jp:'かぎ', romaji:'kagi', en:'key'},
-      {jp:'ぼーるぺん', romaji:'boorupen', en:'ballpoint pen'},
+      {jp:'ボールペン', romaji:'boorupen', en:'ballpoint pen', altForm:'ぼーるぺん'},
       {jp:'えんぴつ', romaji:'empitsu', en:'pencil'},
       {jp:'れきし', romaji:'rekishi', en:'history'},
       {jp:'くるま', romaji:'kuruma', en:'car'},
@@ -1092,20 +1042,20 @@ const VOCAB = {
       {jp:'さいふ', romaji:'saifu', en:'purse / wallet'},
       {jp:'じてんしゃ', romaji:'jitensha', en:'bicycle'},
       {jp:'かめら', romaji:'kamera', en:'camera'},
-      {jp:'かーど', romaji:'kaado', en:'card'},
-      {jp:'こんぴゅーたー', romaji:'konpyuutaa', en:'computer'},
-      {jp:'こーひー', romaji:'koohii', en:'coffee'},
-      {jp:'しゃーぷぺんしる', romaji:'shaapupenshiru', en:'mechanical pencil'},
+      {jp:'カード', romaji:'kaado', en:'card', altForm:'かーど'},
+      {jp:'コンピューター', romaji:'konpyuutaa', en:'computer', altForm:'こんぴゅーたー'},
+      {jp:'コーヒー', romaji:'koohii', en:'coffee', altForm:'こーひー'},
+      {jp:'シャープペンシル', romaji:'shaapupenshiru', en:'mechanical pencil', altForm:'しゃーぷぺんしる'},
       {jp:'しんぶん', romaji:'shinbun', en:'newspaper'},
-      {jp:'ちょこれーと', romaji:'chokoreeto', en:'chocolate'},
+      {jp:'チョコレート', romaji:'chokoreeto', en:'chocolate', altForm:'ちょこれーと'},
       {jp:'つくえ', romaji:'tsukue', en:'desk'},
       {jp:'てちょう', romaji:'techou', en:'pocket notebook'},
-      {jp:'てれび', romaji:'terebi', en:'television'},
-      {jp:'のーと', romaji:'nooto', en:'notebook'},
+      {jp:'テレビ', romaji:'terebi', en:'television', altForm:'てれび'},
+      {jp:'ノート', romaji:'nooto', en:'notebook', altForm:'のーと'},
       {jp:'めいし', romaji:'meishi', en:'business card'},
-      {jp:'らじお', romaji:'rajio', en:'radio'},
+      {jp:'ラジオ', romaji:'rajio', en:'radio', altForm:'らじお'},
       {jp:'ぺん', romaji:'pen', en:'pen'},
-      {jp:'てーぷ', romaji:'teepu', en:'tape'},
+      {jp:'テープ', romaji:'teepu', en:'tape', altForm:'てーぷ'},
       {jp:'たばこ', romaji:'tabako', en:'cigarettes'},
       {jp:'わいん', romaji:'wain', en:'wine'},
     ],
@@ -1113,11 +1063,11 @@ const VOCAB = {
   'vocab-clothing': {
     level: 1,
     label: 'Clothing & accessories',
-    chars: 'くつ ぼうし じーんず…',
+    chars: 'くつ ぼうし ジーンズ…',
     items: [
       {jp:'くつ', romaji:'kutsu', en:'shoes'},
       {jp:'ぼうし', romaji:'boushi', en:'hat'},
-      {jp:'じーんず', romaji:'jiinzu', en:'jeans'},
+      {jp:'ジーンズ', romaji:'jiinzu', en:'jeans', altForm:'じーんず'},
       {jp:'ねくたい', romaji:'nekutai', en:'necktie'},
     ],
   },
@@ -1141,9 +1091,9 @@ const VOCAB = {
       {jp:'かい', romaji:'kai', en:'floor / storey'},
       {jp:'うりば', romaji:'uriba', en:'sales counter / department'},
       {jp:'かいだん', romaji:'kaidan', en:'stairs'},
-      {jp:'えれべーたー', romaji:'erebeetaa', en:'elevator / lift'},
-      {jp:'えすかれーたー', romaji:'esukareetaa', en:'escalator'},
-      {jp:'でぱーと', romaji:'depaato', en:'department store'},
+      {jp:'エレベーター', romaji:'erebeetaa', en:'elevator / lift', altForm:'えれべーたー'},
+      {jp:'エスカレーター', romaji:'esukareetaa', en:'escalator', altForm:'えすかれーたー'},
+      {jp:'デパート', romaji:'depaato', en:'department store', altForm:'でぱーと'},
       {jp:'えき', romaji:'eki', en:'station'},
     ],
   },
@@ -1221,8 +1171,8 @@ const VOCAB = {
       {jp:'しろ', romaji:'shiro', en:'white'},
       {jp:'ちゃいろ', romaji:'chairo', en:'brown'},
       {jp:'むらさき', romaji:'murasaki', en:'purple'},
-      {jp:'ぴんく', romaji:'pinku', en:'pink'},
-      {jp:'おれんじ', romaji:'orenji', en:'orange'},
+      {jp:'ピンク', romaji:'pinku', en:'pink', altForm:'ぴんく'},
+      {jp:'オレンジ', romaji:'orenji', en:'orange', altForm:'おれんじ'},
     ],
   },
   'vocab-cities': {
@@ -1236,13 +1186,13 @@ const VOCAB = {
       {jp:'もすくわ', romaji:'mosukuwa', en:'Moscow'},
       {jp:'そうる', romaji:'souru', en:'Seoul'},
       {jp:'ばんこく', romaji:'bankoku', en:'Bangkok'},
-      {jp:'しんがぽーる', romaji:'shingapooru', en:'Singapore'},
-      {jp:'しどにー', romaji:'shidonii', en:'Sydney'},
+      {jp:'シンガポール', romaji:'shingapooru', en:'Singapore', altForm:'しんがぽーる'},
+      {jp:'シドニー', romaji:'shidonii', en:'Sydney', altForm:'しどにー'},
       {jp:'ほのるる', romaji:'honoruru', en:'Honolulu'},
       {jp:'とろんと', romaji:'toronto', en:'Toronto'},
       {jp:'ろさんぜるす', romaji:'rosanzerusu', en:'Los Angeles'},
-      {jp:'めきしこしてぃー', romaji:'mekishiko shitii', en:'Mexico City'},
-      {jp:'にゅーよーく', romaji:'nyuuyooku', en:'New York'},
+      {jp:'メキシコシティー', romaji:'mekishiko shitii', en:'Mexico City', altForm:'めきしこしてぃー'},
+      {jp:'ニューヨーク', romaji:'nyuuyooku', en:'New York', altForm:'にゅーよーく'},
       {jp:'さんぱうろ', romaji:'sanpauro', en:'Sao Paulo'},
     ],
   },
@@ -1293,7 +1243,7 @@ const VOCAB = {
       {jp:'てんぷら', romaji:'tenpura', en:'tempura'},
       {jp:'そば', romaji:'soba', en:'soba noodles'},
       {jp:'うどん', romaji:'udon', en:'udon noodles'},
-      {jp:'らーめん', romaji:'raamen', en:'ramen'},
+      {jp:'ラーメン', romaji:'raamen', en:'ramen', altForm:'らーめん'},
       {jp:'おみやげ', romaji:'omiyage', en:'souvenir'},
       {jp:'たべもの', romaji:'tabemono', en:'food'},
       {jp:'のみもの', romaji:'nomimono', en:'drink'},
@@ -1321,7 +1271,7 @@ const VOCAB = {
 // entering once. Draws from every category regardless of level (word-reading
 // has never been level-filtered), using each item's own romaji/en fields.
 const WORD_POOL = Object.keys(VOCAB).reduce((pool, key) => {
-  VOCAB[key].items.forEach(item => pool.push({ jp: item.jp, romaji: item.romaji, en: item.en }));
+  VOCAB[key].items.forEach(item => pool.push({ jp: item.jp, romaji: item.romaji, en: item.en, altForm: item.altForm }));
   return pool;
 }, []);
 
@@ -1534,7 +1484,7 @@ function showScreen(id) {
   if (id === 'hiragana-ref') document.querySelectorAll('.nav-pill')[0].classList.add('active');
   else if (id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
   else if (id === 'kanji-ref') document.querySelectorAll('.nav-pill')[2].classList.add('active');
-  else if (id === 'match-settings' || id === 'match-game') document.querySelectorAll('.nav-pill')[4].classList.add('active');
+  else if (id === 'match-settings') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
   if (id === 'hiragana-ref') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
   else if (id === 'katakana-ref') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
@@ -1641,6 +1591,7 @@ function buildWordReadingDeck() {
       groupKey: 'word-reading',
       options: opts.map(o => ({en: o, jp: o, rd: o})),
       hint: item.en,
+      altForm: item.altForm,
     };
   });
 }
@@ -2048,6 +1999,16 @@ function renderQuestion() {
   else if (q.disp === 'number' || q.disp === 'time') badgeClass = 'kanji';
   badge.className = 'type-badge type-' + badgeClass;
 
+  const altEl = document.getElementById('q-alt-form');
+  if (altEl) {
+    if (q.altForm) {
+      altEl.textContent = 'also written: ' + q.altForm;
+      altEl.style.display = 'block';
+    } else {
+      altEl.style.display = 'none';
+    }
+  }
+
   document.getElementById('q-feedback').textContent = '';
   document.getElementById('q-feedback').className = 'feedback';
   document.getElementById('next-btn').style.visibility = 'hidden';
@@ -2240,15 +2201,8 @@ function showResults() {
   }
 }
 
-/* ---------- Vocab matching mode ---------- */
+/* ---------- Vocab reading mode (Level 1/2 category selection) ---------- */
 let matchCategoryKey = null;
-let matchRounds = [];
-let matchRoundIndex = 0;
-let matchPicked = { left: null, right: null };
-let matchMatchedIds = new Set();
-let matchMistakes = 0;
-let matchTotalPairs = 0;
-let matchTotalMatched = 0;
 
 // Row layouts for each hiragana section. rowDataIndices maps each displayed
 // row to the DATA[dataKey] indices it contains (base's order differs from
@@ -2616,41 +2570,28 @@ function selectMatchCategory(key, card) {
   document.getElementById('match-start-btn').disabled = false;
 }
 
+function startLevelVocabReading() {
+  if (!matchCategoryKey) return;
+  startVocabReadingDeck(VOCAB[matchCategoryKey].items, matchCategoryKey);
+}
+
 function showMatchSettings() {
   showScreen('match-settings');
 }
 
-function quitMatch() {
-  matchCategoryKey = null;
-  matchRounds = [];
+function tryResumeMatch() {
   showMatchSettings();
 }
 
-function tryResumeMatch() {
-  if (matchCategoryKey && matchRounds.length > 0) showScreen('match-game');
-  else showMatchSettings();
-}
-
 function startRandomMatch() {
-  // Pull vocab items from categories at the current level, shuffle, take 20
+  // Pull vocab items from categories at the current level, hand off to the
+  // shared reading-challenge deck builder (same format as every other card)
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
     if ((VOCAB[key].level || 1) !== currentMatchLevel) return;
-    VOCAB[key].items.forEach((item, i) => {
-      allItems.push(Object.assign({id: key + '-' + i}, item));
-    });
+    VOCAB[key].items.forEach(item => allItems.push(item));
   });
-  const pool = shuffle(allItems).slice(0, 20);
-  matchRounds = [];
-  for (let i = 0; i < pool.length; i += 6) matchRounds.push(pool.slice(i, i + 6));
-  matchRoundIndex = 0;
-  matchMistakes = 0;
-  matchTotalMatched = 0;
-  matchTotalPairs = pool.length;
-  document.getElementById('match-finished').style.display = 'none';
-  document.getElementById('match-grid').style.display = 'grid';
-  showScreen('match-game');
-  renderMatchRound();
+  startVocabReadingDeck(allItems, 'random-level-' + currentMatchLevel);
 }
 
 function buildVocabReadingDeck(items, groupKey) {
@@ -2666,6 +2607,7 @@ function buildVocabReadingDeck(items, groupKey) {
       groupKey: groupKey,
       options: opts.map(o => ({en: o, jp: o, rd: o})),
       hint: item.en,
+      altForm: item.altForm,
     };
   });
 }
@@ -2698,119 +2640,6 @@ function startRandomMatchEverything() {
     VOCAB[key].items.forEach(item => allItems.push(item));
   });
   startVocabReadingDeck(allItems, 'random-everything');
-}
-
-function startMatch() {
-  if (!matchCategoryKey) return;
-  const items = shuffle(VOCAB[matchCategoryKey].items.map((it, i) => Object.assign({id: matchCategoryKey + '-' + i}, it)));
-  matchRounds = [];
-  for (let i = 0; i < items.length; i += 6) matchRounds.push(items.slice(i, i + 6));
-  matchRoundIndex = 0;
-  matchMistakes = 0;
-  matchTotalMatched = 0;
-  matchTotalPairs = items.length;
-  document.getElementById('match-finished').style.display = 'none';
-  document.getElementById('match-grid').style.display = 'grid';
-  showScreen('match-game');
-  renderMatchRound();
-}
-
-function renderMatchRound() {
-  const round = matchRounds[matchRoundIndex];
-  matchPicked = { left: null, right: null };
-  matchMatchedIds = new Set();
-
-  document.getElementById('match-round-label').textContent = `Round ${matchRoundIndex + 1} / ${matchRounds.length}`;
-  document.getElementById('match-round-complete').style.display = 'none';
-  document.getElementById('match-grid').style.display = 'grid';
-  updateMatchStats();
-
-  const grid = document.getElementById('match-grid');
-  grid.innerHTML = '';
-
-  const leftItems = shuffle(round);
-  const rightItems = shuffle(round);
-
-  for (let i = 0; i < round.length; i++) {
-    const lit = leftItems[i];
-    const lbtn = document.createElement('button');
-    lbtn.className = 'match-card jp';
-    lbtn.innerHTML = `<span class="jp-text">${lit.jp}</span><span class="romaji-text">${lit.romaji}</span>`;
-    lbtn.onclick = () => pickMatchCard('left', lit.id, lbtn);
-    lbtn.dataset.id = lit.id;
-    grid.appendChild(lbtn);
-
-    const rit = rightItems[i];
-    const rbtn = document.createElement('button');
-    rbtn.className = 'match-card en';
-    rbtn.textContent = rit.en;
-    rbtn.onclick = () => pickMatchCard('right', rit.id, rbtn);
-    rbtn.dataset.id = rit.id;
-    grid.appendChild(rbtn);
-  }
-}
-
-function updateMatchStats() {
-  document.getElementById('match-stat-matched').textContent = matchTotalMatched;
-  document.getElementById('match-stat-mistakes').textContent = matchMistakes;
-  const round = matchRounds[matchRoundIndex] || [];
-  document.getElementById('match-stat-left').textContent = round.length - matchMatchedIds.size;
-}
-
-function pickMatchCard(side, id, btn) {
-  if (matchMatchedIds.has(id)) return;
-  if (matchPicked[side] && matchPicked[side].id === id) return;
-
-  if (matchPicked[side]) matchPicked[side].btn.classList.remove('picked');
-  matchPicked[side] = { id, btn };
-  btn.classList.add('picked');
-
-  const other = side === 'left' ? 'right' : 'left';
-  if (!matchPicked[other]) return;
-
-  const a = matchPicked.left, b = matchPicked.right;
-  if (a.id === b.id) {
-    a.btn.classList.remove('picked'); b.btn.classList.remove('picked');
-    a.btn.classList.add('matched'); b.btn.classList.add('matched');
-    a.btn.disabled = true; b.btn.disabled = true;
-    matchMatchedIds.add(a.id);
-    matchTotalMatched++;
-    matchPicked = { left: null, right: null };
-    updateMatchStats();
-    const round = matchRounds[matchRoundIndex];
-    if (matchMatchedIds.size === round.length) {
-      setTimeout(() => {
-        if (matchRoundIndex + 1 < matchRounds.length) {
-          document.getElementById('match-round-complete').style.display = 'block';
-        } else {
-          finishMatch();
-        }
-      }, 300);
-    }
-  } else {
-    matchMistakes++;
-    a.btn.classList.add('wrong'); b.btn.classList.add('wrong');
-    updateMatchStats();
-    setTimeout(() => {
-      a.btn.classList.remove('picked', 'wrong');
-      b.btn.classList.remove('picked', 'wrong');
-      matchPicked = { left: null, right: null };
-    }, 500);
-  }
-}
-
-function nextMatchRound() {
-  matchRoundIndex++;
-  renderMatchRound();
-}
-
-function finishMatch() {
-  document.getElementById('match-grid').style.display = 'none';
-  document.getElementById('match-round-complete').style.display = 'none';
-  document.getElementById('match-finished').style.display = 'block';
-  const msg = matchMistakes === 0 ? 'Perfect — no mistakes!' : matchMistakes <= 2 ? 'Great work!' : 'Good effort — try again for fewer mistakes.';
-  document.getElementById('match-final-score').textContent = matchTotalPairs + ' pairs · ' + matchMistakes + ' mistake' + (matchMistakes === 1 ? '' : 's');
-  document.getElementById('match-final-msg').textContent = msg;
 }
 
 buildMatchCategoryList();
