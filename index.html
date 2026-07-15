@@ -2012,10 +2012,10 @@ function getSpeechText(q) {
 }
 
 function speakCurrent() {
-  if (!SPEECH_SUPPORTED || answered) return;
+  if (!SPEECH_SUPPORTED) return;
   const q = deck[current];
   if (!q) return;
-  if (!hintUsedThisQuestion) {
+  if (!answered && !hintUsedThisQuestion) {
     hintUsedThisQuestion = true;
     hints++;
     document.getElementById('stat-hints').textContent = hints;
@@ -2177,8 +2177,6 @@ function renderQuestion() {
 function choose(btn, selectedVal, answer, char) {
   if (answered) return;
   answered = true;
-  const speakBtn = document.getElementById('speak-btn');
-  if (speakBtn) speakBtn.disabled = true;
   document.querySelectorAll('.opt').forEach(b => {
     b.disabled = true;
     if (b.dataset.value === answer) b.classList.add('correct');
