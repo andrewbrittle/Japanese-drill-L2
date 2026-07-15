@@ -431,6 +431,14 @@
     <div id="kanji-grid-general" style="display:none;"></div>
     <div id="kanji-grid-verbs" style="display:none;"></div>
 
+    <div class="group-card" id="kanji-hiragana-answers-card" onclick="toggleHiraganaOnKanji()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Show hiragana on answers</div>
+        <div class="group-count">See readings in hiragana instead of romaji</div>
+      </div>
+      <div class="toggle" id="kanji-hiragana-answers-toggle"></div>
+    </div>
+
     <button class="start-btn" id="kanji-ref-drill-btn" onclick="drillKanjiSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
 
@@ -1374,6 +1382,14 @@ function toggleHiraganaOnKatakana() {
   if (refCard) refCard.classList.toggle('selected', showHiraganaOnKatakana);
 }
 
+let showHiraganaOnKanji = false;
+
+function toggleHiraganaOnKanji() {
+  showHiraganaOnKanji = !showHiraganaOnKanji;
+  const card = document.getElementById('kanji-hiragana-answers-card');
+  if (card) card.classList.toggle('selected', showHiraganaOnKanji);
+}
+
 function updateHiraganaAnswersVisibility() {
   const refCard = document.getElementById('hiragana-answers-card-ref');
   if (refCard) refCard.style.display = reversed ? 'none' : 'flex';
@@ -1909,6 +1925,40 @@ const KANJI_READINGS = {
   '一月|January': 'いちがつ', '二月|February': 'にがつ', '三月|March': 'さんがつ', '四月|April': 'しがつ',
   '五月|May': 'ごがつ', '六月|June': 'ろくがつ', '七月|July': 'しちがつ', '八月|August': 'はちがつ',
   '九月|September': 'くがつ', '十月|October': 'じゅうがつ', '十一月|November': 'じゅういちがつ', '十二月|December': 'じゅうにがつ',
+
+  // Readings for phrases that only ever appear as distractor options (never
+  // as their own drillable item), needed so the hiragana-answers toggle
+  // doesn't fall back to romaji for these.
+  '千円|yen': 'せんえん', '三分|3 minutes': 'さんぷん', '三分|minute': 'さんぷん',
+  '月曜日|Monday / month': 'げつようび', '火曜日|Tuesday': 'かようび', '水曜日|Wednesday': 'すいようび',
+  '木曜日|Thursday': 'もくようび', '金曜日|Friday': 'きんようび', '金曜日|Friday / gold': 'きんようび',
+  '土曜日|Saturday': 'どようび', '土曜日|Saturday / earth': 'どようび', '日曜日|Sunday': 'にちようび',
+  '今年|year': 'ことし', '今年|this year': 'ことし', '今日|today': 'きょう', '今日|now': 'きょう',
+  '午前|before': 'ごぜん', '午前|before / front': 'ごぜん', '午後|after': 'ごご', '午後|after / back': 'ごご',
+  '午後|noon (午前/午後)': 'ごご', '時間|hour / time': 'じかん', '時間|interval / hours (時間)': 'じかん',
+  '時計|watch / clock (時計)': 'とけい', '間|interval': 'かん',
+  '日本|sun / day': 'にほん', '富士山|mountain': 'ふじさん', '富士山|Mt. Fuji': 'ふじさん',
+  '大学|big / great': 'だいがく', '日本人|person': 'にほんじん', '日本人|Japanese person': 'にほんじん',
+  '小学校|small': 'しょうがっこう', '上手|up / above': 'じょうず', '地下鉄|down / below': 'ちかてつ',
+  '左折|turn left': 'させつ', '左折|left': 'させつ', '右折|turn right': 'うせつ', '右折|right': 'うせつ',
+  '中学校|middle school': 'ちゅうがっこう', '中学校|middle / inside': 'ちゅうがっこう',
+  '東京|Tokyo (東京)': 'とうきょう', '東京|east': 'とうきょう',
+  '西口|west exit': 'にしぐち', '西口|west': 'にしぐち', '南口|south exit': 'みなみぐち', '南口|south': 'みなみぐち',
+  '北口|north exit': 'きたぐち', '北口|north': 'きたぐち',
+  '東京駅|station': 'とうきょうえき', '東京駅|Tokyo Station': 'とうきょうえき',
+  '電車|train': 'でんしゃ', '電車|electric': 'でんしゃ', '電車|car / vehicle': 'でんしゃ', '車|car': 'くるま',
+  '山手線|Yamanote Line': 'やまのてせん', '山手線|line': 'やまのてせん',
+  'お店|shop / store': 'おみせ', '病院|hospital': 'びょういん', '病院|sick / illness': 'びょういん', '病院|institution': 'びょういん',
+  '学校|school': 'がっこう', '銀行|bank': 'ぎんこう', '銀行|go / bank (銀行)': 'ぎんこう',
+  '止まれ|stop': 'とまれ', '危険|danger': 'きけん', '危険|risk / steep': 'きけん',
+  '注意|caution': 'ちゅうい', '注意|pour / focus (注意)': 'ちゅうい', '注意|meaning / attention': 'ちゅうい',
+  '開く|open': 'ひらく', '閉まる|closed': 'しまる', '禁止|prohibited': 'きんし', '禁止|prohibit': 'きんし',
+  '押す|push': 'おす', '引く|pull': 'ひく',
+  '入口|enter (入口 entrance)': 'いりぐち', '入口|entrance': 'いりぐち', '出口|exit': 'でぐち', '出口|exit (出口)': 'でぐち',
+  '二階|floor / storey': 'にかい', '食堂|canteen': 'しょくどう', '会議室|meeting room': 'かいぎしつ',
+  '肉|meat': 'にく', '大|big': 'だい', '料理|cooking': 'りょうり', '果物|fruit': 'くだもの',
+  '高い|expensive': 'たかい', 'どこ|where': 'どこ', '中|inside / middle': 'なか',
+  '毎日|every (毎日 every day)': 'まいにち', '週|week': 'しゅう', '行く|to go': 'いく', '休む|to rest': 'やすむ',
   '分|minute': 'さんぷん', '前|before / front': 'ごぜん', '後|after / back': 'ごご',
   '計|watch / clock (時計)': 'とけい', '百|hundred': 'ひゃく', '千|thousand': 'せん', '万|ten thousand': 'まん',
   '半|half': 'はん', '間|interval / hours (時間)': 'じかん', '午|noon (午前/午後)': 'ごご',
@@ -2109,7 +2159,8 @@ function renderQuestion() {
       const val = isKanjiLike ? o.en : o;
       btn.dataset.value = val;
       if (isKanjiLike) {
-        btn.innerHTML = `<span class="opt-rd">${o.rd}</span><span class="opt-en">(${o.en})</span>`;
+        const rdDisplay = showHiraganaOnKanji ? (KANJI_READINGS[o.jp + '|' + o.en] || o.rd) : o.rd;
+        btn.innerHTML = `<span class="opt-rd">${rdDisplay}</span><span class="opt-en">(${o.en})</span>`;
       } else if (showHiragana) {
         btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
         btn.style.fontSize = '28px';
