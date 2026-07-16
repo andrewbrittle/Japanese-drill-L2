@@ -1619,14 +1619,14 @@ function buildWordReadingDeck() {
   const selected10 = pool.slice(0, 20);
   return selected10.map(item => {
     const correct = item.romaji;
-    const distractors = shuffle(WORD_POOL.filter(w => w.romaji !== correct)).slice(0, 3).map(w => w.romaji);
-    const opts = shuffle([correct, ...distractors]);
+    const distractorItems = shuffle(WORD_POOL.filter(w => w.romaji !== correct)).slice(0, 3);
+    const allItems = shuffle([item, ...distractorItems]);
     return {
       char: item.jp,
       answer: correct,
       disp: 'word',
       groupKey: 'word-reading',
-      options: opts.map(o => ({en: o, jp: o, rd: o})),
+      options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
       hint: item.en,
       altForm: item.altForm,
     };
@@ -2120,9 +2120,9 @@ function renderQuestion() {
     q.options.forEach(o => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      btn.textContent = o.en;
-      btn.dataset.value = o.en;
-      btn.onclick = () => choose(btn, o.en, q.answer, q.char);
+      btn.innerHTML = `<span class="opt-rd">${o.rd}</span><span class="opt-en">(${o.en})</span>`;
+      btn.dataset.value = o.rd;
+      btn.onclick = () => choose(btn, o.rd, q.answer, q.char);
       container.appendChild(btn);
     });
   } else if (isNumber) {
@@ -2679,14 +2679,14 @@ function buildVocabReadingDeck(items, groupKey) {
   const pool = shuffle([...items]).slice(0, 20);
   return pool.map(item => {
     const correct = item.romaji;
-    const distractors = shuffle(items.filter(w => w.romaji !== correct)).slice(0, 3).map(w => w.romaji);
-    const opts = shuffle([correct, ...distractors]);
+    const distractorItems = shuffle(items.filter(w => w.romaji !== correct)).slice(0, 3);
+    const allItems = shuffle([item, ...distractorItems]);
     return {
       char: item.jp,
       answer: correct,
       disp: 'word',
       groupKey: groupKey,
-      options: opts.map(o => ({en: o, jp: o, rd: o})),
+      options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
       hint: item.en,
       altForm: item.altForm,
     };
