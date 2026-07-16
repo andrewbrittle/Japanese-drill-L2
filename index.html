@@ -1206,6 +1206,7 @@ const VOCAB = {
       {jp:'から', romaji:'kara', en:'from'},
       {jp:'まで', romaji:'made', en:'until'},
       {jp:'に', romaji:'ni', en:'at'},
+      {jp:'ごろ', romaji:'goro', en:'about / around (used with times)'},
       {jp:'ごぜん', romaji:'gozen', en:'AM / morning (before noon)'},
       {jp:'ごご', romaji:'gogo', en:'PM / afternoon (after noon)'},
       {jp:'きょう', romaji:'kyou', en:'today'},
@@ -1719,6 +1720,7 @@ function timeToKana(hour, minute, ampm, frame) {
   if (frame === 'kara') s += ' から';
   else if (frame === 'made') s += ' まで';
   else if (frame === 'ni') s += ' に';
+  else if (frame === 'goro') s += ' ごろ';
   return s;
 }
 
@@ -1729,6 +1731,7 @@ function timeToRomaji(hour, minute, ampm, frame) {
   if (frame === 'kara') s += ' kara';
   else if (frame === 'made') s += ' made';
   else if (frame === 'ni') s += ' ni';
+  else if (frame === 'goro') s += ' goro';
   return s;
 }
 
@@ -1739,6 +1742,7 @@ function formatTimeDigital(hour, minute, ampm, frame) {
   if (frame === 'kara') return `From ${base}`;
   if (frame === 'made') return `Until ${base}`;
   if (frame === 'ni') return `At ${base}`;
+  if (frame === 'goro') return `Around ${base}`;
   return base;
 }
 
@@ -1776,7 +1780,7 @@ function genTimeDistractors(hour, minute, ampm, frame) {
   tryAdd(hour, minute, oppAmpm, frame);
 
   // 3) Same time & am/pm, different frame — tests から/まで/に (can't just match on the time)
-  const otherFrames = shuffle(['none', 'kara', 'made', 'ni'].filter(f => f !== frame));
+  const otherFrames = shuffle(['none', 'kara', 'made', 'ni', 'goro'].filter(f => f !== frame));
   for (const fr of otherFrames) { if (tryAdd(hour, minute, ampm, fr)) break; }
 
   // Fallback padding (shouldn't normally trigger)
@@ -1784,7 +1788,7 @@ function genTimeDistractors(hour, minute, ampm, frame) {
     const h = Math.floor(Math.random() * 12) + 1;
     const m = pickMinute();
     const ap = Math.random() < 0.5 ? 'gozen' : 'gogo';
-    const fr = ['none', 'kara', 'made', 'ni'][Math.floor(Math.random() * 4)];
+    const fr = ['none', 'kara', 'made', 'ni', 'goro'][Math.floor(Math.random() * 5)];
     tryAdd(h, m, ap, fr);
   }
 
@@ -1798,7 +1802,7 @@ function buildTimeChallengeDeck() {
     const hour = Math.floor(Math.random() * 12) + 1;
     const minute = pickMinute();
     const ampm = Math.random() < 0.5 ? 'gozen' : 'gogo';
-    const frame = ['none', 'kara', 'made', 'ni'][Math.floor(Math.random() * 4)];
+    const frame = ['none', 'kara', 'made', 'ni', 'goro'][Math.floor(Math.random() * 5)];
     const key = hour + '-' + minute + '-' + ampm + '-' + frame;
     if (usedKeys.has(key)) continue;
     usedKeys.add(key);
