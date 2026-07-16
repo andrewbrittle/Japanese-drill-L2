@@ -1198,30 +1198,16 @@ const VOCAB = {
       {jp:'さんぱうろ', romaji:'sanpauro', en:'Sao Paulo'},
     ],
   },
-  'vocab-time-connectors': {
+  'vocab-time-l2': {
     level: 2,
-    label: 'From / until / at (kara / made / ni)',
-    chars: 'から まで に',
+    label: 'Time vocabulary',
+    chars: 'から まで に ごぜん ごご…',
     items: [
       {jp:'から', romaji:'kara', en:'from'},
       {jp:'まで', romaji:'made', en:'until'},
       {jp:'に', romaji:'ni', en:'at'},
-    ],
-  },
-  'vocab-ampm': {
-    level: 2,
-    label: 'AM / PM (gozen / gogo)',
-    chars: 'ごぜん ごご',
-    items: [
       {jp:'ごぜん', romaji:'gozen', en:'AM / morning (before noon)'},
       {jp:'ごご', romaji:'gogo', en:'PM / afternoon (after noon)'},
-    ],
-  },
-  'vocab-time-words': {
-    level: 2,
-    label: 'Time words',
-    chars: 'きょう あした きのう…',
-    items: [
       {jp:'きょう', romaji:'kyou', en:'today'},
       {jp:'あした', romaji:'ashita', en:'tomorrow'},
       {jp:'きのう', romaji:'kinou', en:'yesterday'},
@@ -1736,7 +1722,7 @@ function timeToRomaji(hour, minute, ampm, frame) {
 
 function formatTimeDigital(hour, minute, ampm, frame) {
   const mins = String(minute).padStart(2, '0');
-  const ap = ampm === 'gozen' ? 'AM' : 'PM';
+  const ap = ampm === 'gozen' ? 'am' : 'pm';
   const base = `${hour}:${mins} ${ap}`;
   if (frame === 'kara') return `From ${base}`;
   if (frame === 'made') return `Until ${base}`;
@@ -1747,7 +1733,7 @@ function formatTimeDigital(hour, minute, ampm, frame) {
 // Mostly lands on a clean 5-minute mark, with an occasional genuinely odd one
 // for extra challenge — matches how minutes actually get introduced in lessons.
 function pickMinute() {
-  if (Math.random() < 0.8) {
+  if (Math.random() < 0.7) {
     return [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 12)];
   }
   return Math.floor(Math.random() * 60);
