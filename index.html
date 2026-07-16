@@ -533,6 +533,8 @@
       <div id="match-category-list"></div>
       <button class="start-btn" id="match-start-btn" onclick="startLevelVocabReading()" disabled>Start</button>
     </div>
+
+    <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
   </div>
 
   <!-- Match game screen -->
@@ -1198,11 +1200,12 @@ const VOCAB = {
   },
   'vocab-time-connectors': {
     level: 2,
-    label: 'From / until (kara / made)',
-    chars: 'から まで',
+    label: 'From / until / at (kara / made / ni)',
+    chars: 'から まで に',
     items: [
       {jp:'から', romaji:'kara', en:'from'},
       {jp:'まで', romaji:'made', en:'until'},
+      {jp:'に', romaji:'ni', en:'at'},
     ],
   },
   'vocab-ampm': {
@@ -1239,6 +1242,38 @@ const VOCAB = {
       {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱'},
       {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節'},
       {jp:'かぞく', romaji:'kazoku', en:'family', altForm:'家族'},
+      {jp:'かいぎ', romaji:'kaigi', en:'meeting', altForm:'会議'},
+      {jp:'ひるやすみ', romaji:'hiruyasumi', en:'lunch break', altForm:'昼休み'},
+      {jp:'えいが', romaji:'eiga', en:'movie', altForm:'映画'},
+      {jp:'パーティー', romaji:'paatii', en:'party'},
+      {jp:'にほんごのじゅぎょう', romaji:'nihongo no jugyou', en:'Japanese language class', altForm:'日本語の授業'},
+    ],
+  },
+  'vocab-verbs-l2': {
+    level: 2,
+    label: 'Verbs',
+    chars: 'おきます ねます べんきょうします…',
+    items: [
+      {jp:'おきます', romaji:'okimasu', en:'to get up'},
+      {jp:'ねます', romaji:'nemasu', en:'to sleep / go to bed'},
+      {jp:'べんきょうします', romaji:'benkyoushimasu', en:'to study'},
+      {jp:'やすみます', romaji:'yasumimasu', en:'to rest / take a day off'},
+      {jp:'はたらきます', romaji:'hatarakimasu', en:'to work'},
+      {jp:'おわります', romaji:'owarimasu', en:'to finish'},
+    ],
+  },
+  'vocab-days-l2': {
+    level: 2,
+    label: 'Days of the week',
+    chars: 'げつようび かようび すいようび…',
+    items: [
+      {jp:'げつようび', romaji:'getsuyoubi', en:'Monday', altForm:'月曜日'},
+      {jp:'かようび', romaji:'kayoubi', en:'Tuesday', altForm:'火曜日'},
+      {jp:'すいようび', romaji:'suiyoubi', en:'Wednesday', altForm:'水曜日'},
+      {jp:'もくようび', romaji:'mokuyoubi', en:'Thursday', altForm:'木曜日'},
+      {jp:'きんようび', romaji:'kinyoubi', en:'Friday', altForm:'金曜日'},
+      {jp:'どようび', romaji:'doyoubi', en:'Saturday', altForm:'土曜日'},
+      {jp:'にちようび', romaji:'nichiyoubi', en:'Sunday', altForm:'日曜日'},
     ],
   },
   'vocab-trip-prep': {
@@ -1650,65 +1685,109 @@ function startNumberChallenge() {
 const HOUR_KANA = ['','いち','に','さん','よ','ご','ろく','なな','はち','く','じゅう','じゅういち','じゅうに'];
 const HOUR_ROMAJI = ['','ichi','ni','san','yo','go','roku','nana','hachi','ku','juu','juuichi','juuni'];
 
-function timeToKana(hour, half, ampm, frame) {
+// Minute readings have their own irregular voicing (ふん/ぷん alternation based on
+// the ones digit), plus a phonological contraction for exact tens (10/20/40/50 —
+// じゅう shortens to じゅ before っぷん). 30 is a special case: almost always はん
+// (half) rather than さんじゅっぷん in real usage.
+const MINUTE_ONES_KANA = ['', 'いっ', 'に', 'さん', 'よん', 'ご', 'ろっ', 'なな', 'はっ', 'きゅう'];
+const MINUTE_ONES_SUFFIX_KANA = ['', 'ぷん', 'ふん', 'ぷん', 'ふん', 'ふん', 'ぷん', 'ふん', 'ぷん', 'ふん'];
+const MINUTE_ONES_ROMAJI = ['', 'ip', 'ni', 'san', 'yon', 'go', 'rop', 'nana', 'hap', 'kyuu'];
+const MINUTE_ONES_SUFFIX_ROMAJI = ['', 'pun', 'fun', 'pun', 'fun', 'fun', 'pun', 'fun', 'pun', 'fun'];
+const MINUTE_TENS_KANA = ['','じゅう','にじゅう','さんじゅう','よんじゅう','ごじゅう'];
+const MINUTE_TENS_ROMAJI = ['','juu','nijuu','sanjuu','yonjuu','gojuu'];
+const MINUTE_TENS_KANA_CONTRACTED = ['','じゅ','にじゅ','さんじゅ','よんじゅ','ごじゅ'];
+const MINUTE_TENS_ROMAJI_CONTRACTED = ['','ju','niju','sanju','yonju','goju'];
+
+function minuteToKana(min) {
+  if (min === 0) return '';
+  if (min === 30) return 'はん';
+  const tens = Math.floor(min / 10), ones = min % 10;
+  if (ones === 0) return MINUTE_TENS_KANA_CONTRACTED[tens] + 'っぷん';
+  return (tens > 0 ? MINUTE_TENS_KANA[tens] : '') + MINUTE_ONES_KANA[ones] + MINUTE_ONES_SUFFIX_KANA[ones];
+}
+
+function minuteToRomaji(min) {
+  if (min === 0) return '';
+  if (min === 30) return 'han';
+  const tens = Math.floor(min / 10), ones = min % 10;
+  if (ones === 0) return MINUTE_TENS_ROMAJI_CONTRACTED[tens] + 'ppun';
+  return (tens > 0 ? MINUTE_TENS_ROMAJI[tens] : '') + MINUTE_ONES_ROMAJI[ones] + MINUTE_ONES_SUFFIX_ROMAJI[ones];
+}
+
+function timeToKana(hour, minute, ampm, frame) {
   const ampmK = ampm === 'gozen' ? 'ごぜん' : 'ごご';
-  let s = `${ampmK} ${HOUR_KANA[hour]}じ${half ? ' はん' : ''}`;
+  const minPart = minuteToKana(minute);
+  let s = `${ampmK} ${HOUR_KANA[hour]}じ${minPart ? ' ' + minPart : ''}`;
   if (frame === 'kara') s += ' から';
   else if (frame === 'made') s += ' まで';
+  else if (frame === 'ni') s += ' に';
   return s;
 }
 
-function timeToRomaji(hour, half, ampm, frame) {
+function timeToRomaji(hour, minute, ampm, frame) {
   const ampmR = ampm === 'gozen' ? 'gozen' : 'gogo';
-  let s = `${ampmR} ${HOUR_ROMAJI[hour]}ji${half ? ' han' : ''}`;
+  const minPart = minuteToRomaji(minute);
+  let s = `${ampmR} ${HOUR_ROMAJI[hour]}ji${minPart ? ' ' + minPart : ''}`;
   if (frame === 'kara') s += ' kara';
   else if (frame === 'made') s += ' made';
+  else if (frame === 'ni') s += ' ni';
   return s;
 }
 
-function formatTimeDigital(hour, half, ampm, frame) {
-  const mins = half ? '30' : '00';
+function formatTimeDigital(hour, minute, ampm, frame) {
+  const mins = String(minute).padStart(2, '0');
   const ap = ampm === 'gozen' ? 'AM' : 'PM';
   const base = `${hour}:${mins} ${ap}`;
   if (frame === 'kara') return `From ${base}`;
   if (frame === 'made') return `Until ${base}`;
+  if (frame === 'ni') return `At ${base}`;
   return base;
 }
 
-function genTimeDistractors(hour, half, ampm, frame) {
-  const key = (h, hf, ap, fr) => `${h}-${hf}-${ap}-${fr}`;
-  const seen = new Set([key(hour, half, ampm, frame)]);
+// Mostly lands on a clean 5-minute mark, with an occasional genuinely odd one
+// for extra challenge — matches how minutes actually get introduced in lessons.
+function pickMinute() {
+  if (Math.random() < 0.8) {
+    return [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 12)];
+  }
+  return Math.floor(Math.random() * 60);
+}
+
+function genTimeDistractors(hour, minute, ampm, frame) {
+  const key = (h, m, ap, fr) => `${h}-${m}-${ap}-${fr}`;
+  const seen = new Set([key(hour, minute, ampm, frame)]);
   const distractors = [];
 
-  const tryAdd = (h, hf, ap, fr) => {
-    const k = key(h, hf, ap, fr);
-    if (!seen.has(k)) { seen.add(k); distractors.push({ hour: h, half: hf, ampm: ap, frame: fr }); return true; }
+  const tryAdd = (h, m, ap, fr) => {
+    const k = key(h, m, ap, fr);
+    if (!seen.has(k)) { seen.add(k); distractors.push({ hour: h, minute: m, ampm: ap, frame: fr }); return true; }
     return false;
   };
 
-  // 1) Different hour/half, same am/pm and frame — tests time reading itself
-  const hourOptions = shuffle([
-    [hour === 12 ? 1 : hour + 1, half],
-    [hour === 1 ? 12 : hour - 1, half],
-    [hour, !half],
+  // 1) Wrong time (hour or minute changed), same am/pm and frame — tests time reading itself
+  const timeOptions = shuffle([
+    [hour === 12 ? 1 : hour + 1, minute],
+    [hour === 1 ? 12 : hour - 1, minute],
+    [hour, (minute + 5) % 60],
+    [hour, (minute + 55) % 60],
   ]);
-  for (const [h, hf] of hourOptions) { if (tryAdd(h, hf, ampm, frame)) break; }
+  for (const [h, m] of timeOptions) { if (tryAdd(h, m, ampm, frame)) break; }
 
   // 2) Same time & frame, opposite am/pm — tests gozen/gogo
   const oppAmpm = ampm === 'gozen' ? 'gogo' : 'gozen';
-  tryAdd(hour, half, oppAmpm, frame);
+  tryAdd(hour, minute, oppAmpm, frame);
 
-  // 3) Same time & am/pm, different frame — tests kara/made (can't just match on the time)
-  const otherFrames = shuffle(['none', 'kara', 'made'].filter(f => f !== frame));
-  for (const fr of otherFrames) { if (tryAdd(hour, half, ampm, fr)) break; }
+  // 3) Same time & am/pm, different frame — tests から/まで/に (can't just match on the time)
+  const otherFrames = shuffle(['none', 'kara', 'made', 'ni'].filter(f => f !== frame));
+  for (const fr of otherFrames) { if (tryAdd(hour, minute, ampm, fr)) break; }
 
   // Fallback padding (shouldn't normally trigger)
   while (distractors.length < 3) {
     const h = Math.floor(Math.random() * 12) + 1;
-    const hf = Math.random() < 0.5;
+    const m = pickMinute();
     const ap = Math.random() < 0.5 ? 'gozen' : 'gogo';
-    const fr = ['none', 'kara', 'made'][Math.floor(Math.random() * 3)];
-    tryAdd(h, hf, ap, fr);
+    const fr = ['none', 'kara', 'made', 'ni'][Math.floor(Math.random() * 4)];
+    tryAdd(h, m, ap, fr);
   }
 
   return distractors.slice(0, 3);
@@ -1719,25 +1798,25 @@ function buildTimeChallengeDeck() {
   const times = [];
   while (times.length < 10) {
     const hour = Math.floor(Math.random() * 12) + 1;
-    const half = Math.random() < 0.5;
+    const minute = pickMinute();
     const ampm = Math.random() < 0.5 ? 'gozen' : 'gogo';
-    const frame = ['none', 'kara', 'made'][Math.floor(Math.random() * 3)];
-    const key = hour + '-' + half + '-' + ampm + '-' + frame;
+    const frame = ['none', 'kara', 'made', 'ni'][Math.floor(Math.random() * 4)];
+    const key = hour + '-' + minute + '-' + ampm + '-' + frame;
     if (usedKeys.has(key)) continue;
     usedKeys.add(key);
-    times.push({ hour, half, ampm, frame });
+    times.push({ hour, minute, ampm, frame });
   }
   return times.map(t => {
-    const correctKana = timeToKana(t.hour, t.half, t.ampm, t.frame);
-    const correctRomaji = timeToRomaji(t.hour, t.half, t.ampm, t.frame);
-    const distractorCombos = genTimeDistractors(t.hour, t.half, t.ampm, t.frame);
+    const correctKana = timeToKana(t.hour, t.minute, t.ampm, t.frame);
+    const correctRomaji = timeToRomaji(t.hour, t.minute, t.ampm, t.frame);
+    const distractorCombos = genTimeDistractors(t.hour, t.minute, t.ampm, t.frame);
     const distractorOpts = distractorCombos.map(d => ({
-      kana: timeToKana(d.hour, d.half, d.ampm, d.frame),
-      romaji: timeToRomaji(d.hour, d.half, d.ampm, d.frame),
+      kana: timeToKana(d.hour, d.minute, d.ampm, d.frame),
+      romaji: timeToRomaji(d.hour, d.minute, d.ampm, d.frame),
     }));
     const allOpts = shuffle([{ kana: correctKana, romaji: correctRomaji }, ...distractorOpts]);
     return {
-      char: formatTimeDigital(t.hour, t.half, t.ampm, t.frame),
+      char: formatTimeDigital(t.hour, t.minute, t.ampm, t.frame),
       answer: correctKana,
       disp: 'time',
       groupKey: 'time-challenge',
