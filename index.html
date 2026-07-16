@@ -487,9 +487,9 @@
       </div>
       <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
         <div class="group-info">
-          <div class="group-name">Reading times — hours &amp; half hours</div>
+          <div class="group-name">Reading times</div>
           <div class="group-chars">ごぜん くじ はん</div>
-          <div class="group-count">10 random times per round, with gozen/gogo and kara/made</div>
+          <div class="group-count">10 random times per round, with gozen/gogo, kara/made and ni</div>
         </div>
       </div>
       <div class="group-card" onclick="startRandomKanji()" style="cursor:pointer;">
@@ -1215,7 +1215,9 @@ const VOCAB = {
       {jp:'つぎ', romaji:'tsugi', en:'next'},
       {jp:'ふん', romaji:'fun', en:'minutes'},
       {jp:'じかん', romaji:'jikan', en:'hours / time'},
-      {jp:'あさ', romaji:'asa', en:'morning'},
+      {jp:'あさ', romaji:'asa', en:'morning', altForm:'朝'},
+      {jp:'ひる', romaji:'hiru', en:'midday / noon', altForm:'昼'},
+      {jp:'ばん', romaji:'ban', en:'evening', altForm:'晩'},
       {jp:'よる', romaji:'yoru', en:'evening / night'},
       {jp:'まいにち', romaji:'mainichi', en:'every day'},
     ],
@@ -1233,6 +1235,10 @@ const VOCAB = {
       {jp:'えいが', romaji:'eiga', en:'movie', altForm:'映画'},
       {jp:'パーティー', romaji:'paatii', en:'party'},
       {jp:'にほんごのじゅぎょう', romaji:'nihongo no jugyou', en:'Japanese language class', altForm:'日本語の授業'},
+      {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯'},
+      {jp:'あさごはん', romaji:'asagohan', en:'breakfast', altForm:'朝ご飯'},
+      {jp:'ひるごはん', romaji:'hirugohan', en:'lunch', altForm:'昼ご飯'},
+      {jp:'ばんごはん', romaji:'bangohan', en:'dinner', altForm:'晩ご飯'},
     ],
   },
   'vocab-verbs-l2': {
