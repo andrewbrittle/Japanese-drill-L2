@@ -241,6 +241,25 @@
   .match-card-select:hover { border-color: var(--border-hover); }
   .match-card-select.selected { border-color: var(--purple); background: var(--purple-dim); }
   .match-card-select .group-name { font-size: 15px; font-weight: 700; }
+  .vocab-ref-card {
+    display: flex; justify-content: space-between; align-items: center;
+    background: transparent; border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.5rem 1rem;
+    cursor: pointer; transition: border-color 0.15s; user-select: none;
+    font-size: 13px; font-weight: 600; color: var(--accent);
+    margin-bottom: -0.25rem;
+  }
+  .vocab-ref-card:hover { border-color: var(--accent); }
+  .vocab-ref-arrow { color: var(--text-muted); }
+  #vocab-ref-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .vocab-ref-row {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.7rem 1rem; text-align: center;
+  }
+  .vocab-ref-num { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .vocab-ref-jp { font-size: 22px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .vocab-ref-alt { font-size: 13px; font-weight: 600; color: var(--accent); font-family: 'BIZ UDPGothic', sans-serif; margin-top: 2px; }
+  .vocab-ref-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
 
   /* Level filter pills on Match screen */
@@ -535,6 +554,14 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
+  </div>
+
+  <!-- Vocab reference screen (browse-only, no drilling) -->
+  <div class="screen" id="screen-vocab-reference">
+    <div class="settings-title" id="vocab-ref-title">Reference</div>
+    <div class="settings-sub">A quick look — tap Back when you're done.</div>
+    <div id="vocab-ref-list"></div>
+    <button class="btn-secondary" onclick="showMatchSettings()">← Back</button>
   </div>
 
   <!-- Match game screen -->
@@ -1263,6 +1290,7 @@ const VOCAB = {
   },
   'vocab-days-l2': {
     level: 2,
+    hasReference: true,
     label: 'Days of the week',
     chars: 'げつようび かようび すいようび…',
     items: [
@@ -1528,7 +1556,7 @@ function showScreen(id) {
   if (id === 'hiragana-ref') document.querySelectorAll('.nav-pill')[0].classList.add('active');
   else if (id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
   else if (id === 'kanji-ref') document.querySelectorAll('.nav-pill')[2].classList.add('active');
-  else if (id === 'match-settings') document.querySelectorAll('.nav-pill')[4].classList.add('active');
+  else if (id === 'match-settings' || id === 'vocab-reference') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
   if (id === 'hiragana-ref') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
   else if (id === 'katakana-ref') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
@@ -2645,6 +2673,20 @@ function buildMatchCategoryList() {
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
+    if (v.hasReference) {
+      const refCard = document.createElement('div');
+      refCard.className = 'vocab-ref-card';
+      refCard.innerHTML = `<span>${v.label} — reference</span><span class="vocab-ref-arrow">→</span>`;
+      refCard.onclick = (e) => { e.stopPropagation(); showVocabReference(key); };
+      container.appendChild(refCard);
+    }
+    if (key === 'vocab-time-l2') {
+      const minRefCard = document.createElement('div');
+      minRefCard.className = 'vocab-ref-card';
+      minRefCard.innerHTML = `<span>Minute endings (1–10) — reference</span><span class="vocab-ref-arrow">→</span>`;
+      minRefCard.onclick = (e) => { e.stopPropagation(); showMinuteReference(); };
+      container.appendChild(minRefCard);
+    }
     const card = document.createElement('div');
     card.className = 'match-card-select';
     card.dataset.key = key;
@@ -2664,6 +2706,41 @@ function selectMatchCategory(key, card) {
 function startLevelVocabReading() {
   if (!matchCategoryKey) return;
   startVocabReadingDeck(VOCAB[matchCategoryKey].items, matchCategoryKey);
+}
+
+function showMinuteReference() {
+  document.getElementById('vocab-ref-title').textContent = 'Minute endings (1–10)';
+  const list = document.getElementById('vocab-ref-list');
+  list.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row';
+    row.innerHTML = `
+      <div class="vocab-ref-num">${i}</div>
+      <div class="vocab-ref-jp">${minuteToKana(i)}</div>
+      <div class="vocab-ref-meta">${minuteToRomaji(i)}</div>
+    `;
+    list.appendChild(row);
+  }
+  showScreen('vocab-reference');
+}
+
+function showVocabReference(categoryKey) {
+  const v = VOCAB[categoryKey];
+  document.getElementById('vocab-ref-title').textContent = v.label;
+  const list = document.getElementById('vocab-ref-list');
+  list.innerHTML = '';
+  v.items.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row';
+    row.innerHTML = `
+      <div class="vocab-ref-jp">${item.jp}</div>
+      ${item.altForm ? `<div class="vocab-ref-alt">${item.altForm}</div>` : ''}
+      <div class="vocab-ref-meta">${item.romaji} — ${item.en}</div>
+    `;
+    list.appendChild(row);
+  });
+  showScreen('vocab-reference');
 }
 
 function showMatchSettings() {
