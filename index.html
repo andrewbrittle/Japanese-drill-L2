@@ -503,9 +503,16 @@
           <div class="group-count">20 random words per round</div>
         </div>
       </div>
+      <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading words — everything</div>
+          <div class="group-chars">らんだむな ぜんぶ</div>
+          <div class="group-count">20 random words per round, from every category</div>
+        </div>
+      </div>
       <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
         <div class="group-info">
-          <div class="group-name">Reading numbers — 1 to 9,999</div>
+          <div class="group-name">Reading numbers</div>
           <div class="group-chars">らんだむな すうじ</div>
           <div class="group-count">5 random numbers per round</div>
         </div>
@@ -536,13 +543,6 @@
           <div class="group-name">Useful words for the trip</div>
           <div class="group-chars">みず すし きっぷ…</div>
           <div class="group-count">Not covered in lessons — 20 random words per round</div>
-        </div>
-      </div>
-      <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Reading words — everything</div>
-          <div class="group-chars">らんだむな ぜんぶ</div>
-          <div class="group-count">20 random words per round, from every category</div>
         </div>
       </div>
     </div>
@@ -1607,13 +1607,16 @@ function numToJapanese(n) {
   const tens = ['','じゅう','にじゅう','さんじゅう','よんじゅう','ごじゅう','ろくじゅう','ななじゅう','はちじゅう','きゅうじゅう'];
   const hyaku = ['','ひゃく','にひゃく','さんびゃく','よんひゃく','ごひゃく','ろっぴゃく','ななひゃく','はっぴゃく','きゅうひゃく'];
   const sen   = ['','せん','にせん','さんぜん','よんせん','ごせん','ろくせん','ななせん','はっせん','きゅうせん'];
+  const man   = ['','いちまん','にまん','さんまん','よんまん','ごまん','ろくまん','ななまん','はちまん','きゅうまん'];
 
-  const s = Math.floor(n / 1000);
+  const m = Math.floor(n / 10000);
+  const s = Math.floor((n % 10000) / 1000);
   const h = Math.floor((n % 1000) / 100);
   const t = Math.floor((n % 100) / 10);
   const o = n % 10;
 
   const parts = [];
+  if (m) parts.push(man[m]);
   if (s) parts.push(sen[s]);
   if (h) parts.push(hyaku[h]);
   if (t) parts.push(tens[t]);
@@ -1623,8 +1626,8 @@ function numToJapanese(n) {
 
 function genNumberDistractors(n) {
   // Generate 3 plausible wrong readings by mutating one component
-  const mutations = [];
-  const s = Math.floor(n / 1000);
+  const m = Math.floor(n / 10000);
+  const s = Math.floor((n % 10000) / 1000);
   const h = Math.floor((n % 1000) / 100);
   const t = Math.floor((n % 100) / 10);
   const o = n % 10;
@@ -1632,17 +1635,18 @@ function genNumberDistractors(n) {
   // Try swapping each non-zero component with a close alternative
   const candidates = new Set();
   const tries = [
-    [s, h, t, o === 0 ? 0 : (o % 9) + 1],
-    [s, h, t === 0 ? 0 : (t % 9) + 1, o],
-    [s, h === 0 ? 0 : (h % 9) + 1, t, o],
-    [s === 0 ? 0 : (s % 9) + 1, h, t, o],
-    [s, h, t === 0 ? 1 : 0, o],
-    [s, h === 0 ? 1 : 0, t, o],
-    [s === 0 ? 1 : 0, h, t, o],
+    [m, s, h, t, o === 0 ? 0 : (o % 9) + 1],
+    [m, s, h, t === 0 ? 0 : (t % 9) + 1, o],
+    [m, s, h === 0 ? 0 : (h % 9) + 1, t, o],
+    [m, s === 0 ? 0 : (s % 9) + 1, h, t, o],
+    [m === 0 ? 0 : (m % 9) + 1, s, h, t, o],
+    [m, s, h, t === 0 ? 1 : 0, o],
+    [m, s, h === 0 ? 1 : 0, t, o],
+    [m, s === 0 ? 1 : 0, h, t, o],
   ];
-  for (const [ts, th, tt, to] of tries) {
-    const candidate = ts * 1000 + th * 100 + tt * 10 + to;
-    if (candidate !== n && candidate > 0 && candidate <= 9999) {
+  for (const [tm, ts, th, tt, to] of tries) {
+    const candidate = tm * 10000 + ts * 1000 + th * 100 + tt * 10 + to;
+    if (candidate !== n && candidate > 0 && candidate <= 50000) {
       candidates.add(candidate);
       if (candidates.size >= 3) break;
     }
@@ -1683,10 +1687,17 @@ function startWordReading() {
   renderQuestion();
 }
 
+function pickChallengeNumber() {
+  if (Math.random() < 0.03) {
+    return Math.floor(Math.random() * (50000 - 10000 + 1)) + 10000;
+  }
+  return Math.floor(Math.random() * 9999) + 1;
+}
+
 function buildNumberChallengeDeck() {
   const nums = [];
   while (nums.length < 5) {
-    const n = Math.floor(Math.random() * 9999) + 1;
+    const n = pickChallengeNumber();
     if (!nums.includes(n)) nums.push(n);
   }
   return nums.map(n => {
@@ -2724,9 +2735,9 @@ function showMinuteReference() {
     row.innerHTML = `
       <div class="vocab-ref-col-left">
         <div class="vocab-ref-num-big">${i}</div>
-        <div class="vocab-ref-jp">${minuteToKana(i)}</div>
       </div>
       <div class="vocab-ref-col-right">
+        <div class="vocab-ref-jp">${minuteToKana(i)}</div>
         <div class="vocab-ref-romaji">${minuteToRomaji(i)}</div>
       </div>
     `;
