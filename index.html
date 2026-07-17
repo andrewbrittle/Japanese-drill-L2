@@ -254,12 +254,18 @@
   #vocab-ref-list { display: flex; flex-direction: column; gap: 0.6rem; }
   .vocab-ref-row {
     background: var(--surface); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 0.7rem 1rem; text-align: center;
+    border-radius: var(--radius); padding: 0.7rem 1rem;
   }
-  .vocab-ref-num { font-size: 12px; font-weight: 700; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; }
+  .vocab-ref-row.two-col {
+    display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  }
+  .vocab-ref-col-left { text-align: left; }
+  .vocab-ref-col-right { text-align: right; }
+  .vocab-ref-num-big { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1; }
   .vocab-ref-jp { font-size: 22px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
   .vocab-ref-alt { font-size: 13px; font-weight: 600; color: var(--accent); font-family: 'BIZ UDPGothic', sans-serif; margin-top: 2px; }
-  .vocab-ref-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+  .vocab-ref-en { font-size: 15px; font-weight: 700; }
+  .vocab-ref-romaji { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
 
   /* Level filter pills on Match screen */
@@ -2714,11 +2720,15 @@ function showMinuteReference() {
   list.innerHTML = '';
   for (let i = 1; i <= 10; i++) {
     const row = document.createElement('div');
-    row.className = 'vocab-ref-row';
+    row.className = 'vocab-ref-row two-col';
     row.innerHTML = `
-      <div class="vocab-ref-num">${i}</div>
-      <div class="vocab-ref-jp">${minuteToKana(i)}</div>
-      <div class="vocab-ref-meta">${minuteToRomaji(i)}</div>
+      <div class="vocab-ref-col-left">
+        <div class="vocab-ref-num-big">${i}</div>
+        <div class="vocab-ref-jp">${minuteToKana(i)}</div>
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-romaji">${minuteToRomaji(i)}</div>
+      </div>
     `;
     list.appendChild(row);
   }
@@ -2732,11 +2742,16 @@ function showVocabReference(categoryKey) {
   list.innerHTML = '';
   v.items.forEach(item => {
     const row = document.createElement('div');
-    row.className = 'vocab-ref-row';
+    row.className = 'vocab-ref-row two-col';
     row.innerHTML = `
-      <div class="vocab-ref-jp">${item.jp}</div>
-      ${item.altForm ? `<div class="vocab-ref-alt">${item.altForm}</div>` : ''}
-      <div class="vocab-ref-meta">${item.romaji} — ${item.en}</div>
+      <div class="vocab-ref-col-left">
+        <div class="vocab-ref-jp">${item.jp}</div>
+        ${item.altForm ? `<div class="vocab-ref-alt">${item.altForm}</div>` : ''}
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-en">${item.en}</div>
+        <div class="vocab-ref-romaji">${item.romaji}</div>
+      </div>
     `;
     list.appendChild(row);
   });
@@ -2813,6 +2828,18 @@ function startRandomMatchEverything() {
 buildMatchCategoryList();
 
 updateDirectionVisibility();
+
+// The browser's own back button has no way to know it's "inside" this app —
+// screens here are just shown/hidden, not separate pages — so pressing back
+// out of habit would otherwise leave the page entirely and wipe whatever
+// drill was in progress. This traps it: every back/forward press just lands
+// straight back on this same page instead of leaving it. In-app navigation
+// (nav pills, the Back/Change groups/Quit buttons already in the app) is
+// unaffected and remains the real way to move around.
+history.pushState({ trap: true }, '');
+window.addEventListener('popstate', () => {
+  history.pushState({ trap: true }, '');
+});
 </script>
 </body>
 </html>
