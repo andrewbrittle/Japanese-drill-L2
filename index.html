@@ -64,6 +64,7 @@
   }
   .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
   .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  .nav-pill.active.sub-screen { color: #fff; }
 
   main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
 
@@ -337,8 +338,8 @@
 <header>
   <div class="logo">日本語 <span>drill</span></div>
   <div class="nav-pills">
-    <button class="nav-pill" onclick="showHiraganaReference()">ひらがな</button>
-    <button class="nav-pill" id="nav-katakana" onclick="showKatakanaReference()">カタカナ</button>
+    <button class="nav-pill" onclick="showHiraganaSelection()">ひらがな</button>
+    <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSelection()">カタカナ</button>
     <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">漢字</button>
     <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
     <button class="nav-pill active" id="nav-match" onclick="tryResumeMatch()">Read</button>
@@ -349,7 +350,7 @@
 
   <!-- Katakana settings screen -->
   <!-- Hiragana reference screen -->
-  <div class="screen" id="screen-hiragana-ref">
+  <div class="screen" id="screen-hiragana-selection">
     <div class="settings-title">Hiragana</div>
     <div class="settings-sub">Tap a row to select it for drilling.</div>
     <div class="level-filter-row" id="hiragana-section-pills">
@@ -373,11 +374,11 @@
       </div>
       <div class="toggle" id="direction-toggle-ref-hira"></div>
     </div>
-    <button class="start-btn" id="hira-ref-drill-btn" onclick="drillHiraganaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
+    <button class="start-btn" id="hira-selection-drill-btn" onclick="drillHiraganaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
 
   <!-- Katakana reference screen -->
-  <div class="screen" id="screen-katakana-ref">
+  <div class="screen" id="screen-katakana-selection">
     <div class="settings-title">Katakana</div>
     <div class="settings-sub">Tap a row to select it for drilling.</div>
     <div class="level-filter-row" id="katakana-section-pills">
@@ -408,11 +409,11 @@
       </div>
       <div class="toggle" id="hiragana-answers-toggle-ref"></div>
     </div>
-    <button class="start-btn" id="kata-ref-drill-btn" onclick="drillKatakanaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
+    <button class="start-btn" id="kata-selection-drill-btn" onclick="drillKatakanaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
 
   <!-- Kanji settings screen -->
-  <div class="screen" id="screen-kanji-ref">
+  <div class="screen" id="screen-kanji-selection">
     <div class="settings-title">Kanji</div>
     <div class="settings-sub">Tap a character to select it for drilling.</div>
 
@@ -451,12 +452,12 @@
       <div class="toggle" id="kanji-hiragana-answers-toggle"></div>
     </div>
 
-    <button class="start-btn" id="kanji-ref-drill-btn" onclick="drillKanjiSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
+    <button class="start-btn" id="kanji-selection-drill-btn" onclick="drillKanjiSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
 
   <!-- Vocab tile-selection reference screen (flat categories: colours, trip-prep) -->
-  <div class="screen" id="screen-vocab-tile-ref">
-    <div class="settings-title" id="vocab-tile-ref-title">Reference</div>
+  <div class="screen" id="screen-vocab-tile-selection">
+    <div class="settings-title" id="vocab-tile-selection-title">Reference</div>
     <div class="settings-sub">Tap a word to select it for drilling.</div>
 
     <div class="group-card emphasis" id="vocab-tile-select-all-card" onclick="toggleSelectAllVocabTiles()" style="cursor:pointer;">
@@ -583,14 +584,14 @@
     </div>
 
     <div id="match-extra-view" style="display:none;">
-      <div class="group-card" onclick="showVocabTileReference('vocab-colours')" style="cursor:pointer;">
+      <div class="group-card" onclick="showVocabTileSelection('vocab-colours')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Colours</div>
           <div class="group-chars">あか あお きいろ…</div>
           <div class="group-count">Not covered in lessons — 10 words</div>
         </div>
       </div>
-      <div class="group-card" onclick="showVocabTileReference('vocab-trip-prep')" style="cursor:pointer;">
+      <div class="group-card" onclick="showVocabTileSelection('vocab-trip-prep')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Useful words for the trip</div>
           <div class="group-chars">みず すし きっぷ…</div>
@@ -1529,8 +1530,8 @@ const kanjiSelectedTiles = {};
 KANJI_SECTION_KEYS.forEach(k => { kanjiSelectedTiles[k] = new Set(); });
 let activeKanjiSection = 'numbers-time';
 
-function showKanjiReference() {
-  showScreen('kanji-ref');
+function showKanjiSelection() {
+  showScreen('kanji-selection');
   KANJI_SECTION_KEYS.forEach(key => {
     buildKanjiTileGrid(key);
     refreshKanaScoreShading('kanji-grid-' + key);
@@ -1573,7 +1574,7 @@ function toggleKanjiTile(sectionKey, idx, tileEl) {
     set.add(idx);
     tileEl.classList.add('selected');
   }
-  document.getElementById('kanji-ref-drill-btn').disabled = set.size === 0;
+  document.getElementById('kanji-selection-drill-btn').disabled = set.size === 0;
   updateSelectAllKanjiLabel();
 }
 
@@ -1586,7 +1587,7 @@ function switchKanjiSection(sectionKey) {
     const el = document.getElementById('kanji-grid-' + key);
     if (el) el.style.display = key === sectionKey ? 'flex' : 'none';
   });
-  document.getElementById('kanji-ref-drill-btn').disabled = kanjiSelectedTiles[sectionKey].size === 0;
+  document.getElementById('kanji-selection-drill-btn').disabled = kanjiSelectedTiles[sectionKey].size === 0;
   updateSelectAllKanjiLabel();
 }
 
@@ -1603,7 +1604,7 @@ function toggleSelectAllKanji() {
     for (let i = 0; i < total; i++) set.add(i);
     if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.add('selected'));
   }
-  document.getElementById('kanji-ref-drill-btn').disabled = set.size === 0;
+  document.getElementById('kanji-selection-drill-btn').disabled = set.size === 0;
   updateSelectAllKanjiLabel();
 }
 
@@ -1624,7 +1625,7 @@ function drillKanjiSelection() {
   const customDeck = [...selectedIdx].sort((a, b) => a - b).map(idx =>
     Object.assign({ groupKey: section.dataKey }, data[idx])
   );
-  lastSettingsScreen = 'kanji-ref';
+  lastSettingsScreen = 'kanji-selection';
   startDrill(shuffle(customDeck));
 }
 
@@ -1641,10 +1642,10 @@ function toggleVocabTileDrillMode() {
   if (card) card.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
 }
 
-function showVocabTileReference(categoryKey) {
+function showVocabTileSelection(categoryKey) {
   vocabTileCategory = categoryKey;
   if (!vocabTileSelected[categoryKey]) vocabTileSelected[categoryKey] = new Set();
-  document.getElementById('vocab-tile-ref-title').textContent = VOCAB[categoryKey].label;
+  document.getElementById('vocab-tile-selection-title').textContent = VOCAB[categoryKey].label;
   buildVocabTileGrid(categoryKey);
   refreshKanaScoreShading('vocab-tile-grid');
   updateSelectAllVocabTilesLabel();
@@ -1654,7 +1655,7 @@ function showVocabTileReference(categoryKey) {
     modeCard.style.display = VOCAB[categoryKey].noMeaningMode ? 'none' : 'flex';
     modeCard.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
   }
-  showScreen('vocab-tile-ref');
+  showScreen('vocab-tile-selection');
 }
 
 const COLOUR_HUES = {
@@ -1792,7 +1793,7 @@ function drillVocabTileSelection() {
       altForm: item.altForm,
     };
   });
-  lastSettingsScreen = 'vocab-tile-ref';
+  lastSettingsScreen = 'vocab-tile-selection';
   startDrill(shuffle(customDeck));
 }
 
@@ -1811,22 +1812,30 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
   document.getElementById('screen-' + id).classList.add('visible');
   document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-  if (id === 'hiragana-ref') document.querySelectorAll('.nav-pill')[0].classList.add('active');
-  else if (id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
-  else if (id === 'kanji-ref') document.querySelectorAll('.nav-pill')[2].classList.add('active');
-  else if (id === 'match-settings' || id === 'vocab-reference' || id === 'vocab-tile-ref') document.querySelectorAll('.nav-pill')[4].classList.add('active');
+  if (id === 'hiragana-selection') document.querySelectorAll('.nav-pill')[0].classList.add('active');
+  else if (id === 'katakana-selection') document.querySelectorAll('.nav-pill')[1].classList.add('active');
+  else if (id === 'kanji-selection') document.querySelectorAll('.nav-pill')[2].classList.add('active');
+  else if (id === 'match-settings' || id === 'vocab-reference' || id === 'vocab-tile-selection') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
-  if (id === 'hiragana-ref') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
-  else if (id === 'katakana-ref') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
-  else if (id === 'kanji-ref') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
-  else if (id === 'vocab-tile-ref' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
+  const navMatch = document.getElementById('nav-match');
+  if (id === 'vocab-tile-selection' || id === 'vocab-reference') {
+    navMatch.textContent = 'Back';
+    navMatch.classList.add('sub-screen');
+  } else {
+    navMatch.textContent = 'Read';
+    navMatch.classList.remove('sub-screen');
+  }
+  if (id === 'hiragana-selection') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
+  else if (id === 'katakana-selection') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
+  else if (id === 'kanji-selection') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
+  else if (id === 'vocab-tile-selection' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
   else if (id === 'match-settings') updateNumberTimeSwatches();
 }
 
 let lastSettingsScreen = 'match-settings';
 
 function tryResumeKanji() {
-  showKanjiReference();
+  showKanjiSelection();
 }
 function goBackToSettings() { showScreen(lastSettingsScreen); }
 
@@ -2146,7 +2155,7 @@ function buildDeck() {
 }
 
 function startDrill(customDeck, deckBuilder) {
-  lastSettingsScreen = customDeck ? lastSettingsScreen : 'hiragana-ref';
+  lastSettingsScreen = customDeck ? lastSettingsScreen : 'hiragana-selection';
   lastDeckBuilder = deckBuilder || (customDeck ? (() => shuffle(customDeck)) : null);
   deck = customDeck || buildDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
@@ -2681,8 +2690,8 @@ const HIRAGANA_SECTIONS = {
 const hiraganaSelectedRows = { base: new Set(), diacritics: new Set(), youon: new Set() };
 let activeHiraganaSection = 'base';
 
-function showHiraganaReference() {
-  showScreen('hiragana-ref');
+function showHiraganaSelection() {
+  showScreen('hiragana-selection');
   Object.keys(HIRAGANA_SECTIONS).forEach(key => {
     buildKanaSectionGrid('hiragana-grid-' + key, HIRAGANA_SECTIONS[key]);
     refreshKanaScoreShading('hiragana-grid-' + key);
@@ -2736,7 +2745,7 @@ function toggleSelectAllHiragana() {
     section.rows.forEach((_, idx) => set.add(idx));
     if (grid) grid.querySelectorAll('.kana-ref-row').forEach(r => r.classList.add('selected'));
   }
-  document.getElementById('hira-ref-drill-btn').disabled = set.size === 0;
+  document.getElementById('hira-selection-drill-btn').disabled = set.size === 0;
   updateSelectAllHiraganaLabel();
 }
 
@@ -2763,7 +2772,7 @@ function toggleKanaSectionRow(section, containerId, rowIdx, rowEl) {
     set.add(rowIdx);
     rowEl.classList.add('selected');
   }
-  const drillBtnId = isHiragana ? 'hira-ref-drill-btn' : 'kata-ref-drill-btn';
+  const drillBtnId = isHiragana ? 'hira-selection-drill-btn' : 'kata-selection-drill-btn';
   document.getElementById(drillBtnId).disabled = set.size === 0;
   const updateLabel = isHiragana ? updateSelectAllHiraganaLabel : updateSelectAllKatakanaLabel;
   updateLabel();
@@ -2778,7 +2787,7 @@ function switchHiraganaSection(sectionKey) {
     const el = document.getElementById('hiragana-grid-' + key);
     if (el) el.style.display = key === sectionKey ? 'block' : 'none';
   });
-  document.getElementById('hira-ref-drill-btn').disabled = hiraganaSelectedRows[sectionKey].size === 0;
+  document.getElementById('hira-selection-drill-btn').disabled = hiraganaSelectedRows[sectionKey].size === 0;
   updateSelectAllHiraganaLabel();
 }
 
@@ -2794,7 +2803,7 @@ function drillHiraganaSelection() {
       if (entry) customDeck.push(Object.assign({ groupKey: section.dataKey }, entry));
     });
   });
-  lastSettingsScreen = 'hiragana-ref';
+  lastSettingsScreen = 'hiragana-selection';
   startDrill(shuffle(customDeck));
 }
 
@@ -2871,8 +2880,8 @@ const KATAKANA_SECTIONS = {
 const katakanaSelectedRows = { base: new Set(), diacritics: new Set(), youon: new Set() };
 let activeKatakanaSection = 'base';
 
-function showKatakanaReference() {
-  showScreen('katakana-ref');
+function showKatakanaSelection() {
+  showScreen('katakana-selection');
   Object.keys(KATAKANA_SECTIONS).forEach(key => {
     buildKanaSectionGrid('katakana-grid-' + key, KATAKANA_SECTIONS[key]);
     refreshKanaScoreShading('katakana-grid-' + key);
@@ -2904,7 +2913,7 @@ function toggleSelectAllKatakana() {
     section.rows.forEach((_, idx) => set.add(idx));
     if (grid) grid.querySelectorAll('.kana-ref-row').forEach(r => r.classList.add('selected'));
   }
-  document.getElementById('kata-ref-drill-btn').disabled = set.size === 0;
+  document.getElementById('kata-selection-drill-btn').disabled = set.size === 0;
   updateSelectAllKatakanaLabel();
 }
 
@@ -2925,7 +2934,7 @@ function switchKatakanaSection(sectionKey) {
     const el = document.getElementById('katakana-grid-' + key);
     if (el) el.style.display = key === sectionKey ? 'block' : 'none';
   });
-  document.getElementById('kata-ref-drill-btn').disabled = katakanaSelectedRows[sectionKey].size === 0;
+  document.getElementById('kata-selection-drill-btn').disabled = katakanaSelectedRows[sectionKey].size === 0;
   updateSelectAllKatakanaLabel();
 }
 
@@ -2941,7 +2950,7 @@ function drillKatakanaSelection() {
       if (entry) customDeck.push(Object.assign({ groupKey: section.dataKey }, entry));
     });
   });
-  lastSettingsScreen = 'katakana-ref';
+  lastSettingsScreen = 'katakana-selection';
   startDrill(shuffle(customDeck));
 }
 
@@ -3019,7 +3028,7 @@ function buildMatchCategoryList() {
     card.dataset.key = key;
     card.innerHTML = `<div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${v.items.length} words</div>`;
     if (v.hasReference) {
-      card.onclick = () => showVocabTileReference(key);
+      card.onclick = () => showVocabTileSelection(key);
     } else {
       card.onclick = () => startVocabReadingDeck(v.items, key);
     }
