@@ -64,7 +64,7 @@
   }
   .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
   .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-  .nav-pill.active.sub-screen { color: #fff; }
+  .nav-pill.sub-screen { color: #fff; }
 
   main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
 
@@ -1839,7 +1839,9 @@ function showScreen(id) {
   else if (id === 'match-settings' || id === 'vocab-reference' || id === 'vocab-tile-selection') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
   const navMatch = document.getElementById('nav-match');
-  if (id === 'vocab-tile-selection' || id === 'vocab-reference') {
+  const inReadSubScreen = id === 'vocab-tile-selection' || id === 'vocab-reference' ||
+    (id === 'drill' && (lastSettingsScreen === 'match-settings' || lastSettingsScreen === 'vocab-tile-selection'));
+  if (inReadSubScreen) {
     navMatch.textContent = 'Back';
     navMatch.classList.add('sub-screen');
   } else {
