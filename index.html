@@ -1605,6 +1605,7 @@ const HIRA_TO_ROMA = {
   'にじゅう':'nijuu','さんじゅう':'sanjuu','よんじゅう':'yonjuu','ごじゅう':'gojuu','ろくじゅう':'rokujuu','ななじゅう':'nanajuu','はちじゅう':'hachijuu','きゅうじゅう':'kyuujuu',
   'ひゃく':'hyaku','にひゃく':'nihyaku','さんびゃく':'sanbyaku','よんひゃく':'yonhyaku','ごひゃく':'gohyaku','ろっぴゃく':'roppyaku','ななひゃく':'nanahyaku','はっぴゃく':'happyaku','きゅうひゃく':'kyuuhyaku',
   'せん':'sen','にせん':'nisen','さんぜん':'sanzen','よんせん':'yonsen','ごせん':'gosen','ろくせん':'rokusen','ななせん':'nanasen','はっせん':'hassen','きゅうせん':'kyuusen',
+  'いちまん':'ichiman','にまん':'niman','さんまん':'sanman','よんまん':'yonman','ごまん':'goman','ろくまん':'rokuman','ななまん':'nanaman','はちまん':'hachiman','きゅうまん':'kyuuman',
 };
 
 function numReadingToRomaji(reading) {
@@ -1962,7 +1963,9 @@ function isTrackedItem(q) {
   const isKana = !!(q && (q.disp === 'base' || q.disp === 'diacritic' || q.disp === 'youon') &&
     q.groupKey && (q.groupKey.startsWith('hiragana-') || q.groupKey.startsWith('katakana-')));
   const isKanji = !!(q && (q.disp === 'kanji' || q.disp === 'survival'));
-  return isKana || isKanji;
+  const isVocabWord = !!(q && q.disp === 'word');
+  const isNumberOrTime = !!(q && (q.disp === 'number' || q.disp === 'time'));
+  return isKana || isKanji || isVocabWord || isNumberOrTime;
 }
 
 // Kana characters always mean the same sound, so the character itself is a
@@ -1972,14 +1975,19 @@ function isTrackedItem(q) {
 // so kanji use char+answer as the key instead.
 function getScoreKey(q) {
   if (q.disp === 'kanji' || q.disp === 'survival') return q.char + '|' + q.answer;
+  if (q.disp === 'word') return q.char + '|' + (q.answerEn || q.answer);
+  if (q.disp === 'number') return 'numbers-consistency';
+  if (q.disp === 'time') return 'times-consistency';
   return q.char;
 }
 
 function recordKanaResult(q, correct) {
   if (!isTrackedItem(q)) return;
   const key = getScoreKey(q);
+  const increment = (q.disp === 'number' || q.disp === 'time') ? 0.1 : 1;
   const cur = kanaScores[key] || 0;
-  kanaScores[key] = correct ? Math.min(2, cur + 1) : Math.max(-2, cur - 1);
+  const next = correct ? Math.min(2, cur + increment) : Math.max(-2, cur - increment);
+  kanaScores[key] = Math.round(next * 10) / 10;
   saveKanaScores();
 }
 
