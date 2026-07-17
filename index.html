@@ -442,6 +442,32 @@
     <button class="start-btn" id="kanji-ref-drill-btn" onclick="drillKanjiSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
 
+  <!-- Vocab tile-selection reference screen (flat categories: colours, trip-prep) -->
+  <div class="screen" id="screen-vocab-tile-ref">
+    <div class="settings-title" id="vocab-tile-ref-title">Reference</div>
+    <div class="settings-sub">Tap a word to select it for drilling.</div>
+
+    <div class="group-card emphasis" id="vocab-tile-select-all-card" onclick="toggleSelectAllVocabTiles()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name" id="vocab-tile-select-all-label">Select all</div>
+      </div>
+      <div style="font-size:20px; color:var(--text-muted);">→</div>
+    </div>
+
+    <div id="vocab-tile-grid"></div>
+
+    <div class="group-card" id="vocab-tile-drill-mode-card" onclick="toggleVocabTileDrillMode()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Drill by meaning instead of sound</div>
+        <div class="group-count">Swaps which text is prominent on the cards — romaji on top by default, English on top when this is on</div>
+      </div>
+      <div class="toggle" id="vocab-tile-drill-mode-toggle"></div>
+    </div>
+
+    <button class="start-btn" id="vocab-tile-drill-btn" onclick="drillVocabTileSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
+    <button class="btn-secondary" onclick="showMatchSettings()">← Back</button>
+  </div>
+
   <!-- Drill screen -->
   <div class="screen" id="screen-drill">
     <div class="progress-wrap">
@@ -506,20 +532,6 @@
     </div>
 
     <div id="match-read-view">
-      <div class="group-card" onclick="startWordReading()" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Reading words — from Level 1 and Level 2</div>
-          <div class="group-chars">みず えき といれ…</div>
-          <div class="group-count">20 random words per round</div>
-        </div>
-      </div>
-      <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Reading words — everything</div>
-          <div class="group-chars">らんだむな ぜんぶ</div>
-          <div class="group-count">20 random words per round, from every category</div>
-        </div>
-      </div>
       <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Reading numbers</div>
@@ -534,6 +546,20 @@
           <div class="group-count">10 random times per round, with gozen/gogo, kara/made and ni</div>
         </div>
       </div>
+      <div class="group-card" onclick="startWordReading()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading words — from Level 1 and Level 2</div>
+          <div class="group-chars">みず えき といれ…</div>
+          <div class="group-count">20 random words per round</div>
+        </div>
+      </div>
+      <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading words — everything</div>
+          <div class="group-chars">らんだむな ぜんぶ</div>
+          <div class="group-count">20 random words per round, from every category</div>
+        </div>
+      </div>
       <div class="group-card" onclick="startRandomKanji()" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Random kanji</div>
@@ -541,18 +567,18 @@
           <div class="group-count">20 random kanji per round, from all categories</div>
         </div>
       </div>
-      <div class="group-card" onclick="startColoursMatch()" style="cursor:pointer;">
+      <div class="group-card" onclick="showVocabTileReference('vocab-colours')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Colours</div>
           <div class="group-chars">あか あお きいろ…</div>
-          <div class="group-count">Not covered in lessons — 10 words per round</div>
+          <div class="group-count">Not covered in lessons — 10 words</div>
         </div>
       </div>
-      <div class="group-card" onclick="startTripPrepMatch()" style="cursor:pointer;">
+      <div class="group-card" onclick="showVocabTileReference('vocab-trip-prep')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Useful words for the trip</div>
           <div class="group-chars">みず すし きっぷ…</div>
-          <div class="group-count">Not covered in lessons — 20 random words per round</div>
+          <div class="group-count">Not covered in lessons — 27 words</div>
         </div>
       </div>
     </div>
@@ -973,6 +999,7 @@ const DATA = {
 const VOCAB = {
   'vocab-greetings': {
     level: 1,
+    hasReference: true,
     label: 'Greetings & phrases',
     chars: 'はじめまして こんにちは…',
     items: [
@@ -1011,6 +1038,7 @@ const VOCAB = {
   },
   'vocab-countries': {
     level: 1,
+    hasReference: true,
     label: 'Countries',
     chars: 'にほん ふらんす…',
     items: [
@@ -1044,6 +1072,7 @@ const VOCAB = {
   },
   'vocab-occupations': {
     level: 1,
+    hasReference: true,
     label: 'Occupations',
     chars: 'せんせい いしゃ…',
     items: [
@@ -1065,6 +1094,7 @@ const VOCAB = {
   },
   'vocab-objects': {
     level: 1,
+    hasReference: true,
     label: 'Everyday items',
     chars: 'かさ ほん とけい…',
     items: [
@@ -1107,6 +1137,7 @@ const VOCAB = {
   },
   'vocab-clothing': {
     level: 1,
+    hasReference: true,
     label: 'Clothing & accessories',
     chars: 'くつ ぼうし ジーンズ…',
     items: [
@@ -1118,6 +1149,7 @@ const VOCAB = {
   },
   'vocab-places': {
     level: 1,
+    hasReference: true,
     label: 'Places & around the building',
     chars: 'がっこう えき かいだん…',
     items: [
@@ -1144,6 +1176,7 @@ const VOCAB = {
   },
   'vocab-question-location': {
     level: 1,
+    hasReference: true,
     label: 'Question & location words',
     chars: 'なん だれ どこ…',
     items: [
@@ -1158,6 +1191,8 @@ const VOCAB = {
   },
   'vocab-numbers': {
     level: 1,
+    hasReference: true,
+    noMeaningMode: true,
     label: 'Numbers',
     chars: 'いち に さん…',
     items: [
@@ -1222,6 +1257,7 @@ const VOCAB = {
   },
   'vocab-cities': {
     level: 2,
+    hasReference: true,
     label: 'Cities',
     chars: 'とうきょう ろんどん…',
     items: [
@@ -1243,6 +1279,7 @@ const VOCAB = {
   },
   'vocab-time-l2': {
     level: 2,
+    hasReference: true,
     label: 'Time vocabulary',
     chars: 'から まで に ごぜん ごご…',
     items: [
@@ -1268,6 +1305,7 @@ const VOCAB = {
   },
   'vocab-general-l2': {
     level: 2,
+    hasReference: true,
     label: 'General vocabulary',
     chars: 'ごみばこ きせつ かぞく',
     items: [
@@ -1293,6 +1331,7 @@ const VOCAB = {
   },
   'vocab-verbs-l2': {
     level: 2,
+    hasReference: true,
     label: 'Verbs',
     chars: 'おきます ねます べんきょうします…',
     items: [
@@ -1562,6 +1601,122 @@ function drillKanjiSelection() {
   startDrill(shuffle(customDeck));
 }
 
+// Tile-selection reference for flat vocab categories (Colours, Trip-prep) —
+// no sections/pills needed since these are single unordered lists, unlike kanji.
+let vocabTileCategory = null;
+const vocabTileSelected = {};
+const vocabTileDrillMode = {}; // categoryKey -> boolean, remembered independently per category
+
+function toggleVocabTileDrillMode() {
+  const categoryKey = vocabTileCategory;
+  vocabTileDrillMode[categoryKey] = !vocabTileDrillMode[categoryKey];
+  const card = document.getElementById('vocab-tile-drill-mode-card');
+  if (card) card.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
+}
+
+function showVocabTileReference(categoryKey) {
+  vocabTileCategory = categoryKey;
+  if (!vocabTileSelected[categoryKey]) vocabTileSelected[categoryKey] = new Set();
+  document.getElementById('vocab-tile-ref-title').textContent = VOCAB[categoryKey].label;
+  buildVocabTileGrid(categoryKey);
+  refreshKanaScoreShading('vocab-tile-grid');
+  updateSelectAllVocabTilesLabel();
+  document.getElementById('vocab-tile-drill-btn').disabled = vocabTileSelected[categoryKey].size === 0;
+  const modeCard = document.getElementById('vocab-tile-drill-mode-card');
+  if (modeCard) {
+    modeCard.style.display = VOCAB[categoryKey].noMeaningMode ? 'none' : 'flex';
+    modeCard.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
+  }
+  showScreen('vocab-tile-ref');
+}
+
+function buildVocabTileGrid(categoryKey) {
+  const container = document.getElementById('vocab-tile-grid');
+  container.innerHTML = ''; // rebuilt each time - this one container is shared across categories
+  const grid = document.createElement('div');
+  grid.className = 'kanji-tile-grid';
+  const items = VOCAB[categoryKey].items;
+  const selected = vocabTileSelected[categoryKey];
+  items.forEach((item, idx) => {
+    const tile = document.createElement('div');
+    tile.className = 'kana-ref-card';
+    tile.innerHTML = `<span class="kana-ref-char">${item.jp}</span><span class="kana-ref-rom">${item.en}</span>`;
+    const scoreKey = item.jp + '|' + item.en;
+    tile.dataset.scoreKey = scoreKey;
+    const scoreClass = kanaScoreClass(scoreKey);
+    if (scoreClass) tile.classList.add(scoreClass);
+    if (selected.has(idx)) tile.classList.add('selected');
+    tile.onclick = () => toggleVocabTile(categoryKey, idx, tile);
+    grid.appendChild(tile);
+  });
+  container.appendChild(grid);
+}
+
+function toggleVocabTile(categoryKey, idx, tileEl) {
+  const set = vocabTileSelected[categoryKey];
+  if (set.has(idx)) {
+    set.delete(idx);
+    tileEl.classList.remove('selected');
+  } else {
+    set.add(idx);
+    tileEl.classList.add('selected');
+  }
+  document.getElementById('vocab-tile-drill-btn').disabled = set.size === 0;
+  updateSelectAllVocabTilesLabel();
+}
+
+function toggleSelectAllVocabTiles() {
+  const categoryKey = vocabTileCategory;
+  const total = VOCAB[categoryKey].items.length;
+  const set = vocabTileSelected[categoryKey];
+  const grid = document.getElementById('vocab-tile-grid');
+  const allSelected = set.size === total;
+  if (allSelected) {
+    set.clear();
+    if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.remove('selected'));
+  } else {
+    for (let i = 0; i < total; i++) set.add(i);
+    if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.add('selected'));
+  }
+  document.getElementById('vocab-tile-drill-btn').disabled = set.size === 0;
+  updateSelectAllVocabTilesLabel();
+}
+
+function updateSelectAllVocabTilesLabel() {
+  const categoryKey = vocabTileCategory;
+  const total = VOCAB[categoryKey].items.length;
+  const set = vocabTileSelected[categoryKey];
+  const allSelected = set.size === total;
+  document.getElementById('vocab-tile-select-all-label').textContent = allSelected ? 'Deselect all' : 'Select all';
+}
+
+function drillVocabTileSelection() {
+  const categoryKey = vocabTileCategory;
+  const set = vocabTileSelected[categoryKey];
+  if (set.size === 0) return;
+  drillByMeaning = VOCAB[categoryKey].noMeaningMode ? false : !!vocabTileDrillMode[categoryKey];
+  const items = VOCAB[categoryKey].items;
+  const selectedItems = [...set].sort((a, b) => a - b).map(idx => items[idx]);
+  const customDeck = selectedItems.map(item => {
+    const correct = item.romaji;
+    const distractorItems = shuffle(items.filter(w => w.romaji !== correct)).slice(0, 3);
+    const allItems = shuffle([item, ...distractorItems]);
+    return {
+      char: item.jp,
+      answer: correct,
+      answerRomaji: correct,
+      answerEn: item.en,
+      disp: 'word',
+      groupKey: categoryKey,
+      options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
+      hint: item.en,
+      altForm: item.altForm,
+    };
+  });
+  lastSettingsScreen = 'vocab-tile-ref';
+  startDrill(shuffle(customDeck));
+}
+
 function buildRandomKanjiPool() {
   const allKanji = [];
   KANJI_KEYS.forEach(k => DATA[k].forEach(q => allKanji.push(Object.assign({groupKey: k}, q))));
@@ -1580,11 +1735,12 @@ function showScreen(id) {
   if (id === 'hiragana-ref') document.querySelectorAll('.nav-pill')[0].classList.add('active');
   else if (id === 'katakana-ref') document.querySelectorAll('.nav-pill')[1].classList.add('active');
   else if (id === 'kanji-ref') document.querySelectorAll('.nav-pill')[2].classList.add('active');
-  else if (id === 'match-settings' || id === 'vocab-reference') document.querySelectorAll('.nav-pill')[4].classList.add('active');
+  else if (id === 'match-settings' || id === 'vocab-reference' || id === 'vocab-tile-ref') document.querySelectorAll('.nav-pill')[4].classList.add('active');
   else document.querySelectorAll('.nav-pill')[3].classList.add('active');
   if (id === 'hiragana-ref') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
   else if (id === 'katakana-ref') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
   else if (id === 'kanji-ref') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
+  else if (id === 'vocab-tile-ref' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
 }
 
 let lastSettingsScreen = 'match-settings';
@@ -2723,13 +2879,6 @@ function buildMatchCategoryList() {
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
-    if (v.hasReference) {
-      const refCard = document.createElement('div');
-      refCard.className = 'vocab-ref-card';
-      refCard.innerHTML = `<span>${v.label} — reference</span><span class="vocab-ref-arrow">→</span>`;
-      refCard.onclick = (e) => { e.stopPropagation(); showVocabReference(key); };
-      container.appendChild(refCard);
-    }
     if (key === 'vocab-time-l2') {
       const minRefCard = document.createElement('div');
       minRefCard.className = 'vocab-ref-card';
@@ -2737,11 +2886,22 @@ function buildMatchCategoryList() {
       minRefCard.onclick = (e) => { e.stopPropagation(); showMinuteReference(); };
       container.appendChild(minRefCard);
     }
+    if (key === 'vocab-days-l2') {
+      const daysRefCard = document.createElement('div');
+      daysRefCard.className = 'vocab-ref-card';
+      daysRefCard.innerHTML = `<span>Days of the week (in order) — reference</span><span class="vocab-ref-arrow">→</span>`;
+      daysRefCard.onclick = (e) => { e.stopPropagation(); showVocabReference(key); };
+      container.appendChild(daysRefCard);
+    }
     const card = document.createElement('div');
     card.className = 'match-card-select';
     card.dataset.key = key;
     card.innerHTML = `<div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${v.items.length} words</div>`;
-    card.onclick = () => selectMatchCategory(key, card);
+    if (v.hasReference) {
+      card.onclick = () => showVocabTileReference(key);
+    } else {
+      card.onclick = () => selectMatchCategory(key, card);
+    }
     container.appendChild(card);
   });
 }
@@ -2848,18 +3008,6 @@ function startVocabReadingDeck(items, groupKey) {
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
   showScreen('drill');
   renderQuestion();
-}
-
-function startVocabReading(categoryKey) {
-  startVocabReadingDeck(VOCAB[categoryKey].items, categoryKey);
-}
-
-function startColoursMatch() {
-  startVocabReading('vocab-colours');
-}
-
-function startTripPrepMatch() {
-  startVocabReading('vocab-trip-prep');
 }
 
 function startRandomMatchEverything() {
