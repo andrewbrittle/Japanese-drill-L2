@@ -80,7 +80,7 @@
     margin: 0.75rem 0 -0.5rem 0.25rem;
   }
   .section-label:first-of-type { margin-top: 0; }
-  #match-read-view, #match-vocab-view { display: flex; flex-direction: column; gap: 1rem; }
+  #match-read-view, #match-vocab-view, #match-extra-view { display: flex; flex-direction: column; gap: 1rem; }
 
   .group-card {
     background: var(--surface); border: 1px solid var(--border);
@@ -93,7 +93,16 @@
   .group-card.selected { border-color: var(--accent); background: var(--accent-dim); }
   .group-card.emphasis { border-color: var(--accent); }
 
-  .group-info { display: flex; flex-direction: column; gap: 3px; }
+  .group-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
+  .score-swatch {
+    flex: 0 0 30%; align-self: stretch; border-radius: var(--radius);
+    margin-left: 0.75rem; min-height: 48px; background: var(--surface2);
+  }
+  .score-swatch.score-neg2 { background: rgba(235,87,87,0.45); }
+  .score-swatch.score-neg1 { background: rgba(235,87,87,0.22); }
+  .score-swatch.score-neutral { background: rgba(126,184,247,0.16); }
+  .score-swatch.score-pos1 { background: rgba(111,207,151,0.22); }
+  .score-swatch.score-pos2 { background: rgba(111,207,151,0.45); }
   .group-name { font-size: 15px; font-weight: 700; }
   .group-chars { font-size: 20px; font-weight: 600; letter-spacing: 4px; color: var(--text-muted); margin-top: 4px; font-family: 'BIZ UDPGothic', sans-serif; }
   .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); }
@@ -239,8 +248,9 @@
   }
   #match-category-list { display: flex; flex-direction: column; gap: 0.75rem; }
   .match-card-select:hover { border-color: var(--border-hover); }
-  .match-card-select.selected { border-color: var(--purple); background: var(--purple-dim); }
+  .match-card-select.selected { border-color: var(--accent); background: var(--accent-dim); }
   .match-card-select .group-name { font-size: 15px; font-weight: 700; }
+  .section-divider { height: 1px; background: var(--accent); opacity: 0.45; margin: 0.25rem 0; }
   .vocab-ref-card {
     display: flex; justify-content: space-between; align-items: center;
     background: transparent; border: 1px solid var(--border);
@@ -252,10 +262,12 @@
   .vocab-ref-card:hover { border-color: var(--accent); }
   .vocab-ref-arrow { color: var(--text-muted); }
   #vocab-ref-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  #vocab-ref-list.tight-list { gap: 0.4rem; }
   .vocab-ref-row {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 0.7rem 1rem;
   }
+  .vocab-ref-row.minute-row { padding: 0.4rem 1rem; }
   .vocab-ref-row.two-col {
     display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
   }
@@ -521,14 +533,7 @@
       <button class="level-pill active" id="level-pill-read" onclick="setMatchLevel('read')">Read</button>
       <button class="level-pill" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
       <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
-    </div>
-
-    <div class="group-card" id="drill-mode-toggle-card" onclick="toggleDrillByMeaning()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name">Drill by meaning instead of sound</div>
-        <div class="group-count">Swaps which text is prominent on word/vocab cards — romaji on top by default, English on top when this is on</div>
-      </div>
-      <div class="toggle" id="drill-mode-toggle"></div>
+      <button class="level-pill" id="level-pill-extra" onclick="setMatchLevel('extra')">Extra</button>
     </div>
 
     <div id="match-read-view">
@@ -536,37 +541,48 @@
         <div class="group-info">
           <div class="group-name">Reading numbers</div>
           <div class="group-chars">らんだむな すうじ</div>
-          <div class="group-count">5 random numbers per round</div>
+          <div class="group-count">10 random numbers per round</div>
         </div>
+        <div class="score-swatch" id="numbers-score-swatch"></div>
       </div>
       <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Reading times</div>
           <div class="group-chars">ごぜん くじ はん</div>
-          <div class="group-count">10 random times per round, with gozen/gogo, kara/made and ni</div>
+          <div class="group-count">10 random times per round, with qualifiers</div>
         </div>
+        <div class="score-swatch" id="times-score-swatch"></div>
       </div>
-      <div class="group-card" onclick="startWordReading()" style="cursor:pointer;">
+
+      <div class="section-divider"></div>
+
+      <div class="match-card-select" id="read-pool-l1l2" onclick="selectReadRandomPool('l1l2', this)">
+        <div class="group-name">Reading words — from Level 1 and Level 2</div>
+        <div class="group-chars">みず えき といれ…</div>
+        <div class="group-count">20 random words per round</div>
+      </div>
+      <div class="match-card-select" id="read-pool-everything" onclick="selectReadRandomPool('everything', this)">
+        <div class="group-name">Reading words — everything</div>
+        <div class="group-chars">らんだむな ぜんぶ</div>
+        <div class="group-count">20 random words per round, from every category</div>
+      </div>
+      <div class="match-card-select" id="read-pool-kanji" onclick="selectReadRandomPool('kanji', this)">
+        <div class="group-name">Random kanji</div>
+        <div class="group-chars">らんだむな 漢字</div>
+        <div class="group-count">20 random kanji per round, from all categories</div>
+      </div>
+
+      <div class="group-card" id="drill-mode-toggle-card" onclick="toggleDrillByMeaning()" style="cursor:pointer;">
         <div class="group-info">
-          <div class="group-name">Reading words — from Level 1 and Level 2</div>
-          <div class="group-chars">みず えき といれ…</div>
-          <div class="group-count">20 random words per round</div>
+          <div class="group-name">Drill by meaning instead of sound</div>
+          <div class="group-count">Swaps which text is prominent on word/vocab cards — romaji on top by default, English on top when this is on</div>
         </div>
+        <div class="toggle" id="drill-mode-toggle"></div>
       </div>
-      <div class="group-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Reading words — everything</div>
-          <div class="group-chars">らんだむな ぜんぶ</div>
-          <div class="group-count">20 random words per round, from every category</div>
-        </div>
-      </div>
-      <div class="group-card" onclick="startRandomKanji()" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Random kanji</div>
-          <div class="group-chars">らんだむな 漢字</div>
-          <div class="group-count">20 random kanji per round, from all categories</div>
-        </div>
-      </div>
+      <button class="start-btn" id="read-random-start-btn" onclick="startReadRandomDrill()" disabled>Start random drill</button>
+    </div>
+
+    <div id="match-extra-view" style="display:none;">
       <div class="group-card" onclick="showVocabTileReference('vocab-colours')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Colours</div>
@@ -584,15 +600,24 @@
     </div>
 
     <div id="match-vocab-view" style="display:none;">
-      <div class="match-card-select" onclick="startRandomMatch()" style="cursor:pointer;">
+      <div id="match-category-list"></div>
+
+      <div class="section-divider"></div>
+
+      <div class="match-card-select" id="random-match-card" onclick="selectRandomMatchCard(this)">
         <div class="group-name">Random matching</div>
         <div class="group-chars">らんだむな ことば</div>
         <div class="group-count" id="random-match-count">20 random words per round, from all Level 1 categories</div>
       </div>
 
-      <div class="section-label">Lesson vocabulary</div>
-      <div id="match-category-list"></div>
-      <button class="start-btn" id="match-start-btn" onclick="startLevelVocabReading()" disabled>Start</button>
+      <div class="group-card" id="drill-mode-toggle-card-l" onclick="toggleDrillByMeaning()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Drill by meaning instead of sound</div>
+          <div class="group-count">Swaps which text is prominent on word/vocab cards — romaji on top by default, English on top when this is on</div>
+        </div>
+        <div class="toggle" id="drill-mode-toggle-l"></div>
+      </div>
+      <button class="start-btn" id="match-start-btn" onclick="startRandomMatch()" disabled>Start random drill</button>
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
@@ -1333,7 +1358,7 @@ const VOCAB = {
     level: 2,
     hasReference: true,
     label: 'Verbs',
-    chars: 'おきます ねます べんきょうします…',
+    chars: 'ねます おきます…',
     items: [
       {jp:'おきます', romaji:'okimasu', en:'to get up'},
       {jp:'ねます', romaji:'nemasu', en:'to sleep / go to bed'},
@@ -1347,7 +1372,7 @@ const VOCAB = {
     level: 2,
     hasReference: true,
     label: 'Days of the week',
-    chars: 'げつようび かようび すいようび…',
+    chars: 'かようび どようび…',
     items: [
       {jp:'げつようび', romaji:'getsuyoubi', en:'Monday', altForm:'月曜日'},
       {jp:'かようび', romaji:'kayoubi', en:'Tuesday', altForm:'火曜日'},
@@ -1467,6 +1492,8 @@ function toggleDrillByMeaning() {
   drillByMeaning = !drillByMeaning;
   const card = document.getElementById('drill-mode-toggle-card');
   if (card) card.classList.toggle('selected', drillByMeaning);
+  const cardL = document.getElementById('drill-mode-toggle-card-l');
+  if (cardL) cardL.classList.toggle('selected', drillByMeaning);
 }
 
 function toggleHiraganaOnKanji() {
@@ -1630,6 +1657,29 @@ function showVocabTileReference(categoryKey) {
   showScreen('vocab-tile-ref');
 }
 
+const COLOUR_HUES = {
+  red: [229, 72, 77], blue: [77, 136, 229], yellow: [229, 195, 46], green: [77, 199, 113],
+  brown: [160, 104, 77], purple: [155, 89, 208], pink: [229, 77, 155], orange: [229, 138, 77],
+};
+
+function interpolateRgb(from, to, t) {
+  return from.map((f, i) => Math.round(f + (to[i] - f) * t));
+}
+
+// Colours category only: border shows the tile's own hue, at an intensity that
+// scales with confidence (dim/grey at low scores, vivid at high scores).
+// Black and white use a grayscale range instead, since "saturation of black"
+// isn't a meaningful thing to show.
+function colourBorderStyle(en, score) {
+  if (score === undefined || score === null) return null;
+  const t = Math.max(0, Math.min(1, (score + 2) / 4));
+  let rgb;
+  if (en === 'black') rgb = interpolateRgb([40, 40, 40], [150, 150, 150], t);
+  else if (en === 'white') rgb = interpolateRgb([120, 120, 120], [255, 255, 255], t);
+  else rgb = interpolateRgb([90, 90, 90], COLOUR_HUES[en] || [150, 150, 150], t);
+  return `rgb(${rgb[0]},${rgb[1]},${rgb[2]})`;
+}
+
 function buildVocabTileGrid(categoryKey) {
   const container = document.getElementById('vocab-tile-grid');
   container.innerHTML = ''; // rebuilt each time - this one container is shared across categories
@@ -1640,11 +1690,20 @@ function buildVocabTileGrid(categoryKey) {
   items.forEach((item, idx) => {
     const tile = document.createElement('div');
     tile.className = 'kana-ref-card';
-    tile.innerHTML = `<span class="kana-ref-char">${item.jp}</span><span class="kana-ref-rom">${item.en}</span>`;
+    const len = [...item.jp].length;
+    const charSize = len <= 4 ? '28px' : len <= 8 ? '20px' : len <= 12 ? '16px' : '13px';
+    tile.innerHTML = `<span class="kana-ref-char" style="font-size:${charSize};">${item.jp}</span><span class="kana-ref-rom">${item.en}</span>`;
     const scoreKey = item.jp + '|' + item.en;
     tile.dataset.scoreKey = scoreKey;
     const scoreClass = kanaScoreClass(scoreKey);
     if (scoreClass) tile.classList.add(scoreClass);
+    if (categoryKey === 'vocab-colours') {
+      tile.style.borderWidth = '3px';
+      if (!selected.has(idx)) {
+        const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
+        if (borderColor) tile.style.borderColor = borderColor;
+      }
+    }
     if (selected.has(idx)) tile.classList.add('selected');
     tile.onclick = () => toggleVocabTile(categoryKey, idx, tile);
     grid.appendChild(tile);
@@ -1657,9 +1716,16 @@ function toggleVocabTile(categoryKey, idx, tileEl) {
   if (set.has(idx)) {
     set.delete(idx);
     tileEl.classList.remove('selected');
+    if (categoryKey === 'vocab-colours') {
+      const item = VOCAB[categoryKey].items[idx];
+      const scoreKey = item.jp + '|' + item.en;
+      const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
+      if (borderColor) tileEl.style.borderColor = borderColor;
+    }
   } else {
     set.add(idx);
     tileEl.classList.add('selected');
+    tileEl.style.borderColor = '';
   }
   document.getElementById('vocab-tile-drill-btn').disabled = set.size === 0;
   updateSelectAllVocabTilesLabel();
@@ -1667,16 +1733,29 @@ function toggleVocabTile(categoryKey, idx, tileEl) {
 
 function toggleSelectAllVocabTiles() {
   const categoryKey = vocabTileCategory;
-  const total = VOCAB[categoryKey].items.length;
+  const items = VOCAB[categoryKey].items;
+  const total = items.length;
   const set = vocabTileSelected[categoryKey];
   const grid = document.getElementById('vocab-tile-grid');
   const allSelected = set.size === total;
+  const tiles = grid ? [...grid.querySelectorAll('.kana-ref-card')] : [];
   if (allSelected) {
     set.clear();
-    if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.remove('selected'));
+    tiles.forEach((t, idx) => {
+      t.classList.remove('selected');
+      if (categoryKey === 'vocab-colours') {
+        const item = items[idx];
+        const scoreKey = item.jp + '|' + item.en;
+        const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
+        if (borderColor) t.style.borderColor = borderColor;
+      }
+    });
   } else {
     for (let i = 0; i < total; i++) set.add(i);
-    if (grid) grid.querySelectorAll('.kana-ref-card').forEach(t => t.classList.add('selected'));
+    tiles.forEach(t => {
+      t.classList.add('selected');
+      t.style.borderColor = '';
+    });
   }
   document.getElementById('vocab-tile-drill-btn').disabled = set.size === 0;
   updateSelectAllVocabTilesLabel();
@@ -1741,6 +1820,7 @@ function showScreen(id) {
   else if (id === 'katakana-ref') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
   else if (id === 'kanji-ref') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
   else if (id === 'vocab-tile-ref' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
+  else if (id === 'match-settings') updateNumberTimeSwatches();
 }
 
 let lastSettingsScreen = 'match-settings';
@@ -1873,7 +1953,7 @@ function pickChallengeNumber() {
 
 function buildNumberChallengeDeck() {
   const nums = [];
-  while (nums.length < 5) {
+  while (nums.length < 10) {
     const n = pickChallengeNumber();
     if (!nums.includes(n)) nums.push(n);
   }
@@ -2154,6 +2234,17 @@ function kanaScoreClass(key) {
   if (score === -1) return 'score-neg1';
   if (score === 0) return 'score-neutral'; // drilled, but currently balanced
   if (score === 1) return 'score-pos1';
+  return 'score-pos2';
+}
+
+// Numbers/times scores move in 0.1 steps rather than whole integers, so they
+// need range-based bucketing instead of kanaScoreClass's strict equality checks.
+function continuousScoreClass(score) {
+  if (score === undefined || score === null) return '';
+  if (score <= -1.2) return 'score-neg2';
+  if (score <= -0.4) return 'score-neg1';
+  if (score < 0.4) return 'score-neutral';
+  if (score < 1.2) return 'score-pos1';
   return 'score-pos2';
 }
 
@@ -2526,9 +2617,6 @@ function showResults() {
   }
 }
 
-/* ---------- Vocab reading mode (Level 1/2 category selection) ---------- */
-let matchCategoryKey = null;
-
 // Row layouts for each hiragana section. rowDataIndices maps each displayed
 // row to the DATA[dataKey] indices it contains (base's order differs from
 // display order, hence the explicit mapping there; diacritics/youon are
@@ -2859,17 +2947,50 @@ function drillKatakanaSelection() {
 
 let currentMatchLevel = 'read';
 
+let selectedReadRandomPool = null;
+
+function selectReadRandomPool(pool, card) {
+  selectedReadRandomPool = pool;
+  document.querySelectorAll('#match-read-view .match-card-select').forEach(c => c.classList.remove('selected'));
+  card.classList.add('selected');
+  document.getElementById('read-random-start-btn').disabled = false;
+}
+
+function startReadRandomDrill() {
+  if (selectedReadRandomPool === 'l1l2') startWordReading();
+  else if (selectedReadRandomPool === 'everything') startRandomMatchEverything();
+  else if (selectedReadRandomPool === 'kanji') startRandomKanji();
+}
+
+function updateNumberTimeSwatches() {
+  const numSwatch = document.getElementById('numbers-score-swatch');
+  const timeSwatch = document.getElementById('times-score-swatch');
+  const classes = ['score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2'];
+  if (numSwatch) {
+    numSwatch.classList.remove(...classes);
+    const cls = continuousScoreClass(kanaScores['numbers-consistency']);
+    if (cls) numSwatch.classList.add(cls);
+  }
+  if (timeSwatch) {
+    timeSwatch.classList.remove(...classes);
+    const cls = continuousScoreClass(kanaScores['times-consistency']);
+    if (cls) timeSwatch.classList.add(cls);
+  }
+}
+
 function setMatchLevel(level) {
   currentMatchLevel = level;
   document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
   document.getElementById('level-pill-2').classList.toggle('active', level === 2);
+  document.getElementById('level-pill-extra').classList.toggle('active', level === 'extra');
   document.getElementById('match-read-view').style.display = level === 'read' ? 'flex' : 'none';
-  document.getElementById('match-vocab-view').style.display = level === 'read' ? 'none' : 'flex';
-  if (level === 'read') return;
+  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2) ? 'flex' : 'none';
+  document.getElementById('match-extra-view').style.display = level === 'extra' ? 'flex' : 'none';
+  if (level === 'read' || level === 'extra') return;
   document.getElementById('random-match-count').textContent = `20 random words per round, from all Level ${level} categories`;
-  matchCategoryKey = null;
   document.getElementById('match-start-btn').disabled = true;
+  document.getElementById('random-match-card').classList.remove('selected');
   buildMatchCategoryList();
 }
 
@@ -2900,31 +3021,25 @@ function buildMatchCategoryList() {
     if (v.hasReference) {
       card.onclick = () => showVocabTileReference(key);
     } else {
-      card.onclick = () => selectMatchCategory(key, card);
+      card.onclick = () => startVocabReadingDeck(v.items, key);
     }
     container.appendChild(card);
   });
 }
 
-function selectMatchCategory(key, card) {
-  matchCategoryKey = key;
-  document.querySelectorAll('.match-card-select').forEach(c => c.classList.remove('selected'));
+function selectRandomMatchCard(card) {
   card.classList.add('selected');
   document.getElementById('match-start-btn').disabled = false;
-}
-
-function startLevelVocabReading() {
-  if (!matchCategoryKey) return;
-  startVocabReadingDeck(VOCAB[matchCategoryKey].items, matchCategoryKey);
 }
 
 function showMinuteReference() {
   document.getElementById('vocab-ref-title').textContent = 'Minute endings (1–10)';
   const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
   list.innerHTML = '';
   for (let i = 1; i <= 10; i++) {
     const row = document.createElement('div');
-    row.className = 'vocab-ref-row two-col';
+    row.className = 'vocab-ref-row two-col minute-row';
     row.innerHTML = `
       <div class="vocab-ref-col-left">
         <div class="vocab-ref-num-big">${i}</div>
@@ -2943,6 +3058,7 @@ function showVocabReference(categoryKey) {
   const v = VOCAB[categoryKey];
   document.getElementById('vocab-ref-title').textContent = v.label;
   const list = document.getElementById('vocab-ref-list');
+  list.className = '';
   list.innerHTML = '';
   v.items.forEach(item => {
     const row = document.createElement('div');
@@ -3022,6 +3138,7 @@ function startRandomMatchEverything() {
 buildMatchCategoryList();
 
 updateDirectionVisibility();
+updateNumberTimeSwatches();
 
 // The browser's own back button has no way to know it's "inside" this app —
 // screens here are just shown/hidden, not separate pages — so pressing back
