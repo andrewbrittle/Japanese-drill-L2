@@ -262,10 +262,12 @@
   .vocab-ref-col-left { text-align: left; }
   .vocab-ref-col-right { text-align: right; }
   .vocab-ref-num-big { font-size: 28px; font-weight: 800; color: var(--accent); line-height: 1; }
-  .vocab-ref-jp { font-size: 22px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
-  .vocab-ref-alt { font-size: 13px; font-weight: 600; color: var(--accent); font-family: 'BIZ UDPGothic', sans-serif; margin-top: 2px; }
-  .vocab-ref-en { font-size: 15px; font-weight: 700; }
-  .vocab-ref-romaji { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .vocab-ref-jp { font-size: 24px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .vocab-ref-alt { font-size: 14px; font-weight: 600; color: var(--accent); font-family: 'BIZ UDPGothic', sans-serif; margin-top: 2px; }
+  .vocab-ref-en { font-size: 16px; font-weight: 700; }
+  .vocab-ref-romaji { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
+  .vocab-ref-jp.minute-jp { font-size: 18px; }
+  .vocab-ref-romaji.minute-romaji { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
 
   /* Level filter pills on Match screen */
@@ -557,6 +559,14 @@
       <div class="section-label">Lesson vocabulary</div>
       <div id="match-category-list"></div>
       <button class="start-btn" id="match-start-btn" onclick="startLevelVocabReading()" disabled>Start</button>
+    </div>
+
+    <div class="group-card" id="drill-mode-toggle-card" onclick="toggleDrillByMeaning()" style="cursor:pointer; margin-top:0.5rem;">
+      <div class="group-info">
+        <div class="group-name">Drill by meaning instead of sound</div>
+        <div class="group-count">Swaps which text is prominent on word/vocab cards — romaji on top by default, English on top when this is on</div>
+      </div>
+      <div class="toggle" id="drill-mode-toggle"></div>
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
@@ -1412,6 +1422,14 @@ function toggleHiraganaOnKatakana() {
 
 let showHiraganaOnKanji = false;
 
+let drillByMeaning = false;
+
+function toggleDrillByMeaning() {
+  drillByMeaning = !drillByMeaning;
+  const card = document.getElementById('drill-mode-toggle-card');
+  if (card) card.classList.toggle('selected', drillByMeaning);
+}
+
 function toggleHiraganaOnKanji() {
   showHiraganaOnKanji = !showHiraganaOnKanji;
   const card = document.getElementById('kanji-hiragana-answers-card');
@@ -1669,6 +1687,8 @@ function buildWordReadingDeck() {
     return {
       char: item.jp,
       answer: correct,
+      answerRomaji: correct,
+      answerEn: item.en,
       disp: 'word',
       groupKey: 'word-reading',
       options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
@@ -1688,7 +1708,7 @@ function startWordReading() {
 }
 
 function pickChallengeNumber() {
-  if (Math.random() < 0.03) {
+  if (Math.random() < 0.05) {
     return Math.floor(Math.random() * (50000 - 10000 + 1)) + 10000;
   }
   return Math.floor(Math.random() * 9999) + 1;
@@ -2171,13 +2191,17 @@ function renderQuestion() {
     const len = [...q.char].length;
     charDisplay.style.fontSize = len <= 4 ? '72px' : len <= 6 ? '56px' : '40px';
     charDisplay.textContent = q.char;
-    document.getElementById('q-prompt').textContent = 'How do you read this word?';
+    document.getElementById('q-prompt').textContent = drillByMeaning ? 'What does this word mean?' : 'How do you read this word?';
+    const topField = drillByMeaning ? 'en' : 'rd';
+    const bottomField = drillByMeaning ? 'rd' : 'en';
+    q.answer = drillByMeaning ? q.answerEn : q.answerRomaji;
     q.options.forEach(o => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      btn.innerHTML = `<span class="opt-rd">${o.rd}</span><span class="opt-en">(${o.en})</span>`;
-      btn.dataset.value = o.rd;
-      btn.onclick = () => choose(btn, o.rd, q.answer, q.char);
+      btn.innerHTML = `<span class="opt-rd">${o[topField]}</span><span class="opt-en">(${o[bottomField]})</span>`;
+      const val = o[topField];
+      btn.dataset.value = val;
+      btn.onclick = () => choose(btn, val, q.answer, q.char);
       container.appendChild(btn);
     });
   } else if (isNumber) {
@@ -2280,7 +2304,8 @@ function choose(btn, selectedVal, answer, char) {
   });
   const fb = document.getElementById('q-feedback');
   const currentQ = deck[current];
-  let hint = currentQ && currentQ.hint ? ` (${currentQ.hint})` : '';
+  const suppressHint = currentQ && currentQ.disp === 'word' && drillByMeaning;
+  let hint = (currentQ && currentQ.hint && !suppressHint) ? ` (${currentQ.hint})` : '';
   if (!hint && currentQ && (currentQ.disp === 'kanji' || currentQ.disp === 'survival')) {
     const correctOpt = currentQ.options.find(o => o.en === currentQ.answer);
     if (correctOpt && correctOpt.jp && correctOpt.jp !== currentQ.char) {
@@ -2737,8 +2762,8 @@ function showMinuteReference() {
         <div class="vocab-ref-num-big">${i}</div>
       </div>
       <div class="vocab-ref-col-right">
-        <div class="vocab-ref-jp">${minuteToKana(i)}</div>
-        <div class="vocab-ref-romaji">${minuteToRomaji(i)}</div>
+        <div class="vocab-ref-jp minute-jp">${minuteToKana(i)}</div>
+        <div class="vocab-ref-romaji minute-romaji">${minuteToRomaji(i)}</div>
       </div>
     `;
     list.appendChild(row);
@@ -2797,6 +2822,8 @@ function buildVocabReadingDeck(items, groupKey) {
     return {
       char: item.jp,
       answer: correct,
+      answerRomaji: correct,
+      answerEn: item.en,
       disp: 'word',
       groupKey: groupKey,
       options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
