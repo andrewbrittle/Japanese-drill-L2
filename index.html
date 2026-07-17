@@ -606,7 +606,7 @@
       <div class="section-divider"></div>
 
       <div class="match-card-select" id="random-match-card" onclick="selectRandomMatchCard(this)">
-        <div class="group-name">Random matching</div>
+        <div class="group-name">Random reading</div>
         <div class="group-chars">らんだむな ことば</div>
         <div class="group-count" id="random-match-count">20 random words per round, from all Level 1 categories</div>
       </div>
@@ -1454,7 +1454,7 @@ const KATAKANA_KEYS = ['katakana-base','katakana-diacritics','katakana-youon'];
 // simply fall back to displaying romaji.
 const ROMAJI_TO_HIRAGANA = {};
 HIRAGANA_KEYS.forEach(k => DATA[k].forEach(item => { ROMAJI_TO_HIRAGANA[item.answer] = item.char; }));
-const KANJI_KEYS = ['kanji-numbers-time','kanji-nature-body','kanji-directions-travel','kanji-food','kanji-weather','kanji-people','kanji-general','kanji-verbs'];
+const KANJI_KEYS = Object.keys(DATA).filter(k => k.startsWith('kanji-'));
 
 const selected = new Set(['katakana-base']);
 let deck = [], current = 0, score = 0, wrong = 0, hints = 0, answered = false, missed = [];
@@ -1513,6 +1513,27 @@ function updateDirectionVisibility() {
 }
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+// Picks distractors that are guaranteed distinct from the correct item AND
+// from each other, on whichever field is actually shown/matched for the
+// current drill mode - not just romaji. Without this, two different words
+// that happen to share an English gloss could produce duplicate visible
+// options, and since both would carry the same dataset.value in meaning
+// mode, tapping either would register as correct.
+function pickDistractorItems(pool, correctItem, count) {
+  const field = drillByMeaning ? 'en' : 'romaji';
+  const seen = new Set([correctItem[field]]);
+  const result = [];
+  for (const candidate of shuffle([...pool])) {
+    const val = candidate[field];
+    if (!seen.has(val)) {
+      seen.add(val);
+      result.push(candidate);
+      if (result.length >= count) break;
+    }
+  }
+  return result;
+}
 
 const KANJI_SECTIONS = {
   'numbers-time': { label: 'Numbers', dataKey: 'kanji-numbers-time' },
@@ -1779,7 +1800,7 @@ function drillVocabTileSelection() {
   const selectedItems = [...set].sort((a, b) => a - b).map(idx => items[idx]);
   const customDeck = selectedItems.map(item => {
     const correct = item.romaji;
-    const distractorItems = shuffle(items.filter(w => w.romaji !== correct)).slice(0, 3);
+    const distractorItems = pickDistractorItems(items, item, 3);
     const allItems = shuffle([item, ...distractorItems]);
     return {
       char: item.jp,
@@ -1928,7 +1949,7 @@ function buildWordReadingDeck() {
   const selected10 = pool.slice(0, 20);
   return selected10.map(item => {
     const correct = item.romaji;
-    const distractorItems = shuffle(WORD_POOL.filter(w => w.romaji !== correct)).slice(0, 3);
+    const distractorItems = pickDistractorItems(WORD_POOL, item, 3);
     const allItems = shuffle([item, ...distractorItems]);
     return {
       char: item.jp,
@@ -2024,10 +2045,32 @@ function minuteToRomaji(min) {
   return (tens > 0 ? MINUTE_TENS_ROMAJI[tens] : '') + MINUTE_ONES_ROMAJI[ones] + MINUTE_ONES_SUFFIX_ROMAJI[ones];
 }
 
+// Frame appears less than the old uniform 1-in-5 - "none" is now the most
+// common case, giving occasional bare-time relief from constructing a full
+// "around 8:00 am" every time.
+function pickTimeFrame() {
+  const r = Math.random();
+  if (r < 0.40) return 'none';
+  if (r < 0.55) return 'kara';
+  if (r < 0.70) return 'made';
+  if (r < 0.85) return 'ni';
+  return 'goro';
+}
+
+// AM/PM is sometimes omitted entirely (real Japanese often drops it when
+// context is clear). Omitted more often specifically when a frame is also
+// present, since that's the "from/until/at/around AND am/pm" stacked
+// complexity that's the actual thing worth easing off.
+function pickAmpm(frame) {
+  const omitChance = frame === 'none' ? 0.2 : 0.45;
+  if (Math.random() < omitChance) return null;
+  return Math.random() < 0.5 ? 'gozen' : 'gogo';
+}
+
 function timeToKana(hour, minute, ampm, frame) {
-  const ampmK = ampm === 'gozen' ? 'ごぜん' : 'ごご';
+  const ampmPrefix = ampm === 'gozen' ? 'ごぜん ' : ampm === 'gogo' ? 'ごご ' : '';
   const minPart = minuteToKana(minute);
-  let s = `${ampmK} ${HOUR_KANA[hour]}じ${minPart ? ' ' + minPart : ''}`;
+  let s = `${ampmPrefix}${HOUR_KANA[hour]}じ${minPart ? ' ' + minPart : ''}`;
   if (frame === 'kara') s += ' から';
   else if (frame === 'made') s += ' まで';
   else if (frame === 'ni') s += ' に';
@@ -2036,9 +2079,9 @@ function timeToKana(hour, minute, ampm, frame) {
 }
 
 function timeToRomaji(hour, minute, ampm, frame) {
-  const ampmR = ampm === 'gozen' ? 'gozen' : 'gogo';
+  const ampmPrefix = ampm === 'gozen' ? 'gozen ' : ampm === 'gogo' ? 'gogo ' : '';
   const minPart = minuteToRomaji(minute);
-  let s = `${ampmR} ${HOUR_ROMAJI[hour]}ji${minPart ? ' ' + minPart : ''}`;
+  let s = `${ampmPrefix}${HOUR_ROMAJI[hour]}ji${minPart ? ' ' + minPart : ''}`;
   if (frame === 'kara') s += ' kara';
   else if (frame === 'made') s += ' made';
   else if (frame === 'ni') s += ' ni';
@@ -2048,8 +2091,8 @@ function timeToRomaji(hour, minute, ampm, frame) {
 
 function formatTimeDigital(hour, minute, ampm, frame) {
   const mins = String(minute).padStart(2, '0');
-  const ap = ampm === 'gozen' ? 'am' : 'pm';
-  const base = `${hour}:${mins} ${ap}`;
+  const ap = ampm === 'gozen' ? ' am' : ampm === 'gogo' ? ' pm' : '';
+  const base = `${hour}:${mins}${ap}`;
   if (frame === 'kara') return `From ${base}`;
   if (frame === 'made') return `Until ${base}`;
   if (frame === 'ni') return `At ${base}`;
@@ -2086,9 +2129,11 @@ function genTimeDistractors(hour, minute, ampm, frame) {
   ]);
   for (const [h, m] of timeOptions) { if (tryAdd(h, m, ampm, frame)) break; }
 
-  // 2) Same time & frame, opposite am/pm — tests gozen/gogo
-  const oppAmpm = ampm === 'gozen' ? 'gogo' : 'gozen';
-  tryAdd(hour, minute, oppAmpm, frame);
+  // 2) Same time & frame, opposite am/pm — tests gozen/gogo (skipped if ampm is omitted, nothing to invert)
+  if (ampm !== null) {
+    const oppAmpm = ampm === 'gozen' ? 'gogo' : 'gozen';
+    tryAdd(hour, minute, oppAmpm, frame);
+  }
 
   // 3) Same time & am/pm, different frame — tests から/まで/に (can't just match on the time)
   const otherFrames = shuffle(['none', 'kara', 'made', 'ni', 'goro'].filter(f => f !== frame));
@@ -2098,8 +2143,8 @@ function genTimeDistractors(hour, minute, ampm, frame) {
   while (distractors.length < 3) {
     const h = Math.floor(Math.random() * 12) + 1;
     const m = pickMinute();
-    const ap = Math.random() < 0.5 ? 'gozen' : 'gogo';
-    const fr = ['none', 'kara', 'made', 'ni', 'goro'][Math.floor(Math.random() * 5)];
+    const fr = pickTimeFrame();
+    const ap = pickAmpm(fr);
     tryAdd(h, m, ap, fr);
   }
 
@@ -2112,8 +2157,8 @@ function buildTimeChallengeDeck() {
   while (times.length < 10) {
     const hour = Math.floor(Math.random() * 12) + 1;
     const minute = pickMinute();
-    const ampm = Math.random() < 0.5 ? 'gozen' : 'gogo';
-    const frame = ['none', 'kara', 'made', 'ni', 'goro'][Math.floor(Math.random() * 5)];
+    const frame = pickTimeFrame();
+    const ampm = pickAmpm(frame);
     const key = hour + '-' + minute + '-' + ampm + '-' + frame;
     if (usedKeys.has(key)) continue;
     usedKeys.add(key);
@@ -3110,7 +3155,7 @@ function buildVocabReadingDeck(items, groupKey) {
   const pool = shuffle([...items]).slice(0, 20);
   return pool.map(item => {
     const correct = item.romaji;
-    const distractorItems = shuffle(items.filter(w => w.romaji !== correct)).slice(0, 3);
+    const distractorItems = pickDistractorItems(items, item, 3);
     const allItems = shuffle([item, ...distractorItems]);
     return {
       char: item.jp,
