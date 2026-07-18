@@ -1860,7 +1860,41 @@ let lastSettingsScreen = 'match-settings';
 function tryResumeKanji() {
   showKanjiSelection();
 }
-function goBackToSettings() { showScreen(lastSettingsScreen); }
+function goBackToSettings() {
+  // Returning here always means "just finished a drill", never a fresh visit
+  // (fresh visits go through their own show*Selection() functions directly).
+  // Clear whatever was selected so the just-updated score shading is visible
+  // immediately, instead of hidden behind leftover "selected" highlighting.
+  if (lastSettingsScreen === 'hiragana-selection') {
+    hiraganaSelectedRows[activeHiraganaSection].clear();
+    const grid = document.getElementById('hiragana-grid-' + activeHiraganaSection);
+    if (grid) grid.querySelectorAll('.kana-ref-row.selected').forEach(r => r.classList.remove('selected'));
+    const btn = document.getElementById('hira-selection-drill-btn');
+    if (btn) btn.disabled = true;
+    updateSelectAllHiraganaLabel();
+  } else if (lastSettingsScreen === 'katakana-selection') {
+    katakanaSelectedRows[activeKatakanaSection].clear();
+    const grid = document.getElementById('katakana-grid-' + activeKatakanaSection);
+    if (grid) grid.querySelectorAll('.kana-ref-row.selected').forEach(r => r.classList.remove('selected'));
+    const btn = document.getElementById('kata-selection-drill-btn');
+    if (btn) btn.disabled = true;
+    updateSelectAllKatakanaLabel();
+  } else if (lastSettingsScreen === 'kanji-selection') {
+    kanjiSelectedTiles[activeKanjiSection].clear();
+    const grid = document.getElementById('kanji-grid-' + activeKanjiSection);
+    if (grid) grid.querySelectorAll('.kana-ref-card.selected').forEach(t => t.classList.remove('selected'));
+    const btn = document.getElementById('kanji-selection-drill-btn');
+    if (btn) btn.disabled = true;
+    updateSelectAllKanjiLabel();
+  } else if (lastSettingsScreen === 'vocab-tile-selection' && vocabTileCategory) {
+    vocabTileSelected[vocabTileCategory].clear();
+    buildVocabTileGrid(vocabTileCategory);
+    const btn = document.getElementById('vocab-tile-drill-btn');
+    if (btn) btn.disabled = true;
+    updateSelectAllVocabTilesLabel();
+  }
+  showScreen(lastSettingsScreen);
+}
 
 function tryResume() {
   if (deck.length > 0 && current < deck.length) showScreen('drill');
