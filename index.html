@@ -1638,14 +1638,30 @@ function updateSelectAllKanjiLabel() {
     (allSelected ? 'Deselect all — ' : 'Select all — ') + section.label;
 }
 
+// Builds options by drawing 3 other real kanji from the given pool, rather
+// than using the item's own hand-authored options - every distractor is now
+// something genuinely drillable in its own right, not an invented phrase
+// with no backing anywhere else in the app.
+function buildKanjiOptionsFromPool(item, pool) {
+  const candidates = pool.filter(w => !(w.char === item.char && w.answer === item.answer));
+  const distractorItems = shuffle(candidates).slice(0, 3);
+  const allItems = shuffle([item, ...distractorItems]);
+  return allItems.map(w => ({
+    en: w.answer,
+    jp: w.char,
+    rd: KANJI_ROMAJI[w.char + '|' + w.answer] || '',
+  }));
+}
+
 function drillKanjiSelection() {
   const section = KANJI_SECTIONS[activeKanjiSection];
   const selectedIdx = kanjiSelectedTiles[activeKanjiSection];
   if (selectedIdx.size === 0) return;
   const data = DATA[section.dataKey];
-  const customDeck = [...selectedIdx].sort((a, b) => a - b).map(idx =>
-    Object.assign({ groupKey: section.dataKey }, data[idx])
-  );
+  const customDeck = [...selectedIdx].sort((a, b) => a - b).map(idx => {
+    const item = data[idx];
+    return Object.assign({ groupKey: section.dataKey }, item, { options: buildKanjiOptionsFromPool(item, data) });
+  });
   lastSettingsScreen = 'kanji-selection';
   startDrill(shuffle(customDeck));
 }
@@ -1821,7 +1837,8 @@ function drillVocabTileSelection() {
 function buildRandomKanjiPool() {
   const allKanji = [];
   KANJI_KEYS.forEach(k => DATA[k].forEach(q => allKanji.push(Object.assign({groupKey: k}, q))));
-  return shuffle(allKanji).slice(0, 20);
+  const pool = shuffle(allKanji).slice(0, 20);
+  return pool.map(item => Object.assign({}, item, { options: buildKanjiOptionsFromPool(item, allKanji) }));
 }
 
 function startRandomKanji() {
@@ -2368,6 +2385,218 @@ if (SPEECH_SUPPORTED) {
 // compound-word readings (e.g. 日|sun / day → にほん, testing "Japan" in context)
 // rather than the character's isolated reading — that matches what the app's own
 // answer options already test, so the audio says exactly what's shown on screen.
+// Romaji for every kanji item, mined from the existing hand-authored options
+// (each item already lists itself as one of its own options, so this is safe
+// - already-verified data, not a new hiragana-to-romaji converter to debug).
+// Used to generate distractor options dynamically drawn from real kanji in
+// the same section, rather than one-off invented flavour phrases.
+const KANJI_ROMAJI = {
+  '一|one': 'ichi',
+  '二|two': 'ni',
+  '三|three': 'san',
+  '四|four': 'shi',
+  '五|five': 'go',
+  '六|six': 'roku',
+  '七|seven': 'shichi',
+  '八|eight': 'hachi',
+  '九|nine': 'ku',
+  '十|ten': 'juu',
+  '円|yen': 'sen en',
+  '月|Monday / month': 'getsuyoubi',
+  '火|Tuesday': 'kayoubi',
+  '水|Wednesday': 'suiyoubi',
+  '木|Thursday': 'mokuyoubi',
+  '金|Friday / gold': 'kinyoubi',
+  '土|Saturday / earth': 'doyoubi',
+  '日|Sunday': 'nichiyoubi',
+  '一月|January': 'ichigatsu',
+  '二月|February': 'nigatsu',
+  '三月|March': 'sangatsu',
+  '四月|April': 'shigatsu',
+  '五月|May': 'gogatsu',
+  '六月|June': 'rokugatsu',
+  '七月|July': 'shichigatsu',
+  '八月|August': 'hachigatsu',
+  '九月|September': 'kugatsu',
+  '十月|October': 'juugatsu',
+  '十一月|November': 'juuichigatsu',
+  '十二月|December': 'juunigatsu',
+  '年|year': 'kotoshi',
+  '今|now': 'kyou',
+  '時|hour / time': 'jikan',
+  '分|minute': 'sanpun',
+  '前|before / front': 'gozen',
+  '後|after / back': 'gogo',
+  '計|watch / clock (時計)': 'tokei',
+  '百|hundred': 'hyaku',
+  '千|thousand': 'sen',
+  '万|ten thousand': 'man',
+  '半|half': 'han',
+  '間|interval / hours (時間)': 'jikan',
+  '午|noon (午前/午後)': 'gogo',
+  '日|sun / day': 'nihon',
+  '山|mountain': 'fujisan',
+  '川|river': 'kawa',
+  '水|water': 'mizu',
+  '人|person': 'nihonjin',
+  '大|big / great': 'daigaku',
+  '小|small': 'shougakkou',
+  '火|fire': 'hi',
+  '木|tree / wood': 'ki',
+  '口|mouth': 'kuchi',
+  '目|eye': 'me',
+  '耳|ear': 'mimi',
+  '手|hand': 'te',
+  '足|foot / leg': 'ashi',
+  '上|up / above': 'jouzu',
+  '下|down / below': 'chikatetsu',
+  '左|left': 'sasetsu',
+  '右|right': 'usetsu',
+  '中|middle / inside': 'chuugakkou',
+  '東|east': 'toukyou',
+  '西|west': 'nishiguchi',
+  '南|south': 'minamiguchi',
+  '北|north': 'kitaguchi',
+  '駅|station': 'toukyou-eki',
+  '電|electric': 'densha',
+  '車|car / vehicle': 'densha',
+  '線|line': 'yamanote-sen',
+  '道|road / way': 'michi',
+  '空港|airport': 'kuukou',
+  '店|shop / store': 'omise',
+  '病|sick / illness': 'byouin',
+  '院|institution': 'byouin',
+  '校|school': 'gakkou',
+  '行|go / bank (銀行)': 'ginkou',
+  '公園|park': 'kouen',
+  '止|stop': 'tomare',
+  '危|danger': 'kiken',
+  '険|risk / steep': 'kiken',
+  '注|pour / focus (注意)': 'chuui',
+  '意|meaning / attention': 'chuui',
+  '禁|prohibit': 'kinshi',
+  '開|open': 'hiraku',
+  '閉|closed': 'shimaru',
+  '押|push': 'osu',
+  '引|pull': 'hiku',
+  '入|enter (入口 entrance)': 'iriguchi',
+  '出|exit (出口)': 'deguchi',
+  '階|floor / storey': 'nikai',
+  '切符|ticket': 'kippu',
+  '受付|reception': 'uketsuke',
+  '教室|classroom': 'kyoushitsu',
+  '食堂|canteen / cafeteria': 'shokudou',
+  '男|male': 'otoko',
+  '女|female': 'onna',
+  '警告|warning': 'keikoku',
+  '地震|earthquake': 'jishin',
+  '津波|tsunami': 'tsunami',
+  '避難|evacuate': 'hinan',
+  '地下|underground / basement': 'chika',
+  '食べる|eat': 'taberu',
+  '飲む|drink': 'nomu',
+  '魚|fish': 'sakana',
+  '野菜|vegetable': 'yasai',
+  'ご飯|rice / meal': 'gohan',
+  '朝食|breakfast': 'choushoku',
+  '昼食|lunch': 'chuushoku',
+  '夕食|dinner': 'yuushoku',
+  '高い|expensive / high': 'takai',
+  '安い|cheap': 'yasui',
+  '雨|rain': 'ame',
+  '晴れ|sunny': 'hare',
+  '曇り|cloudy': 'kumori',
+  '暑い|hot': 'atsui',
+  '寒い|cold': 'samui',
+  '雪|snow': 'yuki',
+  '天気|weather': 'tenki',
+  '気|spirit / feeling': 'ki',
+  '天|heavens / sky': 'ten',
+  '私|I / me': 'watashi',
+  '何|what': 'nan',
+  '誰|who': 'dare',
+  '学生|student': 'gakusei',
+  '先生|teacher': 'sensei',
+  '母|mother': 'haha',
+  '父|father': 'chichi',
+  '友|friend': 'tomo',
+  '子|child': 'ko',
+  '国|country': 'kuni',
+  '名|name': 'na',
+  '本|book': 'hon',
+  '語|language': 'go',
+  '外|outside': 'soto',
+  '長い|long': 'nagai',
+  '短い|short': 'mijikai',
+  '毎|every (毎日 every day)': 'mainichi',
+  '見る|to see': 'miru',
+  '聞く|to hear / ask': 'kiku',
+  '話す|to talk': 'hanasu',
+  '読む|to read': 'yomu',
+  '書く|to write': 'kaku',
+  '来る|to come': 'kuru',
+  '休む|to rest / day off': 'yasumu',
+};
+// Compound-word form for items whose tested reading differs from the bare
+// character (e.g. 月 tests via 月曜日) - feeds the "(example: ...)" feedback
+// note. Only 54 entries, since most kanji are tested via their own bare
+// character and need no separate compound form here.
+const KANJI_COMPOUND = {
+  '円|yen': '千円',
+  '月|Monday / month': '月曜日',
+  '火|Tuesday': '火曜日',
+  '水|Wednesday': '水曜日',
+  '木|Thursday': '木曜日',
+  '金|Friday / gold': '金曜日',
+  '土|Saturday / earth': '土曜日',
+  '日|Sunday': '日曜日',
+  '年|year': '今年',
+  '今|now': '今日',
+  '時|hour / time': '時間',
+  '分|minute': '三分',
+  '前|before / front': '午前',
+  '後|after / back': '午後',
+  '計|watch / clock (時計)': '時計',
+  '間|interval / hours (時間)': '時間',
+  '午|noon (午前/午後)': '午後',
+  '日|sun / day': '日本',
+  '山|mountain': '富士山',
+  '人|person': '日本人',
+  '大|big / great': '大学',
+  '小|small': '小学校',
+  '上|up / above': '上手',
+  '下|down / below': '地下鉄',
+  '左|left': '左折',
+  '右|right': '右折',
+  '中|middle / inside': '中学校',
+  '東|east': '東京',
+  '西|west': '西口',
+  '南|south': '南口',
+  '北|north': '北口',
+  '駅|station': '東京駅',
+  '電|electric': '電車',
+  '車|car / vehicle': '電車',
+  '線|line': '山手線',
+  '店|shop / store': 'お店',
+  '病|sick / illness': '病院',
+  '院|institution': '病院',
+  '校|school': '学校',
+  '行|go / bank (銀行)': '銀行',
+  '止|stop': '止まれ',
+  '危|danger': '危険',
+  '険|risk / steep': '危険',
+  '注|pour / focus (注意)': '注意',
+  '意|meaning / attention': '注意',
+  '禁|prohibit': '禁止',
+  '開|open': '開く',
+  '閉|closed': '閉まる',
+  '押|push': '押す',
+  '引|pull': '引く',
+  '入|enter (入口 entrance)': '入口',
+  '出|exit (出口)': '出口',
+  '階|floor / storey': '二階',
+  '毎|every (毎日 every day)': '毎日',
+};
 const KANJI_READINGS = {
   '一|one': 'いち', '二|two': 'に', '三|three': 'さん', '四|four': 'し', '五|five': 'ご',
   '六|six': 'ろく', '七|seven': 'しち', '八|eight': 'はち', '九|nine': 'く', '十|ten': 'じゅう',
@@ -2652,9 +2881,9 @@ function choose(btn, selectedVal, answer, char) {
   const suppressHint = currentQ && currentQ.disp === 'word' && drillByMeaning;
   let hint = (currentQ && currentQ.hint && !suppressHint) ? ` (${currentQ.hint})` : '';
   if (!hint && currentQ && (currentQ.disp === 'kanji' || currentQ.disp === 'survival')) {
-    const correctOpt = currentQ.options.find(o => o.en === currentQ.answer);
-    if (correctOpt && correctOpt.jp && correctOpt.jp !== currentQ.char) {
-      hint = ` (example: ${correctOpt.jp})`;
+    const compoundWord = KANJI_COMPOUND[currentQ.char + '|' + currentQ.answer];
+    if (compoundWord) {
+      hint = ` (example: ${compoundWord})`;
     }
   }
   recordKanaResult(currentQ, selectedVal === answer);
