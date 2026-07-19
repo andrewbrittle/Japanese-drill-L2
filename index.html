@@ -2855,7 +2855,7 @@ function renderQuestion() {
       btn.dataset.value = val;
       if (isKanjiLike) {
         const rdDisplay = showHiraganaOnKanji ? (KANJI_READINGS[o.jp + '|' + o.en] || o.rd) : o.rd;
-        btn.innerHTML = `<span class="opt-rd">${rdDisplay}</span><span class="opt-en">(${o.en})</span>`;
+        btn.innerHTML = `<span class="opt-rd">${o.en}</span><span class="opt-en">(${rdDisplay})</span>`;
       } else if (showHiragana) {
         btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
         btn.style.fontSize = '28px';
