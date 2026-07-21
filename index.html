@@ -159,6 +159,7 @@
 
   .options { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .opt {
+    position: relative;
     padding: 13px 8px; border-radius: var(--radius);
     border: 1px solid var(--border); background: var(--surface2);
     color: var(--text); font-size: 14px; font-weight: 600; cursor: pointer;
@@ -171,6 +172,11 @@
   .opt .opt-jp { display: block; font-size: 17px; font-weight: 600; margin-bottom: 2px; font-family: 'BIZ UDPGothic', sans-serif; }
   .opt .opt-rd { display: block; font-size: 13px; font-weight: 600; opacity: 0.85; }
   .opt .opt-en { display: block; font-size: 11px; opacity: 0.5; }
+  .opt-num {
+    position: absolute; top: 4px; left: 6px;
+    font-size: 10px; font-weight: 600; color: var(--text-dim);
+    opacity: 0.6; pointer-events: none;
+  }
 
   .feedback {
     min-height: 22px; font-size: 14px; font-weight: 500;
@@ -622,7 +628,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.071</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.072</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -2966,10 +2972,10 @@ function renderQuestion() {
     const topField = drillByMeaning ? 'en' : 'rd';
     const bottomField = drillByMeaning ? 'rd' : 'en';
     q.answer = drillByMeaning ? q.answerEn : q.answerRomaji;
-    q.options.forEach(o => {
+    q.options.forEach((o, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      btn.innerHTML = `<span class="opt-rd">${o[topField]}</span><span class="opt-en">(${o[bottomField]})</span>`;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-rd">${o[topField]}</span><span class="opt-en">(${o[bottomField]})</span>`;
       const val = o[topField];
       btn.dataset.value = val;
       btn.onclick = () => choose(btn, val, q.answer, q.char);
@@ -2980,11 +2986,11 @@ function renderQuestion() {
     charDisplay.style.fontSize = '72px';
     charDisplay.textContent = q.char;
     document.getElementById('q-prompt').textContent = 'How do you read this number in Japanese?';
-    q.options.forEach(o => {
+    q.options.forEach((o, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
       const romaji = numReadingToRomaji(o.en);
-      btn.innerHTML = `<span class="opt-jp">${o.en}</span><span class="opt-rd">${romaji}</span>`;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${o.en}</span><span class="opt-rd">${romaji}</span>`;
       btn.dataset.value = o.en;
       btn.onclick = () => choose(btn, o.en, q.answer, q.char);
       container.appendChild(btn);
@@ -2995,10 +3001,10 @@ function renderQuestion() {
     charDisplay.style.fontSize = len <= 8 ? '56px' : len <= 13 ? '40px' : '36px';
     charDisplay.textContent = q.char;
     document.getElementById('q-prompt').textContent = 'How do you say this time in Japanese?';
-    q.options.forEach(o => {
+    q.options.forEach((o, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      btn.innerHTML = `<span class="opt-jp">${o.jp}</span><span class="opt-rd">${o.rd}</span>`;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${o.jp}</span><span class="opt-rd">${o.rd}</span>`;
       btn.dataset.value = o.en;
       btn.onclick = () => choose(btn, o.en, q.answer, q.char);
       container.appendChild(btn);
@@ -3025,12 +3031,12 @@ function renderQuestion() {
     const distractors = shuffle([...new Set(otherChars)]).slice(0, 3);
     const opts = shuffle([q.char, ...distractors]);
 
-    opts.forEach(kanaChar => {
+    opts.forEach((kanaChar, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
       btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
       btn.style.fontSize = '28px';
-      btn.textContent = kanaChar;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${kanaChar}`;
       btn.dataset.value = kanaChar;
       btn.onclick = () => choose(btn, kanaChar, q.char, q.char);
       container.appendChild(btn);
@@ -3045,20 +3051,20 @@ function renderQuestion() {
 
     const showHiragana = !isKanjiLike && showHiraganaOnKatakana && q.groupKey && q.groupKey.startsWith('katakana-');
     const opts = shuffle(q.options);
-    opts.forEach(o => {
+    opts.forEach((o, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
       const val = isKanjiLike ? o.en : o;
       btn.dataset.value = val;
       if (isKanjiLike) {
         const rdDisplay = showHiraganaOnKanji ? (KANJI_READINGS[o.jp + '|' + o.en] || o.rd) : o.rd;
-        btn.innerHTML = `<span class="opt-rd">${o.en}</span><span class="opt-en">(${rdDisplay})</span>`;
+        btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-rd">${o.en}</span><span class="opt-en">(${rdDisplay})</span>`;
       } else if (showHiragana) {
         btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
         btn.style.fontSize = '28px';
-        btn.textContent = ROMAJI_TO_HIRAGANA[o] || o;
+        btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${ROMAJI_TO_HIRAGANA[o] || o}`;
       } else {
-        btn.textContent = o;
+        btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${o}`;
       }
       btn.onclick = () => choose(btn, val, q.answer, q.char);
       container.appendChild(btn);
@@ -3665,6 +3671,32 @@ buildMatchCategoryList();
 updateDirectionVisibility();
 updateNumberTimeSwatches();
 tryRestoreDrillSession();
+
+// Keyboard shortcuts for the drill screen, for anyone on a laptop/desktop:
+// digits 1-4 pick the matching option (always exactly 4 per question), and
+// Space/Enter advances once answered - purely additive, since taps on mobile
+// never fire keydown events, so this has zero effect there.
+function handleDrillKeydown(e) {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const drillScreen = document.getElementById('screen-drill');
+  if (!drillScreen || !drillScreen.classList.contains('visible')) return;
+  if (!answered) {
+    const idx = ['1', '2', '3', '4'].indexOf(e.key);
+    if (idx === -1) return;
+    const opts = document.querySelectorAll('#q-options .opt');
+    if (opts[idx]) {
+      e.preventDefault();
+      opts[idx].click();
+    }
+  } else if (e.key === ' ' || e.key === 'Enter') {
+    const nextBtn = document.getElementById('next-btn');
+    if (nextBtn && nextBtn.style.visibility === 'visible') {
+      e.preventDefault();
+      nextBtn.click();
+    }
+  }
+}
+window.addEventListener('keydown', handleDrillKeydown);
 
 // The browser's own back button has no way to know it's "inside" this app —
 // screens here are just shown/hidden, not separate pages — so pressing back
