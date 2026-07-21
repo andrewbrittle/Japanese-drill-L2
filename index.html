@@ -622,7 +622,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.069</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.071</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -873,12 +873,12 @@ const DATA = {
     {char:'十',answer:'ten',disp:'survival'},
     {char:'円',answer:'yen',disp:'survival'},
     {char:'月',answer:'Monday / month',disp:'survival'},
-    {char:'火',answer:'Tuesday',disp:'survival'},
-    {char:'水',answer:'Wednesday',disp:'survival'},
-    {char:'木',answer:'Thursday',disp:'survival'},
+    {char:'火',answer:'Tuesday',disp:'survival',altForm:'火曜日'},
+    {char:'水',answer:'Wednesday',disp:'survival',altForm:'水曜日'},
+    {char:'木',answer:'Thursday',disp:'survival',altForm:'木曜日'},
     {char:'金',answer:'Friday / gold',disp:'survival'},
     {char:'土',answer:'Saturday / earth',disp:'survival'},
-    {char:'日',answer:'Sunday',disp:'survival'},
+    {char:'日',answer:'Sunday',disp:'survival',altForm:'日曜日'},
     {char:'一月',answer:'January',disp:'survival'},
     {char:'二月',answer:'February',disp:'survival'},
     {char:'三月',answer:'March',disp:'survival'},
@@ -941,9 +941,9 @@ const DATA = {
   'kanji-places': [
     {char:'駅',answer:'station',disp:'survival'},
     {char:'空港',answer:'airport',disp:'survival'},
-    {char:'店',answer:'shop / store',disp:'survival'},
+    {char:'店',answer:'shop / store',disp:'survival',altForm:'お店'},
     {char:'院',answer:'institution',disp:'survival'},
-    {char:'校',answer:'school',disp:'survival'},
+    {char:'校',answer:'school',disp:'survival',altForm:'学校'},
     {char:'公園',answer:'park',disp:'survival'},
     {char:'教室',answer:'classroom',disp:'survival'},
     {char:'食堂',answer:'canteen / cafeteria',disp:'survival'},
@@ -974,7 +974,7 @@ const DATA = {
     {char:'線',answer:'line',disp:'survival'},
     {char:'道',answer:'road / way',disp:'survival'},
     {char:'病',answer:'sick / illness',disp:'survival'},
-    {char:'行',answer:'go / bank (銀行)',disp:'survival'},
+    {char:'行',answer:'go / bank (銀行)',disp:'survival',altForm:'銀行'},
     {char:'止',answer:'stop',disp:'survival'},
     {char:'危',answer:'dangerous',disp:'survival'},
     {char:'険',answer:'risk / steep',disp:'survival'},
@@ -2400,11 +2400,12 @@ function saveKanaScores() {
 // what real-device testing showed: v068 (sessionStorage) never once offered
 // a resume prompt, because the data was wiped before the page ever reloaded.
 // localStorage has no such session-lifetime limit - it survives a real close
-// the same as a backgrounded kill - so this uses that instead. The only
-// tradeoff is a resumable session can now be arbitrarily old rather than
-// scoped to "still the same session"; the confirm() prompt already gives the
-// user a clean way to decline a stale one, so that's an acceptable tradeoff.
+// the same as a backgrounded kill - so this uses that instead. Drills are
+// short, so a session left untouched for more than an hour is treated as
+// stale and silently discarded rather than offered back (real interruptions
+// are noticed within seconds, not resumed an hour later).
 const DRILL_SESSION_KEY = 'jpDrillInProgressSession';
+const DRILL_SESSION_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
 
 function saveDrillSession() {
   try {
@@ -2412,6 +2413,7 @@ function saveDrillSession() {
       deck, current, score, wrong, hints, missed, missedItems,
       lastSettingsScreen, drillByMeaning, reversed,
       showHiraganaOnKatakana, showHiraganaOnKanji,
+      savedAt: Date.now(),
     }));
   } catch (e) {
     // localStorage unavailable (private browsing, storage full, etc.) — fail silently
@@ -2439,7 +2441,8 @@ function tryRestoreDrillSession() {
   }
   if (!saved || !Array.isArray(saved.deck) || saved.deck.length === 0) return;
   if (!(saved.current >= 0) || saved.current >= saved.deck.length) { clearDrillSession(); return; }
-  const resume = window.confirm('Looks like your last drill got interrupted. Resume where you left off?');
+  if (saved.savedAt && (Date.now() - saved.savedAt) > DRILL_SESSION_MAX_AGE_MS) { clearDrillSession(); return; }
+  const resume = window.confirm('It looks like your last session was interrupted. Resume where you left off?');
   if (!resume) { clearDrillSession(); return; }
   deck = saved.deck;
   current = saved.current;
@@ -2733,17 +2736,18 @@ const KANJI_ROMAJI = {
 };
 // Compound-word form for items whose tested reading differs from the bare
 // character (e.g. 月 tests via 月曜日) - feeds the "(example: ...)" feedback
-// note. Only 54 entries, since most kanji are tested via their own bare
-// character and need no separate compound form here.
+// note. Only 47 entries, since most kanji are tested via their own bare
+// character and need no separate compound form here. (7 former entries -
+// 校/店/行/火/水/木/日 - moved to using the item's own `altForm` field instead,
+// since their compound's English meaning is a word-for-word duplicate of the
+// parent kanji's own tested answer; altForm shows it up front via the gold
+// "also written:" box rather than only after answering, and there's no
+// ambiguity to soften with an "(example: ...)" hedge in these cases.)
 const KANJI_COMPOUND = {
   '円|yen': '千円',
   '月|Monday / month': '月曜日',
-  '火|Tuesday': '火曜日',
-  '水|Wednesday': '水曜日',
-  '木|Thursday': '木曜日',
   '金|Friday / gold': '金曜日',
   '土|Saturday / earth': '土曜日',
-  '日|Sunday': '日曜日',
   '年|year': '今年',
   '今|now': '今日',
   '時|hour / time': '時間',
@@ -2771,11 +2775,8 @@ const KANJI_COMPOUND = {
   '電|electric': '電車',
   '車|car / vehicle': '電車',
   '線|line': '山手線',
-  '店|shop / store': 'お店',
   '病|sick / illness': '病院',
   '院|institution': '病院',
-  '校|school': '学校',
-  '行|go / bank (銀行)': '銀行',
   '止|stop': '止まれ',
   '危|dangerous': '危険',
   '険|risk / steep': '危険',
@@ -3076,7 +3077,7 @@ function choose(btn, selectedVal, answer, char) {
   const currentQ = deck[current];
   const suppressHint = currentQ && currentQ.disp === 'word' && drillByMeaning;
   let hint = (currentQ && currentQ.hint && !suppressHint) ? ` (${currentQ.hint})` : '';
-  if (!hint && currentQ && (currentQ.disp === 'kanji' || currentQ.disp === 'survival')) {
+  if (!hint && !(currentQ && currentQ.altForm) && currentQ && (currentQ.disp === 'kanji' || currentQ.disp === 'survival')) {
     const compoundWord = KANJI_COMPOUND[currentQ.char + '|' + currentQ.answer];
     if (compoundWord) {
       hint = ` (example: ${compoundWord})`;
