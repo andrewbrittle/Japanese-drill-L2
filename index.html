@@ -2299,11 +2299,27 @@ let missedItems = []; // stores full question objects for number challenge misse
 
 function drillMissed() {
   const missedSet = new Set(missed);
-  // Rebuild regular DATA items
+  // Rebuild regular DATA items. Kanji/survival items don't carry a static
+  // `options` array (unlike kana, which does) - their options are only ever
+  // generated at drill-start time from their own section's pool, then
+  // discarded, so a raw pull from DATA would otherwise leave them with no
+  // answer options at all. Regenerate them the same way drillKanjiSelection
+  // does.
   const all = [];
-  Object.keys(DATA).forEach(k => DATA[k].forEach(q => all.push(Object.assign({groupKey: k}, q))));
-  const regularMissed = all.filter(q => missedSet.has(q.char));
-  // Add any stored number challenge missed items
+  Object.keys(DATA).forEach(k => {
+    const pool = DATA[k];
+    pool.forEach(q => {
+      if (!missedSet.has(q.char)) return;
+      const withGroup = Object.assign({groupKey: k}, q);
+      if (q.disp === 'kanji' || q.disp === 'survival') {
+        withGroup.options = buildKanjiOptionsFromPool(q, pool);
+      }
+      all.push(withGroup);
+    });
+  });
+  const regularMissed = all;
+  // Add any stored number/word/time challenge missed items (these already
+  // carry their own working options from when they were first drilled)
   const numberMissed = missedItems.filter(q => missedSet.has(q.char));
   startDrill(shuffle([...regularMissed, ...numberMissed]));
 }
