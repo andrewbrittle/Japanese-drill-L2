@@ -5,6 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Japanese Drill</title>
 <link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
+<!-- PWA: manifest + icons (Add to Home Screen support) -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f0f0f">
+<link rel="icon" href="icons/icon-192.png">
+<!-- iOS: Safari ignores the manifest for home-screen installs, needs its own tags -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="JP Drill">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -628,7 +637,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.072</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.073</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
