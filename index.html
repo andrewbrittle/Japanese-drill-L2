@@ -622,7 +622,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.068</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260721.069</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -2394,31 +2394,33 @@ function saveKanaScores() {
 }
 
 /* ---------- In-progress drill persistence (survives a killed page) ------ */
-// The OS backgrounding the app and reclaiming the WebView's process (to free
-// memory) looks identical to "the drill silently reset to the beginning" -
-// all drill state lives only in JS variables, so a killed-and-reloaded page
-// has nothing left to resume from. This mirrors the live deck/current/score
-// state into sessionStorage on every question render, so a fresh page load
-// can detect an interrupted drill and offer to pick back up where it left
-// off. Session-scoped (not localStorage) since this is about surviving a
-// backgrounded tab within the same browsing session, not persisting forever.
+// On mobile, a second "back" press doesn't just background the app - it ends
+// the browsing session outright (tab/WebView context genuinely closes), and
+// sessionStorage is cleared the moment that happens, by spec. That's exactly
+// what real-device testing showed: v068 (sessionStorage) never once offered
+// a resume prompt, because the data was wiped before the page ever reloaded.
+// localStorage has no such session-lifetime limit - it survives a real close
+// the same as a backgrounded kill - so this uses that instead. The only
+// tradeoff is a resumable session can now be arbitrarily old rather than
+// scoped to "still the same session"; the confirm() prompt already gives the
+// user a clean way to decline a stale one, so that's an acceptable tradeoff.
 const DRILL_SESSION_KEY = 'jpDrillInProgressSession';
 
 function saveDrillSession() {
   try {
-    sessionStorage.setItem(DRILL_SESSION_KEY, JSON.stringify({
+    localStorage.setItem(DRILL_SESSION_KEY, JSON.stringify({
       deck, current, score, wrong, hints, missed, missedItems,
       lastSettingsScreen, drillByMeaning, reversed,
       showHiraganaOnKatakana, showHiraganaOnKanji,
     }));
   } catch (e) {
-    // sessionStorage unavailable (private browsing, storage full, etc.) — fail silently
+    // localStorage unavailable (private browsing, storage full, etc.) — fail silently
   }
 }
 
 function clearDrillSession() {
   try {
-    sessionStorage.removeItem(DRILL_SESSION_KEY);
+    localStorage.removeItem(DRILL_SESSION_KEY);
   } catch (e) {
     // fail silently, same as above
   }
@@ -2431,7 +2433,7 @@ function clearDrillSession() {
 function tryRestoreDrillSession() {
   let saved;
   try {
-    saved = JSON.parse(sessionStorage.getItem(DRILL_SESSION_KEY));
+    saved = JSON.parse(localStorage.getItem(DRILL_SESSION_KEY));
   } catch (e) {
     saved = null;
   }
