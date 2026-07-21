@@ -421,7 +421,7 @@
       <button class="level-pill active" data-section="numbers-time" onclick="switchKanjiSection('numbers-time')">Numbers</button>
       <button class="level-pill" data-section="nature-body" onclick="switchKanjiSection('nature-body')">Nature</button>
       <button class="level-pill" data-section="food" onclick="switchKanjiSection('food')">Food</button>
-      <button class="level-pill" data-section="weather" onclick="switchKanjiSection('weather')">Weather</button>
+      <button class="level-pill" data-section="places" onclick="switchKanjiSection('places')">Places</button>
       <button class="level-pill" data-section="directions-travel" onclick="switchKanjiSection('directions-travel')">Travel</button>
       <button class="level-pill" data-section="people" onclick="switchKanjiSection('people')">People</button>
       <button class="level-pill" data-section="general" onclick="switchKanjiSection('general')">General</button>
@@ -439,7 +439,7 @@
     <div id="kanji-grid-nature-body" style="display:none;"></div>
     <div id="kanji-grid-directions-travel" style="display:none;"></div>
     <div id="kanji-grid-food" style="display:none;"></div>
-    <div id="kanji-grid-weather" style="display:none;"></div>
+    <div id="kanji-grid-places" style="display:none;"></div>
     <div id="kanji-grid-people" style="display:none;"></div>
     <div id="kanji-grid-general" style="display:none;"></div>
     <div id="kanji-grid-verbs" style="display:none;"></div>
@@ -927,6 +927,33 @@ const DATA = {
     {char:'富士山',answer:'Mt. Fuji',disp:'kanji'},
     {char:'日本人',answer:'Japanese person',disp:'kanji'},
     {char:'日本',answer:'Japan',disp:'kanji'},
+    {char:'雨',answer:'rain',disp:'survival'},
+    {char:'晴れ',answer:'sunny',disp:'survival'},
+    {char:'曇り',answer:'cloudy',disp:'survival'},
+    {char:'暑い',answer:'hot',disp:'survival'},
+    {char:'寒い',answer:'cold',disp:'survival'},
+    {char:'雪',answer:'snow',disp:'survival'},
+    {char:'天気',answer:'weather',disp:'kanji'},
+    {char:'気',answer:'spirit / feeling',disp:'kanji'},
+    {char:'天',answer:'heavens / sky',disp:'kanji'},
+  ],
+  'kanji-places': [
+    {char:'駅',answer:'station',disp:'survival'},
+    {char:'空港',answer:'airport',disp:'survival'},
+    {char:'店',answer:'shop / store',disp:'survival'},
+    {char:'院',answer:'institution',disp:'survival'},
+    {char:'校',answer:'school',disp:'survival'},
+    {char:'公園',answer:'park',disp:'survival'},
+    {char:'教室',answer:'classroom',disp:'survival'},
+    {char:'食堂',answer:'canteen / cafeteria',disp:'survival'},
+    {char:'地下',answer:'underground / basement',disp:'survival'},
+    {char:'東京',answer:'Tokyo',disp:'survival'},
+    {char:'東口',answer:'east exit',disp:'survival'},
+    {char:'西口',answer:'west exit',disp:'survival'},
+    {char:'南口',answer:'south exit',disp:'survival'},
+    {char:'北口',answer:'north exit',disp:'survival'},
+    {char:'東京駅',answer:'Tokyo Station',disp:'survival'},
+    {char:'病院',answer:'hospital',disp:'survival'},
   ],
   'kanji-directions-travel': [
     {char:'上',answer:'up / above',disp:'survival'},
@@ -938,18 +965,12 @@ const DATA = {
     {char:'西',answer:'west',disp:'survival'},
     {char:'南',answer:'south',disp:'survival'},
     {char:'北',answer:'north',disp:'survival'},
-    {char:'駅',answer:'station',disp:'survival'},
     {char:'電',answer:'electric',disp:'survival'},
     {char:'車',answer:'car / vehicle',disp:'survival'},
     {char:'線',answer:'line',disp:'survival'},
     {char:'道',answer:'road / way',disp:'survival'},
-    {char:'空港',answer:'airport',disp:'survival'},
-    {char:'店',answer:'shop / store',disp:'survival'},
     {char:'病',answer:'sick / illness',disp:'survival'},
-    {char:'院',answer:'institution',disp:'survival'},
-    {char:'校',answer:'school',disp:'survival'},
     {char:'行',answer:'go / bank (銀行)',disp:'survival'},
-    {char:'公園',answer:'park',disp:'survival'},
     {char:'止',answer:'stop',disp:'survival'},
     {char:'危',answer:'dangerous',disp:'survival'},
     {char:'険',answer:'risk / steep',disp:'survival'},
@@ -965,28 +986,15 @@ const DATA = {
     {char:'階',answer:'floor / storey',disp:'survival'},
     {char:'切符',answer:'ticket',disp:'survival'},
     {char:'受付',answer:'reception',disp:'survival'},
-    {char:'教室',answer:'classroom',disp:'survival'},
-    {char:'食堂',answer:'canteen / cafeteria',disp:'survival'},
-    {char:'男',answer:'male',disp:'survival'},
-    {char:'女',answer:'female',disp:'survival'},
     {char:'警告',answer:'warning',disp:'survival'},
     {char:'地震',answer:'earthquake',disp:'survival'},
     {char:'津波',answer:'tsunami',disp:'survival'},
     {char:'避難',answer:'evacuate',disp:'survival'},
-    {char:'地下',answer:'underground / basement',disp:'survival'},
     {char:'電車',answer:'train',disp:'survival'},
-    {char:'上手',answer:'skilled / good at',disp:'survival'},
     {char:'地下鉄',answer:'subway',disp:'survival'},
     {char:'左折',answer:'turn left',disp:'survival'},
     {char:'右折',answer:'turn right',disp:'survival'},
-    {char:'東京',answer:'Tokyo',disp:'survival'},
-    {char:'東口',answer:'east exit',disp:'survival'},
-    {char:'西口',answer:'west exit',disp:'survival'},
-    {char:'南口',answer:'south exit',disp:'survival'},
-    {char:'北口',answer:'north exit',disp:'survival'},
-    {char:'東京駅',answer:'Tokyo Station',disp:'survival'},
     {char:'山手線',answer:'Yamanote Line',disp:'survival'},
-    {char:'病院',answer:'hospital',disp:'survival'},
     {char:'開く',answer:'to open',disp:'survival'},
     {char:'閉まる',answer:'to close',disp:'survival'},
     {char:'押す',answer:'to push',disp:'survival'},
@@ -1005,17 +1013,6 @@ const DATA = {
     {char:'高い',answer:'expensive / high',disp:'survival'},
     {char:'安い',answer:'cheap',disp:'survival'},
   ],
-  'kanji-weather': [
-    {char:'雨',answer:'rain',disp:'survival'},
-    {char:'晴れ',answer:'sunny',disp:'survival'},
-    {char:'曇り',answer:'cloudy',disp:'survival'},
-    {char:'暑い',answer:'hot',disp:'survival'},
-    {char:'寒い',answer:'cold',disp:'survival'},
-    {char:'雪',answer:'snow',disp:'survival'},
-    {char:'天気',answer:'weather',disp:'kanji'},
-    {char:'気',answer:'spirit / feeling',disp:'kanji'},
-    {char:'天',answer:'heavens / sky',disp:'kanji'},
-  ],
   'kanji-people': [
     {char:'私',answer:'I / me',disp:'kanji'},
     {char:'何',answer:'what',disp:'kanji'},
@@ -1026,6 +1023,8 @@ const DATA = {
     {char:'父',answer:'father',disp:'kanji'},
     {char:'友',answer:'friend',disp:'kanji'},
     {char:'子',answer:'child',disp:'kanji'},
+    {char:'男',answer:'male',disp:'kanji'},
+    {char:'女',answer:'female',disp:'kanji'},
   ],
   'kanji-general': [
     {char:'国',answer:'country',disp:'kanji'},
@@ -1036,6 +1035,7 @@ const DATA = {
     {char:'長い',answer:'long',disp:'kanji'},
     {char:'短い',answer:'short',disp:'kanji'},
     {char:'毎',answer:'every',disp:'kanji'},
+    {char:'上手',answer:'skilled / good at',disp:'kanji'},
     {char:'小学校',answer:'elementary school',disp:'kanji'},
     {char:'中学校',answer:'middle school',disp:'kanji'},
     {char:'大学',answer:'university',disp:'kanji'},
@@ -1468,7 +1468,7 @@ const BADGE_LABELS = {
   'kanji-nature-body': 'nature / body',
   'kanji-directions-travel': 'directions / travel',
   'kanji-food': 'food / dining',
-  'kanji-weather': 'weather',
+  'kanji-places': 'places',
   'kanji-people': 'people / questions',
   'kanji-general': 'general',
   'kanji-verbs': 'verbs',
@@ -1569,7 +1569,7 @@ const KANJI_SECTIONS = {
   'nature-body': { label: 'Nature', dataKey: 'kanji-nature-body' },
   'directions-travel': { label: 'Travel', dataKey: 'kanji-directions-travel' },
   'food': { label: 'Food', dataKey: 'kanji-food' },
-  'weather': { label: 'Weather', dataKey: 'kanji-weather' },
+  'places': { label: 'Places', dataKey: 'kanji-places' },
   'people': { label: 'People', dataKey: 'kanji-people' },
   'general': { label: 'General', dataKey: 'kanji-general' },
   'verbs': { label: 'Verbs', dataKey: 'kanji-verbs' },
