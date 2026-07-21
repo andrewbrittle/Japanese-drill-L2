@@ -1576,6 +1576,25 @@ const KANJI_SECTIONS = {
 };
 const KANJI_SECTION_KEYS = Object.keys(KANJI_SECTIONS);
 
+// Verbs is a computed cross-section pool, not a fixed one - it surfaces every
+// "to ___" verb wherever it actually lives (e.g. eat/drink stay defined in
+// Food, open/push stay defined in Travel) alongside the general verbs that
+// only live here, with nothing duplicated into a second DATA array. Single
+// source of truth per item, so scoring, romaji, and Random Kanji's own
+// distractor pool are all unaffected. Each item keeps its true home section
+// as groupKey (via Object.assign below), same convention buildRandomKanjiPool
+// already uses, so the drill badge shows where a verb actually belongs.
+function getKanjiSectionPool(sectionKey) {
+  if (sectionKey !== 'verbs') return DATA[KANJI_SECTIONS[sectionKey].dataKey];
+  const pool = [];
+  KANJI_KEYS.forEach(k => {
+    DATA[k].forEach(item => {
+      if (item.answer.startsWith('to ')) pool.push(Object.assign({groupKey: k}, item));
+    });
+  });
+  return pool;
+}
+
 const kanjiSelectedTiles = {};
 KANJI_SECTION_KEYS.forEach(k => { kanjiSelectedTiles[k] = new Set(); });
 let activeKanjiSection = 'numbers-time';
@@ -1594,8 +1613,7 @@ function showKanjiSelection() {
 function buildKanjiTileGrid(sectionKey) {
   const container = document.getElementById('kanji-grid-' + sectionKey);
   if (!container || container.children.length > 0) return;
-  const section = KANJI_SECTIONS[sectionKey];
-  const data = DATA[section.dataKey];
+  const data = getKanjiSectionPool(sectionKey);
 
   const grid = document.createElement('div');
   grid.className = 'kanji-tile-grid';
@@ -1642,8 +1660,7 @@ function switchKanjiSection(sectionKey) {
 }
 
 function toggleSelectAllKanji() {
-  const section = KANJI_SECTIONS[activeKanjiSection];
-  const total = DATA[section.dataKey].length;
+  const total = getKanjiSectionPool(activeKanjiSection).length;
   const set = kanjiSelectedTiles[activeKanjiSection];
   const grid = document.getElementById('kanji-grid-' + activeKanjiSection);
   const allSelected = set.size === total;
@@ -1660,7 +1677,7 @@ function toggleSelectAllKanji() {
 
 function updateSelectAllKanjiLabel() {
   const section = KANJI_SECTIONS[activeKanjiSection];
-  const total = DATA[section.dataKey].length;
+  const total = getKanjiSectionPool(activeKanjiSection).length;
   const set = kanjiSelectedTiles[activeKanjiSection];
   const allSelected = set.size === total;
   document.getElementById('kanji-select-all-label').textContent =
@@ -1686,7 +1703,7 @@ function drillKanjiSelection() {
   const section = KANJI_SECTIONS[activeKanjiSection];
   const selectedIdx = kanjiSelectedTiles[activeKanjiSection];
   if (selectedIdx.size === 0) return;
-  const data = DATA[section.dataKey];
+  const data = getKanjiSectionPool(activeKanjiSection);
   const customDeck = [...selectedIdx].sort((a, b) => a - b).map(idx => {
     const item = data[idx];
     return Object.assign({ groupKey: section.dataKey }, item, { options: buildKanjiOptionsFromPool(item, data) });
