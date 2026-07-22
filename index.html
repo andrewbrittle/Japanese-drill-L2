@@ -186,6 +186,11 @@
     font-size: 10px; font-weight: 600; color: var(--text-dim);
     opacity: 0.6; pointer-events: none;
   }
+  .kbd-hint {
+    position: absolute; top: 4px; left: 6px;
+    font-size: 10px; font-weight: 500; color: var(--text-dim);
+    opacity: 0.55; pointer-events: none;
+  }
 
   .feedback {
     min-height: 22px; font-size: 14px; font-weight: 500;
@@ -195,6 +200,7 @@
   .feedback.bad { color: var(--red); }
 
   .next-btn {
+    position: relative;
     padding: 12px; border-radius: var(--radius); width: 100%;
     background: transparent; border: 1px solid var(--border);
     color: var(--text); font-size: 14px; cursor: pointer;
@@ -637,7 +643,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.074</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.076</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -3127,7 +3133,7 @@ function choose(btn, selectedVal, answer, char) {
   document.getElementById('stat-wrong').textContent = wrong;
   const nextBtn = document.getElementById('next-btn');
   nextBtn.style.visibility = 'visible';
-  nextBtn.textContent = current + 1 < deck.length ? 'Next →' : 'See results →';
+  nextBtn.innerHTML = (current + 1 < deck.length ? 'Next →' : 'See results →') + '<span class="kbd-hint">space</span>';
 }
 
 function nextQuestion() { current++; renderQuestion(); }
