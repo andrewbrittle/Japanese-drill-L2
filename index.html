@@ -40,6 +40,29 @@
     --radius-lg: 16px;
   }
 
+  /* Light theme - opt-in only via Settings, dark (the :root values above)
+     stays the default for everyone unless they switch this on themselves. */
+  :root[data-theme="light"] {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #efece4;
+    --border: rgba(0,0,0,0.10);
+    --border-hover: rgba(0,0,0,0.20);
+    --text: #1a1a1a;
+    --text-muted: rgba(26,26,26,0.66);
+    --text-dim: rgba(26,26,26,0.45);
+    --accent: #a9740f;
+    --accent-dim: rgba(169,116,15,0.12);
+    --green: #2f9e5c;
+    --green-dim: rgba(47,158,92,0.12);
+    --red: #c53d3d;
+    --red-dim: rgba(197,61,61,0.12);
+    --blue: #2f6fa8;
+    --blue-dim: rgba(47,111,168,0.10);
+    --purple: #7856a8;
+    --purple-dim: rgba(120,86,168,0.12);
+  }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: var(--bg);
@@ -51,16 +74,29 @@
   }
 
   header {
-    padding: 1.25rem 1.5rem;
+    padding: 1rem 1.5rem;
     border-bottom: 1px solid var(--border);
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0.6rem;
     background: var(--surface);
   }
 
-  .logo { font-size: 15px; font-weight: 700; letter-spacing: 0.02em; color: var(--text); }
-  .logo span { color: var(--accent); }
+  .app-heading { font-size: 19px; font-weight: 700; letter-spacing: 0.02em; color: var(--text); }
+  .app-heading span { color: var(--accent); }
+
+  .nav-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+  .settings-btn {
+    flex-shrink: 0;
+    width: 30px; height: 30px; border-radius: 99px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-muted); font-size: 15px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .settings-btn:hover { border-color: var(--border-hover); color: var(--text); }
+  .settings-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
   .nav-pills { display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
   .nav-pills::-webkit-scrollbar { display: none; }
@@ -74,6 +110,9 @@
   .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
   .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .nav-pill.sub-screen { color: #fff; }
+  .nav-pill.pill-disabled, .level-pill.pill-disabled, .match-card-select.pill-disabled {
+    opacity: 0.35; pointer-events: none; cursor: default;
+  }
 
   main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
 
@@ -357,17 +396,50 @@
 <body>
 
 <header>
-  <div class="logo">日本語 <span>drill</span></div>
-  <div class="nav-pills">
-    <button class="nav-pill" onclick="showHiraganaSelection()">ひらがな</button>
-    <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSelection()">カタカナ</button>
-    <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">漢字</button>
-    <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
-    <button class="nav-pill active" id="nav-match" onclick="tryResumeMatch()">Read</button>
+  <div class="app-heading">日本語 <span>drill</span></div>
+  <div class="nav-row">
+    <button class="settings-btn" id="settings-btn" onclick="showSettingsScreen()" title="Settings" aria-label="Settings">⚙</button>
+    <div class="nav-pills">
+      <button class="nav-pill" onclick="showHiraganaSelection()">ひらがな</button>
+      <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSelection()">カタカナ</button>
+      <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">漢字</button>
+      <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
+      <button class="nav-pill active" id="nav-match" onclick="tryResumeMatch()">Read</button>
+    </div>
   </div>
 </header>
 
 <main>
+
+  <!-- Settings screen -->
+  <div class="screen" id="screen-settings">
+    <div class="settings-title">Settings</div>
+    <div class="settings-sub">These only live on this device — nothing here changes what anyone else sees.</div>
+
+    <div class="group-card" id="theme-toggle-card" onclick="toggleTheme()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Light theme</div>
+        <div class="group-count">Switches from the default dark look to a light one</div>
+      </div>
+      <div class="toggle" id="theme-toggle"></div>
+    </div>
+
+    <div class="group-card" id="custom-content-toggle-card" onclick="toggleCustomContent()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Show custom content</div>
+        <div class="group-count">The Kanji section and "Extra" vocab (Colours, Trip-prep) aren't part of the course — on by default so nothing's hidden unless you turn it off</div>
+      </div>
+      <div class="toggle" id="custom-content-toggle"></div>
+    </div>
+
+    <div class="group-card" id="hint-penalty-toggle-card" onclick="toggleHintPenalty()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Half credit for hinted answers</div>
+        <div class="group-count">If you use the hint/speak button before answering, a correct answer only adds half as much to your confidence score — wrong answers still cost the full amount</div>
+      </div>
+      <div class="toggle" id="hint-penalty-toggle"></div>
+    </div>
+  </div>
 
   <!-- Katakana settings screen -->
   <!-- Hiragana reference screen -->
@@ -643,7 +715,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.077</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.079</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -1942,7 +2014,11 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('visible'));
   document.getElementById('screen-' + id).classList.add('visible');
   document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-  if (id === 'hiragana-selection') document.querySelectorAll('.nav-pill')[0].classList.add('active');
+  const settingsBtn = document.getElementById('settings-btn');
+  if (settingsBtn) settingsBtn.classList.toggle('active', id === 'settings');
+  if (id === 'settings') {
+    // Its own entry point (the gear button above), not part of the nav-pill row.
+  } else if (id === 'hiragana-selection') document.querySelectorAll('.nav-pill')[0].classList.add('active');
   else if (id === 'katakana-selection') document.querySelectorAll('.nav-pill')[1].classList.add('active');
   else if (id === 'kanji-selection') document.querySelectorAll('.nav-pill')[2].classList.add('active');
   else if (id === 'match-settings' || id === 'vocab-reference' || id === 'vocab-tile-selection') document.querySelectorAll('.nav-pill')[4].classList.add('active');
@@ -1967,6 +2043,7 @@ function showScreen(id) {
 let lastSettingsScreen = 'match-settings';
 
 function tryResumeKanji() {
+  if (!appSettings.showCustomContent) return; // backstop - pill is also greyed out + unclickable via CSS
   showKanjiSelection();
 }
 function goBackToSettings() {
@@ -2393,6 +2470,78 @@ function drillMissed() {
 
 const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 
+/* ---------- App settings (on-device only, no sync) ----------------------- */
+// Defaults are chosen to exactly match the app's behaviour before this
+// existed, so installing this doesn't change anything for anyone until they
+// actually visit Settings and change something themselves.
+const SETTINGS_KEY = 'jpDrillSettings';
+let appSettings = { theme: 'dark', showCustomContent: true, hintPenalty: false };
+try {
+  const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+  if (savedSettings && typeof savedSettings === 'object') Object.assign(appSettings, savedSettings);
+} catch (e) {
+  // localStorage unavailable or corrupt — fall back to defaults silently
+}
+
+function saveSettings() {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(appSettings));
+  } catch (e) {
+    // fail silently, same as everywhere else localStorage is used
+  }
+}
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', appSettings.theme === 'light' ? 'light' : 'dark');
+  const card = document.getElementById('theme-toggle-card');
+  if (card) card.classList.toggle('selected', appSettings.theme === 'light');
+}
+
+function toggleTheme() {
+  appSettings.theme = appSettings.theme === 'light' ? 'dark' : 'light';
+  saveSettings();
+  applyTheme();
+}
+
+function applyCustomContentVisibility() {
+  const on = appSettings.showCustomContent;
+  const kanjiPill = document.getElementById('nav-kanji');
+  if (kanjiPill) kanjiPill.classList.toggle('pill-disabled', !on);
+  const extraPill = document.getElementById('level-pill-extra');
+  if (extraPill) extraPill.classList.toggle('pill-disabled', !on);
+  const kanjiReadCard = document.getElementById('read-pool-kanji');
+  if (kanjiReadCard) kanjiReadCard.classList.toggle('pill-disabled', !on);
+  const card = document.getElementById('custom-content-toggle-card');
+  if (card) card.classList.toggle('selected', on);
+}
+
+function toggleCustomContent() {
+  appSettings.showCustomContent = !appSettings.showCustomContent;
+  saveSettings();
+  applyCustomContentVisibility();
+}
+
+function applyHintPenaltyUI() {
+  const card = document.getElementById('hint-penalty-toggle-card');
+  if (card) card.classList.toggle('selected', appSettings.hintPenalty);
+}
+
+function toggleHintPenalty() {
+  appSettings.hintPenalty = !appSettings.hintPenalty;
+  saveSettings();
+  applyHintPenaltyUI();
+}
+
+function applyAllSettingsUI() {
+  applyTheme();
+  applyCustomContentVisibility();
+  applyHintPenaltyUI();
+}
+
+function showSettingsScreen() {
+  showScreen('settings');
+}
+
 /* ---------- Kana confidence tracking (on-device only, no sync) ---------- */
 // Tracks a -2..+2 score per single kana character, based on right/wrong
 // answers during hiragana/katakana drilling (base/diacritic/youon groups
@@ -2511,20 +2660,32 @@ function getScoreKey(q) {
 function recordKanaResult(q, correct) {
   if (!isTrackedItem(q)) return;
   const key = getScoreKey(q);
-  const increment = (q.disp === 'number' || q.disp === 'time') ? 0.1 : 1;
+  const fullIncrement = (q.disp === 'number' || q.disp === 'time') ? 0.1 : 1;
+  // Optional (off by default): a correct answer only counts for half as much
+  // if the hint/speak button was used first - wrong answers always cost the
+  // full amount regardless, since that part was never in question.
+  const increment = (correct && appSettings.hintPenalty && hintUsedThisQuestion) ? fullIncrement / 2 : fullIncrement;
   const cur = kanaScores[key] || 0;
-  const next = correct ? Math.min(2, cur + increment) : Math.max(-2, cur - increment);
-  kanaScores[key] = Math.round(next * 10) / 10;
+  const next = correct ? Math.min(2, cur + increment) : Math.max(-2, cur - fullIncrement);
+  // Rounding to 1dp used to be safe when 0.1 was the smallest possible step,
+  // but the hint-penalty's 0.05 half-step for numbers/time would round straight
+  // back up to 0.1 at that precision - 2dp preserves it correctly.
+  kanaScores[key] = Math.round(next * 100) / 100;
   saveKanaScores();
 }
 
+// Range-based rather than strict-equality, so half-credit values (from the
+// hint-penalty setting) land in a sensible bucket instead of falling through
+// every check and landing in the top tier by accident. Whole-number scores
+// land in exactly the same buckets as before - this only changes how values
+// in between (0.5, 1.5, -0.5, -1.5) get classified.
 function kanaScoreClass(key) {
   if (!(key in kanaScores)) return ''; // never drilled — no shading at all
   const score = kanaScores[key];
-  if (score <= -2) return 'score-neg2';
-  if (score === -1) return 'score-neg1';
-  if (score === 0) return 'score-neutral'; // drilled, but currently balanced
-  if (score === 1) return 'score-pos1';
+  if (score <= -1.5) return 'score-neg2';
+  if (score <= -0.5) return 'score-neg1';
+  if (score < 0.5) return 'score-neutral'; // drilled, but currently balanced
+  if (score < 1.5) return 'score-pos1';
   return 'score-pos2';
 }
 
@@ -3496,6 +3657,7 @@ let currentMatchLevel = 'read';
 let selectedReadRandomPool = null;
 
 function selectReadRandomPool(pool, card) {
+  if (pool === 'kanji' && !appSettings.showCustomContent) return; // backstop - card is also greyed out + unclickable via CSS
   selectedReadRandomPool = pool;
   document.querySelectorAll('#match-read-view .match-card-select').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
@@ -3505,7 +3667,7 @@ function selectReadRandomPool(pool, card) {
 function startReadRandomDrill() {
   if (selectedReadRandomPool === 'l1l2') startWordReading();
   else if (selectedReadRandomPool === 'everything') startRandomMatchEverything();
-  else if (selectedReadRandomPool === 'kanji') startRandomKanji();
+  else if (selectedReadRandomPool === 'kanji' && appSettings.showCustomContent) startRandomKanji();
 }
 
 function updateNumberTimeSwatches() {
@@ -3525,6 +3687,7 @@ function updateNumberTimeSwatches() {
 }
 
 function setMatchLevel(level) {
+  if (level === 'extra' && !appSettings.showCustomContent) return; // backstop - pill is also greyed out + unclickable via CSS
   currentMatchLevel = level;
   document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
@@ -3681,6 +3844,7 @@ function startRandomMatchEverything() {
   startVocabReadingDeck(allItems, 'random-everything');
 }
 
+applyAllSettingsUI();
 buildMatchCategoryList();
 
 updateDirectionVisibility();
