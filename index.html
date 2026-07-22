@@ -443,6 +443,14 @@
       </div>
       <div class="toggle" id="hint-penalty-toggle"></div>
     </div>
+
+    <div class="group-card" id="offline-toggle-card" onclick="toggleWorkOffline()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Work offline</div>
+        <div class="group-count">Caches the app so it still opens with no signal — turn this on, then browse around a little while you've still got signal, before you actually need it offline</div>
+      </div>
+      <div class="toggle" id="offline-toggle"></div>
+    </div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -719,7 +727,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.080</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.081</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -2479,7 +2487,7 @@ const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 // existed, so installing this doesn't change anything for anyone until they
 // actually visit Settings and change something themselves.
 const SETTINGS_KEY = 'jpDrillSettings';
-let appSettings = { theme: 'dark', showCustomContent: true, hintPenalty: false };
+let appSettings = { theme: 'dark', showCustomContent: true, hintPenalty: false, workOffline: false };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') Object.assign(appSettings, savedSettings);
@@ -2543,10 +2551,48 @@ function toggleHintPenalty() {
   applyHintPenaltyUI();
 }
 
+function applyWorkOfflineUI() {
+  const card = document.getElementById('offline-toggle-card');
+  if (card) card.classList.toggle('selected', appSettings.workOffline);
+}
+
+// Registers/unregisters the service worker to match the setting - called on
+// every toggle, and once at startup so a stray registration from a previous
+// session (e.g. the setting was on, then somehow got turned off without this
+// running) gets cleaned up rather than silently lingering. Turning it off
+// actively unregisters and clears the cache, rather than just leaving an
+// old worker running unmanaged.
+function syncServiceWorkerRegistration() {
+  if (!('serviceWorker' in navigator)) return;
+  if (appSettings.workOffline) {
+    navigator.serviceWorker.register('sw.js').catch(() => {
+      // registration can fail (e.g. not served over https, browser
+      // restrictions) - fail silently, same policy as everywhere else here
+    });
+  } else {
+    navigator.serviceWorker.getRegistrations().then((regs) => {
+      regs.forEach((reg) => reg.unregister());
+    }).catch(() => {});
+    if ('caches' in window) {
+      caches.keys().then((names) => {
+        names.filter((name) => name.startsWith('jp-drill-')).forEach((name) => caches.delete(name));
+      }).catch(() => {});
+    }
+  }
+}
+
+function toggleWorkOffline() {
+  appSettings.workOffline = !appSettings.workOffline;
+  saveSettings();
+  applyWorkOfflineUI();
+  syncServiceWorkerRegistration();
+}
+
 function applyAllSettingsUI() {
   applyTheme();
   applyCustomContentVisibility();
   applyHintPenaltyUI();
+  applyWorkOfflineUI();
 }
 
 function showSettingsScreen() {
@@ -3856,6 +3902,7 @@ function startRandomMatchEverything() {
 }
 
 applyAllSettingsUI();
+syncServiceWorkerRegistration();
 buildMatchCategoryList();
 
 updateDirectionVisibility();
