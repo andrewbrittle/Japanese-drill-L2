@@ -123,12 +123,6 @@
   .settings-title { font-size: 22px; font-weight: 700; text-align: center; }
   .settings-sub { font-size: 14px; font-weight: 500; color: var(--text-muted); text-align: center; }
 
-  .section-label {
-    font-size: 12px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.06em; color: var(--text-dim);
-    margin: 0.75rem 0 -0.5rem 0.25rem;
-  }
-  .section-label:first-of-type { margin-top: 0; }
   #match-read-view, #match-vocab-view, #match-extra-view { display: flex; flex-direction: column; gap: 1rem; }
 
   .group-card {
@@ -477,7 +471,7 @@
         <div class="group-name" id="direction-name-ref-hira">Kana → romaji</div>
         <div class="group-count" id="direction-sub-ref-hira">See a character, pick the reading. Tap to reverse.</div>
       </div>
-      <div class="toggle" id="direction-toggle-ref-hira"></div>
+      <div class="toggle"></div>
     </div>
     <button class="start-btn" id="hira-selection-drill-btn" onclick="drillHiraganaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
@@ -505,14 +499,14 @@
         <div class="group-name" id="direction-name-ref">Kana → romaji</div>
         <div class="group-count" id="direction-sub-ref">See a character, pick the reading. Tap to reverse.</div>
       </div>
-      <div class="toggle" id="direction-toggle-ref"></div>
+      <div class="toggle"></div>
     </div>
     <div class="group-card" id="hiragana-answers-card-ref" onclick="toggleHiraganaOnKatakana()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Show hiragana on answers</div>
         <div class="group-count">Match the katakana to its hiragana equivalent instead of romaji</div>
       </div>
-      <div class="toggle" id="hiragana-answers-toggle-ref"></div>
+      <div class="toggle"></div>
     </div>
     <button class="start-btn" id="kata-selection-drill-btn" onclick="drillKatakanaSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
   </div>
@@ -554,7 +548,7 @@
         <div class="group-name">Show hiragana on answers</div>
         <div class="group-count">See readings in hiragana instead of romaji</div>
       </div>
-      <div class="toggle" id="kanji-hiragana-answers-toggle"></div>
+      <div class="toggle"></div>
     </div>
 
     <button class="start-btn" id="kanji-selection-drill-btn" onclick="drillKanjiSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
@@ -579,7 +573,7 @@
         <div class="group-name">Highlight the meaning instead of sound</div>
         <div class="group-count">Swaps which text is prominent on the cards — romaji on top by default, English on top when this is on</div>
       </div>
-      <div class="toggle" id="vocab-tile-drill-mode-toggle"></div>
+      <div class="toggle"></div>
     </div>
 
     <button class="start-btn" id="vocab-tile-drill-btn" onclick="drillVocabTileSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
@@ -721,13 +715,13 @@
           <div class="group-name">Highlight the meaning instead of sound</div>
           <div class="group-count">Swaps which text is prominent on word/vocab cards — romaji on top by default, English on top when this is on</div>
         </div>
-        <div class="toggle" id="drill-mode-toggle-l"></div>
+        <div class="toggle"></div>
       </div>
       <button class="start-btn" id="match-start-btn" onclick="startRandomMatch()" disabled>Start random drill</button>
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.082</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.083</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -3041,17 +3035,9 @@ const KANJI_READINGS = {
   '五月|May': 'ごがつ', '六月|June': 'ろくがつ', '七月|July': 'しちがつ', '八月|August': 'はちがつ',
   '九月|September': 'くがつ', '十月|October': 'じゅうがつ', '十一月|November': 'じゅういちがつ', '十二月|December': 'じゅうにがつ',
 
-  // Readings for phrases that only ever appear as distractor options (never
-  // as their own drillable item), needed so the hiragana-answers toggle
-  // doesn't fall back to romaji for these.
-  '千円|yen': 'せんえん', '三分|3 minutes': 'さんぷん', '三分|minute': 'さんぷん',
-  '月曜日|Monday / month': 'げつようび', '火曜日|Tuesday': 'かようび', '水曜日|Wednesday': 'すいようび',
-  '木曜日|Thursday': 'もくようび', '金曜日|Friday': 'きんようび', '金曜日|Friday / gold': 'きんようび',
-  '土曜日|Saturday': 'どようび', '土曜日|Saturday / earth': 'どようび', '日曜日|Sunday': 'にちようび',
   '今年|this year': 'ことし', '今日|today': 'きょう',
   '午前|morning / AM': 'ごぜん', '午後|afternoon / PM': 'ごご',
-  '時間|hour / time': 'じかん', '時間|interval / hours (時間)': 'じかん',
-  '時計|watch / clock': 'とけい', '間|interval': 'かん',
+  '時計|watch / clock': 'とけい',
   '日本|Japan': 'にほん', '富士山|Mt. Fuji': 'ふじさん',
   '大学|university': 'だいがく', '日本人|Japanese person': 'にほんじん',
   '小学校|elementary school': 'しょうがっこう', '上手|skilled / good at': 'じょうず', '地下鉄|subway': 'ちかてつ',
@@ -3062,19 +3048,12 @@ const KANJI_READINGS = {
   '西口|west exit': 'にしぐち', '南口|south exit': 'みなみぐち',
   '北口|north exit': 'きたぐち',
   '東京駅|Tokyo Station': 'とうきょうえき',
-  '電車|train': 'でんしゃ', '車|car': 'くるま',
+  '電車|train': 'でんしゃ',
   '山手線|Yamanote Line': 'やまのてせん',
-  'お店|shop / store': 'おみせ', '病院|hospital': 'びょういん',
-  '学校|school': 'がっこう', '銀行|bank': 'ぎんこう', '銀行|go / bank (銀行)': 'ぎんこう',
-  '止まれ|Stop! (sign)': 'とまれ', '危険|danger': 'きけん', '危険|risk / steep': 'きけん',
-  '注意|caution': 'ちゅうい', '注意|pour / focus (注意)': 'ちゅうい', '注意|meaning / attention': 'ちゅうい',
-  '開く|to open': 'ひらく', '閉まる|to close': 'しまる', '禁止|prohibited': 'きんし', '禁止|prohibit': 'きんし',
+  '病院|hospital': 'びょういん',
+  '止まれ|Stop! (sign)': 'とまれ',
+  '開く|to open': 'ひらく', '閉まる|to close': 'しまる',
   '押す|to push': 'おす', '引く|to pull': 'ひく',
-  '入口|enter (入口 entrance)': 'いりぐち', '入口|entrance': 'いりぐち', '出口|exit': 'でぐち', '出口|exit (出口)': 'でぐち',
-  '二階|floor / storey': 'にかい', '食堂|canteen': 'しょくどう', '会議室|meeting room': 'かいぎしつ',
-  '肉|meat': 'にく', '大|big': 'だい', '料理|cooking': 'りょうり', '果物|fruit': 'くだもの',
-  '高い|expensive': 'たかい', 'どこ|where': 'どこ', '中|inside / middle': 'なか',
-  '毎日|every (毎日 every day)': 'まいにち', '週|week': 'しゅう', '行く|to go': 'いく', '休む|to rest': 'やすむ',
   '分|minute': 'ふん', '前|before / front': 'まえ', '後|after / back': 'あと',
   '計|measure / plan (時計)': 'けい', '百|hundred': 'ひゃく', '千|thousand': 'せん', '万|ten thousand': 'まん',
   '半|half': 'はん', '間|interval / space (時間)': 'かん', '午|noon (午前/午後)': 'ご',
