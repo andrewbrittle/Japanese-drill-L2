@@ -424,7 +424,11 @@
       <div class="toggle" id="theme-toggle"></div>
     </div>
 
-    <div class="group-card" id="custom-content-toggle-card" onclick="toggleCustomContent()" style="cursor:pointer;">
+    <!-- Temporarily hidden: the random reading pools don't yet respect this
+         setting (Extra-tier words can still surface there regardless), so
+         it's parked rather than shown half-working. Card, JS, and CSS are
+         all still intact underneath, just unreachable until this is sorted. -->
+    <div class="group-card" id="custom-content-toggle-card" onclick="toggleCustomContent()" style="cursor:pointer; display:none;">
       <div class="group-info">
         <div class="group-name">Show custom content</div>
         <div class="group-count">The Kanji section and "Extra" vocab (Colours, Trip-prep) aren't part of the course — on by default so nothing's hidden unless you turn it off</div>
@@ -715,7 +719,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.079</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.080</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -2482,6 +2486,13 @@ try {
 } catch (e) {
   // localStorage unavailable or corrupt — fall back to defaults silently
 }
+// The "show custom content" toggle is temporarily hidden from the Settings
+// screen (its card, guards, and CSS are all still in place, just unreachable
+// via UI) - the random reading pools ("everything"/"L1L2") don't respect it
+// yet, and fixing that properly needs more thought first. Forced back on
+// unconditionally here so nobody who happened to switch it off during
+// testing gets stuck with content hidden and no toggle left to undo it with.
+appSettings.showCustomContent = true;
 
 function saveSettings() {
   try {
