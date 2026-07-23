@@ -350,28 +350,29 @@
   /* "Specific time" lookup tool, under Reading times on the Read page */
   .time-tool-row {
     display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 8px; margin-top: 0.6rem;
+    flex-wrap: wrap; gap: 10px; margin-top: 0.4rem;
   }
-  .time-tool-frames { display: grid; grid-template-columns: repeat(2, auto); gap: 4px; }
-  .time-tool-ampm { display: flex; flex-direction: column; gap: 4px; }
-  .time-tool-frames .level-pill, .time-tool-ampm .level-pill { padding: 5px 12px; font-size: 12px; }
+  .time-tool-frames { display: grid; grid-template-columns: repeat(2, auto); gap: 3px; }
+  .time-tool-ampm { display: flex; flex-direction: column; gap: 3px; }
+  .time-tool-frames .level-pill, .time-tool-ampm .level-pill { padding: 4px 10px; font-size: 12px; }
   .time-tool-entry { display: flex; align-items: center; gap: 4px; font-weight: 600; color: var(--text-muted); }
   .time-tool-entry select {
     background: var(--surface2); color: var(--text); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 6px 8px; font-size: 15px; font-weight: 600;
+    border-radius: var(--radius); padding: 5px 8px; font-size: 15px; font-weight: 600;
     font-family: inherit; cursor: pointer;
   }
   .time-tool-output {
-    margin-top: 0.75rem; text-align: center; padding: 0.6rem;
+    margin-top: 0.5rem; text-align: center; padding: 0.45rem;
     background: var(--surface2); border-radius: var(--radius);
   }
   .time-tool-output .time-tool-jp { display: block; font-size: 20px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
-  .time-tool-output .time-tool-rd { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  .time-tool-output .time-tool-rd { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
   .time-tool-reset-btn {
-    display: block; width: 100%; margin-top: 0.5rem;
-    padding: 7px; border-radius: var(--radius);
+    flex-shrink: 0;
+    width: 38px; height: 38px; border-radius: 50%;
     background: transparent; border: 1px solid var(--border);
-    color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    color: var(--text-muted); font-size: 17px; line-height: 1; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
     transition: all 0.15s;
   }
   .time-tool-reset-btn:hover { border-color: var(--border-hover); background: var(--surface2); }
@@ -705,9 +706,9 @@
             <button class="level-pill" id="time-tool-ampm-gozen" onclick="setTimeToolAmpm('gozen')">AM</button>
             <button class="level-pill" id="time-tool-ampm-gogo" onclick="setTimeToolAmpm('gogo')">PM</button>
           </div>
+          <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()" title="Reset to current time" aria-label="Reset to current time">↺</button>
         </div>
         <div class="time-tool-output" id="time-tool-output"></div>
-        <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()">Reset to current time</button>
       </div>
 
       <div class="section-divider"></div>
@@ -776,7 +777,7 @@
       <button class="start-btn" id="match-start-btn" onclick="startRandomMatch()" disabled>Start random drill</button>
     </div>
 
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.085</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.087</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -2513,8 +2514,11 @@ function populateTimeToolSelects() {
   }
 }
 
-// Sets the selects/frame/ampm to the current moment and re-renders - used
-// both for the initial load and the "Reset to current time" button.
+// Sets the selects/frame to the current moment and re-renders - used both
+// for the initial load and the "Reset to current time" button. AM/PM is
+// deliberately left off (not auto-picked from the real clock) - having it
+// light up on its own on every load/reset drew too much attention; leaving
+// it blank also matches how real Japanese often drops it when clear from context.
 function resetTimeToolToNow() {
   const hourSel = document.getElementById('time-tool-hour');
   const minSel = document.getElementById('time-tool-minute');
@@ -2522,7 +2526,7 @@ function resetTimeToolToNow() {
   const parts = getCurrentTimeParts();
   hourSel.value = String(parts.hour);
   minSel.value = String(parts.minute);
-  timeToolAmpm = parts.ampm;
+  timeToolAmpm = null;
   timeToolFrame = 'none';
   updateTimeTool();
 }
