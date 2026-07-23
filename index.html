@@ -489,13 +489,13 @@
       <div class="toggle" id="offline-toggle"></div>
     </div>
 
-    <!-- Debug/troubleshooting only - not meant for everyday users. Kept
-         visible only while actively needed (e.g. Andrew asking someone to
-         copy their scores over); hide with display:none the rest of the
-         time rather than deleting, same pattern as the custom-content
-         toggle above - the box, button, and JS all stay fully working
-         underneath, just unreachable when hidden. -->
-    <div class="group-card" id="export-scores-card" style="cursor:default; display:block;">
+    <!-- Debug/troubleshooting only - not meant for everyday users. Hidden
+         again (display:none) now that Andrew's used it once to pull his
+         real score data for the category-averaging discussion - same
+         pattern as the custom-content toggle above. Box, button, and JS
+         all stay fully working underneath; just switch display back to
+         block (or remove the inline style) whenever it's needed again. -->
+    <div class="group-card" id="export-scores-card" style="cursor:default; display:none;">
       <div class="group-info">
         <div class="group-name">Export my scores</div>
         <div class="group-count">Copies your saved drill scores as text — for troubleshooting only</div>
@@ -506,7 +506,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.095</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.096</div>
   </div>
 
   <!-- Katakana settings screen -->
