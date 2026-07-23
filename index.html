@@ -347,6 +347,35 @@
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
 
+  /* "Specific time" lookup tool, under Reading times on the Read page */
+  .time-tool-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 8px; margin-top: 0.6rem;
+  }
+  .time-tool-frames { display: grid; grid-template-columns: repeat(2, auto); gap: 4px; }
+  .time-tool-ampm { display: flex; flex-direction: column; gap: 4px; }
+  .time-tool-frames .level-pill, .time-tool-ampm .level-pill { padding: 5px 12px; font-size: 12px; }
+  .time-tool-entry { display: flex; align-items: center; gap: 4px; font-weight: 600; color: var(--text-muted); }
+  .time-tool-entry select {
+    background: var(--surface2); color: var(--text); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 6px 8px; font-size: 15px; font-weight: 600;
+    font-family: inherit; cursor: pointer;
+  }
+  .time-tool-output {
+    margin-top: 0.75rem; text-align: center; padding: 0.6rem;
+    background: var(--surface2); border-radius: var(--radius);
+  }
+  .time-tool-output .time-tool-jp { display: block; font-size: 20px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .time-tool-output .time-tool-rd { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  .time-tool-reset-btn {
+    display: block; width: 100%; margin-top: 0.5rem;
+    padding: 7px; border-radius: var(--radius);
+    background: transparent; border: 1px solid var(--border);
+    color: var(--text-muted); font-size: 12px; font-weight: 600; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .time-tool-reset-btn:hover { border-color: var(--border-hover); background: var(--surface2); }
+
   /* Katakana reference grid */
   .kana-ref-grid {
     display: flex;
@@ -445,6 +474,8 @@
       </div>
       <div class="toggle" id="offline-toggle"></div>
     </div>
+
+    <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -653,6 +684,31 @@
         </div>
         <div class="score-swatch" id="times-score-swatch"></div>
       </div>
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Specific time</div>
+          <div class="group-count">Pick a time to see how it's said in Japanese</div>
+        </div>
+        <div class="time-tool-row">
+          <div class="time-tool-frames">
+            <button class="level-pill" id="time-tool-frame-ni" onclick="setTimeToolFrame('ni')">at</button>
+            <button class="level-pill" id="time-tool-frame-made" onclick="setTimeToolFrame('made')">until</button>
+            <button class="level-pill" id="time-tool-frame-goro" onclick="setTimeToolFrame('goro')">around</button>
+            <button class="level-pill" id="time-tool-frame-kara" onclick="setTimeToolFrame('kara')">from</button>
+          </div>
+          <div class="time-tool-entry">
+            <select id="time-tool-hour" onchange="updateTimeTool()"></select>
+            <span>:</span>
+            <select id="time-tool-minute" onchange="updateTimeTool()"></select>
+          </div>
+          <div class="time-tool-ampm">
+            <button class="level-pill" id="time-tool-ampm-gozen" onclick="setTimeToolAmpm('gozen')">AM</button>
+            <button class="level-pill" id="time-tool-ampm-gogo" onclick="setTimeToolAmpm('gogo')">PM</button>
+          </div>
+        </div>
+        <div class="time-tool-output" id="time-tool-output"></div>
+        <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()">Reset to current time</button>
+      </div>
 
       <div class="section-divider"></div>
 
@@ -720,8 +776,7 @@
       <button class="start-btn" id="match-start-btn" onclick="startRandomMatch()" disabled>Start random drill</button>
     </div>
 
-    <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:2px;">v260722.083</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.085</div>
   </div>
 
   <!-- Vocab reference screen (browse-only, no drilling) -->
@@ -2421,6 +2476,90 @@ function startTimeChallenge() {
 }
 /* ---------- end Time challenge ---------- */
 
+/* ---------- Specific-time lookup tool (Read page, under Reading times) ----------
+   Not a drill - a free-input reference. Reuses the same timeToKana/timeToRomaji
+   conversion functions the time-reading drill above already relies on, so the
+   two can never disagree with each other. */
+let timeToolFrame = 'none';
+let timeToolAmpm = null;
+
+// Real device clock -> the tool's own {1-12, 0-59, gozen/gogo} shape.
+function getCurrentTimeParts() {
+  const now = new Date();
+  const h24 = now.getHours();
+  const hour12 = h24 % 12 === 0 ? 12 : h24 % 12;
+  return { hour: hour12, minute: now.getMinutes(), ampm: h24 < 12 ? 'gozen' : 'gogo' };
+}
+
+function populateTimeToolSelects() {
+  const hourSel = document.getElementById('time-tool-hour');
+  const minSel = document.getElementById('time-tool-minute');
+  if (!hourSel || !minSel) return;
+  if (hourSel.options.length === 0) {
+    for (let h = 1; h <= 12; h++) {
+      const opt = document.createElement('option');
+      opt.value = String(h);
+      opt.textContent = String(h);
+      hourSel.appendChild(opt);
+    }
+  }
+  if (minSel.options.length === 0) {
+    for (let m = 0; m < 60; m++) {
+      const opt = document.createElement('option');
+      opt.value = String(m);
+      opt.textContent = String(m).padStart(2, '0');
+      minSel.appendChild(opt);
+    }
+  }
+}
+
+// Sets the selects/frame/ampm to the current moment and re-renders - used
+// both for the initial load and the "Reset to current time" button.
+function resetTimeToolToNow() {
+  const hourSel = document.getElementById('time-tool-hour');
+  const minSel = document.getElementById('time-tool-minute');
+  if (!hourSel || !minSel) return;
+  const parts = getCurrentTimeParts();
+  hourSel.value = String(parts.hour);
+  minSel.value = String(parts.minute);
+  timeToolAmpm = parts.ampm;
+  timeToolFrame = 'none';
+  updateTimeTool();
+}
+
+function setTimeToolFrame(frame) {
+  timeToolFrame = (timeToolFrame === frame) ? 'none' : frame;
+  updateTimeTool();
+}
+
+function setTimeToolAmpm(ampm) {
+  timeToolAmpm = (timeToolAmpm === ampm) ? null : ampm;
+  updateTimeTool();
+}
+
+function updateTimeTool() {
+  const hourSel = document.getElementById('time-tool-hour');
+  const minSel = document.getElementById('time-tool-minute');
+  const output = document.getElementById('time-tool-output');
+  if (!hourSel || !minSel || !output) return;
+
+  ['ni', 'made', 'goro', 'kara'].forEach(f => {
+    const btn = document.getElementById('time-tool-frame-' + f);
+    if (btn) btn.classList.toggle('active', timeToolFrame === f);
+  });
+  ['gozen', 'gogo'].forEach(a => {
+    const btn = document.getElementById('time-tool-ampm-' + a);
+    if (btn) btn.classList.toggle('active', timeToolAmpm === a);
+  });
+
+  const hour = parseInt(hourSel.value, 10);
+  const minute = parseInt(minSel.value, 10);
+  const kana = timeToKana(hour, minute, timeToolAmpm, timeToolFrame);
+  const romaji = timeToRomaji(hour, minute, timeToolAmpm, timeToolFrame);
+  output.innerHTML = `<span class="time-tool-jp">${kana}</span><span class="time-tool-rd">${romaji}</span>`;
+}
+/* ---------- end Specific-time lookup tool ---------- */
+
 function buildDeck() {
   let d = [];
   selected.forEach(k => { if (DATA[k]) DATA[k].forEach(q => d.push(Object.assign({groupKey: k}, q))); });
@@ -3886,6 +4025,8 @@ buildMatchCategoryList();
 
 updateDirectionVisibility();
 updateNumberTimeSwatches();
+populateTimeToolSelects();
+resetTimeToolToNow();
 tryRestoreDrillSession();
 
 // Keyboard shortcuts for the drill screen, for anyone on a laptop/desktop:
