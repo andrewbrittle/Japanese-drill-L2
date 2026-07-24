@@ -138,8 +138,8 @@
 
   .group-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
   .score-swatch {
-    flex: 0 0 30%; align-self: stretch; border-radius: var(--radius);
-    margin-left: 0.75rem; min-height: 48px; background: var(--surface2);
+    flex: 0 0 auto; width: 48px; height: 48px; border-radius: var(--radius);
+    margin-left: 0.75rem; background: var(--surface2);
   }
   .score-swatch.score-neg2 { background: rgba(235,87,87,0.45); }
   .score-swatch.score-neg1 { background: rgba(235,87,87,0.22); }
@@ -467,11 +467,7 @@
       <div class="toggle" id="theme-toggle"></div>
     </div>
 
-    <!-- Temporarily hidden: the random reading pools don't yet respect this
-         setting (Extra-tier words can still surface there regardless), so
-         it's parked rather than shown half-working. Card, JS, and CSS are
-         all still intact underneath, just unreachable until this is sorted. -->
-    <div class="group-card" id="custom-content-toggle-card" onclick="toggleCustomContent()" style="cursor:pointer; display:none;">
+    <div class="group-card" id="custom-content-toggle-card" onclick="toggleCustomContent()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Show custom content</div>
         <div class="group-count">The Kanji section and "Extra" vocab (Colours, Trip-prep) aren't part of the course — on by default so nothing's hidden unless you turn it off</div>
@@ -512,7 +508,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.098</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.100</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -749,11 +745,6 @@
 
       <div class="section-divider"></div>
 
-      <div class="match-card-select" id="read-pool-l1l2" onclick="selectReadRandomPool('l1l2', this)">
-        <div class="group-name">Reading words — from Level 1 and Level 2</div>
-        <div class="group-chars">みず えき といれ…</div>
-        <div class="group-count">20 random words per round</div>
-      </div>
       <div class="match-card-select" id="read-pool-everything" onclick="selectReadRandomPool('everything', this)">
         <div class="group-name">Reading words — everything</div>
         <div class="group-chars">らんだむな ぜんぶ</div>
@@ -1711,14 +1702,6 @@ const VOCAB = {
   },
 };
 
-// Word reading drill pool — derived from VOCAB so every word only needs
-// entering once. Draws from every category regardless of level (word-reading
-// has never been level-filtered), using each item's own romaji/en fields.
-const WORD_POOL = Object.keys(VOCAB).reduce((pool, key) => {
-  VOCAB[key].items.forEach(item => pool.push({ jp: item.jp, romaji: item.romaji, en: item.en, altForm: item.altForm }));
-  return pool;
-}, []);
-
 const BADGE_LABELS = {
   'hiragana-base': 'hiragana base',
   'hiragana-diacritics': 'hiragana ゛゜',
@@ -2361,36 +2344,6 @@ function genNumberDistractors(n) {
   return [...candidates].slice(0, 3).map(c => numToJapanese(c));
 }
 
-function buildWordReadingDeck() {
-  const pool = shuffle([...WORD_POOL]);
-  const selected10 = pool.slice(0, 20);
-  return selected10.map(item => {
-    const correct = item.romaji;
-    const distractorItems = pickDistractorItems(WORD_POOL, item, 3);
-    const allItems = shuffle([item, ...distractorItems]);
-    return {
-      char: item.jp,
-      answer: correct,
-      answerRomaji: correct,
-      answerEn: item.en,
-      disp: 'word',
-      groupKey: 'word-reading',
-      options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
-      hint: item.en,
-      altForm: item.altForm,
-    };
-  });
-}
-
-function startWordReading() {
-  lastSettingsScreen = 'match-settings';
-  lastDeckBuilder = buildWordReadingDeck;
-  deck = buildWordReadingDeck();
-  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
-  showScreen('drill');
-  renderQuestion();
-}
-
 function pickChallengeNumber() {
   if (Math.random() < 0.05) {
     return Math.floor(Math.random() * (50000 - 10000 + 1)) + 10000;
@@ -2764,13 +2717,6 @@ try {
 } catch (e) {
   // localStorage unavailable or corrupt — fall back to defaults silently
 }
-// The "show custom content" toggle is temporarily hidden from the Settings
-// screen (its card, guards, and CSS are all still in place, just unreachable
-// via UI) - the random reading pools ("everything"/"L1L2") don't respect it
-// yet, and fixing that properly needs more thought first. Forced back on
-// unconditionally here so nobody who happened to switch it off during
-// testing gets stuck with content hidden and no toggle left to undo it with.
-appSettings.showCustomContent = true;
 
 function saveSettings() {
   try {
@@ -4013,8 +3959,7 @@ function selectReadRandomPool(pool, card) {
 }
 
 function startReadRandomDrill() {
-  if (selectedReadRandomPool === 'l1l2') startWordReading();
-  else if (selectedReadRandomPool === 'everything') startRandomMatchEverything();
+  if (selectedReadRandomPool === 'everything') startRandomMatchEverything();
   else if (selectedReadRandomPool === 'kanji' && appSettings.showCustomContent) startRandomKanji();
 }
 
@@ -4184,9 +4129,12 @@ function startVocabReadingDeck(items, groupKey) {
 }
 
 function startRandomMatchEverything() {
-  // Pull vocab items from every category regardless of level
+  // Pull vocab items from every category regardless of level - but skip the
+  // Extra tier when "Show custom content" is off, same as every other
+  // Extra-gated entry point (Kanji nav pill, Extra level pill, Random kanji).
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
+    if (VOCAB[key].level === 'extra' && !appSettings.showCustomContent) return;
     VOCAB[key].items.forEach(item => allItems.push(item));
   });
   startVocabReadingDeck(allItems, 'random-everything');
