@@ -109,7 +109,14 @@
   }
   .nav-pill:hover { border-color: var(--border-hover); color: var(--text); }
   .nav-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-  .nav-pill.sub-screen { color: #fff; }
+  /* Was hardcoded #fff from back when the app was dark-only - white text on
+     "Back" stood out fine against a dark pill background, but on the light
+     theme it meant white-on-pale (or white-on-white when not also .active),
+     unreadable. var(--text) resolves to the same near-white in dark mode
+     (#f8f6f2, indistinguishable from #fff) and to dark text in light mode
+     (#1a1a1a), so this one line fixes it for both themes without needing a
+     separate light-theme override block. */
+  .nav-pill.sub-screen { color: var(--text); }
   .nav-pill.pill-disabled, .level-pill.pill-disabled, .match-card-select.pill-disabled {
     opacity: 0.35; pointer-events: none; cursor: default;
   }
@@ -562,7 +569,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260724.109</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260724.110</div>
   </div>
 
   <!-- Katakana settings screen -->
