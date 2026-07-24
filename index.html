@@ -195,6 +195,12 @@
   .type-survival { color: var(--purple); border-color: rgba(179,157,219,0.3); background: var(--purple-dim); }
 
   .char-display { font-size: 100px; line-height: 1; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; text-align: center; }
+  /* Small tsu (っ/ッ) and the second character of youon/loanword combos
+     (きゃ, ファ etc) - sized relative to whatever font-size they land in,
+     via em, so this works the same whether it's a 100px char-display or a
+     15px reference row. See markSmallKana() in the script for where this
+     is applied. */
+  .small-kana { font-size: 0.65em; }
   .alt-form { font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
 
   .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; text-align: center; }
@@ -506,7 +512,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.096</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.097</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1389,10 +1395,8 @@ const VOCAB = {
     level: 1,
     hasReference: true,
     label: 'Places & around the building',
-    chars: 'がっこう えき かいだん…',
+    chars: 'うち じむしょ かいだん…',
     items: [
-      {jp:'がっこう', romaji:'gakkou', en:'school'},
-      {jp:'ゆうびんきょく', romaji:'yuubinkyoku', en:'post office'},
       {jp:'くに', romaji:'kuni', en:'country / nation'},
       {jp:'うち', romaji:'uchi', en:'home / house'},
       {jp:'じむしょ', romaji:'jimusho', en:'office'},
@@ -1408,8 +1412,6 @@ const VOCAB = {
       {jp:'かいだん', romaji:'kaidan', en:'stairs'},
       {jp:'エレベーター', romaji:'erebeetaa', en:'elevator / lift', altForm:'えれべーたー'},
       {jp:'エスカレーター', romaji:'esukareetaa', en:'escalator', altForm:'えすかれーたー'},
-      {jp:'デパート', romaji:'depaato', en:'department store', altForm:'でぱーと'},
-      {jp:'えき', romaji:'eki', en:'station'},
     ],
   },
   'vocab-numbers': {
@@ -1562,6 +1564,10 @@ const VOCAB = {
     items: [
       {jp:'コンビニ', romaji:'konbini', en:'convenience store', altForm:'こんびに'},
       {jp:'こうえん', romaji:'kouen', en:'park'},
+      {jp:'がっこう', romaji:'gakkou', en:'school'},
+      {jp:'ゆうびんきょく', romaji:'yuubinkyoku', en:'post office'},
+      {jp:'えき', romaji:'eki', en:'station'},
+      {jp:'デパート', romaji:'depaato', en:'department store', altForm:'でぱーと'},
       {jp:'ぎんこう', romaji:'ginkou', en:'bank', altForm:'銀行'},
       {jp:'ぷーる', romaji:'puuru', en:'pool', altForm:'プール'},
       {jp:'じむ', romaji:'jimu', en:'gym', altForm:'ジム'},
@@ -1798,6 +1804,32 @@ function updateDirectionVisibility() {
 }
 
 function shuffle(arr) { return [...arr].sort(() => Math.random() - 0.5); }
+
+// Sokuon (small tsu - doubles the following consonant) and the small kana
+// used to build combination sounds (きゃ etc) or katakana loanword combos
+// (ファ, ティ etc) print visibly smaller than their neighbours in real
+// Japanese typography. The font renders them a little smaller already, but
+// not by enough to read clearly - wrapping them in their own span with a
+// deliberately reduced size makes the distinction obvious (e.g. つ vs っ,
+// や vs ゃ) rather than relying on subtle font metrics alone.
+const SMALL_KANA_CHARS = new Set([
+  'っ','ッ','ゃ','ゅ','ょ','ャ','ュ','ョ',
+  'ぁ','ぃ','ぅ','ぇ','ぉ','ァ','ィ','ゥ','ェ','ォ','ゎ','ヮ',
+]);
+
+function escapeHtmlText(str) {
+  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Wraps any small kana found in a string in a <span class="small-kana">, for
+// use anywhere real Japanese text is inserted via innerHTML. Safe to call on
+// any string, including ones with none of these characters - a no-op then.
+function markSmallKana(text) {
+  if (text === undefined || text === null) return '';
+  return [...String(text)].map(ch =>
+    SMALL_KANA_CHARS.has(ch) ? '<span class="small-kana">' + ch + '</span>' : escapeHtmlText(ch)
+  ).join('');
+}
 
 // Rough plausibility score between two option strings (romaji or English
 // gloss, whichever field is being tested) - same starting letter counts as a
@@ -2661,7 +2693,7 @@ function updateTimeTool() {
   const minute = parseInt(minSel.value, 10);
   const kana = timeToKana(hour, minute, timeToolAmpm, timeToolFrame);
   const romaji = timeToRomaji(hour, minute, timeToolAmpm, timeToolFrame);
-  output.innerHTML = `<span class="time-tool-jp">${kana}</span><span class="time-tool-rd">${romaji}</span>`;
+  output.innerHTML = `<span class="time-tool-jp">${markSmallKana(kana)}</span><span class="time-tool-rd">${romaji}</span>`;
 }
 /* ---------- end Specific-time lookup tool ---------- */
 
@@ -3427,7 +3459,7 @@ function renderQuestion() {
   const altEl = document.getElementById('q-alt-form');
   if (altEl) {
     if (q.altForm) {
-      altEl.textContent = 'also written: ' + q.altForm;
+      altEl.innerHTML = 'also written: ' + markSmallKana(q.altForm);
       altEl.style.display = 'block';
     } else {
       altEl.style.display = 'none';
@@ -3459,7 +3491,7 @@ function renderQuestion() {
     charDisplay.style.fontFamily = "'BIZ UDPGothic', sans-serif";
     const len = [...q.char].length;
     charDisplay.style.fontSize = len <= 4 ? '72px' : len <= 6 ? '56px' : '40px';
-    charDisplay.textContent = q.char;
+    charDisplay.innerHTML = markSmallKana(q.char);
     document.getElementById('q-prompt').textContent = drillByMeaning ? 'What does this word mean?' : 'How do you read this word?';
     const topField = drillByMeaning ? 'en' : 'rd';
     const bottomField = drillByMeaning ? 'rd' : 'en';
@@ -3482,7 +3514,7 @@ function renderQuestion() {
       const btn = document.createElement('button');
       btn.className = 'opt';
       const romaji = numReadingToRomaji(o.en);
-      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${o.en}</span><span class="opt-rd">${romaji}</span>`;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${markSmallKana(o.en)}</span><span class="opt-rd">${romaji}</span>`;
       btn.dataset.value = o.en;
       btn.onclick = () => choose(btn, o.en, q.answer, q.char);
       container.appendChild(btn);
@@ -3496,7 +3528,7 @@ function renderQuestion() {
     q.options.forEach((o, idx) => {
       const btn = document.createElement('button');
       btn.className = 'opt';
-      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${o.jp}</span><span class="opt-rd">${o.rd}</span>`;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${markSmallKana(o.jp)}</span><span class="opt-rd">${o.rd}</span>`;
       btn.dataset.value = o.en;
       btn.onclick = () => choose(btn, o.en, q.answer, q.char);
       container.appendChild(btn);
@@ -3528,7 +3560,7 @@ function renderQuestion() {
       btn.className = 'opt';
       btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
       btn.style.fontSize = '28px';
-      btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${kanaChar}`;
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${markSmallKana(kanaChar)}`;
       btn.dataset.value = kanaChar;
       btn.onclick = () => choose(btn, kanaChar, q.char, q.char);
       container.appendChild(btn);
@@ -3538,7 +3570,7 @@ function renderQuestion() {
     charDisplay.style.fontFamily = "'BIZ UDPGothic', sans-serif";
     const len = [...q.char].length;
     charDisplay.style.fontSize = len <= 2 ? '100px' : len === 3 ? '72px' : '56px';
-    charDisplay.textContent = q.char;
+    charDisplay.innerHTML = markSmallKana(q.char);
     document.getElementById('q-prompt').textContent = isKanjiLike ? 'What does this kanji mean?' : 'What is this character?';
 
     const showHiragana = !isKanjiLike && showHiraganaOnKatakana && q.groupKey && q.groupKey.startsWith('katakana-');
@@ -3550,11 +3582,11 @@ function renderQuestion() {
       btn.dataset.value = val;
       if (isKanjiLike) {
         const rdDisplay = showHiraganaOnKanji ? (KANJI_READINGS[o.jp + '|' + o.en] || o.rd) : o.rd;
-        btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-rd">${o.en}</span><span class="opt-en">(${rdDisplay})</span>`;
+        btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-rd">${o.en}</span><span class="opt-en">(${markSmallKana(rdDisplay)})</span>`;
       } else if (showHiragana) {
         btn.style.fontFamily = "'BIZ UDPGothic', sans-serif";
         btn.style.fontSize = '28px';
-        btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${ROMAJI_TO_HIRAGANA[o] || o}`;
+        btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${markSmallKana(ROMAJI_TO_HIRAGANA[o] || o)}`;
       } else {
         btn.innerHTML = `<span class="opt-num">${idx + 1}</span>${o}`;
       }
@@ -3631,7 +3663,7 @@ function showResults() {
     // missed entries are "char|answer" composites (see choose()) - display
     // only the char portion, same visual as before.
     const missedChars = missed.map(k => k.split('|')[0]);
-    missedEl.innerHTML = '<div class="missed-chars">' + missedChars.join(' ') + '</div>';
+    missedEl.innerHTML = '<div class="missed-chars">' + missedChars.map(markSmallKana).join(' ') + '</div>';
     missedBtn.style.display = 'block';
   } else {
     missedLabel.textContent = '';
@@ -4070,7 +4102,7 @@ function showMinuteReference() {
         <div class="vocab-ref-num-big">${i}</div>
       </div>
       <div class="vocab-ref-col-right">
-        <div class="vocab-ref-jp minute-jp">${minuteToKana(i)}</div>
+        <div class="vocab-ref-jp minute-jp">${markSmallKana(minuteToKana(i))}</div>
         <div class="vocab-ref-romaji minute-romaji">${minuteToRomaji(i)}</div>
       </div>
     `;
@@ -4090,8 +4122,8 @@ function showVocabReference(categoryKey) {
     row.className = 'vocab-ref-row two-col';
     row.innerHTML = `
       <div class="vocab-ref-col-left">
-        <div class="vocab-ref-jp">${item.jp}</div>
-        ${item.altForm ? `<div class="vocab-ref-alt">${item.altForm}</div>` : ''}
+        <div class="vocab-ref-jp">${markSmallKana(item.jp)}</div>
+        ${item.altForm ? `<div class="vocab-ref-alt">${markSmallKana(item.altForm)}</div>` : ''}
       </div>
       <div class="vocab-ref-col-right">
         <div class="vocab-ref-en">${item.en}</div>
