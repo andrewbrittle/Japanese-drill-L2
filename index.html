@@ -123,7 +123,7 @@
   .settings-title { font-size: 22px; font-weight: 700; text-align: center; }
   .settings-sub { font-size: 14px; font-weight: 500; color: var(--text-muted); text-align: center; }
 
-  #match-read-view, #match-vocab-view, #match-extra-view { display: flex; flex-direction: column; gap: 1rem; }
+  #match-read-view, #match-vocab-view, #match-extra-view, #match-theme-view { display: flex; flex-direction: column; gap: 1rem; }
 
   .group-card {
     background: var(--surface); border: 1px solid var(--border);
@@ -135,6 +135,14 @@
   .group-card:hover { border-color: var(--border-hover); }
   .group-card.selected { border-color: var(--accent); background: var(--accent-dim); }
   .group-card.emphasis { border-color: var(--accent); }
+
+  /* Select all / Random 20 side by side on the tile-selection screen - half
+     the vertical space of two full-width cards. When Random 20 is hidden
+     (regular, non-theme categories) it's removed from the flex flow entirely,
+     so Select all naturally reclaims the full row on its own. */
+  .tile-select-actions-row { display: flex; gap: 0.75rem; }
+  .tile-select-actions-row .group-card { flex: 1; min-width: 0; padding-left: 1rem; padding-right: 1rem; }
+  .tile-select-actions-row .group-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
   .group-info { display: flex; flex-direction: column; gap: 3px; flex: 1; min-width: 0; }
   .score-swatch {
@@ -372,7 +380,7 @@
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
 
   /* Level filter pills on Match screen */
-  .level-filter-row { display: flex; gap: 8px; }
+  .level-filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
   .level-pill {
     padding: 6px 18px; border-radius: 99px; border: 1px solid var(--border);
     background: transparent; color: var(--text-muted);
@@ -380,6 +388,16 @@
   }
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
+  /* Ties the Level 1/2/Extra pill text to the same blue/orange/purple used
+     for theme-tile borders (LEVEL_BORDER_COLORS in the script) - but only
+     while the Theme tab itself is the one being viewed (setMatchLevel toggles
+     "showing-theme-colours" on the row), since the colour only means anything
+     in that context - the rest of the time these pills look exactly like
+     Read. :not(.active) so the existing gold .active state still wins once a
+     pill is the one currently selected. */
+  #vocab-level-filter-row.showing-theme-colours #level-pill-1:not(.active) { color: #4d88e5; border-color: rgba(77,136,229,0.4); }
+  #vocab-level-filter-row.showing-theme-colours #level-pill-2:not(.active) { color: #e88a4d; border-color: rgba(232,138,77,0.4); }
+  #vocab-level-filter-row.showing-theme-colours #level-pill-extra:not(.active):not(.pill-disabled) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
 
   /* "Specific time" lookup tool, under Reading times on the Vocab page */
   .time-tool-row {
@@ -519,6 +537,14 @@
       <div class="toggle" id="offline-toggle"></div>
     </div>
 
+    <div class="group-card" id="show-themes-toggle-card" onclick="toggleShowThemes()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Show "Themes"</div>
+        <div class="group-count">Experimental — adds a "Theme" tab to Vocab that brings words together from across Level 1 and Level 2 into broader topics (e.g. Transport + UK Places), for more variety when drilling. Off by default while this is still being tried out</div>
+      </div>
+      <div class="toggle" id="show-themes-toggle"></div>
+    </div>
+
     <!-- Debug/troubleshooting only - not meant for everyday users. Hidden
          again (display:none) now that Andrew's used it once to pull his
          real score data for the category-averaging discussion - same
@@ -536,7 +562,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260724.102</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260724.109</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -651,11 +677,19 @@
     <div class="settings-title" id="vocab-tile-selection-title">Reference</div>
     <div class="settings-sub">Tap a word to select it for drilling.</div>
 
-    <div class="group-card emphasis" id="vocab-tile-select-all-card" onclick="toggleSelectAllVocabTiles()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name" id="vocab-tile-select-all-label">Select all</div>
+    <div class="tile-select-actions-row">
+      <div class="group-card" id="vocab-tile-select-all-card" onclick="toggleSelectAllVocabTiles()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name" id="vocab-tile-select-all-label">Select all</div>
+        </div>
+        <div style="font-size:20px; color:var(--text-muted);">→</div>
       </div>
-      <div style="font-size:20px; color:var(--text-muted);">→</div>
+      <div class="group-card" id="vocab-tile-random20-card" onclick="toggleRandomVocabTiles()" style="cursor:pointer; display:none;">
+        <div class="group-info">
+          <div class="group-name" id="vocab-tile-random20-label">Random 20</div>
+        </div>
+        <div style="font-size:20px; color:var(--text-muted);">→</div>
+      </div>
     </div>
 
     <div id="vocab-tile-grid"></div>
@@ -721,11 +755,12 @@
     <div class="settings-title">Vocab</div>
     <div class="settings-sub">Pick a word set, or try a random reading challenge.</div>
 
-    <div class="level-filter-row">
+    <div class="level-filter-row" id="vocab-level-filter-row">
       <button class="level-pill active" id="level-pill-read" onclick="setMatchLevel('read')">Read</button>
       <button class="level-pill" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
       <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
       <button class="level-pill" id="level-pill-extra" onclick="setMatchLevel('extra')">Extra</button>
+      <button class="level-pill" id="level-pill-theme" onclick="setMatchLevel('theme')">Theme</button>
     </div>
 
     <div id="match-read-view">
@@ -808,6 +843,49 @@
           <div class="group-name">Useful words for the trip</div>
           <div class="group-chars">みず すし きっぷ…</div>
           <div class="group-count">Not covered in lessons — 27 words</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <div class="group-card" data-key="vocab-places-uk-extra" onclick="showVocabTileSelection('vocab-places-uk-extra')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">UK Places</div>
+          <div class="group-chars">マンチェスター リバプール…</div>
+          <div class="group-count">Not covered in lessons — 21 words</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+    </div>
+
+    <div id="match-theme-view" style="display:none;">
+      <div class="group-card" data-theme-key="theme-transport-uk" onclick="showVocabTileSelection('theme-transport-uk')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Transport and UK Places</div>
+          <div class="group-chars">でんしゃ ろんどん…</div>
+          <div class="group-count">Transport + UK Places, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <div class="group-card" data-theme-key="theme-world" onclick="showVocabTileSelection('theme-world')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Around the world</div>
+          <div class="group-chars">あめりか とうきょう…</div>
+          <div class="group-count">Countries + World cities, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <div class="group-card" data-theme-key="theme-days-times" onclick="showVocabTileSelection('theme-days-times')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Days and times</div>
+          <div class="group-chars">げつようび ごぜん はん…</div>
+          <div class="group-count">Days of the week + Time vocabulary, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <div class="group-card" data-theme-key="theme-items-clothing-general" onclick="showVocabTileSelection('theme-items-clothing-general')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Everyday items, clothing & general vocab</div>
+          <div class="group-chars">かさ くつ かぞく…</div>
+          <div class="group-count">Everyday items + Clothing + General vocabulary, brought together</div>
         </div>
         <div class="cat-swatch"></div>
       </div>
@@ -1623,21 +1701,20 @@ const VOCAB = {
       {jp:'ブライトン', romaji:'buraiton', en:'Brighton', altForm:'ぶらいとん'},
       {jp:'ウィンザー', romaji:'winzaa', en:'Windsor', altForm:'うぃんざー'},
       {jp:'リッチモンド', romaji:'ricchimondo', en:'Richmond', altForm:'りっちもんど'},
+      {jp:'ろんどん', romaji:'rondon', en:'London'},
     ],
   },
   'vocab-cities': {
     level: 2,
     hasReference: true,
     label: 'World cities',
-    chars: 'とうきょう ろんどん…',
+    chars: 'とうきょう ぱり…',
     items: [
       {jp:'とうきょう', romaji:'toukyou', en:'Tokyo'},
-      {jp:'ろんどん', romaji:'rondon', en:'London'},
       {jp:'ぱり', romaji:'pari', en:'Paris'},
       {jp:'もすくわ', romaji:'mosukuwa', en:'Moscow'},
       {jp:'そうる', romaji:'souru', en:'Seoul'},
       {jp:'ばんこく', romaji:'bankoku', en:'Bangkok'},
-      {jp:'シンガポール', romaji:'shingapooru', en:'Singapore', altForm:'しんがぽーる'},
       {jp:'シドニー', romaji:'shidonii', en:'Sydney', altForm:'しどにー'},
       {jp:'ほのるる', romaji:'honoruru', en:'Honolulu'},
       {jp:'とろんと', romaji:'toronto', en:'Toronto'},
@@ -1730,7 +1807,107 @@ const VOCAB = {
       {jp:'けいさつ', romaji:'keisatsu', en:'police'},
     ],
   },
+  'vocab-places-uk-extra': {
+    level: 'extra',
+    hasReference: true,
+    label: 'UK Places',
+    chars: 'マンチェスター リバプール…',
+    items: [
+      {jp:'マンチェスター', romaji:'manchesutaa', en:'Manchester', altForm:'まんちぇすたー'},
+      {jp:'バーミンガム', romaji:'baaminngamu', en:'Birmingham', altForm:'ばーみんがむ'},
+      {jp:'リバプール', romaji:'ribapuuru', en:'Liverpool', altForm:'りばぷーる'},
+      {jp:'グラスゴー', romaji:'gurasugoo', en:'Glasgow', altForm:'ぐらすごー'},
+      {jp:'リーズ', romaji:'riizu', en:'Leeds', altForm:'りーず'},
+      {jp:'シェフィールド', romaji:'shefiirudo', en:'Sheffield', altForm:'しぇふぃーるど'},
+      {jp:'ブリストル', romaji:'burisutoru', en:'Bristol', altForm:'ぶりすとる'},
+      {jp:'ニューカッスル', romaji:'nyuukassuru', en:'Newcastle', altForm:'にゅーかっする'},
+      {jp:'カーディフ', romaji:'kaadifu', en:'Cardiff', altForm:'かーでぃふ'},
+      {jp:'ベルファスト', romaji:'berufasuto', en:'Belfast', altForm:'べるふぁすと'},
+      {jp:'ノッティンガム', romaji:'nottingamu', en:'Nottingham', altForm:'のってぃんがむ'},
+      {jp:'レスター', romaji:'resutaa', en:'Leicester', altForm:'れすたー'},
+      {jp:'オックスフォード', romaji:'okkusufoodo', en:'Oxford', altForm:'おっくすふぉーど'},
+      {jp:'ケンブリッジ', romaji:'kenburijji', en:'Cambridge', altForm:'けんぶりっじ'},
+      {jp:'ヨーク', romaji:'yooku', en:'York', altForm:'よーく'},
+      {jp:'バース', romaji:'baasu', en:'Bath', altForm:'ばーす'},
+      {jp:'サウサンプトン', romaji:'sausanputon', en:'Southampton', altForm:'さうさんぷとん'},
+      {jp:'ポーツマス', romaji:'pootsumasu', en:'Portsmouth', altForm:'ぽーつます'},
+      {jp:'コベントリー', romaji:'kobentorii', en:'Coventry', altForm:'こべんとりー'},
+      {jp:'アバディーン', romaji:'abadiin', en:'Aberdeen', altForm:'あばでぃーん'},
+      {jp:'シャーウッドフォレスト', romaji:'shaawuddo foresuto', en:'Sherwood Forest', altForm:'しゃーうっどふぉれすと'},
+    ],
+  },
 };
+
+// Themes bring together items from several existing VOCAB categories into one
+// selectable/drillable screen, without touching or duplicating the source
+// categories' own data. A theme's item pool is computed fresh each time its
+// screen is opened (see getThemePool), not stored - so it always reflects the
+// current custom-content toggle and the latest source-category contents.
+// Deliberately starting with just 2 concrete themes rather than a full set -
+// this is the pilot that will show what the mechanism needs to handle before
+// more themes get added.
+const THEMES = {
+  'theme-transport-uk': {
+    label: 'Transport and UK Places',
+    chars: 'でんしゃ ろんどん…',
+    sources: ['vocab-transport', 'vocab-places-uk', 'vocab-places-uk-extra'],
+  },
+  'theme-world': {
+    label: 'Around the world',
+    chars: 'あめりか とうきょう…',
+    sources: ['vocab-countries', 'vocab-cities'],
+  },
+  'theme-days-times': {
+    label: 'Days and times',
+    chars: 'げつようび ごぜん はん…',
+    sources: ['vocab-days-l2', 'vocab-time-l2'],
+  },
+  'theme-items-clothing-general': {
+    label: 'Everyday items, clothing & general vocab',
+    chars: 'かさ くつ かぞく…',
+    sources: ['vocab-objects', 'vocab-clothing', 'vocab-general-l2'],
+  },
+};
+
+// Every source category currently listed above is Level 2 (or, once an Extra
+// UK-places category exists, Extra) - adding a source with level:'extra'
+// needs no change here, since the same showCustomContent guard used by every
+// other Extra-gated entry point (Random kanji, Reading words everything, the
+// Extra level pill) already applies below.
+function getThemePool(themeKey) {
+  const theme = THEMES[themeKey];
+  if (!theme) return [];
+  const items = [];
+  theme.sources.forEach(catKey => {
+    const cat = VOCAB[catKey];
+    if (!cat) return;
+    if (cat.level === 'extra' && !appSettings.showCustomContent) return;
+    cat.items.forEach(item => items.push(Object.assign({ level: cat.level || 1, groupKey: catKey }, item)));
+  });
+  return items;
+}
+
+// Synthesized theme "categories" are kept in their own cache, deliberately
+// separate from VOCAB itself - merging them into VOCAB would make every
+// Object.keys(VOCAB) scan (startRandomMatchEverything, buildMatchCategoryList,
+// etc.) double-count items that a theme pulls in from existing categories.
+// Rebuilt on every call rather than memoized long-term, so a theme screen
+// always reflects the current custom-content toggle state.
+const THEME_CACHE = {};
+function resolveVocabCategory(key) {
+  if (VOCAB[key]) return VOCAB[key];
+  const theme = THEMES[key];
+  if (!theme) return null;
+  THEME_CACHE[key] = {
+    label: theme.label,
+    chars: theme.chars || '',
+    items: getThemePool(key),
+    hasReference: true,
+    noMeaningMode: false,
+    isTheme: true,
+  };
+  return THEME_CACHE[key];
+}
 
 const BADGE_LABELS = {
   'hiragana-base': 'hiragana base',
@@ -2042,6 +2219,11 @@ function drillKanjiSelection() {
 let vocabTileCategory = null;
 const vocabTileSelected = {};
 const vocabTileDrillMode = {}; // categoryKey -> boolean, remembered independently per category
+// categoryKey -> boolean. When true, a "Select random 20" pick is active: the
+// real selection (used for drilling) is a genuine random 20, but every tile
+// is shown as selected and made non-interactive, so there's no visual way to
+// tell which 20 were actually picked. Only relevant for theme screens.
+const vocabTileRandomMode = {};
 
 function toggleVocabTileDrillMode() {
   const categoryKey = vocabTileCategory;
@@ -2053,16 +2235,20 @@ function toggleVocabTileDrillMode() {
 function showVocabTileSelection(categoryKey) {
   vocabTileCategory = categoryKey;
   if (!vocabTileSelected[categoryKey]) vocabTileSelected[categoryKey] = new Set();
-  document.getElementById('vocab-tile-selection-title').textContent = VOCAB[categoryKey].label;
+  const cat = resolveVocabCategory(categoryKey);
+  document.getElementById('vocab-tile-selection-title').textContent = cat.label;
   buildVocabTileGrid(categoryKey);
   refreshKanaScoreShading('vocab-tile-grid');
   updateSelectAllVocabTilesLabel();
   document.getElementById('vocab-tile-drill-btn').disabled = vocabTileSelected[categoryKey].size === 0;
   const modeCard = document.getElementById('vocab-tile-drill-mode-card');
   if (modeCard) {
-    modeCard.style.display = VOCAB[categoryKey].noMeaningMode ? 'none' : 'flex';
+    modeCard.style.display = cat.noMeaningMode ? 'none' : 'flex';
     modeCard.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
   }
+  const randomCard = document.getElementById('vocab-tile-random20-card');
+  if (randomCard) randomCard.style.display = cat.isTheme ? 'flex' : 'none';
+  updateRandomVocabTilesLabel();
   showScreen('vocab-tile-selection');
 }
 
@@ -2070,6 +2256,13 @@ const COLOUR_HUES = {
   red: [229, 72, 77], blue: [77, 136, 229], yellow: [229, 195, 46], green: [77, 199, 113],
   brown: [160, 104, 77], purple: [155, 89, 208], pink: [229, 77, 155], orange: [229, 138, 77],
 };
+
+// Level-colour borders, for theme screens only (items pooled from several
+// source categories at once, so a tile's own level isn't otherwise visible).
+// Deliberately distinct from --accent (gold), which .selected already owns -
+// same border-slot handoff the Colours category already does: level colour
+// while unselected, gold once selected.
+const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', extra: '#9b59d0' };
 
 function interpolateRgb(from, to, t) {
   return from.map((f, i) => Math.round(f + (to[i] - f) * t));
@@ -2094,8 +2287,9 @@ function buildVocabTileGrid(categoryKey) {
   container.innerHTML = ''; // rebuilt each time - this one container is shared across categories
   const grid = document.createElement('div');
   grid.className = 'kanji-tile-grid';
-  const items = VOCAB[categoryKey].items;
+  const items = resolveVocabCategory(categoryKey).items;
   const selected = vocabTileSelected[categoryKey];
+  const randomMode = !!vocabTileRandomMode[categoryKey];
   items.forEach((item, idx) => {
     const tile = document.createElement('div');
     tile.className = 'kana-ref-card';
@@ -2106,31 +2300,53 @@ function buildVocabTileGrid(categoryKey) {
     tile.dataset.scoreKey = scoreKey;
     const scoreClass = kanaScoreClass(scoreKey);
     if (scoreClass) tile.classList.add(scoreClass);
+    // While a random-20 pick is disguising the grid, every tile shows as
+    // selected regardless of whether it's actually one of the 20 - that's
+    // the whole point (no clue which ones are really included).
+    const isSelected = randomMode || selected.has(idx);
     if (categoryKey === 'vocab-colours') {
       tile.style.borderWidth = '3px';
-      if (!selected.has(idx)) {
+      if (!isSelected) {
         const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
         if (borderColor) tile.style.borderColor = borderColor;
       }
+    } else if (item.level !== undefined) {
+      // Theme-pooled items only - carries the source category's own level.
+      // Same 1px weight as every tile's default border, just coloured.
+      if (!isSelected) tile.style.borderColor = LEVEL_BORDER_COLORS[item.level] || '';
     }
-    if (selected.has(idx)) tile.classList.add('selected');
-    tile.onclick = () => toggleVocabTile(categoryKey, idx, tile);
+    if (isSelected) tile.classList.add('selected');
+    if (randomMode) {
+      tile.style.pointerEvents = 'none'; // disguise is only meaningful if nothing can be tapped to break it
+    } else {
+      tile.onclick = () => toggleVocabTile(categoryKey, idx, tile);
+    }
     grid.appendChild(tile);
   });
   container.appendChild(grid);
 }
 
+// Restores a tile's resting border colour after deselection - Colours uses
+// its own hue/confidence style, theme tiles use their source level's colour,
+// everything else has no special resting border at all.
+function applyRestingTileBorder(categoryKey, item, tileEl) {
+  if (categoryKey === 'vocab-colours') {
+    const scoreKey = item.jp + '|' + item.en;
+    const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
+    if (borderColor) tileEl.style.borderColor = borderColor;
+  } else if (item.level !== undefined) {
+    tileEl.style.borderColor = LEVEL_BORDER_COLORS[item.level] || '';
+  }
+}
+
 function toggleVocabTile(categoryKey, idx, tileEl) {
+  if (vocabTileRandomMode[categoryKey]) return; // backstop - tiles are also pointer-events:none while disguised
   const set = vocabTileSelected[categoryKey];
   if (set.has(idx)) {
     set.delete(idx);
     tileEl.classList.remove('selected');
-    if (categoryKey === 'vocab-colours') {
-      const item = VOCAB[categoryKey].items[idx];
-      const scoreKey = item.jp + '|' + item.en;
-      const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
-      if (borderColor) tileEl.style.borderColor = borderColor;
-    }
+    const item = resolveVocabCategory(categoryKey).items[idx];
+    applyRestingTileBorder(categoryKey, item, tileEl);
   } else {
     set.add(idx);
     tileEl.classList.add('selected');
@@ -2140,50 +2356,87 @@ function toggleVocabTile(categoryKey, idx, tileEl) {
   updateSelectAllVocabTilesLabel();
 }
 
+// Selecting everything for real is also the "reveal" action out of a random-20
+// disguise - genuinely selecting every item makes the distinction moot, so
+// this always clears vocabTileRandomMode on its way through.
 function toggleSelectAllVocabTiles() {
   const categoryKey = vocabTileCategory;
-  const items = VOCAB[categoryKey].items;
+  const items = resolveVocabCategory(categoryKey).items;
   const total = items.length;
   const set = vocabTileSelected[categoryKey];
-  const grid = document.getElementById('vocab-tile-grid');
-  const allSelected = set.size === total;
-  const tiles = grid ? [...grid.querySelectorAll('.kana-ref-card')] : [];
-  if (allSelected) {
-    set.clear();
-    tiles.forEach((t, idx) => {
-      t.classList.remove('selected');
-      if (categoryKey === 'vocab-colours') {
-        const item = items[idx];
-        const scoreKey = item.jp + '|' + item.en;
-        const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
-        if (borderColor) t.style.borderColor = borderColor;
-      }
-    });
-  } else {
-    for (let i = 0; i < total; i++) set.add(i);
-    tiles.forEach(t => {
-      t.classList.add('selected');
-      t.style.borderColor = '';
-    });
-  }
+  const wasAllSelected = !vocabTileRandomMode[categoryKey] && set.size === total;
+  vocabTileRandomMode[categoryKey] = false;
+  if (wasAllSelected) set.clear();
+  else { set.clear(); for (let i = 0; i < total; i++) set.add(i); }
+  buildVocabTileGrid(categoryKey);
+  refreshKanaScoreShading('vocab-tile-grid');
   document.getElementById('vocab-tile-drill-btn').disabled = set.size === 0;
   updateSelectAllVocabTilesLabel();
+  updateRandomVocabTilesLabel();
 }
 
+// "Select random 20" - theme screens only (see showVocabTileSelection, which
+// shows/hides the card). Toggles between two states:
+//  - off: normal per-tile selection, exactly like Select all/individual taps.
+//  - on: a genuine random 20 (or all, if the theme has fewer than 20 items)
+//    is chosen and used for drilling, but every tile renders as selected and
+//    becomes untappable - deliberately no visual way to tell which 20 were
+//    actually picked. Toggling off clears the selection and restores normal
+//    per-tile interaction (see buildVocabTileGrid for the rendering side).
+function toggleRandomVocabTiles() {
+  const categoryKey = vocabTileCategory;
+  const items = resolveVocabCategory(categoryKey).items;
+  const total = items.length;
+  const set = vocabTileSelected[categoryKey];
+  if (vocabTileRandomMode[categoryKey]) {
+    vocabTileRandomMode[categoryKey] = false;
+    set.clear();
+  } else {
+    vocabTileRandomMode[categoryKey] = true;
+    set.clear();
+    shuffle([...Array(total).keys()]).slice(0, Math.min(20, total)).forEach(i => set.add(i));
+  }
+  buildVocabTileGrid(categoryKey);
+  refreshKanaScoreShading('vocab-tile-grid');
+  document.getElementById('vocab-tile-drill-btn').disabled = set.size === 0;
+  updateSelectAllVocabTilesLabel();
+  updateRandomVocabTilesLabel();
+}
+
+// Both cards sit at rest with a plain, quiet border (no permanent emphasis)
+// and only pick up the gold "selected" fill while their action is genuinely
+// the one currently active - doubles as the answer to "which mode am I in",
+// without needing to read either label closely.
 function updateSelectAllVocabTilesLabel() {
   const categoryKey = vocabTileCategory;
-  const total = VOCAB[categoryKey].items.length;
+  const total = resolveVocabCategory(categoryKey).items.length;
   const set = vocabTileSelected[categoryKey];
-  const allSelected = set.size === total;
+  const allSelected = !vocabTileRandomMode[categoryKey] && set.size === total;
   document.getElementById('vocab-tile-select-all-label').textContent = allSelected ? 'Deselect all' : 'Select all';
+  document.getElementById('vocab-tile-select-all-card').classList.toggle('selected', allSelected);
+}
+
+function updateRandomVocabTilesLabel() {
+  const active = !!vocabTileRandomMode[vocabTileCategory];
+  const label = document.getElementById('vocab-tile-random20-label');
+  if (label) label.textContent = active ? 'Deselect all' : 'Random 20';
+  const card = document.getElementById('vocab-tile-random20-card');
+  if (card) card.classList.toggle('selected', active);
 }
 
 function drillVocabTileSelection() {
   const categoryKey = vocabTileCategory;
   const set = vocabTileSelected[categoryKey];
   if (set.size === 0) return;
-  drillByMeaning = VOCAB[categoryKey].noMeaningMode ? false : !!vocabTileDrillMode[categoryKey];
-  const items = VOCAB[categoryKey].items;
+  // The random-20 disguise's whole job is stopping you seeing which 20 before
+  // you commit to drilling them - once the drill actually starts that's moot,
+  // so drop the disguise now rather than leaving every tile stuck looking
+  // selected when this screen is revisited afterwards. The real selection
+  // (the true 20) stays as-is, same as any other persisted selection.
+  vocabTileRandomMode[categoryKey] = false;
+  const cat = resolveVocabCategory(categoryKey);
+  drillByMeaning = cat.noMeaningMode ? false : !!vocabTileDrillMode[categoryKey];
+  const items = cat.items;
   const selectedItems = [...set].sort((a, b) => a - b).map(idx => items[idx]);
   const customDeck = selectedItems.map(item => {
     const correct = item.romaji;
@@ -2195,7 +2448,14 @@ function drillVocabTileSelection() {
       answerRomaji: correct,
       answerEn: item.en,
       disp: 'word',
-      groupKey: categoryKey,
+      // Theme-pooled items already carry their true source category as their
+      // own groupKey (see getThemePool) - keep that instead of overwriting it
+      // with the theme's own key, so the drill badge shows exactly where a
+      // themed word came from (Transport vs UK Places, etc.), same idea as
+      // the kanji Verbs pool's groupKey. Regular categories are unaffected -
+      // their items never carry a groupKey of their own, so this falls back
+      // to categoryKey exactly as before.
+      groupKey: item.groupKey || categoryKey,
       options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
       hint: item.en,
       altForm: item.altForm,
@@ -2740,7 +3000,7 @@ const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 // existed, so installing this doesn't change anything for anyone until they
 // actually visit Settings and change something themselves.
 const SETTINGS_KEY = 'jpDrillSettings';
-let appSettings = { theme: 'dark', showCustomContent: true, hintPenalty: false, workOffline: false };
+let appSettings = { theme: 'dark', showCustomContent: true, hintPenalty: false, workOffline: false, showThemes: false };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') Object.assign(appSettings, savedSettings);
@@ -2797,6 +3057,29 @@ function toggleHintPenalty() {
   applyHintPenaltyUI();
 }
 
+// Themes are new and experimental - hidden entirely (not just greyed out,
+// unlike the custom-content pattern) until switched on, so nobody stumbles
+// onto them before they're ready. Off by default, matching how this app
+// treats other work still finding its shape (e.g. Kanji started out as
+// something only Andrew used before the rest of the class needed it).
+function applyThemesVisibility() {
+  const on = appSettings.showThemes;
+  const themePill = document.getElementById('level-pill-theme');
+  if (themePill) themePill.style.display = on ? '' : 'none';
+  // If Themes gets switched off while it happens to be the active tab,
+  // there's nothing sensible left showing - fall back to Read, same idea as
+  // the custom-content backstop rather than leaving an empty screen.
+  if (!on && currentMatchLevel === 'theme') setMatchLevel('read');
+  const card = document.getElementById('show-themes-toggle-card');
+  if (card) card.classList.toggle('selected', on);
+}
+
+function toggleShowThemes() {
+  appSettings.showThemes = !appSettings.showThemes;
+  saveSettings();
+  applyThemesVisibility();
+}
+
 function applyWorkOfflineUI() {
   const card = document.getElementById('offline-toggle-card');
   if (card) card.classList.toggle('selected', appSettings.workOffline);
@@ -2839,6 +3122,7 @@ function applyAllSettingsUI() {
   applyCustomContentVisibility();
   applyHintPenaltyUI();
   applyWorkOfflineUI();
+  applyThemesVisibility();
 }
 
 function showSettingsScreen() {
@@ -3046,9 +3330,18 @@ function continuousScoreClass(score) {
 // Returns null when zero items in the category have been drilled.
 function getCategoryAverageScore(categoryKey) {
   const v = VOCAB[categoryKey];
-  if (!v || !v.items || !v.items.length) return null;
+  if (!v) return null;
+  return getItemsAverageScore(v.items);
+}
+
+// Same "never-drilled items excluded, not counted as neutral/zero" average as
+// getCategoryAverageScore, but taking a raw items array directly - lets theme
+// pools (which span several VOCAB categories, not just one) reuse the exact
+// same averaging rule rather than needing their own separate scoring logic.
+function getItemsAverageScore(items) {
+  if (!items || !items.length) return null;
   let total = 0, count = 0;
-  v.items.forEach(item => {
+  items.forEach(item => {
     const key = item.jp + '|' + item.en;
     if (key in kanaScores) { total += kanaScores[key]; count++; }
   });
@@ -3082,6 +3375,19 @@ function refreshExtraCategorySwatches() {
     if (!swatch) return;
     swatch.classList.remove(...CAT_CONF_CLASSES);
     const cls = categoryConfidenceClass(getCategoryAverageScore(card.dataset.key));
+    if (cls) swatch.classList.add(cls);
+  });
+}
+
+// Same idea as refreshExtraCategorySwatches, for the Theme tab's static cards -
+// averages each theme's freshly-computed pool (getThemePool) rather than a
+// single VOCAB category's items.
+function refreshThemeCategorySwatches() {
+  document.querySelectorAll('#match-theme-view .group-card[data-theme-key]').forEach(card => {
+    const swatch = card.querySelector('.cat-swatch');
+    if (!swatch) return;
+    swatch.classList.remove(...CAT_CONF_CLASSES);
+    const cls = categoryConfidenceClass(getItemsAverageScore(getThemePool(card.dataset.themeKey)));
     if (cls) swatch.classList.add(cls);
   });
 }
@@ -4058,16 +4364,21 @@ function updateNumberTimeSwatches() {
 
 function setMatchLevel(level) {
   if (level === 'extra' && !appSettings.showCustomContent) return; // backstop - pill is also greyed out + unclickable via CSS
+  if (level === 'theme' && !appSettings.showThemes) return; // backstop - pill is hidden entirely via CSS when off
   currentMatchLevel = level;
   document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
   document.getElementById('level-pill-2').classList.toggle('active', level === 2);
   document.getElementById('level-pill-extra').classList.toggle('active', level === 'extra');
+  document.getElementById('level-pill-theme').classList.toggle('active', level === 'theme');
+  document.getElementById('vocab-level-filter-row').classList.toggle('showing-theme-colours', level === 'theme');
   document.getElementById('match-read-view').style.display = level === 'read' ? 'flex' : 'none';
   document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2) ? 'flex' : 'none';
   document.getElementById('match-extra-view').style.display = level === 'extra' ? 'flex' : 'none';
+  document.getElementById('match-theme-view').style.display = level === 'theme' ? 'flex' : 'none';
   if (level === 'extra') refreshExtraCategorySwatches();
-  if (level === 'read' || level === 'extra') return;
+  if (level === 'theme') refreshThemeCategorySwatches();
+  if (level === 'read' || level === 'extra' || level === 'theme') return;
   document.getElementById('random-match-count').textContent = `20 random words per round, from all Level ${level} categories`;
   document.getElementById('match-start-btn').disabled = true;
   document.getElementById('random-match-card').classList.remove('selected');
