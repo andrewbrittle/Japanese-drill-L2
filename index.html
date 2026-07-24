@@ -353,7 +353,7 @@
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
 
-  /* "Specific time" lookup tool, under Reading times on the Read page */
+  /* "Specific time" lookup tool, under Reading times on the Vocab page */
   .time-tool-row {
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 10px; margin-top: 0.4rem;
@@ -447,7 +447,7 @@
       <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSelection()">カタカナ</button>
       <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">漢字</button>
       <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
-      <button class="nav-pill active" id="nav-match" onclick="tryResumeMatch()">Read</button>
+      <button class="nav-pill active" id="nav-match" onclick="tryResumeMatch()">Vocab</button>
     </div>
   </div>
 </header>
@@ -512,7 +512,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.097</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.098</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -694,7 +694,7 @@
   </div>
   <!-- Match settings screen -->
   <div class="screen visible" id="screen-match-settings">
-    <div class="settings-title">Read</div>
+    <div class="settings-title">Vocab</div>
     <div class="settings-sub">Pick a word set, or try a random reading challenge.</div>
 
     <div class="level-filter-row">
@@ -2225,7 +2225,7 @@ function showScreen(id) {
     navMatch.textContent = 'Back';
     navMatch.classList.add('sub-screen');
   } else {
-    navMatch.textContent = 'Read';
+    navMatch.textContent = 'Vocab';
     navMatch.classList.remove('sub-screen');
   }
   if (id === 'hiragana-selection') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
@@ -2610,7 +2610,7 @@ function startTimeChallenge() {
 }
 /* ---------- end Time challenge ---------- */
 
-/* ---------- Specific-time lookup tool (Read page, under Reading times) ----------
+/* ---------- Specific-time lookup tool (Vocab page, under Reading times) ----------
    Not a drill - a free-input reference. Reuses the same timeToKana/timeToRomaji
    conversion functions the time-reading drill above already relies on, so the
    two can never disagree with each other. */
