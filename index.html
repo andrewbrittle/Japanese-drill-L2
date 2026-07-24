@@ -146,6 +146,23 @@
   .score-swatch.score-neutral { background: rgba(126,184,247,0.16); }
   .score-swatch.score-pos1 { background: rgba(111,207,151,0.22); }
   .score-swatch.score-pos2 { background: rgba(111,207,151,0.45); }
+
+  /* Category-level confidence tint (whole-category average, excluding
+     never-drilled items) - a wider 7-band scale than the 5-band per-word
+     score classes above, since a category average smooths out towards the
+     middle and a coarser scale would make most categories look identical.
+     Distinct class family (cat-conf-*, not score-*) so it can never collide
+     with the per-word/per-pool classes on the same element. Applied as a
+     full-card background tint directly on .match-card-select/.group-card,
+     matching the .kana-ref-card convention rather than the boxed .score-swatch
+     one - these cards have no spare space for a separate swatch element. */
+  .match-card-select.cat-conf-neg3, .group-card.cat-conf-neg3 { background: rgba(235,87,87,0.45); }
+  .match-card-select.cat-conf-neg2, .group-card.cat-conf-neg2 { background: rgba(235,87,87,0.30); }
+  .match-card-select.cat-conf-neg1, .group-card.cat-conf-neg1 { background: rgba(235,87,87,0.15); }
+  .match-card-select.cat-conf-neutral, .group-card.cat-conf-neutral { background: rgba(126,184,247,0.14); }
+  .match-card-select.cat-conf-pos1, .group-card.cat-conf-pos1 { background: rgba(111,207,151,0.15); }
+  .match-card-select.cat-conf-pos2, .group-card.cat-conf-pos2 { background: rgba(111,207,151,0.30); }
+  .match-card-select.cat-conf-pos3, .group-card.cat-conf-pos3 { background: rgba(111,207,151,0.45); }
   .group-name { font-size: 15px; font-weight: 700; }
   .group-chars { font-size: 20px; font-weight: 600; letter-spacing: 4px; color: var(--text-muted); margin-top: 4px; font-family: 'BIZ UDPGothic', sans-serif; }
   .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); }
@@ -508,7 +525,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260722.100</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260724.101</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -767,14 +784,14 @@
     </div>
 
     <div id="match-extra-view" style="display:none;">
-      <div class="group-card" onclick="showVocabTileSelection('vocab-colours')" style="cursor:pointer;">
+      <div class="group-card" data-key="vocab-colours" onclick="showVocabTileSelection('vocab-colours')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Colours</div>
           <div class="group-chars">あか あお きいろ…</div>
           <div class="group-count">Not covered in lessons — 10 words</div>
         </div>
       </div>
-      <div class="group-card" onclick="showVocabTileSelection('vocab-trip-prep')" style="cursor:pointer;">
+      <div class="group-card" data-key="vocab-trip-prep" onclick="showVocabTileSelection('vocab-trip-prep')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Useful words for the trip</div>
           <div class="group-chars">みず すし きっぷ…</div>
@@ -2215,7 +2232,7 @@ function showScreen(id) {
   else if (id === 'katakana-selection') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
   else if (id === 'kanji-selection') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
   else if (id === 'vocab-tile-selection' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
-  else if (id === 'match-settings') updateNumberTimeSwatches();
+  else if (id === 'match-settings') { updateNumberTimeSwatches(); buildMatchCategoryList(); refreshExtraCategorySwatches(); }
 }
 
 let lastSettingsScreen = 'match-settings';
@@ -3007,6 +3024,51 @@ function continuousScoreClass(score) {
   if (score < 0.4) return 'score-neutral';
   if (score < 1.2) return 'score-pos1';
   return 'score-pos2';
+}
+
+// Whole-category average, for the category-select cards (Level 1/Level 2/
+// Extra tabs). Never-drilled items are excluded from the average entirely
+// (not counted as neutral/zero) - a category nobody has touched yet should
+// show no shading at all, same convention as kanaScoreClass for single items.
+// Returns null when zero items in the category have been drilled.
+function getCategoryAverageScore(categoryKey) {
+  const v = VOCAB[categoryKey];
+  if (!v || !v.items || !v.items.length) return null;
+  let total = 0, count = 0;
+  v.items.forEach(item => {
+    const key = item.jp + '|' + item.en;
+    if (key in kanaScores) { total += kanaScores[key]; count++; }
+  });
+  return count ? total / count : null;
+}
+
+// A wider 7-band scale than kanaScoreClass's 5 bands - a category average
+// smooths towards the middle as items are added, so a coarser scale would
+// leave most categories looking identical. Distinct cat-conf-* class family
+// so it never collides with the per-word/per-pool score-* classes.
+function categoryConfidenceClass(avg) {
+  if (avg === null || avg === undefined) return ''; // nothing drilled yet — no shading
+  if (avg <= -1.4) return 'cat-conf-neg3';
+  if (avg <= -0.8) return 'cat-conf-neg2';
+  if (avg <= -0.3) return 'cat-conf-neg1';
+  if (avg < 0.3) return 'cat-conf-neutral';
+  if (avg < 0.8) return 'cat-conf-pos1';
+  if (avg < 1.4) return 'cat-conf-pos2';
+  return 'cat-conf-pos3';
+}
+
+const CAT_CONF_CLASSES = ['cat-conf-neg3', 'cat-conf-neg2', 'cat-conf-neg1', 'cat-conf-neutral', 'cat-conf-pos1', 'cat-conf-pos2', 'cat-conf-pos3'];
+
+// The two Extra-tier cards (Colours, Trip prep) are static HTML, not rebuilt
+// on every view like the Level 1/2 list is - so unlike buildMatchCategoryList
+// (which applies the class fresh at creation time), these need an explicit
+// re-shade whenever the Extra tab is shown or a drill finishes.
+function refreshExtraCategorySwatches() {
+  document.querySelectorAll('#match-extra-view .group-card[data-key]').forEach(card => {
+    card.classList.remove(...CAT_CONF_CLASSES);
+    const cls = categoryConfidenceClass(getCategoryAverageScore(card.dataset.key));
+    if (cls) card.classList.add(cls);
+  });
 }
 
 // Reference grids are built once and cached, but scores change as drilling
@@ -3989,6 +4051,7 @@ function setMatchLevel(level) {
   document.getElementById('match-read-view').style.display = level === 'read' ? 'flex' : 'none';
   document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2) ? 'flex' : 'none';
   document.getElementById('match-extra-view').style.display = level === 'extra' ? 'flex' : 'none';
+  if (level === 'extra') refreshExtraCategorySwatches();
   if (level === 'read' || level === 'extra') return;
   document.getElementById('random-match-count').textContent = `20 random words per round, from all Level ${level} categories`;
   document.getElementById('match-start-btn').disabled = true;
@@ -4019,6 +4082,8 @@ function buildMatchCategoryList() {
     const card = document.createElement('div');
     card.className = 'match-card-select';
     card.dataset.key = key;
+    const confCls = categoryConfidenceClass(getCategoryAverageScore(key));
+    if (confCls) card.classList.add(confCls);
     card.innerHTML = `<div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${v.items.length} words</div>`;
     if (v.hasReference) {
       card.onclick = () => showVocabTileSelection(key);
@@ -4143,6 +4208,7 @@ function startRandomMatchEverything() {
 applyAllSettingsUI();
 syncServiceWorkerRegistration();
 buildMatchCategoryList();
+refreshExtraCategorySwatches();
 
 updateDirectionVisibility();
 updateNumberTimeSwatches();
