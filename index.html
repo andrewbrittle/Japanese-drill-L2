@@ -470,11 +470,14 @@
   }
   .kana-ref-row.selected .kana-ref-card { background: transparent; border-color: transparent; }
   .kana-ref-card.empty { background: transparent; border-color: transparent; }
-  .kana-ref-card.score-neg2 { background: rgba(235,87,87,0.45); }
-  .kana-ref-card.score-neg1 { background: rgba(235,87,87,0.22); }
-  .kana-ref-card.score-neutral { background: rgba(126,184,247,0.16); }
-  .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.22); }
-  .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.45); }
+  .kana-ref-card.score-neg3 { background: rgba(235,87,87,0.45); }
+  .kana-ref-card.score-neg2 { background: rgba(235,87,87,0.30); }
+  .kana-ref-card.score-neg1 { background: rgba(235,87,87,0.15); }
+  .kana-ref-card.score-neutral { background: rgba(126,184,247,0.14); }
+  .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.15); }
+  .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.30); }
+  .kana-ref-card.score-pos3 { background: rgba(111,207,151,0.45); }
+  .kana-ref-card.score-pos4 { background: rgba(111,207,151,0.60); }
   .kana-ref-card.selected { border-color: var(--accent); background: var(--accent-dim); cursor: pointer; }
   .pill-grid-2row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .kanji-tile-grid { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -569,7 +572,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.003</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3350,33 +3353,56 @@ function getScoreKey(q) {
 function recordKanaResult(q, correct) {
   if (!isTrackedItem(q)) return;
   const key = getScoreKey(q);
-  const fullIncrement = (q.disp === 'number' || q.disp === 'time') ? 0.1 : 1;
+  const isConsistencyItem = (q.disp === 'number' || q.disp === 'time');
+  // Numbers/time track many sub-answers under one key (numbers-consistency /
+  // times-consistency), so they keep their original small symmetric step -
+  // the asymmetric kana/kanji/word scoring below doesn't apply to them.
+  // Kana, kanji and word items are deliberately asymmetric: reaching (and
+  // holding) the top of the scale used to be too easy with a flat +/-1 -
+  // correct answers now earn less than wrong answers cost, so a single slip
+  // takes more than one lucky guess to fully undo.
+  const correctIncrement = isConsistencyItem ? 0.1 : 0.5;
+  const wrongIncrement = isConsistencyItem ? 0.1 : 0.75;
   // Optional (off by default): a correct answer only counts for half as much
   // if the hint/speak button was used first - wrong answers always cost the
   // full amount regardless, since that part was never in question.
-  const increment = (correct && appSettings.hintPenalty && hintUsedThisQuestion) ? fullIncrement / 2 : fullIncrement;
+  const increment = (correct && appSettings.hintPenalty && hintUsedThisQuestion) ? correctIncrement / 2 : correctIncrement;
   const cur = kanaScores[key] || 0;
-  const next = correct ? Math.min(2, cur + increment) : Math.max(-2, cur - fullIncrement);
+  const next = correct ? Math.min(2, cur + increment) : Math.max(-2, cur - wrongIncrement);
   // Rounding to 1dp used to be safe when 0.1 was the smallest possible step,
-  // but the hint-penalty's 0.05 half-step for numbers/time would round straight
-  // back up to 0.1 at that precision - 2dp preserves it correctly.
+  // but the hint-penalty's 0.05 half-step for numbers/time (and now the 0.25
+  // hint-penalty half-step for kana/kanji/word items) would round straight
+  // back up at that precision - 2dp preserves both correctly.
   kanaScores[key] = Math.round(next * 100) / 100;
   saveKanaScores();
 }
 
-// Range-based rather than strict-equality, so half-credit values (from the
-// hint-penalty setting) land in a sensible bucket instead of falling through
-// every check and landing in the top tier by accident. Whole-number scores
-// land in exactly the same buckets as before - this only changes how values
-// in between (0.5, 1.5, -0.5, -1.5) get classified.
+// A single item only ever moves in +0.5/-0.75 steps (or +0.25 with the hint
+// penalty) and clamps at +/-2 - unlike a category average, which blends many
+// items into something close to continuous, one item's score only ever
+// lands on one of a small fixed set of values. Reusing categoryConfidenceClass's
+// thresholds verbatim meant a pure streak of wrong answers jumped straight
+// from -0.75 to -1.5, which already cleared the old top threshold (-1.4) -
+// so the true floor (-2) showed the exact same shade as -1.5, and a third
+// wrong answer produced no visible change at all. These thresholds are
+// placed at the reachable milestones instead (0, 0.5, 1, 1.5, 2 climbing;
+// 0, -0.75, -1.5, -2 falling), so every single correct or wrong answer in a
+// row shows a new shade until the item is genuinely capped. The two
+// directions end up with a different number of bands - 3 falling, 4
+// climbing - because +0.5 fits one more step into the +/-2 range than
+// -0.75 does before hitting the cap. That's the real shape of the
+// asymmetric scoring showing through, not an oversight.
 function kanaScoreClass(key) {
   if (!(key in kanaScores)) return ''; // never drilled — no shading at all
   const score = kanaScores[key];
-  if (score <= -1.5) return 'score-neg2';
-  if (score <= -0.5) return 'score-neg1';
-  if (score < 0.5) return 'score-neutral'; // drilled, but currently balanced
-  if (score < 1.5) return 'score-pos1';
-  return 'score-pos2';
+  if (score <= -1.75) return 'score-neg3';
+  if (score <= -1.125) return 'score-neg2';
+  if (score <= -0.375) return 'score-neg1';
+  if (score < 0.25) return 'score-neutral'; // drilled, but currently balanced
+  if (score < 0.75) return 'score-pos1';
+  if (score < 1.25) return 'score-pos2';
+  if (score < 1.75) return 'score-pos3';
+  return 'score-pos4';
 }
 
 // Numbers/times scores move in 0.1 steps rather than whole integers, so they
@@ -3466,7 +3492,7 @@ function refreshKanaScoreShading(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.querySelectorAll('.kana-ref-card[data-score-key]').forEach(card => {
-    card.classList.remove('score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2');
+    card.classList.remove('score-neg3', 'score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2', 'score-pos3', 'score-pos4');
     const scoreClass = kanaScoreClass(card.dataset.scoreKey);
     if (scoreClass) card.classList.add(scoreClass);
   });
