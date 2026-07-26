@@ -572,7 +572,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.003</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.004</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2300,8 +2300,14 @@ function showVocabTileSelection(categoryKey) {
     modeCard.style.display = cat.noMeaningMode ? 'none' : 'flex';
     modeCard.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
   }
+  // Themes are reliably too big to make "Select all" worth offering, so it's
+  // dropped there entirely rather than just being a pain to use. Everywhere
+  // else keeps it, however large - see getRandomPickSize for the random-pick
+  // side, which is the part that actually scales with category size.
+  const selectAllCard = document.getElementById('vocab-tile-select-all-card');
+  if (selectAllCard) selectAllCard.style.display = cat.isTheme ? 'none' : 'flex';
   const randomCard = document.getElementById('vocab-tile-random20-card');
-  if (randomCard) randomCard.style.display = cat.isTheme ? 'flex' : 'none';
+  if (randomCard) randomCard.style.display = currentRandomPickSize(categoryKey) ? 'flex' : 'none';
   updateRandomVocabTilesLabel();
   showScreen('vocab-tile-selection');
 }
@@ -2439,12 +2445,35 @@ function toggleSelectAllVocabTiles() {
   updateRandomVocabTilesLabel();
 }
 
-// "Select random 20" - theme screens only (see showVocabTileSelection, which
-// shows/hides the card). Toggles between two states:
+// How many tiles "Random N" picks for a given category. Themes are always
+// far bigger than any single category and never shrink below the point
+// where a random pick stops meaning anything, so they keep a flat 20
+// regardless of size (see currentRandomPickSize). Regular categories scale
+// instead: below 21 items, Select all already covers it and a random pick
+// wouldn't meaningfully reduce anything, so there's no button at all.
+function getRandomPickSize(total) {
+  if (total > 30) return 20;
+  if (total > 20) return 10;
+  return 0;
+}
+
+// Single source of truth for "how big is this category's random pick, if it
+// has one at all" - used by showVocabTileSelection (to show/hide and label
+// the card), toggleRandomVocabTiles (to do the actual picking) and
+// updateRandomVocabTilesLabel (to word the button), so the three can never
+// drift out of sync with each other.
+function currentRandomPickSize(categoryKey) {
+  const cat = resolveVocabCategory(categoryKey);
+  if (!cat) return 0;
+  return cat.isTheme ? 20 : getRandomPickSize(cat.items.length);
+}
+
+// "Select random N" - N depends on category size (see currentRandomPickSize).
+// Toggles between two states:
 //  - off: normal per-tile selection, exactly like Select all/individual taps.
-//  - on: a genuine random 20 (or all, if the theme has fewer than 20 items)
+//  - on: a genuine random N (or all, if the category has fewer than N items)
 //    is chosen and used for drilling, but every tile renders as selected and
-//    becomes untappable - deliberately no visual way to tell which 20 were
+//    becomes untappable - deliberately no visual way to tell which N were
 //    actually picked. Toggling off clears the selection and restores normal
 //    per-tile interaction (see buildVocabTileGrid for the rendering side).
 function toggleRandomVocabTiles() {
@@ -2458,7 +2487,8 @@ function toggleRandomVocabTiles() {
   } else {
     vocabTileRandomMode[categoryKey] = true;
     set.clear();
-    shuffle([...Array(total).keys()]).slice(0, Math.min(20, total)).forEach(i => set.add(i));
+    const pickSize = currentRandomPickSize(categoryKey);
+    shuffle([...Array(total).keys()]).slice(0, Math.min(pickSize, total)).forEach(i => set.add(i));
   }
   buildVocabTileGrid(categoryKey);
   refreshKanaScoreShading('vocab-tile-grid');
@@ -2483,7 +2513,7 @@ function updateSelectAllVocabTilesLabel() {
 function updateRandomVocabTilesLabel() {
   const active = !!vocabTileRandomMode[vocabTileCategory];
   const label = document.getElementById('vocab-tile-random20-label');
-  if (label) label.textContent = active ? 'Deselect all' : 'Random 20';
+  if (label) label.textContent = active ? 'Deselect all' : ('Random ' + currentRandomPickSize(vocabTileCategory));
   const card = document.getElementById('vocab-tile-random20-card');
   if (card) card.classList.toggle('selected', active);
 }
