@@ -38,6 +38,24 @@
     --purple-dim: rgba(179,157,219,0.12);
     --radius: 10px;
     --radius-lg: 16px;
+
+    /* Confidence shading - single source of truth for every score-* and
+       cat-conf-* rule below (item tiles, numbers/times swatches, category
+       swatches), so all three stay in sync automatically instead of each
+       repeating the same eight colours on their own. Deliberately not
+       overridden in the light theme below - these are meant to read as a
+       consistent red/green regardless of theme, the same way they always
+       have, not to shift with the surface colours. This is also the one
+       place a future "colourblind-friendly palette" setting would need to
+       change, if that's ever added. */
+    --conf-neg3: rgba(235,87,87,0.45);
+    --conf-neg2: rgba(235,87,87,0.30);
+    --conf-neg1: rgba(235,87,87,0.15);
+    --conf-neutral: rgba(126,184,247,0.14);
+    --conf-pos1: rgba(111,207,151,0.15);
+    --conf-pos2: rgba(111,207,151,0.30);
+    --conf-pos3: rgba(111,207,151,0.45);
+    --conf-pos4: rgba(111,207,151,0.60);
   }
 
   /* Light theme - opt-in only via Settings, dark (the :root values above)
@@ -156,18 +174,21 @@
     flex: 0 0 auto; width: 48px; height: 48px; border-radius: var(--radius);
     margin-left: 0.75rem; background: var(--surface2);
   }
-  .score-swatch.score-neg2 { background: rgba(235,87,87,0.45); }
-  .score-swatch.score-neg1 { background: rgba(235,87,87,0.22); }
-  .score-swatch.score-neutral { background: rgba(126,184,247,0.16); }
-  .score-swatch.score-pos1 { background: rgba(111,207,151,0.22); }
-  .score-swatch.score-pos2 { background: rgba(111,207,151,0.45); }
+  .score-swatch.score-neg3 { background: var(--conf-neg3); }
+  .score-swatch.score-neg2 { background: var(--conf-neg2); }
+  .score-swatch.score-neg1 { background: var(--conf-neg1); }
+  .score-swatch.score-neutral { background: var(--conf-neutral); }
+  .score-swatch.score-pos1 { background: var(--conf-pos1); }
+  .score-swatch.score-pos2 { background: var(--conf-pos2); }
+  .score-swatch.score-pos3 { background: var(--conf-pos3); }
+  .score-swatch.score-pos4 { background: var(--conf-pos4); }
 
   /* Category-level confidence swatch (whole-category average, excluding
-     never-drilled items) - a wider 7-band scale than the 5-band per-word
-     score classes above, since a category average smooths out towards the
-     middle and a coarser scale would make most categories look identical.
-     Distinct class family (cat-conf-*, not score-*) so it can never collide
-     with the per-word/per-pool classes. Boxed 48x48 side swatch, same shape
+     never-drilled items). Same 8-band thresholds and colours as every other
+     confidence display in the app (see confidenceBand) - distinct class
+     family (cat-conf-*, not score-*) purely so it can never collide with
+     the per-word/per-pool classes on the same element, not because the
+     bands or colours themselves differ. Boxed 48x48 side swatch, same shape
      as .score-swatch - a full-card tint was tried first but looked too heavy
      across a long stacked list of categories (the same "too dominating"
      concern the Numbers/Times swatch itself was resized over), so this
@@ -177,13 +198,14 @@
     flex: 0 0 auto; width: 48px; height: 48px; border-radius: var(--radius);
     margin-left: 0.75rem; background: var(--surface2);
   }
-  .cat-swatch.cat-conf-neg3 { background: rgba(235,87,87,0.45); }
-  .cat-swatch.cat-conf-neg2 { background: rgba(235,87,87,0.30); }
-  .cat-swatch.cat-conf-neg1 { background: rgba(235,87,87,0.15); }
-  .cat-swatch.cat-conf-neutral { background: rgba(126,184,247,0.14); }
-  .cat-swatch.cat-conf-pos1 { background: rgba(111,207,151,0.15); }
-  .cat-swatch.cat-conf-pos2 { background: rgba(111,207,151,0.30); }
-  .cat-swatch.cat-conf-pos3 { background: rgba(111,207,151,0.45); }
+  .cat-swatch.cat-conf-neg3 { background: var(--conf-neg3); }
+  .cat-swatch.cat-conf-neg2 { background: var(--conf-neg2); }
+  .cat-swatch.cat-conf-neg1 { background: var(--conf-neg1); }
+  .cat-swatch.cat-conf-neutral { background: var(--conf-neutral); }
+  .cat-swatch.cat-conf-pos1 { background: var(--conf-pos1); }
+  .cat-swatch.cat-conf-pos2 { background: var(--conf-pos2); }
+  .cat-swatch.cat-conf-pos3 { background: var(--conf-pos3); }
+  .cat-swatch.cat-conf-pos4 { background: var(--conf-pos4); }
   /* Level 1/2 category cards need a flex row (text left, swatch right) to
      hold this - scoped to #match-category-list only so the unrelated
      "Random reading" card (also .match-card-select, but plain stacked text,
@@ -470,14 +492,14 @@
   }
   .kana-ref-row.selected .kana-ref-card { background: transparent; border-color: transparent; }
   .kana-ref-card.empty { background: transparent; border-color: transparent; }
-  .kana-ref-card.score-neg3 { background: rgba(235,87,87,0.45); }
-  .kana-ref-card.score-neg2 { background: rgba(235,87,87,0.30); }
-  .kana-ref-card.score-neg1 { background: rgba(235,87,87,0.15); }
-  .kana-ref-card.score-neutral { background: rgba(126,184,247,0.14); }
-  .kana-ref-card.score-pos1 { background: rgba(111,207,151,0.15); }
-  .kana-ref-card.score-pos2 { background: rgba(111,207,151,0.30); }
-  .kana-ref-card.score-pos3 { background: rgba(111,207,151,0.45); }
-  .kana-ref-card.score-pos4 { background: rgba(111,207,151,0.60); }
+  .kana-ref-card.score-neg3 { background: var(--conf-neg3); }
+  .kana-ref-card.score-neg2 { background: var(--conf-neg2); }
+  .kana-ref-card.score-neg1 { background: var(--conf-neg1); }
+  .kana-ref-card.score-neutral { background: var(--conf-neutral); }
+  .kana-ref-card.score-pos1 { background: var(--conf-pos1); }
+  .kana-ref-card.score-pos2 { background: var(--conf-pos2); }
+  .kana-ref-card.score-pos3 { background: var(--conf-pos3); }
+  .kana-ref-card.score-pos4 { background: var(--conf-pos4); }
   .kana-ref-card.selected { border-color: var(--accent); background: var(--accent-dim); cursor: pointer; }
   .pill-grid-2row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
   .kanji-tile-grid { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -572,7 +594,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.004</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.006</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3407,43 +3429,53 @@ function recordKanaResult(q, correct) {
   saveKanaScores();
 }
 
-// A single item only ever moves in +0.5/-0.75 steps (or +0.25 with the hint
-// penalty) and clamps at +/-2 - unlike a category average, which blends many
-// items into something close to continuous, one item's score only ever
-// lands on one of a small fixed set of values. Reusing categoryConfidenceClass's
-// thresholds verbatim meant a pure streak of wrong answers jumped straight
-// from -0.75 to -1.5, which already cleared the old top threshold (-1.4) -
-// so the true floor (-2) showed the exact same shade as -1.5, and a third
-// wrong answer produced no visible change at all. These thresholds are
-// placed at the reachable milestones instead (0, 0.5, 1, 1.5, 2 climbing;
-// 0, -0.75, -1.5, -2 falling), so every single correct or wrong answer in a
-// row shows a new shade until the item is genuinely capped. The two
-// directions end up with a different number of bands - 3 falling, 4
-// climbing - because +0.5 fits one more step into the +/-2 range than
-// -0.75 does before hitting the cap. That's the real shape of the
-// asymmetric scoring showing through, not an oversight.
-function kanaScoreClass(key) {
-  if (!(key in kanaScores)) return ''; // never drilled — no shading at all
-  const score = kanaScores[key];
-  if (score <= -1.75) return 'score-neg3';
-  if (score <= -1.125) return 'score-neg2';
-  if (score <= -0.375) return 'score-neg1';
-  if (score < 0.25) return 'score-neutral'; // drilled, but currently balanced
-  if (score < 0.75) return 'score-pos1';
-  if (score < 1.25) return 'score-pos2';
-  if (score < 1.75) return 'score-pos3';
-  return 'score-pos4';
+// Single source of truth for every confidence display in the app - one
+// item's score, the numbers/times aggregate, and a whole category's average
+// all read from these same eight bands, so moving a boundary or changing
+// the band count is one edit that reaches every screen at once, rather than
+// three separate constants that can quietly drift apart from each other.
+//
+// The bands themselves were shaped around a single item's reachable
+// milestones (each item moves in +0.5/-0.75 steps and clamps at +/-2, so it
+// only ever lands on one of a small fixed set of values - 0, 0.5, 1, 1.5, 2
+// climbing; 0, -0.75, -1.5, -2 falling). Reusing an evenly-spaced scale
+// there meant a pure streak of wrong answers jumped straight from -0.75 to
+// -1.5, which already cleared the old top threshold - so the true floor
+// showed the exact same shade as -1.5, and a third wrong answer produced no
+// visible change at all. These boundaries sit at the actual milestones
+// instead, so every single correct or wrong answer shows a new shade until
+// the item is genuinely capped. The two directions end up with a different
+// number of bands - 3 falling, 4 climbing - because +0.5 fits one more step
+// into the +/-2 range than -0.75 does before hitting the cap.
+//
+// The numbers/times aggregate and category averages don't share that
+// discrete-jump problem (both move in much smaller steps or blend many
+// items together, so they're already close to continuous) - they simply
+// reuse the same boundaries for consistency, not because they needed them.
+function confidenceBand(score) {
+  if (score === undefined || score === null) return '';
+  if (score <= -1.75) return 'neg3';
+  if (score <= -1.125) return 'neg2';
+  if (score <= -0.375) return 'neg1';
+  if (score < 0.25) return 'neutral';
+  if (score < 0.75) return 'pos1';
+  if (score < 1.25) return 'pos2';
+  if (score < 1.75) return 'pos3';
+  return 'pos4';
 }
 
-// Numbers/times scores move in 0.1 steps rather than whole integers, so they
-// need range-based bucketing instead of kanaScoreClass's strict equality checks.
+const CONFIDENCE_BANDS = ['neg3', 'neg2', 'neg1', 'neutral', 'pos1', 'pos2', 'pos3', 'pos4'];
+const SCORE_CLASSES = CONFIDENCE_BANDS.map(b => 'score-' + b);
+
+function kanaScoreClass(key) {
+  if (!(key in kanaScores)) return ''; // never drilled — no shading at all
+  const band = confidenceBand(kanaScores[key]);
+  return band ? 'score-' + band : '';
+}
+
 function continuousScoreClass(score) {
-  if (score === undefined || score === null) return '';
-  if (score <= -1.2) return 'score-neg2';
-  if (score <= -0.4) return 'score-neg1';
-  if (score < 0.4) return 'score-neutral';
-  if (score < 1.2) return 'score-pos1';
-  return 'score-pos2';
+  const band = confidenceBand(score);
+  return band ? 'score-' + band : '';
 }
 
 // Whole-category average, for the category-select cards (Level 1/Level 2/
@@ -3471,22 +3503,12 @@ function getItemsAverageScore(items) {
   return count ? total / count : null;
 }
 
-// A wider 7-band scale than kanaScoreClass's 5 bands - a category average
-// smooths towards the middle as items are added, so a coarser scale would
-// leave most categories looking identical. Distinct cat-conf-* class family
-// so it never collides with the per-word/per-pool score-* classes.
 function categoryConfidenceClass(avg) {
-  if (avg === null || avg === undefined) return ''; // nothing drilled yet — no shading
-  if (avg <= -1.4) return 'cat-conf-neg3';
-  if (avg <= -0.8) return 'cat-conf-neg2';
-  if (avg <= -0.3) return 'cat-conf-neg1';
-  if (avg < 0.3) return 'cat-conf-neutral';
-  if (avg < 0.8) return 'cat-conf-pos1';
-  if (avg < 1.4) return 'cat-conf-pos2';
-  return 'cat-conf-pos3';
+  const band = confidenceBand(avg);
+  return band ? 'cat-conf-' + band : '';
 }
 
-const CAT_CONF_CLASSES = ['cat-conf-neg3', 'cat-conf-neg2', 'cat-conf-neg1', 'cat-conf-neutral', 'cat-conf-pos1', 'cat-conf-pos2', 'cat-conf-pos3'];
+const CAT_CONF_CLASSES = CONFIDENCE_BANDS.map(b => 'cat-conf-' + b);
 
 // The two Extra-tier cards (Colours, Trip prep) are static HTML, not rebuilt
 // on every view like the Level 1/2 list is - so unlike buildMatchCategoryList
@@ -3522,7 +3544,7 @@ function refreshKanaScoreShading(containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.querySelectorAll('.kana-ref-card[data-score-key]').forEach(card => {
-    card.classList.remove('score-neg3', 'score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2', 'score-pos3', 'score-pos4');
+    card.classList.remove(...SCORE_CLASSES);
     const scoreClass = kanaScoreClass(card.dataset.scoreKey);
     if (scoreClass) card.classList.add(scoreClass);
   });
@@ -4472,14 +4494,13 @@ function startReadRandomDrill() {
 function updateNumberTimeSwatches() {
   const numSwatch = document.getElementById('numbers-score-swatch');
   const timeSwatch = document.getElementById('times-score-swatch');
-  const classes = ['score-neg2', 'score-neg1', 'score-neutral', 'score-pos1', 'score-pos2'];
   if (numSwatch) {
-    numSwatch.classList.remove(...classes);
+    numSwatch.classList.remove(...SCORE_CLASSES);
     const cls = continuousScoreClass(kanaScores['numbers-consistency']);
     if (cls) numSwatch.classList.add(cls);
   }
   if (timeSwatch) {
-    timeSwatch.classList.remove(...classes);
+    timeSwatch.classList.remove(...SCORE_CLASSES);
     const cls = continuousScoreClass(kanaScores['times-consistency']);
     if (cls) timeSwatch.classList.add(cls);
   }
