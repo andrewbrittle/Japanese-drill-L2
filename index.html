@@ -135,9 +135,6 @@
      (#1a1a1a), so this one line fixes it for both themes without needing a
      separate light-theme override block. */
   .nav-pill.sub-screen { color: var(--text); }
-  .nav-pill.pill-disabled, .level-pill.pill-disabled, .match-card-select.pill-disabled {
-    opacity: 0.35; pointer-events: none; cursor: default;
-  }
 
   main { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 2rem 1rem; }
 
@@ -427,7 +424,7 @@
      pill is the one currently selected. */
   #vocab-level-filter-row.showing-theme-colours #level-pill-1:not(.active) { color: #4d88e5; border-color: rgba(77,136,229,0.4); }
   #vocab-level-filter-row.showing-theme-colours #level-pill-2:not(.active) { color: #e88a4d; border-color: rgba(232,138,77,0.4); }
-  #vocab-level-filter-row.showing-theme-colours #level-pill-extra:not(.active):not(.pill-disabled) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
+  #vocab-level-filter-row.showing-theme-colours #level-pill-extra:not(.active) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
 
   /* "Specific time" lookup tool, under Reading times on the Vocab page */
   .time-tool-row {
@@ -546,12 +543,20 @@
       <div class="toggle" id="theme-toggle"></div>
     </div>
 
-    <div class="group-card" id="custom-content-toggle-card" onclick="toggleCustomContent()" style="cursor:pointer;">
+    <div class="group-card" id="show-kanji-toggle-card" onclick="toggleShowKanji()" style="cursor:pointer;">
       <div class="group-info">
-        <div class="group-name">Show custom content</div>
-        <div class="group-count">The Kanji section and "Extra" vocab (Colours, Trip-prep, additional UK places) aren't part of the course — on by default so nothing's hidden unless you turn it off</div>
+        <div class="group-name">Show Kanji content</div>
+        <div class="group-count">The Kanji section isn't part of the course — on by default so nothing's hidden unless you turn it off</div>
       </div>
-      <div class="toggle" id="custom-content-toggle"></div>
+      <div class="toggle" id="show-kanji-toggle"></div>
+    </div>
+
+    <div class="group-card" id="show-extra-toggle-card" onclick="toggleShowExtra()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Show Extra content</div>
+        <div class="group-count">"Extra" vocab (Colours, Trip-prep, additional UK places) isn't part of the course — on by default so nothing's hidden unless you turn it off</div>
+      </div>
+      <div class="toggle" id="show-extra-toggle"></div>
     </div>
 
     <div class="group-card" id="hint-penalty-toggle-card" onclick="toggleHintPenalty()" style="cursor:pointer;">
@@ -595,7 +600,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.002</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.003</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1916,9 +1921,9 @@ const THEMES = {
 
 // Every source category currently listed above is Level 2 (or, once an Extra
 // UK-places category exists, Extra) - adding a source with level:'extra'
-// needs no change here, since the same showCustomContent guard used by every
-// other Extra-gated entry point (Random kanji, Reading words everything, the
-// Extra level pill) already applies below.
+// needs no change here, since the same showExtra guard used by every other
+// Extra-gated entry point (Reading words everything, the Extra level pill)
+// already applies below.
 //
 // For noSort themes, items come back in the same flat original order as
 // before (unchanged behavior). For grouped themes, each group's categories
@@ -1933,7 +1938,7 @@ function getThemePool(themeKey) {
   function buildCategoryItems(catKey) {
     const cat = VOCAB[catKey];
     if (!cat) return [];
-    if (cat.level === 'extra' && !appSettings.showCustomContent) return [];
+    if (cat.level === 'extra' && !appSettings.showExtra) return [];
     return cat.items.map(item => Object.assign({ level: cat.level || 1, groupKey: catKey }, item));
   }
 
@@ -2629,7 +2634,7 @@ function showScreen(id) {
 let lastSettingsScreen = 'match-settings';
 
 function tryResumeKanji() {
-  if (!appSettings.showCustomContent) return; // backstop - pill is also greyed out + unclickable via CSS
+  if (!appSettings.showKanji) return; // backstop - pill is also hidden via CSS
   showKanjiSelection();
 }
 function goBackToSettings() {
@@ -3124,10 +3129,27 @@ const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 // existed, so installing this doesn't change anything for anyone until they
 // actually visit Settings and change something themselves.
 const SETTINGS_KEY = 'jpDrillSettings';
-let appSettings = { theme: 'dark', showCustomContent: true, hintPenalty: false, workOffline: false, showThemes: false };
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showThemes: false };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
-  if (savedSettings && typeof savedSettings === 'object') Object.assign(appSettings, savedSettings);
+  if (savedSettings && typeof savedSettings === 'object') {
+    // One-time migration: showKanji/showExtra replace the old single
+    // showCustomContent switch (Kanji and Extra vocab used to be gated
+    // together - now they're independent). If this is the first load since
+    // upgrading, savedSettings will have the old key but not the new ones,
+    // so carry its value across to both. Once that's happened, savedSettings
+    // will have showKanji/showExtra of its own from then on (see
+    // saveSettings() below), so this condition never fires again and the
+    // two toggles are free to diverge.
+    const migratingFromCustomContent = ('showCustomContent' in savedSettings) &&
+      !('showKanji' in savedSettings) && !('showExtra' in savedSettings);
+    if (migratingFromCustomContent) {
+      savedSettings.showKanji = savedSettings.showCustomContent;
+      savedSettings.showExtra = savedSettings.showCustomContent;
+    }
+    Object.assign(appSettings, savedSettings);
+    if (migratingFromCustomContent) saveSettings();
+  }
 } catch (e) {
   // localStorage unavailable or corrupt — fall back to defaults silently
 }
@@ -3152,22 +3174,52 @@ function toggleTheme() {
   applyTheme();
 }
 
-function applyCustomContentVisibility() {
-  const on = appSettings.showCustomContent;
+// Kanji and Extra vocab used to share one "custom content" switch; they're
+// now independent, and hidden entirely (not just greyed out) when off, same
+// approach as Themes below - see applyThemesVisibility for why.
+function applyShowKanjiVisibility() {
+  const on = appSettings.showKanji;
   const kanjiPill = document.getElementById('nav-kanji');
-  if (kanjiPill) kanjiPill.classList.toggle('pill-disabled', !on);
-  const extraPill = document.getElementById('level-pill-extra');
-  if (extraPill) extraPill.classList.toggle('pill-disabled', !on);
+  if (kanjiPill) kanjiPill.style.display = on ? '' : 'none';
   const kanjiReadCard = document.getElementById('read-pool-kanji');
-  if (kanjiReadCard) kanjiReadCard.classList.toggle('pill-disabled', !on);
-  const card = document.getElementById('custom-content-toggle-card');
+  if (kanjiReadCard) kanjiReadCard.style.display = on ? '' : 'none';
+  // If Kanji gets switched off while its selection screen happens to be
+  // open, there's nothing sensible left showing - fall back to Vocab.
+  const kanjiScreen = document.getElementById('screen-kanji-selection');
+  if (!on && kanjiScreen && kanjiScreen.classList.contains('visible')) showMatchSettings();
+  // Same idea if Kanji was the selected "Random reading" pool - deselect it
+  // rather than leave a hidden card looking chosen.
+  if (!on && selectedReadRandomPool === 'kanji') {
+    selectedReadRandomPool = null;
+    document.querySelectorAll('#match-read-view .match-card-select').forEach(c => c.classList.remove('selected'));
+    const startBtn = document.getElementById('read-random-start-btn');
+    if (startBtn) startBtn.disabled = true;
+  }
+  const card = document.getElementById('show-kanji-toggle-card');
   if (card) card.classList.toggle('selected', on);
 }
 
-function toggleCustomContent() {
-  appSettings.showCustomContent = !appSettings.showCustomContent;
+function toggleShowKanji() {
+  appSettings.showKanji = !appSettings.showKanji;
   saveSettings();
-  applyCustomContentVisibility();
+  applyShowKanjiVisibility();
+}
+
+function applyShowExtraVisibility() {
+  const on = appSettings.showExtra;
+  const extraPill = document.getElementById('level-pill-extra');
+  if (extraPill) extraPill.style.display = on ? '' : 'none';
+  // If Extra gets switched off while it happens to be the active level tab,
+  // fall back to Read, same idea as the Themes backstop below.
+  if (!on && currentMatchLevel === 'extra') setMatchLevel('read');
+  const card = document.getElementById('show-extra-toggle-card');
+  if (card) card.classList.toggle('selected', on);
+}
+
+function toggleShowExtra() {
+  appSettings.showExtra = !appSettings.showExtra;
+  saveSettings();
+  applyShowExtraVisibility();
 }
 
 function applyHintPenaltyUI() {
@@ -3243,7 +3295,8 @@ function toggleWorkOffline() {
 
 function applyAllSettingsUI() {
   applyTheme();
-  applyCustomContentVisibility();
+  applyShowKanjiVisibility();
+  applyShowExtraVisibility();
   applyHintPenaltyUI();
   applyWorkOfflineUI();
   applyThemesVisibility();
@@ -4508,7 +4561,7 @@ let currentMatchLevel = 'read';
 let selectedReadRandomPool = null;
 
 function selectReadRandomPool(pool, card) {
-  if (pool === 'kanji' && !appSettings.showCustomContent) return; // backstop - card is also greyed out + unclickable via CSS
+  if (pool === 'kanji' && !appSettings.showKanji) return; // backstop - card is also hidden via CSS
   selectedReadRandomPool = pool;
   document.querySelectorAll('#match-read-view .match-card-select').forEach(c => c.classList.remove('selected'));
   card.classList.add('selected');
@@ -4517,7 +4570,7 @@ function selectReadRandomPool(pool, card) {
 
 function startReadRandomDrill() {
   if (selectedReadRandomPool === 'everything') startRandomMatchEverything();
-  else if (selectedReadRandomPool === 'kanji' && appSettings.showCustomContent) startRandomKanji();
+  else if (selectedReadRandomPool === 'kanji' && appSettings.showKanji) startRandomKanji();
 }
 
 function updateNumberTimeSwatches() {
@@ -4536,7 +4589,7 @@ function updateNumberTimeSwatches() {
 }
 
 function setMatchLevel(level) {
-  if (level === 'extra' && !appSettings.showCustomContent) return; // backstop - pill is also greyed out + unclickable via CSS
+  if (level === 'extra' && !appSettings.showExtra) return; // backstop - pill is also hidden via CSS
   if (level === 'theme' && !appSettings.showThemes) return; // backstop - pill is hidden entirely via CSS when off
   currentMatchLevel = level;
   document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
@@ -4694,11 +4747,11 @@ function startVocabReadingDeck(items, groupKey) {
 
 function startRandomMatchEverything() {
   // Pull vocab items from every category regardless of level - but skip the
-  // Extra tier when "Show custom content" is off, same as every other
-  // Extra-gated entry point (Kanji nav pill, Extra level pill, Random kanji).
+  // Extra tier when "Show Extra content" is off, same as every other
+  // Extra-gated entry point (the Extra level pill, Extra-sourced themes).
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
-    if (VOCAB[key].level === 'extra' && !appSettings.showCustomContent) return;
+    if (VOCAB[key].level === 'extra' && !appSettings.showExtra) return;
     VOCAB[key].items.forEach(item => allItems.push(item));
   });
   startVocabReadingDeck(allItems, 'random-everything');
