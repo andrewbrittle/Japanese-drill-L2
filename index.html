@@ -408,6 +408,11 @@
 
   /* Level filter pills on Match screen */
   .level-filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* Andrew mode's own row - centered and set apart from the main level row
+     so it reads as a separate, personal tier rather than another option in
+     the regular lineup. Hidden by default via JS (display:none inline);
+     'flex' here only applies once that inline style is switched on. */
+  .level-filter-row.andrew-row { justify-content: center; margin-top: 8px; }
   .level-pill {
     padding: 6px 18px; border-radius: 99px; border: 1px solid var(--border);
     background: transparent; color: var(--text-muted);
@@ -559,6 +564,14 @@
       <div class="toggle" id="show-extra-toggle"></div>
     </div>
 
+    <div class="group-card" id="show-themes-toggle-card" onclick="toggleShowThemes()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Show "Themes"</div>
+        <div class="group-count">Experimental — adds a "Theme" tab to Vocab that brings words together from across Level 1 and Level 2 into broader topics (e.g. Transport + UK Places), for more variety when drilling. Off by default while this is still being tried out</div>
+      </div>
+      <div class="toggle" id="show-themes-toggle"></div>
+    </div>
+
     <div class="group-card" id="hint-penalty-toggle-card" onclick="toggleHintPenalty()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Half credit for hinted answers</div>
@@ -575,12 +588,12 @@
       <div class="toggle" id="offline-toggle"></div>
     </div>
 
-    <div class="group-card" id="show-themes-toggle-card" onclick="toggleShowThemes()" style="cursor:pointer;">
+    <div class="group-card" id="show-andrew-mode-toggle-card" onclick="toggleShowAndrewMode()" style="cursor:pointer;">
       <div class="group-info">
-        <div class="group-name">Show "Themes"</div>
-        <div class="group-count">Experimental — adds a "Theme" tab to Vocab that brings words together from across Level 1 and Level 2 into broader topics (e.g. Transport + UK Places), for more variety when drilling. Off by default while this is still being tried out</div>
+        <div class="group-name">Activate Andrew mode</div>
+        <div class="group-count">Personal staging area for new vocab that isn't ready for the class yet — adds an "Andrew" pill on its own row under Vocab. Off by default; nobody else will see it unless they flip this on themselves</div>
       </div>
-      <div class="toggle" id="show-themes-toggle"></div>
+      <div class="toggle" id="show-andrew-mode-toggle"></div>
     </div>
 
     <!-- Debug/troubleshooting only - not meant for everyday users. Hidden
@@ -600,7 +613,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.003</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.004</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -799,6 +812,13 @@
       <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
       <button class="level-pill" id="level-pill-extra" onclick="setMatchLevel('extra')">Extra</button>
       <button class="level-pill" id="level-pill-theme" onclick="setMatchLevel('theme')">Theme</button>
+    </div>
+
+    <!-- Andrew's personal staging tier - own row, centered, hidden by
+         default (see applyShowAndrewModeVisibility) so nobody else ever
+         sees it unless they switch "Activate Andrew mode" on themselves. -->
+    <div class="level-filter-row andrew-row" id="vocab-andrew-filter-row" style="display:none;">
+      <button class="level-pill" id="level-pill-andrew" onclick="setMatchLevel('andrew')">Andrew</button>
     </div>
 
     <div id="match-read-view">
@@ -1938,7 +1958,7 @@ function getThemePool(themeKey) {
   function buildCategoryItems(catKey) {
     const cat = VOCAB[catKey];
     if (!cat) return [];
-    if (cat.level === 'extra' && !appSettings.showExtra) return [];
+    if (!categoryTierVisible(cat.level)) return [];
     return cat.items.map(item => Object.assign({ level: cat.level || 1, groupKey: catKey }, item));
   }
 
@@ -3129,7 +3149,7 @@ const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 // existed, so installing this doesn't change anything for anyone until they
 // actually visit Settings and change something themselves.
 const SETTINGS_KEY = 'jpDrillSettings';
-let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showThemes: false };
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showThemes: false, showAndrewMode: false };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
@@ -3160,6 +3180,17 @@ function saveSettings() {
   } catch (e) {
     // fail silently, same as everywhere else localStorage is used
   }
+}
+
+// Single source of truth for "is this category's tier currently visible" -
+// used anywhere that scans across every category regardless of level
+// (Random - Everything, theme pools), so Extra and Andrew-mode content stay
+// gated the same way everywhere rather than each call site re-deriving its
+// own version of this check (and risking one of them forgetting a tier).
+function categoryTierVisible(level) {
+  if (level === 'extra') return appSettings.showExtra;
+  if (level === 'andrew') return appSettings.showAndrewMode;
+  return true;
 }
 
 function applyTheme() {
@@ -3256,6 +3287,29 @@ function toggleShowThemes() {
   applyThemesVisibility();
 }
 
+// Andrew's personal staging tier for vocab that isn't ready for the class
+// yet - same hide-entirely, off-by-default pattern as Themes. Lives on its
+// own row (not squeezed into the level-pill row) so it's visually distinct
+// and doesn't compete for space as that row fills up. Categories here use
+// the exact same VOCAB shape as Level 1/2/Extra, so "graduating" one is
+// just changing its level to 'extra' once it's ready - see the showExtra
+// guards in getThemePool/startRandomMatchEverything, which this tier
+// deliberately mirrors so nothing here leaks out to everyone else first.
+function applyShowAndrewModeVisibility() {
+  const on = appSettings.showAndrewMode;
+  const andrewRow = document.getElementById('vocab-andrew-filter-row');
+  if (andrewRow) andrewRow.style.display = on ? 'flex' : 'none';
+  if (!on && currentMatchLevel === 'andrew') setMatchLevel('read');
+  const card = document.getElementById('show-andrew-mode-toggle-card');
+  if (card) card.classList.toggle('selected', on);
+}
+
+function toggleShowAndrewMode() {
+  appSettings.showAndrewMode = !appSettings.showAndrewMode;
+  saveSettings();
+  applyShowAndrewModeVisibility();
+}
+
 function applyWorkOfflineUI() {
   const card = document.getElementById('offline-toggle-card');
   if (card) card.classList.toggle('selected', appSettings.workOffline);
@@ -3300,6 +3354,7 @@ function applyAllSettingsUI() {
   applyHintPenaltyUI();
   applyWorkOfflineUI();
   applyThemesVisibility();
+  applyShowAndrewModeVisibility();
 }
 
 function showSettingsScreen() {
@@ -4591,21 +4646,31 @@ function updateNumberTimeSwatches() {
 function setMatchLevel(level) {
   if (level === 'extra' && !appSettings.showExtra) return; // backstop - pill is also hidden via CSS
   if (level === 'theme' && !appSettings.showThemes) return; // backstop - pill is hidden entirely via CSS when off
+  if (level === 'andrew' && !appSettings.showAndrewMode) return; // backstop - pill is also hidden via CSS
   currentMatchLevel = level;
   document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
   document.getElementById('level-pill-2').classList.toggle('active', level === 2);
   document.getElementById('level-pill-extra').classList.toggle('active', level === 'extra');
   document.getElementById('level-pill-theme').classList.toggle('active', level === 'theme');
+  const andrewPill = document.getElementById('level-pill-andrew');
+  if (andrewPill) andrewPill.classList.toggle('active', level === 'andrew');
   document.getElementById('vocab-level-filter-row').classList.toggle('showing-theme-colours', level === 'theme');
   document.getElementById('match-read-view').style.display = level === 'read' ? 'flex' : 'none';
-  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2) ? 'flex' : 'none';
+  // Andrew mode deliberately reuses the same generic Level 1/2 list view
+  // (match-vocab-view + buildMatchCategoryList) rather than getting its own
+  // dedicated view like Extra/Theme have - so a new category just needs
+  // level:'andrew' in VOCAB and shows up automatically, no hand-built card
+  // needed, which matters a lot when the whole point is fast iteration.
+  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2 || level === 'andrew') ? 'flex' : 'none';
   document.getElementById('match-extra-view').style.display = level === 'extra' ? 'flex' : 'none';
   document.getElementById('match-theme-view').style.display = level === 'theme' ? 'flex' : 'none';
   if (level === 'extra') refreshExtraCategorySwatches();
   if (level === 'theme') refreshThemeCategorySwatches();
   if (level === 'read' || level === 'extra' || level === 'theme') return;
-  document.getElementById('random-match-count').textContent = `20 random words per round, from all Level ${level} categories`;
+  document.getElementById('random-match-count').textContent = level === 'andrew'
+    ? '20 random words per round, from Andrew mode categories'
+    : `20 random words per round, from all Level ${level} categories`;
   document.getElementById('match-start-btn').disabled = true;
   document.getElementById('random-match-card').classList.remove('selected');
   buildMatchCategoryList();
@@ -4746,12 +4811,12 @@ function startVocabReadingDeck(items, groupKey) {
 }
 
 function startRandomMatchEverything() {
-  // Pull vocab items from every category regardless of level - but skip the
-  // Extra tier when "Show Extra content" is off, same as every other
-  // Extra-gated entry point (the Extra level pill, Extra-sourced themes).
+  // Pull vocab items from every category regardless of level - but skip any
+  // tier that's currently switched off (Extra, Andrew mode), same guard
+  // used everywhere else that scans across levels (see categoryTierVisible).
   const allItems = [];
   Object.keys(VOCAB).forEach(key => {
-    if (VOCAB[key].level === 'extra' && !appSettings.showExtra) return;
+    if (!categoryTierVisible(VOCAB[key].level)) return;
     VOCAB[key].items.forEach(item => allItems.push(item));
   });
   startVocabReadingDeck(allItems, 'random-everything');
