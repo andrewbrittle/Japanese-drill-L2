@@ -613,7 +613,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.004</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.005</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1892,6 +1892,65 @@ const VOCAB = {
       {jp:'しゃーうっどのもり', romaji:'shaawuddo no mori', en:'Sherwood Forest', altForm:'シャーウッドの森'},
       {jp:'サウサンプトン', romaji:'sausanputon', en:'Southampton', altForm:'さうさんぷとん'},
       {jp:'ヨーク', romaji:'yooku', en:'York', altForm:'よーく'},
+    ],
+  },
+  // First Andrew-mode category - staging area for trip vocab before it's
+  // ready for the class (see showAndrewMode). Same VOCAB shape as every
+  // other category on purpose, so "graduating" it later is just changing
+  // level to 'extra'. A few entries carry altForm+altIsStandard where the
+  // hiragana form genuinely collides with another word (さけ is also
+  // "sake/alcohol" in vocab-trip-prep, たい is also "Thailand" in
+  // vocab-countries) - the kanji disambiguates on the feedback screen.
+  // Specific fish species deliberately have no kanji altForm even where one
+  // exists (鮪, 海老 etc.) - those characters are obscure enough that real
+  // menus almost always show them in kana/katakana instead.
+  'vocab-food-drink': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Food and drink',
+    chars: 'ぎょうざ さしみ からい…',
+    items: [
+      {jp:'ぎゅうにく', romaji:'gyuuniku', en:'beef', altForm:'牛肉', altIsStandard:true},
+      {jp:'ビール', romaji:'biiru', en:'beer', altForm:'びーる'},
+      {jp:'おべんとう', romaji:'obentou', en:'bento (boxed lunch)'},
+      {jp:'おかいけい おねがいします', romaji:'okaikei onegaishimasu', en:'bill, please'},
+      {jp:'とりにく', romaji:'toriniku', en:'chicken (meat)', altForm:'鶏肉', altIsStandard:true},
+      {jp:'カレーライス', romaji:'kareeraisu', en:'curry rice', altForm:'かれーらいす'},
+      {jp:'おいしい', romaji:'oishii', en:'delicious / tasty'},
+      {jp:'デザート', romaji:'dezaato', en:'dessert', altForm:'でざーと'},
+      {jp:'ぎょうざ', romaji:'gyouza', en:'gyoza / dumplings'},
+      {jp:'にほんしゅ', romaji:'nihonshu', en:'Japanese sake / rice wine'},
+      {jp:'かつどん', romaji:'katsudon', en:'katsudon (pork cutlet rice bowl)'},
+      {jp:'ラム', romaji:'ramu', en:'lamb', altForm:'らむ'},
+      {jp:'メニュー', romaji:'menyuu', en:'menu', altForm:'めにゅー'},
+      {jp:'ミルク', romaji:'miruku', en:'milk', altForm:'みるく'},
+      {jp:'みそしる', romaji:'misoshiru', en:'miso soup'},
+      {jp:'なべ', romaji:'nabe', en:'nabe / hot pot'},
+      {jp:'たこ', romaji:'tako', en:'octopus'},
+      {jp:'おこのみやき', romaji:'okonomiyaki', en:'okonomiyaki (savoury pancake)'},
+      {jp:'おにぎり', romaji:'onigiri', en:'onigiri / rice ball'},
+      {jp:'ウーロンちゃ', romaji:'uuroncha', en:'oolong tea'},
+      {jp:'オレンジジュース', romaji:'orenji juusu', en:'orange juice', altForm:'おれんじじゅーす'},
+      {jp:'おやこどん', romaji:'oyakodon', en:'oyakodon (chicken & egg rice bowl)'},
+      {jp:'ぶたにく', romaji:'butaniku', en:'pork', altForm:'豚肉', altIsStandard:true},
+      {jp:'さけ', romaji:'sake', en:'salmon', altForm:'鮭', altIsStandard:true},
+      {jp:'さしみ', romaji:'sashimi', en:'sashimi / raw fish'},
+      {jp:'たい', romaji:'tai', en:'sea bream', altForm:'鯛', altIsStandard:true},
+      {jp:'うに', romaji:'uni', en:'sea urchin'},
+      {jp:'おかわり', romaji:'okawari', en:'seconds / refill, please'},
+      {jp:'べつべつに', romaji:'betsubetsuni', en:'separately (splitting the bill)'},
+      {jp:'ていしょく', romaji:'teishoku', en:'set meal'},
+      {jp:'しゃぶしゃぶ', romaji:'shabushabu', en:'shabu-shabu'},
+      {jp:'えび', romaji:'ebi', en:'shrimp / prawn'},
+      {jp:'からい', romaji:'karai', en:'spicy'},
+      {jp:'いか', romaji:'ika', en:'squid'},
+      {jp:'すきやき', romaji:'sukiyaki', en:'sukiyaki'},
+      {jp:'あまい', romaji:'amai', en:'sweet'},
+      {jp:'たこやき', romaji:'takoyaki', en:'takoyaki (octopus balls)'},
+      {jp:'てんどん', romaji:'tendon', en:'tempura rice bowl (tendon)'},
+      {jp:'まぐろ', romaji:'maguro', en:'tuna'},
+      {jp:'やきとり', romaji:'yakitori', en:'yakitori (grilled chicken skewers)'},
+      {jp:'はまち', romaji:'hamachi', en:'yellowtail'},
     ],
   },
 };
