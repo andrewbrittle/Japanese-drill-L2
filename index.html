@@ -302,6 +302,7 @@
   }
   .feedback.good { color: var(--green); }
   .feedback.bad { color: var(--red); }
+  .feedback-standard-note { font-size: 13px; font-weight: 700; color: var(--accent); margin-top: 0.35rem; font-family: 'BIZ UDPGothic', sans-serif; }
 
   .next-btn {
     position: relative;
@@ -594,7 +595,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260725.006</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.002</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1618,19 +1619,19 @@ const VOCAB = {
     chars: 'ごみばこ きせつ かぞく',
     items: [
       {jp:'ひとりで', romaji:'hitoride', en:'alone'},
-      {jp:'あさごはん', romaji:'asagohan', en:'breakfast', altForm:'朝ご飯'},
-      {jp:'ばんごはん', romaji:'bangohan', en:'dinner', altForm:'晩ご飯'},
-      {jp:'かぞく', romaji:'kazoku', en:'family', altForm:'家族'},
-      {jp:'にほんごのじゅぎょう', romaji:'nihongo no jugyou', en:'Japanese language class', altForm:'日本語の授業'},
-      {jp:'ひるごはん', romaji:'hirugohan', en:'lunch', altForm:'昼ご飯'},
-      {jp:'ひるやすみ', romaji:'hiruyasumi', en:'lunch break', altForm:'昼休み'},
-      {jp:'かいぎ', romaji:'kaigi', en:'meeting', altForm:'会議'},
-      {jp:'えいが', romaji:'eiga', en:'movie', altForm:'映画'},
+      {jp:'あさごはん', romaji:'asagohan', en:'breakfast', altForm:'朝ご飯', altIsStandard:true},
+      {jp:'ばんごはん', romaji:'bangohan', en:'dinner', altForm:'晩ご飯', altIsStandard:true},
+      {jp:'かぞく', romaji:'kazoku', en:'family', altForm:'家族', altIsStandard:true},
+      {jp:'にほんごのじゅぎょう', romaji:'nihongo no jugyou', en:'Japanese language class', altForm:'日本語の授業', altIsStandard:true},
+      {jp:'ひるごはん', romaji:'hirugohan', en:'lunch', altForm:'昼ご飯', altIsStandard:true},
+      {jp:'ひるやすみ', romaji:'hiruyasumi', en:'lunch break', altForm:'昼休み', altIsStandard:true},
+      {jp:'かいぎ', romaji:'kaigi', en:'meeting', altForm:'会議', altIsStandard:true},
+      {jp:'えいが', romaji:'eiga', en:'movie', altForm:'映画', altIsStandard:true},
       {jp:'パーティー', romaji:'paatii', en:'party'},
-      {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯'},
+      {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯', altIsStandard:true},
       {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱'},
-      {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節'},
-      {jp:'しごと', romaji:'shigoto', en:'work / job', altForm:'仕事'},
+      {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節', altIsStandard:true},
+      {jp:'しごと', romaji:'shigoto', en:'work / job', altForm:'仕事', altIsStandard:true},
     ],
   },
   'vocab-question-location': {
@@ -1696,7 +1697,7 @@ const VOCAB = {
       {jp:'ゆうえんち', romaji:'yuuenchi', en:'amusement park'},
       {jp:'びじゅつかん', romaji:'bijutsukan', en:'art museum'},
       {jp:'バレエ', romaji:'baree', en:'ballet', altForm:'ばれえ'},
-      {jp:'ぎんこう', romaji:'ginkou', en:'bank', altForm:'銀行'},
+      {jp:'ぎんこう', romaji:'ginkou', en:'bank', altForm:'銀行', altIsStandard:true},
       {jp:'ほんや', romaji:'honya', en:'bookshop'},
       {jp:'きっさてん', romaji:'kissaten', en:'café'},
       {jp:'カメラや', romaji:'kameraya', en:'camera shop', altForm:'かめらや'},
@@ -1704,20 +1705,20 @@ const VOCAB = {
       {jp:'コンビニ', romaji:'konbini', en:'convenience store', altForm:'こんびに'},
       {jp:'デパート', romaji:'depaato', en:'department store', altForm:'でぱーと'},
       {jp:'はなび', romaji:'hanabi', en:'fireworks'},
-      {jp:'じむ', romaji:'jimu', en:'gym', altForm:'ジム'},
+      {jp:'ジム', romaji:'jimu', en:'gym', altForm:'じむ'},
       {jp:'びょういん', romaji:'byouin', en:'hospital'},
       {jp:'としょかん', romaji:'toshokan', en:'library'},
       {jp:'ミュージカル', romaji:'myuujikaru', en:'musical', altForm:'みゅーじかる'},
       {jp:'オペラ', romaji:'opera', en:'opera', altForm:'おぺら'},
       {jp:'こうえん', romaji:'kouen', en:'park'},
       {jp:'おしばい', romaji:'oshibai', en:'play'},
-      {jp:'ぷーる', romaji:'puuru', en:'pool', altForm:'プール'},
+      {jp:'プール', romaji:'puuru', en:'pool', altForm:'ぷーる'},
       {jp:'ゆうびんきょく', romaji:'yuubinkyoku', en:'post office'},
       {jp:'レストラン', romaji:'resutoran', en:'restaurant', altForm:'れすとらん'},
       {jp:'ロックコンサート', romaji:'rokkukonsaato', en:'rock concert', altForm:'ろっくこんさーと'},
       {jp:'がっこう', romaji:'gakkou', en:'school'},
       {jp:'えき', romaji:'eki', en:'station'},
-      {jp:'すーぱー', romaji:'suupaa', en:'supermarket', altForm:'スーパー'},
+      {jp:'スーパー', romaji:'suupaa', en:'supermarket', altForm:'すーぱー'},
     ],
   },
   'vocab-places-uk': {
@@ -1775,9 +1776,9 @@ const VOCAB = {
       {jp:'つぎ', romaji:'tsugi', en:'next'},
       {jp:'ふん', romaji:'fun', en:'minutes'},
       {jp:'じかん', romaji:'jikan', en:'hours / time'},
-      {jp:'あさ', romaji:'asa', en:'morning', altForm:'朝'},
-      {jp:'ひる', romaji:'hiru', en:'midday / noon', altForm:'昼'},
-      {jp:'ばん', romaji:'ban', en:'evening', altForm:'晩'},
+      {jp:'あさ', romaji:'asa', en:'morning', altForm:'朝', altIsStandard:true},
+      {jp:'ひる', romaji:'hiru', en:'midday / noon', altForm:'昼', altIsStandard:true},
+      {jp:'ばん', romaji:'ban', en:'evening', altForm:'晩', altIsStandard:true},
       {jp:'よる', romaji:'yoru', en:'evening / night'},
       {jp:'まいにち', romaji:'mainichi', en:'every day'},
       {jp:'おととい', romaji:'ototoi', en:'the day before yesterday'},
@@ -1797,13 +1798,13 @@ const VOCAB = {
     label: 'Days of the week',
     chars: 'かようび どようび…',
     items: [
-      {jp:'げつようび', romaji:'getsuyoubi', en:'Monday', altForm:'月曜日'},
-      {jp:'かようび', romaji:'kayoubi', en:'Tuesday', altForm:'火曜日'},
-      {jp:'すいようび', romaji:'suiyoubi', en:'Wednesday', altForm:'水曜日'},
-      {jp:'もくようび', romaji:'mokuyoubi', en:'Thursday', altForm:'木曜日'},
-      {jp:'きんようび', romaji:'kinyoubi', en:'Friday', altForm:'金曜日'},
-      {jp:'どようび', romaji:'doyoubi', en:'Saturday', altForm:'土曜日'},
-      {jp:'にちようび', romaji:'nichiyoubi', en:'Sunday', altForm:'日曜日'},
+      {jp:'げつようび', romaji:'getsuyoubi', en:'Monday', altForm:'月曜日', altIsStandard:true},
+      {jp:'かようび', romaji:'kayoubi', en:'Tuesday', altForm:'火曜日', altIsStandard:true},
+      {jp:'すいようび', romaji:'suiyoubi', en:'Wednesday', altForm:'水曜日', altIsStandard:true},
+      {jp:'もくようび', romaji:'mokuyoubi', en:'Thursday', altForm:'木曜日', altIsStandard:true},
+      {jp:'きんようび', romaji:'kinyoubi', en:'Friday', altForm:'金曜日', altIsStandard:true},
+      {jp:'どようび', romaji:'doyoubi', en:'Saturday', altForm:'土曜日', altIsStandard:true},
+      {jp:'にちようび', romaji:'nichiyoubi', en:'Sunday', altForm:'日曜日', altIsStandard:true},
     ],
   },
   'vocab-trip-prep': {
@@ -2575,6 +2576,7 @@ function drillVocabTileSelection() {
       options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
       hint: item.en,
       altForm: item.altForm,
+      altIsStandard: item.altIsStandard,
     };
   });
   lastSettingsScreen = 'vocab-tile-selection';
@@ -3264,6 +3266,23 @@ try {
   kanaScores = {};
 }
 
+// One-off migration: gym/pool/supermarket were stored hiragana-primary
+// (backwards from how they're actually written) and have swapped to
+// katakana-primary. Scores are keyed on jp+'|'+en, so without this the
+// swap would silently reset anyone's existing progress on these 3 words
+// back to neutral. Carries the old score across to the new key once,
+// then leaves the stale key in place (harmless, never read again).
+const SCORE_KEY_RENAMES = [
+  ['じむ|gym', 'ジム|gym'],
+  ['ぷーる|pool', 'プール|pool'],
+  ['すーぱー|supermarket', 'スーパー|supermarket'],
+];
+SCORE_KEY_RENAMES.forEach(([oldKey, newKey]) => {
+  if (oldKey in kanaScores && !(newKey in kanaScores)) {
+    kanaScores[newKey] = kanaScores[oldKey];
+  }
+});
+
 function saveKanaScores() {
   try {
     localStorage.setItem(KANA_SCORE_KEY, JSON.stringify(kanaScores));
@@ -3932,7 +3951,10 @@ function renderQuestion() {
 
   const altEl = document.getElementById('q-alt-form');
   if (altEl) {
-    if (q.altForm) {
+    // altIsStandard items hold back the "also written" reveal until after
+    // answering - it becomes the "Normally shown as" feedback line instead
+    // (see choose()), so as not to show the same information twice.
+    if (q.altForm && !q.altIsStandard) {
       altEl.innerHTML = 'also written: ' + markSmallKana(q.altForm);
       altEl.style.display = 'block';
     } else {
@@ -4087,6 +4109,13 @@ function choose(btn, selectedVal, answer, char) {
       hint = ` (example: ${compoundWord})`;
     }
   }
+  // Informational only - doesn't affect scoring either way. Just flags that
+  // the drilled form, while a correct answer, isn't the one you'd normally
+  // see written down (e.g. answering げつようび is right, but 月曜日 is what
+  // actually turns up in real use).
+  const standardNote = (currentQ && currentQ.altIsStandard && currentQ.altForm)
+    ? `<div class="feedback-standard-note">Normally shown as: ${markSmallKana(currentQ.altForm)}</div>`
+    : '';
   recordKanaResult(currentQ, selectedVal === answer);
   const isKanaItem = currentQ && (currentQ.disp === 'base' || currentQ.disp === 'diacritic' || currentQ.disp === 'youon');
   const showingHiragana = !reversed && showHiraganaOnKatakana && isKanaItem &&
@@ -4095,11 +4124,11 @@ function choose(btn, selectedVal, answer, char) {
   if (selectedVal === answer) {
     score++;
     btn.classList.add('correct');
-    fb.textContent = 'Correct!' + hint;
+    fb.innerHTML = 'Correct!' + hint + standardNote;
     fb.className = 'feedback good';
   } else {
     btn.classList.add('wrong');
-    fb.textContent = `Not quite — the answer is "${displayAnswer}"` + hint;
+    fb.innerHTML = `Not quite — the answer is "${displayAnswer}"` + hint + standardNote;
     fb.className = 'feedback bad';
     wrong++;
     // Tracked as char+answer, not bare char - a handful of characters do
@@ -4649,6 +4678,7 @@ function buildVocabReadingDeck(items, groupKey) {
       options: allItems.map(w => ({ en: w.en, jp: w.jp, rd: w.romaji })),
       hint: item.en,
       altForm: item.altForm,
+      altIsStandard: item.altIsStandard,
     };
   });
 }
