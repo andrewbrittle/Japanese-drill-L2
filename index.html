@@ -613,7 +613,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.006</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.012</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -753,6 +753,14 @@
       <div class="toggle"></div>
     </div>
 
+    <div class="group-card" id="vocab-tile-reversed-mode-card" onclick="toggleVocabTileReversedMode()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Reverse the drill direction</div>
+        <div class="group-count">See the English meaning first and pick the matching Japanese, instead of reading Japanese and picking the answer</div>
+      </div>
+      <div class="toggle"></div>
+    </div>
+
     <button class="start-btn" id="vocab-tile-drill-btn" onclick="drillVocabTileSelection()" disabled style="margin-top:0.5rem;">Drill with this selection</button>
     <button class="btn-secondary" onclick="showMatchSettings()">← Back</button>
   </div>
@@ -884,6 +892,13 @@
         </div>
         <div class="toggle" id="drill-mode-toggle"></div>
       </div>
+      <div class="group-card" id="reversed-mode-toggle-card" onclick="toggleVocabReversed()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reverse the drill direction</div>
+          <div class="group-count">See the English meaning first and pick the matching Japanese, instead of reading Japanese and picking the answer (word cards only)</div>
+        </div>
+        <div class="toggle" id="reversed-mode-toggle"></div>
+      </div>
       <button class="start-btn" id="read-random-start-btn" onclick="startReadRandomDrill()" disabled>Start random drill</button>
     </div>
 
@@ -964,6 +979,13 @@
         <div class="group-info">
           <div class="group-name">Highlight the meaning instead of sound</div>
           <div class="group-count">Swaps which text is prominent on word/vocab cards — romaji on top by default, English on top when this is on</div>
+        </div>
+        <div class="toggle"></div>
+      </div>
+      <div class="group-card" id="reversed-mode-toggle-card-l" onclick="toggleVocabReversed()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reverse the drill direction</div>
+          <div class="group-count">See the English meaning first and pick the matching Japanese, instead of reading Japanese and picking the answer (word cards only)</div>
         </div>
         <div class="toggle"></div>
       </div>
@@ -2002,6 +2024,92 @@ const VOCAB = {
       {jp:'しちゃく', romaji:'shichaku', en:'trying on (clothes)', altForm:'試着', altIsStandard:true},
     ],
   },
+  'vocab-directions-navigation': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Directions and navigation',
+    chars: 'ひだり みぎ まっすぐ…',
+    items: [
+      {jp:'かど', romaji:'kado', en:'corner', altForm:'角', altIsStandard:true},
+      {jp:'とおい', romaji:'tooi', en:'far'},
+      {jp:'ICカード', romaji:'ai shii kaado', en:'IC (transit) card'},
+      {jp:'あんないじょ', romaji:'annaijo', en:'information desk', altForm:'案内所', altIsStandard:true},
+      {jp:'こうさてん', romaji:'kousaten', en:'intersection', altForm:'交差点', altIsStandard:true},
+      {jp:'ひだり', romaji:'hidari', en:'left'},
+      {jp:'ちかい', romaji:'chikai', en:'near'},
+      {jp:'かたみちきっぷ', romaji:'katamichi kippu', en:'one-way ticket'},
+      {jp:'おうだんほどう', romaji:'oudanhodou', en:'pedestrian crossing', altForm:'横断歩道', altIsStandard:true},
+      {jp:'ホーム', romaji:'hoomu', en:'platform (train)'},
+      {jp:'おうふくきっぷ', romaji:'oufuku kippu', en:'return ticket'},
+      {jp:'みぎ', romaji:'migi', en:'right'},
+      {jp:'ろせんず', romaji:'rosenzu', en:'route map', altForm:'路線図', altIsStandard:true},
+      {jp:'まっすぐ', romaji:'massugu', en:'straight ahead'},
+      {jp:'かいさつぐち', romaji:'kaisatsuguchi', en:'ticket gate', altForm:'改札口', altIsStandard:true},
+      {jp:'しんごう', romaji:'shingou', en:'traffic light', altForm:'信号', altIsStandard:true},
+      {jp:'えきは どこですか', romaji:'eki wa doko desu ka', en:'where is the station?'},
+      {jp:'なんばんせん ですか', romaji:'nanbansen desu ka', en:'which platform is it?'},
+    ],
+  },
+  'vocab-emergency-survival': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Emergency and survival',
+    chars: 'きゅうきゅうしゃ けが たいふう…',
+    items: [
+      {jp:'じこ', romaji:'jiko', en:'accident', altForm:'事故', altIsStandard:true},
+      {jp:'アレルギー', romaji:'arerugii', en:'allergy'},
+      {jp:'きゅうきゅうしゃ', romaji:'kyuukyuusha', en:'ambulance', altForm:'救急車', altIsStandard:true},
+      {jp:'だいじょうぶですか', romaji:'daijoubu desu ka', en:'are you okay?'},
+      {jp:'じしん', romaji:'jishin', en:'earthquake', altForm:'地震', altIsStandard:true},
+      {jp:'たいしかん', romaji:'taishikan', en:'embassy', altForm:'大使館', altIsStandard:true},
+      {jp:'きんきゅう', romaji:'kinkyuu', en:'emergency', altForm:'緊急', altIsStandard:true},
+      {jp:'ひじょうぐち', romaji:'hijouguchi', en:'emergency exit', altForm:'非常口', altIsStandard:true},
+      {jp:'かじ', romaji:'kaji', en:'fire (emergency)', altForm:'火事', altIsStandard:true},
+      {jp:'なくしました', romaji:'nakushimashita', en:'I lost (something)'},
+      {jp:'けが', romaji:'kega', en:'injury', altForm:'怪我', altIsStandard:true},
+      {jp:'パスポート', romaji:'pasupooto', en:'passport'},
+      {jp:'やっきょく', romaji:'yakkyoku', en:'pharmacy', altForm:'薬局', altIsStandard:true},
+      {jp:'けいさつを よんでください', romaji:'keisatsu wo yonde kudasai', en:'please call the police'},
+      {jp:'つなみ', romaji:'tsunami', en:'tsunami', altForm:'津波', altIsStandard:true},
+      {jp:'たいふう', romaji:'taifuu', en:'typhoon', altForm:'台風', altIsStandard:true},
+    ],
+  },
+  'vocab-weather': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Weather',
+    chars: 'あめ ゆき あつい…',
+    items: [
+      {jp:'くもり', romaji:'kumori', en:'cloudy', altForm:'曇り', altIsStandard:true},
+      {jp:'さむい', romaji:'samui', en:'cold (weather)'},
+      {jp:'あつい', romaji:'atsui', en:'hot (weather)'},
+      {jp:'むしあつい', romaji:'mushiatsui', en:'humid', altForm:'蒸し暑い', altIsStandard:true},
+      {jp:'あめ', romaji:'ame', en:'rain', altForm:'雨', altIsStandard:true},
+      {jp:'ゆき', romaji:'yuki', en:'snow', altForm:'雪', altIsStandard:true},
+      {jp:'はれ', romaji:'hare', en:'sunny / clear', altForm:'晴れ', altIsStandard:true},
+      {jp:'きおん', romaji:'kion', en:'temperature', altForm:'気温', altIsStandard:true},
+      {jp:'かぜ', romaji:'kaze', en:'wind', altForm:'風', altIsStandard:true},
+    ],
+  },
+  'vocab-signage-warnings': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Signage and warnings',
+    chars: 'きんえん おす ちゅうい…',
+    items: [
+      {jp:'ちゅうい', romaji:'chuui', en:'caution', altForm:'注意', altIsStandard:true},
+      {jp:'しようちゅう', romaji:'shiyouchuu', en:'in use / occupied', altForm:'使用中', altIsStandard:true},
+      {jp:'たちいりきんし', romaji:'tachiiri kinshi', en:'no entry', altForm:'立入禁止', altIsStandard:true},
+      {jp:'さつえいきんし', romaji:'satsuei kinshi', en:'no photography', altForm:'撮影禁止', altIsStandard:true},
+      {jp:'きんえん', romaji:'kinen', en:'no smoking', altForm:'禁煙', altIsStandard:true},
+      {jp:'こしょうちゅう', romaji:'koshouchuu', en:'out of order', altForm:'故障中', altIsStandard:true},
+      {jp:'ひく', romaji:'hiku', en:'pull', altForm:'引く', altIsStandard:true},
+      {jp:'おす', romaji:'osu', en:'push', altForm:'押す', altIsStandard:true},
+      {jp:'ていきゅうび', romaji:'teikyuubi', en:'regular closing day', altForm:'定休日', altIsStandard:true},
+      {jp:'スタッフのみ', romaji:'sutaffu nomi', en:'staff only'},
+      {jp:'ゆかが ぬれています', romaji:'yuka ga nureteimasu', en:'wet floor'},
+    ],
+  },
 };
 
 // Themes bring together items from several existing VOCAB categories into one
@@ -2044,6 +2152,23 @@ const THEMES = {
     label: 'Everyday items, clothing & general vocab',
     chars: 'かさ くつ かぞく…',
     groups: [['vocab-objects'], ['vocab-clothing'], ['vocab-general-l2']],
+  },
+  'theme-getting-around': {
+    label: 'Getting around',
+    chars: 'でんしゃ ひだり きっぷ…',
+    groups: [['vocab-transport'], ['vocab-places-to-go'], ['vocab-directions-navigation']],
+  },
+  // Not called "Staying safe" deliberately - trip-prep is pulled in whole
+  // (themes source entire categories, not individual items - see
+  // getThemePool), and only 4 of its 26 words are actually emergency-
+  // flavoured (help/it hurts/medicine/police). The rest is food, tickets,
+  // shops - genuinely "useful survival vocab for the trip" in the broad
+  // sense trip-prep was always going for, just not narrowly about safety.
+  // Named to fit what's actually in it rather than oversell the pairing.
+  'theme-survival-vocab': {
+    label: 'Survival vocab',
+    chars: 'たすけて けいさつ びょういん…',
+    groups: [['vocab-trip-prep'], ['vocab-emergency-survival']],
   },
 };
 
@@ -2188,6 +2313,23 @@ function toggleDrillByMeaning() {
   if (cardL) cardL.classList.toggle('selected', drillByMeaning);
 }
 
+// Independent of drillByMeaning (which decides whether romaji or English is
+// prominent) - this decides which SIDE is the question and which is the
+// answer options. Combined, the two give four modes for the price of two
+// toggles: JP shown/pick romaji (default), JP shown/pick English, romaji
+// shown/pick JP, English shown/pick JP. Deliberately a different variable
+// name from the existing kana-only `reversed` flag (hiragana/katakana
+// direction), which this has nothing to do with.
+let vocabReversed = false;
+
+function toggleVocabReversed() {
+  vocabReversed = !vocabReversed;
+  const card = document.getElementById('reversed-mode-toggle-card');
+  if (card) card.classList.toggle('selected', vocabReversed);
+  const cardL = document.getElementById('reversed-mode-toggle-card-l');
+  if (cardL) cardL.classList.toggle('selected', vocabReversed);
+}
+
 function toggleHiraganaOnKanji() {
   showHiraganaOnKanji = !showHiraganaOnKanji;
   const card = document.getElementById('kanji-hiragana-answers-card');
@@ -2259,7 +2401,10 @@ function distractorSimilarity(candidateVal, correctVal) {
 // candidates (matching first letter/length) forces genuine recognition
 // instead, without pulling in words from outside the existing pool.
 function pickDistractorItems(pool, correctItem, count) {
-  const field = drillByMeaning ? 'en' : 'romaji';
+  // In reversed mode the options shown are Japanese text, not romaji/English,
+  // regardless of drillByMeaning - that toggle only affects which side is
+  // used as the prompt in reversed mode (see renderQuestion).
+  const field = vocabReversed ? 'jp' : (drillByMeaning ? 'en' : 'romaji');
   const correctVal = correctItem[field];
   const seen = new Set([correctVal]);
   const candidates = [];
@@ -2429,6 +2574,7 @@ function drillKanjiSelection() {
 let vocabTileCategory = null;
 const vocabTileSelected = {};
 const vocabTileDrillMode = {}; // categoryKey -> boolean, remembered independently per category
+const vocabTileReversedMode = {}; // same idea, for the reversed-direction toggle
 // categoryKey -> boolean. When true, a "Select random 20" pick is active: the
 // real selection (used for drilling) is a genuine random 20, but every tile
 // is shown as selected and made non-interactive, so there's no visual way to
@@ -2440,6 +2586,13 @@ function toggleVocabTileDrillMode() {
   vocabTileDrillMode[categoryKey] = !vocabTileDrillMode[categoryKey];
   const card = document.getElementById('vocab-tile-drill-mode-card');
   if (card) card.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
+}
+
+function toggleVocabTileReversedMode() {
+  const categoryKey = vocabTileCategory;
+  vocabTileReversedMode[categoryKey] = !vocabTileReversedMode[categoryKey];
+  const card = document.getElementById('vocab-tile-reversed-mode-card');
+  if (card) card.classList.toggle('selected', !!vocabTileReversedMode[categoryKey]);
 }
 
 function showVocabTileSelection(categoryKey) {
@@ -2456,6 +2609,8 @@ function showVocabTileSelection(categoryKey) {
     modeCard.style.display = cat.noMeaningMode ? 'none' : 'flex';
     modeCard.classList.toggle('selected', !!vocabTileDrillMode[categoryKey]);
   }
+  const reversedCard = document.getElementById('vocab-tile-reversed-mode-card');
+  if (reversedCard) reversedCard.classList.toggle('selected', !!vocabTileReversedMode[categoryKey]);
   // Themes are reliably too big to make "Select all" worth offering, so it's
   // dropped there entirely rather than just being a pain to use. Everywhere
   // else keeps it, however large - see getRandomPickSize for the random-pick
@@ -2686,6 +2841,7 @@ function drillVocabTileSelection() {
   vocabTileRandomMode[categoryKey] = false;
   const cat = resolveVocabCategory(categoryKey);
   drillByMeaning = cat.noMeaningMode ? false : !!vocabTileDrillMode[categoryKey];
+  vocabReversed = !!vocabTileReversedMode[categoryKey];
   const items = cat.items;
   const selectedItems = [...set].sort((a, b) => a - b).map(idx => items[idx]);
   const customDeck = selectedItems.map(item => {
@@ -3561,7 +3717,7 @@ function saveDrillSession() {
   try {
     localStorage.setItem(DRILL_SESSION_KEY, JSON.stringify({
       deck, current, score, wrong, hints, missed, missedItems,
-      lastSettingsScreen, drillByMeaning, reversed,
+      lastSettingsScreen, drillByMeaning, reversed, vocabReversed,
       showHiraganaOnKatakana, showHiraganaOnKanji,
       savedAt: Date.now(),
     }));
@@ -3604,6 +3760,7 @@ function tryRestoreDrillSession() {
   lastSettingsScreen = saved.lastSettingsScreen || 'match-settings';
   drillByMeaning = !!saved.drillByMeaning;
   reversed = !!saved.reversed;
+  vocabReversed = !!saved.vocabReversed;
   showHiraganaOnKatakana = !!saved.showHiraganaOnKatakana;
   showHiraganaOnKanji = !!saved.showHiraganaOnKanji;
   // "Drill again" after a resumed session re-shuffles this same restored
@@ -4169,8 +4326,13 @@ function renderQuestion() {
   if (altEl) {
     // altIsStandard items hold back the "also written" reveal until after
     // answering - it becomes the "Normally shown as" feedback line instead
-    // (see choose()), so as not to show the same information twice.
-    if (q.altForm && !q.altIsStandard) {
+    // (see choose()), so as not to show the same information twice. Reversed
+    // word drills hold it back regardless of altIsStandard, since any
+    // Japanese text shown before answering would give away the very thing
+    // being tested (kanji items are unaffected - vocabReversed doesn't apply
+    // to them).
+    const reversedWordItem = q.disp === 'word' && vocabReversed;
+    if (q.altForm && !q.altIsStandard && !reversedWordItem) {
       altEl.innerHTML = 'also written: ' + markSmallKana(q.altForm);
       altEl.style.display = 'block';
     } else {
@@ -4199,7 +4361,40 @@ function renderQuestion() {
   const container = document.getElementById('q-options');
   container.innerHTML = '';
 
-  if (isWord) {
+  if (isWord && vocabReversed) {
+    // Reversed: the prompt is always the English meaning, and the 4 options
+    // are Japanese text - the mirror image of the normal isWord branch
+    // below. Deliberately NOT tied to drillByMeaning (that toggle only
+    // affects the forward direction below) - an earlier version borrowed it
+    // to also offer a romaji-shown variant here, but that was never actually
+    // asked for and just meant reversed's default silently depended on
+    // whatever the other toggle happened to be set to. English only, kept
+    // simple. q.char stays the true jp form throughout (scoring/hint logic
+    // elsewhere reads it directly), so only what's DISPLAYED as the prompt
+    // changes here.
+    const promptText = q.answerEn;
+    charDisplay.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    const len = promptText.length;
+    charDisplay.style.fontSize = len <= 8 ? '56px' : len <= 16 ? '40px' : '30px';
+    charDisplay.textContent = promptText;
+    document.getElementById('q-prompt').textContent = 'Which word matches this meaning?';
+    q.answer = q.char;
+    // The helper text under each option must NOT be the same field as the
+    // prompt, or the correct option becomes findable by plain text-matching
+    // against the prompt (e.g. prompt "obentou" + an option labelled
+    // "(obentou)") without reading any Japanese at all. Prompt is always
+    // English here, so the helper is always romaji.
+    const optionBottomField = 'rd';
+    q.options.forEach((o, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-rd" style="font-family:'BIZ UDPGothic', sans-serif;">${markSmallKana(o.jp)}</span><span class="opt-en">(${o[optionBottomField]})</span>`;
+      const val = o.jp;
+      btn.dataset.value = val;
+      btn.onclick = () => choose(btn, val, q.answer, q.char);
+      container.appendChild(btn);
+    });
+  } else if (isWord) {
     charDisplay.style.fontFamily = "'BIZ UDPGothic', sans-serif";
     const len = [...q.char].length;
     charDisplay.style.fontSize = len <= 4 ? '72px' : len <= 6 ? '56px' : '40px';
@@ -4337,6 +4532,11 @@ function choose(btn, selectedVal, answer, char) {
   const showingHiragana = !reversed && showHiraganaOnKatakana && isKanaItem &&
     currentQ.groupKey && currentQ.groupKey.startsWith('katakana-');
   const displayAnswer = showingHiragana ? (ROMAJI_TO_HIRAGANA[answer] || answer) : answer;
+  // Reversed word drills have Japanese text as the answer (rather than the
+  // usual romaji/English), so it needs the same small-kana wrapping used
+  // everywhere else real Japanese text gets inserted.
+  const reversedWordItem = currentQ && currentQ.disp === 'word' && vocabReversed;
+  const displayAnswerHtml = reversedWordItem ? markSmallKana(displayAnswer) : displayAnswer;
   if (selectedVal === answer) {
     score++;
     btn.classList.add('correct');
@@ -4344,7 +4544,7 @@ function choose(btn, selectedVal, answer, char) {
     fb.className = 'feedback good';
   } else {
     btn.classList.add('wrong');
-    fb.innerHTML = `Not quite — the answer is "${displayAnswer}"` + hint + standardNote;
+    fb.innerHTML = `Not quite — the answer is "${displayAnswerHtml}"` + hint + standardNote;
     fb.className = 'feedback bad';
     wrong++;
     // Tracked as char+answer, not bare char - a handful of characters do
