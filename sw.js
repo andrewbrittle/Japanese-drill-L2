@@ -12,11 +12,12 @@
 // stamp (in index.html) is bumped, so old cached files get cleared out and
 // replaced next time an offline-enabled user is back online. Forgetting
 // this is exactly how a PWA ends up stuck showing someone a stale version.
-const CACHE_VERSION = 'jp-drill-v260727-013';
+const CACHE_VERSION = 'jp-drill-v260727-014';
 
 const PRECACHE_URLS = [
   './',
   './index.html',
+  './instructions.html',
   './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',

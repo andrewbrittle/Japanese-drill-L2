@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Instructions — Japanese Drill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --text: #f8f6f2;
+    --text-muted: rgba(248,246,242,0.66);
+    --text-dim: rgba(248,246,242,0.42);
+    --accent: #e8c97a;
+    --accent-dim: rgba(232,201,122,0.12);
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #efece4;
+    --text: #1a1a1a;
+    --text-muted: rgba(26,26,26,0.66);
+    --text-dim: rgba(26,26,26,0.45);
+    --accent: #a9740f;
+    --accent-dim: rgba(169,116,15,0.12);
+    --border: rgba(0,0,0,0.10);
+    --border-hover: rgba(0,0,0,0.20);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 20px 64px; }
+  .back-link {
+    display: inline-block; font-size: 13px; font-weight: 600; color: var(--text-muted);
+    text-decoration: none; border: 1px solid var(--border); border-radius: 99px;
+    padding: 6px 14px; margin-bottom: 20px;
+  }
+  .back-link:hover { border-color: var(--border-hover); color: var(--text); }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h1 span { color: var(--accent); }
+  .byline { font-size: 13px; font-weight: 600; color: var(--text-dim); margin-bottom: 18px; }
+  .intro { font-size: 15px; color: var(--text-muted); margin-bottom: 32px; }
+  h2 {
+    font-size: 17px; color: var(--accent); border-top: 1px solid var(--border);
+    padding-top: 24px; margin: 32px 0 12px;
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 { font-size: 15px; color: var(--text); margin: 20px 0 8px; }
+  p { font-size: 14.5px; color: var(--text-muted); margin: 0 0 12px; }
+  .setting {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; margin-bottom: 8px;
+  }
+  .setting-name { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .setting-desc { font-size: 13.5px; color: var(--text-muted); }
+  ul { margin: 0 0 12px; padding-left: 20px; }
+  li { font-size: 14.5px; color: var(--text-muted); margin-bottom: 4px; }
+  .note {
+    font-size: 13px; color: var(--text-dim); background: var(--surface2);
+    border-radius: 8px; padding: 8px 12px; margin: 10px 0 16px;
+  }
+  .footer { margin-top: 40px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="./index.html">← Back to the app</a>
+
+  <h1>A simple Japanese <span>language drilling app</span></h1>
+  <div class="byline">Andrew Brittle, 2026</div>
+  <p class="intro">
+    I started putting this together as a simple tool to help me drill Japanese —
+    I have a trip to Japan coming up, and I've tried to learn hiragana and katakana
+    a few times and failed miserably. This time I did it as part of Japanese
+    language lessons. As the lessons went on I expanded it to cover the vocabulary
+    we were covering in class, and started building some extra bits for myself
+    that were outside the scope of the lessons.
+  </p>
+  <p class="intro">
+    What you see here is that development to date. It's changing all the time and
+    new bits are being added, but in theory you can turn off all of the "Andrew
+    mode" stuff and focus just on what you need to.
+  </p>
+
+  <h2>Settings</h2>
+  <div class="setting">
+    <div class="setting-name">Light theme</div>
+    <div class="setting-desc">Switches from a dark to light theme.</div>
+  </div>
+  <div class="setting">
+    <div class="setting-name">Show kanji content</div>
+    <div class="setting-desc">At the beginning of this project I collected together a small set of survival kanji, as things I might encounter on my trip. The list grew and eventually there was significant overlap with N5 kanji. The collection here is aligned with N5 but doesn't include "white" — there was nowhere to put it at the time.</div>
+  </div>
+  <div class="setting">
+    <div class="setting-name">Show Extra content</div>
+    <div class="setting-desc">Shows the extra categories I've added for myself. Initially colours, "useful words for the trip", and more recently "UK Places". UK Places is really just to supplement the selection of places we've come across in the lessons.</div>
+  </div>
+  <div class="setting">
+    <div class="setting-name">Show "Themes"</div>
+    <div class="setting-desc">This might be an interesting one as it develops. The normal reading challenges work on individual categories in one level of the course. Themes can go across levels and can also include words from the Extra categories — things like "Travel and UK places", "Around the world" (countries and cities), "Days and times" (vocab associated with both groups), and so on. If you have Extra turned off, the Extra words won't be included in the drilling.</div>
+  </div>
+  <div class="setting">
+    <div class="setting-name">Half credit for hinted answers</div>
+    <div class="setting-desc">All drilling offers an audio clip to help you answer, but some people might think that's cheating. If you agree, you can penalise yourself by only getting half marks if you listen to a hint before answering. You can still listen as many times as you like afterwards.</div>
+  </div>
+  <div class="setting">
+    <div class="setting-name">Work offline</div>
+    <div class="setting-desc">Caches the application so it doesn't need to be online to work. It's a very small app so this doesn't really get in the way. It's a Progressive Web App, which means it's just a webpage that tries to pretend it's not in a browser.</div>
+  </div>
+  <div class="setting">
+    <div class="setting-name">Activate Andrew mode</div>
+    <div class="setting-desc">Whatever mad scheme I'm working on will be visible by turning this on. I'm unlikely to be taking anything away from the app, so it's probably new stuff that gets enabled by this.</div>
+  </div>
+
+  <h2>Scoring</h2>
+  <p>
+    In the background everything is scored 0.5 for a correct answer and -0.75 for
+    an incorrect one. The lower limit for scoring is -2 and the upper limit is +2.
+    The score will show as a shade of red or green (or blue if it's back to zero
+    again).
+  </p>
+
+  <h2>Hiragana drilling</h2>
+  <p>Select whether you want the base set of characters, dakuten/handakuten, or contracted.</p>
+  <p>You can either select the whole set for drilling, or individual rows.</p>
+  <p>There's a toggle before you start to drill that lets you decide whether to have the kana character as the big one on screen and choose from 4 romaji options, or romaji as the big character and choose from 4 hiragana.</p>
+  <p>You can click to hear an audio clip.</p>
+  <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
+
+  <h2>Katakana drilling</h2>
+  <p>Select whether you want the base set of characters, dakuten/handakuten, or contracted.</p>
+  <p>You can either select the whole set for drilling, or individual rows.</p>
+  <p>There's a toggle before you start to drill that lets you decide whether to have the kana character as the big one on screen and choose from 4 romaji options, or romaji as the big character and choose from 4 katakana.</p>
+  <p>There's another toggle that will replace the romaji completely and only show a comparison between katakana and hiragana. It felt like it might be a nice challenge to remove the romaji from this, if you feel brave.</p>
+  <p>You can click to hear an audio clip.</p>
+  <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
+
+  <h2>Kanji drilling</h2>
+  <p>This will only appear if you have kanji switched on.</p>
+  <p>Select which set you want — numbers, nature, food, places, travel, people, general, verbs.</p>
+  <p>You can either select individual kanji or the whole set for drilling. Yes, you can game the system by selecting one and continuously drilling it, because there's only one right answer. But that's just letting yourself down.</p>
+  <p>There's another toggle that will replace the romaji with English and only show a large kanji, with the options shown in English and hiragana — so there's no romaji to immediately match with the audio clip.</p>
+  <p>You can click to hear an audio clip.</p>
+  <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
+
+  <h2>Drill</h2>
+  <p>This doesn't actually do very much at all, and I'm looking for a reason to take it off.</p>
+
+  <h2>Vocab</h2>
+  <p>This has a few options.</p>
+
+  <h3>Read</h3>
+  <p><strong>Reading numbers</strong> — presents 10 random numbers. These are mostly 1–9,999 but there's a 1 in 20 chance of a bigger number up to 50,000, to practice <em>man</em>. Correct answers score 0.1, incorrect answers score -0.1.</p>
+  <p><strong>Reading times</strong> — presents 10 times with from/until/at and around qualifiers, and am/pm indicators. Correct answers score 0.1, incorrect answers score -0.1.</p>
+  <p><strong>Specific time</strong> — instead of a random time, you can put an actual time in here together with the qualifiers, and it will tell you how that time would be read. It starts with the current time and has a refresh button.</p>
+  <p><strong>Reading words — everything</strong> — picks 20 random words from across all categories. Works the same way as everything else.</p>
+  <p><strong>Reading kanji — everything</strong> — picks 20 random kanji from across all categories. Works the same way as everything else.</p>
+  <p><strong>Highlight the meaning instead of sound</strong> — sounds complicated but it just really means that, on the four cards you're choosing from, the English word is highlighted above the romaji. You can't listen to the audio, or read the word and identify "it starts with 'a'", and guess it. You need to have an idea of the meaning too — you can read the sound underneath, but that just takes more effort. Normally you get the romaji on top, so "that word starts with 'mi' and so does this one" makes life easier for you.</p>
+  <p><strong>Reverse the drill direction</strong> — shows the English word as the big word and four kana words as the options.</p>
+
+  <h3>Level 1</h3>
+  <p>Sets of words covered in Level 1 of the course. These all work in the same way.</p>
+  <ul>
+    <li>Greetings and phrases</li>
+    <li>Countries</li>
+    <li>Occupations</li>
+    <li>Everyday items</li>
+    <li>Clothing and accessories</li>
+    <li>Places &amp; around the building</li>
+    <li>Numbers</li>
+  </ul>
+  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
+
+  <h3>Level 2</h3>
+  <p>Sets of words covered in Level 2 of the course, so still developing. These all work in the same way.</p>
+  <ul>
+    <li>General vocabulary</li>
+    <li>Question &amp; location words</li>
+    <li>Verbs</li>
+    <li>Transport</li>
+    <li>Places to go</li>
+    <li>UK Places</li>
+    <li>World Cities — there's a reference page with the endings of the minute words</li>
+    <li>Time vocabulary</li>
+    <li>Days of the week — there's a reference page with the days of the week listed in order</li>
+  </ul>
+  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
+
+  <h3>Extra</h3>
+  <p>Only appears if you've got it switched on. These all work in the same way.</p>
+  <ul>
+    <li>Colours</li>
+    <li>Useful words for the trip</li>
+    <li>UK Places — an additional set of 21 (mostly katakana)</li>
+  </ul>
+  <p>Others will be added here.</p>
+  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
+
+  <h3>Theme</h3>
+  <p>Only appears if you've got it switched on. Themes pull together content across levels, and across Extra and Andrew categories if you have them enabled, to give much bigger pools from which to drill random, vaguely connected words. These all work in the same way.</p>
+  <ul>
+    <li>Transport and UK places</li>
+    <li>Around the world</li>
+    <li>Days and times</li>
+    <li>Everyday items, clothing &amp; general vocab</li>
+  </ul>
+  <p>Others will be added here.</p>
+  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
+
+  <h3>Andrew mode</h3>
+  <p>Only appears if you've got it switched on. Whatever bits and pieces I'm testing at the moment. Most things here will eventually move to a proper home in the app, but can still be turned off if you want just the lessons.</p>
+  <p>At the moment these are new Extra sections I'm looking at, because I have just over a week and I want to know more words I might encounter. There's no chance of me learning them all in the time I have available, but "I think I've heard that word before" is going to be enough. Lots of words that aren't covered in the lessons, so if you don't want them, turn Extra off and don't turn Andrew mode on.</p>
+  <ul>
+    <li>Food and drink</li>
+    <li>Accommodation</li>
+    <li>Money and shopping</li>
+    <li>Directions and navigation</li>
+    <li>Emergency and survival</li>
+    <li>Weather</li>
+    <li>Signage and warnings</li>
+  </ul>
+  <p>Others will be added here, or taken away. It's a mystery. Who knows?</p>
+  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
+
+  <div class="footer">
+    <a class="back-link" href="./index.html">← Back to the app</a>
+  </div>
+</div>
+<script>
+  // Match whichever theme the app itself is currently set to, since this page
+  // shares localStorage with index.html on the same origin.
+  try {
+    const s = JSON.parse(localStorage.getItem('jpDrillSettings') || '{}');
+    if (s.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  } catch (e) {}
+</script>
+</body>
+</html>
