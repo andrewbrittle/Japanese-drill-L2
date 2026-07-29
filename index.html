@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Japanese Drill</title>
-<link href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic&display=swap" rel="stylesheet">
 <!-- PWA: manifest + icons (Add to Home Screen support) -->
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0f0f0f">
@@ -15,6 +14,21 @@
 <meta name="apple-mobile-web-app-title" content="JP Drill">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>
+  /* Self-hosted rather than pulled live from Google Fonts - that meant every
+     load depended on a network request succeeding fast enough, and on a slow
+     or blocked connection the browser would silently substitute whatever
+     Japanese font the device already had, which for some system fonts
+     renders characters like さ/き with their strokes joined into a single
+     flowing stroke instead of the separate, correct component strokes. Since
+     stroke shape is the whole point of a kana-learning app, this can't be
+     allowed to depend on a live third-party request succeeding. */
+  @font-face {
+    font-family: 'BIZ UDPGothic';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('fonts/BizUDPGothic-Regular.ttf') format('truetype');
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
@@ -642,7 +656,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.026</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.029</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -965,6 +979,34 @@
     </div>
 
     <div id="match-theme-view" style="display:none;">
+      <!-- Temporary duplicate of the Read tab's "Reading words - everything" -
+           same function (startRandomMatchEverything), reused here rather than
+           reimplemented, so there's only ever one place that actually builds
+           this pool. Once this screen replaces Read's version outright, the
+           original card goes and this becomes the only way in. -->
+      <div class="group-card" id="theme-all-vocab-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">All vocabulary</div>
+          <div class="group-chars">らんだむな ぜんぶ</div>
+          <div class="group-count">20 random words, from every category you currently have visible</div>
+        </div>
+        <div class="cat-swatch" id="theme-all-vocab-swatch"></div>
+      </div>
+      <!-- Only relevant if Kanji is switched on - see applyShowKanjiVisibility,
+           which toggles this alongside every other Kanji-gated element.
+           Temporary duplicate of the Read tab's "Random kanji" card, same
+           reasoning as the All vocabulary card above. Kept directly under All
+           vocabulary, and above the browse-first theme cards below - these
+           two go straight into drilling with no selection screen first, which
+           makes them a different kind of thing from the rest of this list. -->
+      <div class="group-card" id="theme-all-kanji-card" onclick="startRandomKanji()" style="cursor:pointer; display:none;">
+        <div class="group-info">
+          <div class="group-name">All kanji</div>
+          <div class="group-chars">らんだむな 漢字</div>
+          <div class="group-count">20 random kanji, from every section</div>
+        </div>
+        <div class="cat-swatch" id="theme-all-kanji-swatch"></div>
+      </div>
       <div class="group-card" data-theme-key="theme-transport-uk" onclick="showVocabTileSelection('theme-transport-uk')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Transport and UK Places</div>
@@ -994,6 +1036,30 @@
           <div class="group-name">Everyday items, clothing & general vocab</div>
           <div class="group-chars">かさ くつ かぞく…</div>
           <div class="group-count">Everyday items + Clothing + General vocabulary, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <!-- Getting around and Survival vocab (below) only show up in Andrew
+           mode - see applyShowAndrewModeVisibility. They were built earlier
+           but never actually given a card here, so they were live in data
+           only and unreachable in the app - moving them behind this gate now
+           rather than leaving them exposed to everyone, since part of each
+           one's pool is still Andrew-tier content (see the comment on
+           theme-survival-vocab in THEMES) that isn't ready to be presented
+           as finished yet. -->
+      <div class="group-card" data-theme-key="theme-getting-around" id="theme-getting-around-card" onclick="showVocabTileSelection('theme-getting-around')" style="cursor:pointer; display:none;">
+        <div class="group-info">
+          <div class="group-name">Getting around</div>
+          <div class="group-chars">でんしゃ ひだり きっぷ…</div>
+          <div class="group-count">Transport + Places to go + Directions, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <div class="group-card" data-theme-key="theme-survival-vocab" id="theme-survival-vocab-card" onclick="showVocabTileSelection('theme-survival-vocab')" style="cursor:pointer; display:none;">
+        <div class="group-info">
+          <div class="group-name">Survival vocab</div>
+          <div class="group-chars">たすけて けいさつ びょういん…</div>
+          <div class="group-count">Trip-prep + Emergency and survival, brought together</div>
         </div>
         <div class="cat-swatch"></div>
       </div>
@@ -2221,7 +2287,13 @@ const THEMES = {
     chars: 'かさ くつ かぞく…',
     groups: [['vocab-objects'], ['vocab-clothing'], ['vocab-general-l2']],
   },
+  // level here isn't read by getThemePool - visibility for this one is
+  // wired directly on its card (theme-getting-around-card) in
+  // applyShowAndrewModeVisibility, same as every other static theme card.
+  // Kept as a field anyway so it reads the same way VOCAB categories do, and
+  // is ready to use if the theme list ever becomes level-filtered generically.
   'theme-getting-around': {
+    level: 'andrew',
     label: 'Getting around',
     chars: 'でんしゃ ひだり きっぷ…',
     groups: [['vocab-transport'], ['vocab-places-to-go'], ['vocab-directions-navigation']],
@@ -2234,6 +2306,7 @@ const THEMES = {
   // sense trip-prep was always going for, just not narrowly about safety.
   // Named to fit what's actually in it rather than oversell the pairing.
   'theme-survival-vocab': {
+    level: 'andrew',
     label: 'Survival vocab',
     chars: 'たすけて けいさつ びょういん…',
     groups: [['vocab-trip-prep'], ['vocab-emergency-survival']],
@@ -2711,7 +2784,7 @@ const COLOUR_HUES = {
 // Deliberately distinct from --accent (gold), which .selected already owns -
 // same border-slot handoff the Colours category already does: level colour
 // while unselected, gold once selected.
-const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', extra: '#9b59d0' };
+const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', extra: '#9b59d0', andrew: '#3fbfa6' };
 
 function interpolateRgb(from, to, t) {
   return from.map((f, i) => Math.round(f + (to[i] - f) * t));
@@ -2950,9 +3023,19 @@ function drillVocabTileSelection() {
   startDrill(shuffle(customDeck));
 }
 
-function buildRandomKanjiPool() {
+// Pulled out of buildRandomKanjiPool so the "All kanji" card on the Themes
+// screen can compute its confidence swatch from the exact same full,
+// unsliced pool the actual drill draws its 20 from - rather than a second,
+// separately-maintained copy of "every kanji everywhere" that could drift
+// out of sync with it.
+function getAllKanjiFlat() {
   const allKanji = [];
   KANJI_KEYS.forEach(k => DATA[k].forEach(q => allKanji.push(Object.assign({groupKey: k}, q))));
+  return allKanji;
+}
+
+function buildRandomKanjiPool() {
+  const allKanji = getAllKanjiFlat();
   const pool = shuffle(allKanji).slice(0, 20);
   return pool.map(item => Object.assign({}, item, { options: buildKanjiOptionsFromPool(item, allKanji) }));
 }
@@ -3566,6 +3649,8 @@ function applyShowKanjiVisibility() {
   if (kanjiPill) kanjiPill.style.display = on ? '' : 'none';
   const kanjiReadCard = document.getElementById('read-pool-kanji');
   if (kanjiReadCard) kanjiReadCard.style.display = on ? '' : 'none';
+  const kanjiThemeCard = document.getElementById('theme-all-kanji-card');
+  if (kanjiThemeCard) kanjiThemeCard.style.display = on ? 'flex' : 'none';
   // If Kanji gets switched off while its selection screen happens to be
   // open, there's nothing sensible left showing - fall back to Vocab.
   const kanjiScreen = document.getElementById('screen-kanji-selection');
@@ -3654,6 +3739,12 @@ function applyShowAndrewModeVisibility() {
   if (!on && currentMatchLevel === 'andrew') setMatchLevel('read');
   const card = document.getElementById('show-andrew-mode-toggle-card');
   if (card) card.classList.toggle('selected', on);
+  // Themes that still lean on Andrew-tier source categories - see the two
+  // cards' own comments in the Themes list.
+  const gettingAroundCard = document.getElementById('theme-getting-around-card');
+  if (gettingAroundCard) gettingAroundCard.style.display = on ? 'flex' : 'none';
+  const survivalCard = document.getElementById('theme-survival-vocab-card');
+  if (survivalCard) survivalCard.style.display = on ? 'flex' : 'none';
 }
 
 function toggleShowAndrewMode() {
@@ -3989,6 +4080,20 @@ function categoryConfidenceClass(avg) {
   return band ? 'cat-conf-' + band : '';
 }
 
+// Same averaging rule as getItemsAverageScore, but for raw kanji DATA items
+// (char/answer) rather than VOCAB items (jp/en) - getScoreKey() uses
+// char+'|'+answer for kanji, so this mirrors that exactly rather than
+// reusing the vocab version, which would build the wrong key for these.
+function getItemsAverageScoreKanji(items) {
+  if (!items || !items.length) return null;
+  let total = 0, count = 0;
+  items.forEach(item => {
+    const key = item.char + '|' + item.answer;
+    if (key in kanaScores) { total += kanaScores[key]; count++; }
+  });
+  return count ? total / count : null;
+}
+
 const CAT_CONF_CLASSES = CONFIDENCE_BANDS.map(b => 'cat-conf-' + b);
 
 // The two Extra-tier cards (Colours, Trip prep) are static HTML, not rebuilt
@@ -4016,6 +4121,22 @@ function refreshThemeCategorySwatches() {
     const cls = categoryConfidenceClass(getItemsAverageScore(getThemePool(card.dataset.themeKey)));
     if (cls) swatch.classList.add(cls);
   });
+  // The All vocabulary / All kanji cards aren't theme-pool-backed (see the
+  // comments on those cards), so they're not covered by the data-theme-key
+  // loop above and need their own averaging call each using the matching
+  // item shape for their pool.
+  const vocabSwatch = document.getElementById('theme-all-vocab-swatch');
+  if (vocabSwatch) {
+    vocabSwatch.classList.remove(...CAT_CONF_CLASSES);
+    const cls = categoryConfidenceClass(getItemsAverageScore(getAllVocabPool()));
+    if (cls) vocabSwatch.classList.add(cls);
+  }
+  const kanjiSwatch = document.getElementById('theme-all-kanji-swatch');
+  if (kanjiSwatch) {
+    kanjiSwatch.classList.remove(...CAT_CONF_CLASSES);
+    const cls = categoryConfidenceClass(getItemsAverageScoreKanji(getAllKanjiFlat()));
+    if (cls) kanjiSwatch.classList.add(cls);
+  }
 }
 
 // Reference grids are built once and cached, but scores change as drilling
@@ -5287,7 +5408,11 @@ function startVocabReadingDeck(items, groupKey) {
   renderQuestion();
 }
 
-function startRandomMatchEverything() {
+// Pulled out of startRandomMatchEverything so the "All vocabulary" card on
+// the Themes screen can compute its confidence swatch from the exact same
+// pool the drill itself draws its 20 from, rather than a second copy of
+// "every category" that could quietly drift out of sync with it.
+function getAllVocabPool() {
   // Pull vocab items from every category regardless of level - but skip any
   // tier that's currently switched off (Extra, Andrew mode), same guard
   // used everywhere else that scans across levels (see categoryTierVisible).
@@ -5296,7 +5421,11 @@ function startRandomMatchEverything() {
     if (!categoryTierVisible(VOCAB[key].level)) return;
     VOCAB[key].items.forEach(item => allItems.push(item));
   });
-  startVocabReadingDeck(allItems, 'random-everything');
+  return allItems;
+}
+
+function startRandomMatchEverything() {
+  startVocabReadingDeck(getAllVocabPool(), 'random-everything');
 }
 
 applyAllSettingsUI();

@@ -12,7 +12,7 @@
 // stamp (in index.html) is bumped, so old cached files get cleared out and
 // replaced next time an offline-enabled user is back online. Forgetting
 // this is exactly how a PWA ends up stuck showing someone a stale version.
-const CACHE_VERSION = 'jp-drill-v260727-026';
+const CACHE_VERSION = 'jp-drill-v260727-029';
 
 const PRECACHE_URLS = [
   './',
@@ -23,6 +23,10 @@ const PRECACHE_URLS = [
   './icons/icon-512.png',
   './icons/icon-512-maskable.png',
   './icons/apple-touch-icon.png',
+  // Self-hosted now (was a live Google Fonts request) - precaching it here
+  // means it's guaranteed available offline from install, rather than only
+  // getting cached opportunistically after a first successful online load.
+  './fonts/BizUDPGothic-Regular.ttf',
 ];
 
 self.addEventListener('install', (event) => {
