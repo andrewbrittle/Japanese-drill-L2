@@ -409,6 +409,26 @@
   .vocab-ref-romaji { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
   .vocab-ref-jp.minute-jp { font-size: 18px; }
   .vocab-ref-romaji.minute-romaji { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  /* Dakuten/handakuten sound-shift reference (shown from the Hiragana and
+     Katakana selection screens) - groups of "base kana -> voiced kana" pairs
+     under a romaji-only heading like "h -> b", since there's no kana glyph
+     for a bare consonant on its own. */
+  .kana-transform-group-label {
+    font-size: 12px; font-weight: 700; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.04em;
+    margin: 0.9rem 0 0.3rem; padding-left: 0.2rem;
+  }
+  .kana-transform-group-label:first-child { margin-top: 0; }
+  .kana-transform-row {
+    display: flex; align-items: center; justify-content: center; gap: 1.1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.5rem 1rem; margin-bottom: 0.4rem;
+  }
+  .kana-transform-side { display: flex; flex-direction: column; align-items: center; min-width: 44px; }
+  .kana-transform-char { font-size: 24px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .kana-transform-char.accent { color: var(--accent); }
+  .kana-transform-rom { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+  .kana-transform-arrow { color: var(--text-dim); font-size: 15px; }
   .match-card-select .group-count { font-size: 12px; font-weight: 600; color: var(--text-dim); margin-top: 3px; }
 
   /* Level filter pills on Match screen */
@@ -622,7 +642,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.015</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.018</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -634,6 +654,9 @@
       <button class="level-pill active" data-section="base" onclick="switchHiraganaSection('base')">Base</button>
       <button class="level-pill" data-section="diacritics" onclick="switchHiraganaSection('diacritics')">Dakuten / handakuten</button>
       <button class="level-pill" data-section="youon" onclick="switchHiraganaSection('youon')">Contracted</button>
+    </div>
+    <div class="vocab-ref-card" id="hiragana-voicing-ref-card" style="display:none;" onclick="showKanaVoicingReference('hiragana')">
+      <span>Dakuten &amp; handakuten sound shifts — reference</span><span class="vocab-ref-arrow">→</span>
     </div>
     <div class="group-card emphasis" id="hiragana-select-all-card" onclick="toggleSelectAllHiragana()" style="cursor:pointer;">
       <div class="group-info">
@@ -662,6 +685,9 @@
       <button class="level-pill active" data-section="base" onclick="switchKatakanaSection('base')">Base</button>
       <button class="level-pill" data-section="diacritics" onclick="switchKatakanaSection('diacritics')">Dakuten / handakuten</button>
       <button class="level-pill" data-section="youon" onclick="switchKatakanaSection('youon')">Contracted</button>
+    </div>
+    <div class="vocab-ref-card" id="katakana-voicing-ref-card" style="display:none;" onclick="showKanaVoicingReference('katakana')">
+      <span>Dakuten &amp; handakuten sound shifts — reference</span><span class="vocab-ref-arrow">→</span>
     </div>
     <div class="group-card emphasis" id="katakana-select-all-card" onclick="toggleSelectAllKatakana()" style="cursor:pointer;">
       <div class="group-info">
@@ -1008,7 +1034,7 @@
     <div class="settings-title" id="vocab-ref-title">Reference</div>
     <div class="settings-sub">A quick look — tap Back when you're done.</div>
     <div id="vocab-ref-list"></div>
-    <button class="btn-secondary" onclick="showMatchSettings()">← Back</button>
+    <button class="btn-secondary" onclick="closeVocabReference()">← Back</button>
   </div>
 
   <!-- Match game screen -->
@@ -1685,7 +1711,7 @@ const VOCAB = {
       {jp:'えいが', romaji:'eiga', en:'movie', altForm:'映画', altIsStandard:true},
       {jp:'パーティー', romaji:'paatii', en:'party'},
       {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯', altIsStandard:true},
-      {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱'},
+      {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱', altIsStandard:true},
       {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節', altIsStandard:true},
       {jp:'しごと', romaji:'shigoto', en:'work / job', altForm:'仕事', altIsStandard:true},
     ],
@@ -1920,7 +1946,7 @@ const VOCAB = {
       {jp:'オックスフォード', romaji:'okkusufoodo', en:'Oxford', altForm:'おっくすふぉーど'},
       {jp:'ポーツマス', romaji:'pootsumasu', en:'Portsmouth', altForm:'ぽーつます'},
       {jp:'シェフィールド', romaji:'shefiirudo', en:'Sheffield', altForm:'しぇふぃーるど'},
-      {jp:'しゃーうっどのもり', romaji:'shaawuddo no mori', en:'Sherwood Forest', altForm:'シャーウッドの森'},
+      {jp:'シャーウッドの森', romaji:'shaawuddo no mori', en:'Sherwood Forest', altForm:'しゃーうっどのもり'},
       {jp:'サウサンプトン', romaji:'sausanputon', en:'Southampton', altForm:'さうさんぷとん'},
       {jp:'ヨーク', romaji:'yooku', en:'York', altForm:'よーく'},
     ],
@@ -2923,9 +2949,19 @@ function showScreen(id) {
   if (inReadSubScreen) {
     navMatch.textContent = 'Back';
     navMatch.classList.add('sub-screen');
+    // This pill's onclick used to be hardcoded to tryResumeMatch() (jump to
+    // the Vocab > Read screen) in the HTML, which was fine while
+    // vocab-reference could only ever be opened from within Vocab. Now that
+    // the Hiragana/Katakana selection screens also open it (for the
+    // dakuten/handakuten reference), that hardcoded jump would silently
+    // strand those visits on the Read screen instead of taking them back to
+    // where they actually came from - so this pill defers to the same
+    // vocabRefBackTarget-aware function the in-page "← Back" button uses.
+    navMatch.onclick = id === 'vocab-reference' ? closeVocabReference : tryResumeMatch;
   } else {
     navMatch.textContent = 'Vocab';
     navMatch.classList.remove('sub-screen');
+    navMatch.onclick = tryResumeMatch;
   }
   if (id === 'hiragana-selection') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
   else if (id === 'katakana-selection') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
@@ -3667,6 +3703,7 @@ const SCORE_KEY_RENAMES = [
   ['じむ|gym', 'ジム|gym'],
   ['ぷーる|pool', 'プール|pool'],
   ['すーぱー|supermarket', 'スーパー|supermarket'],
+  ['しゃーうっどのもり|Sherwood Forest', 'シャーウッドの森|Sherwood Forest'],
 ];
 SCORE_KEY_RENAMES.forEach(([oldKey, newKey]) => {
   if (oldKey in kanaScores && !(newKey in kanaScores)) {
@@ -4773,6 +4810,8 @@ function switchHiraganaSection(sectionKey) {
   });
   document.getElementById('hira-selection-drill-btn').disabled = hiraganaSelectedRows[sectionKey].size === 0;
   updateSelectAllHiraganaLabel();
+  const refCard = document.getElementById('hiragana-voicing-ref-card');
+  if (refCard) refCard.style.display = sectionKey === 'base' ? 'none' : 'flex';
 }
 
 function drillHiraganaSelection() {
@@ -4920,6 +4959,8 @@ function switchKatakanaSection(sectionKey) {
   });
   document.getElementById('kata-selection-drill-btn').disabled = katakanaSelectedRows[sectionKey].size === 0;
   updateSelectAllKatakanaLabel();
+  const refCard = document.getElementById('katakana-voicing-ref-card');
+  if (refCard) refCard.style.display = sectionKey === 'base' ? 'none' : 'flex';
 }
 
 function drillKatakanaSelection() {
@@ -5042,7 +5083,17 @@ function selectRandomMatchCard(card) {
   document.getElementById('match-start-btn').disabled = false;
 }
 
+// Where the vocab-reference screen's Back button returns to - reference
+// screens get opened from several different places (Vocab > L2, and now the
+// Hiragana/Katakana selection screens), so this can't be hardcoded the way
+// it used to be (always straight back to Vocab settings).
+let vocabRefBackTarget = 'match-settings';
+function closeVocabReference() {
+  showScreen(vocabRefBackTarget);
+}
+
 function showMinuteReference() {
+  vocabRefBackTarget = 'match-settings';
   document.getElementById('vocab-ref-title').textContent = 'Minute endings (1–10)';
   const list = document.getElementById('vocab-ref-list');
   list.className = 'tight-list';
@@ -5065,6 +5116,7 @@ function showMinuteReference() {
 }
 
 function showVocabReference(categoryKey) {
+  vocabRefBackTarget = 'match-settings';
   const v = VOCAB[categoryKey];
   document.getElementById('vocab-ref-title').textContent = v.label;
   const list = document.getElementById('vocab-ref-list');
@@ -5084,6 +5136,71 @@ function showVocabReference(categoryKey) {
       </div>
     `;
     list.appendChild(row);
+  });
+  showScreen('vocab-reference');
+}
+
+// Which base row (in HIRAGANA_SECTIONS.base / KATAKANA_SECTIONS.base) feeds
+// which diacritics row (in ...SECTIONS.diacritics), grouped under a
+// romaji-only label - there's no kana glyph for a bare consonant on its own,
+// so "h -> b" is written with letters rather than trying to show it in kana.
+// Katakana's diacritics list has an extra row (ヴ/vu, its own single-tile
+// row with no hiragana equivalent) sitting between ba and pa, hence the
+// diaRow index for "h -> p" differing between the two scripts.
+const KANA_VOICING_GROUPS = {
+  hiragana: [
+    { label: 'k → g', baseRow: 1, diaRow: 0 },
+    { label: 's → z', baseRow: 2, diaRow: 1 },
+    { label: 't → d', baseRow: 3, diaRow: 2 },
+    { label: 'h → b', baseRow: 5, diaRow: 3 },
+    { label: 'h → p', baseRow: 5, diaRow: 4 },
+  ],
+  katakana: [
+    { label: 'k → g', baseRow: 1, diaRow: 0 },
+    { label: 's → z', baseRow: 2, diaRow: 1 },
+    { label: 't → d', baseRow: 3, diaRow: 2 },
+    { label: 'h → b', baseRow: 5, diaRow: 3 },
+    { label: 'h → p', baseRow: 5, diaRow: 5 },
+  ],
+};
+
+// Reference page for the dakuten/handakuten sound shifts - opened from the
+// Hiragana and Katakana selection screens whenever the Dakuten/handakuten or
+// Contracted tab is active (contracted sounds are built on top of the voiced
+// row too, e.g. ぎゃ needs the き -> ぎ shift, so it's useful there as well).
+function showKanaVoicingReference(kind) {
+  vocabRefBackTarget = kind === 'hiragana' ? 'hiragana-selection' : 'katakana-selection';
+  const sections = kind === 'hiragana' ? HIRAGANA_SECTIONS : KATAKANA_SECTIONS;
+  document.getElementById('vocab-ref-title').textContent = 'Dakuten & handakuten';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+  KANA_VOICING_GROUPS[kind].forEach(group => {
+    const heading = document.createElement('div');
+    heading.className = 'kana-transform-group-label';
+    heading.textContent = group.label;
+    list.appendChild(heading);
+    const baseRow = sections.base.rows[group.baseRow];
+    const diaRow = sections.diacritics.rows[group.diaRow];
+    baseRow.forEach(([baseChar, baseRom], i) => {
+      const voiced = diaRow[i];
+      if (!baseChar || !voiced) return;
+      const [voicedChar, voicedRom] = voiced;
+      const row = document.createElement('div');
+      row.className = 'kana-transform-row';
+      row.innerHTML = `
+        <span class="kana-transform-side">
+          <span class="kana-transform-char">${baseChar}</span>
+          <span class="kana-transform-rom">${baseRom}</span>
+        </span>
+        <span class="kana-transform-arrow">→</span>
+        <span class="kana-transform-side">
+          <span class="kana-transform-char accent">${voicedChar}</span>
+          <span class="kana-transform-rom">${voicedRom}</span>
+        </span>
+      `;
+      list.appendChild(row);
+    });
   });
   showScreen('vocab-reference');
 }
