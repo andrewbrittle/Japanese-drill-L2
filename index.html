@@ -642,7 +642,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.019</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.023</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1492,6 +1492,7 @@ const VOCAB = {
       {jp:'ありがとうございました', romaji:'arigatou gozaimashita', en:'Thank you very much'},
       {jp:'ちがいます', romaji:'chigaimasu', en:"That's wrong / That's different"},
       {jp:'おかえりなさい', romaji:'okaerinasai', en:'Welcome home'},
+      {jp:'すばらしい', romaji:'subarashii', en:'Wonderful / splendid', altForm:'素晴らしい', altIsStandard:true},
       {jp:'はい、わかります', romaji:'hai wakarimasu', en:'Yes, I understand'},
       {jp:'どういたしまして', romaji:'douitashimashite', en:"You're welcome"},
     ],
@@ -2143,6 +2144,38 @@ const VOCAB = {
       {jp:'ていきゅうび', romaji:'teikyuubi', en:'regular closing day', altForm:'定休日', altIsStandard:true},
       {jp:'スタッフのみ', romaji:'sutaffu nomi', en:'staff only'},
       {jp:'ゆかが ぬれています', romaji:'yuka ga nureteimasu', en:'wet floor'},
+    ],
+  },
+  // Last of the 7 originally-sketched Andrew-mode categories. Deliberately
+  // doesn't touch vocab-greetings - nothing gets moved out of there (see the
+  // Extra/showAndrewMode visibility discussion: Level 1 content is always
+  // visible to everyone, so anything relocated out of it into an Andrew/Extra
+  // -gated category would be a real loss for anyone with Extra switched off).
+  // Only genuinely new phrases live here - restaurant/photo/small-talk lines
+  // that Greetings, Money and shopping, Directions and navigation, and
+  // Emergency and survival don't already cover.
+  'vocab-tourist-phrases': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Polite tourist phrases',
+    chars: 'かんぱい おげんきですか…',
+    items: [
+      {jp:'おさきに どうぞ', romaji:'osaki ni douzo', en:'after you'},
+      {jp:'べじたりあんの りょうりは ありますか', romaji:'bejitarian no ryouri wa arimasu ka', en:'any vegetarian dishes?'},
+      {jp:'かんぱい', romaji:'kanpai', en:'cheers!', altForm:'乾杯', altIsStandard:true},
+      {jp:'おめでとうございます', romaji:'omedetou gozaimasu', en:'congratulations'},
+      {jp:'しゃしんを とって いただけますか', romaji:'shashin wo totte itadakemasu ka', en:'could you take a photo (for us)?'},
+      {jp:'かいて いただけますか', romaji:'kaite itadakemasu ka', en:'could you write it down, please?'},
+      {jp:'えいごの めにゅうは ありますか', romaji:'eigo no menyuu wa arimasu ka', en:'do you have an English menu?'},
+      {jp:'えいごを はなせますか', romaji:'eigo wo hanasemasu ka', en:'do you speak English?'},
+      {jp:'おげんきですか', romaji:'ogenki desu ka', en:'how are you?'},
+      {jp:'おいくつですか', romaji:'o ikutsu desu ka', en:'how old are you? (polite)'},
+      {jp:'にほんごが あまり はなせません', romaji:'nihongo ga amari hanasemasen', en:"I can't speak much Japanese"},
+      {jp:'しゃしんを とっても いいですか', romaji:'shashin wo tottemo ii desu ka', en:'is it okay to take a photo?'},
+      {jp:'このせきは あいていますか', romaji:'kono seki wa aiteimasu ka', en:'is this seat taken?'},
+      {jp:'おいしかったです', romaji:'oishikatta desu', en:'it was delicious (after eating)'},
+      {jp:'おすすめは なんですか', romaji:'osusume wa nan desu ka', en:'what do you recommend?'},
+      {jp:'といれは どこですか', romaji:'toire wa doko desu ka', en:'where is the toilet?'},
     ],
   },
 };
