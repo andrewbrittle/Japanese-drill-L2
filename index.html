@@ -159,7 +159,7 @@
   .settings-title { font-size: 22px; font-weight: 700; text-align: center; }
   .settings-sub { font-size: 14px; font-weight: 500; color: var(--text-muted); text-align: center; }
 
-  #match-read-view, #match-vocab-view, #match-extra-view, #match-theme-view { display: flex; flex-direction: column; gap: 1rem; }
+  #match-vocab-view, #match-theme-view { display: flex; flex-direction: column; gap: 1rem; }
 
   .group-card {
     background: var(--surface); border: 1px solid var(--border);
@@ -175,6 +175,12 @@
      shows English regardless), so it's greyed out and unclickable rather
      than left sitting there looking like it still does something. */
   .group-card.disabled { opacity: 0.35; pointer-events: none; cursor: default; }
+  /* Visually secondary but still fully clickable - unlike .disabled above,
+     used for settings that currently gate nothing (Andrew mode between
+     experiments) rather than settings that are inert while some other
+     condition holds. */
+  .group-card.dimmed .group-name { opacity: 0.6; }
+  .group-card.dimmed .group-count { opacity: 0.45; }
   .group-card.emphasis { border-color: var(--accent); }
 
   /* Select all / Random 20 side by side on the tile-selection screen - half
@@ -406,6 +412,14 @@
   .vocab-ref-arrow { color: var(--text-muted); }
   #vocab-ref-list { display: flex; flex-direction: column; gap: 0.6rem; }
   #vocab-ref-list.tight-list { gap: 0.4rem; }
+  .counter-unit-pills { margin-bottom: 0.3rem; gap: 5px; }
+  /* Tighter than the default .level-pill padding - these are short,
+     single-word labels (Mins/Hours/Days... or a single kanji), so the usual
+     generous padding just pushes the row into wrapping sooner than it needs
+     to. */
+  .counter-unit-pills .level-pill { padding: 4px 10px; font-size: 13px; }
+  .counter-tool-pills { margin-top: 0.5rem; }
+  .counter-tool-desc { text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 0.35rem; min-height: 15px; }
   .vocab-ref-row {
     background: var(--surface); border: 1px solid var(--border);
     border-radius: var(--radius); padding: 0.7rem 1rem;
@@ -423,6 +437,22 @@
   .vocab-ref-romaji { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
   .vocab-ref-jp.minute-jp { font-size: 18px; }
   .vocab-ref-romaji.minute-romaji { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  /* Day/week/month/year x past/present/future reference - two dimensions
+     rather than one, so it's a real grid instead of the usual row list.
+     Compact sizing throughout so 4 columns (row label + 3 tenses) fit on a
+     phone screen without wrapping. */
+  .time-unit-table { display: grid; grid-template-columns: minmax(46px, auto) repeat(3, 1fr); gap: 5px; }
+  .tu-cell {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 0.5rem 0.25rem; text-align: center;
+  }
+  .tu-header { background: transparent; border: none; font-size: 11px; font-weight: 700; color: var(--text-muted); padding: 0 0.25rem 0.2rem; align-self: end; }
+  .tu-rowlabel {
+    background: transparent; border: none; font-size: 13px; font-weight: 700; color: var(--accent);
+    text-align: left; padding: 0.25rem; display: flex; align-items: center;
+  }
+  .tu-jp { font-size: 16px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .tu-romaji { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
   /* Dakuten/handakuten sound-shift reference (shown from the Hiragana and
      Katakana selection screens) - groups of "base kana -> voiced kana" pairs
      under a romaji-only heading like "h -> b", since there's no kana glyph
@@ -459,16 +489,16 @@
   }
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
-  /* Ties the Level 1/2/Extra pill text to the same blue/orange/purple used
+  /* Ties the Level 1/2/Trip pill text to the same blue/orange/purple used
      for theme-tile borders (LEVEL_BORDER_COLORS in the script) - but only
-     while the Theme tab itself is the one being viewed (setMatchLevel toggles
+     while Collections itself is the one being viewed (setMatchLevel toggles
      "showing-theme-colours" on the row), since the colour only means anything
-     in that context - the rest of the time these pills look exactly like
-     Read. :not(.active) so the existing gold .active state still wins once a
-     pill is the one currently selected. */
+     in that context - the rest of the time these pills look like normal
+     unselected pills. :not(.active) so the existing gold .active state still
+     wins once a pill is the one currently selected. */
   #vocab-level-filter-row.showing-theme-colours #level-pill-1:not(.active) { color: #4d88e5; border-color: rgba(77,136,229,0.4); }
   #vocab-level-filter-row.showing-theme-colours #level-pill-2:not(.active) { color: #e88a4d; border-color: rgba(232,138,77,0.4); }
-  #vocab-level-filter-row.showing-theme-colours #level-pill-extra:not(.active) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
+  #vocab-level-filter-row.showing-theme-colours #level-pill-trip:not(.active) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
 
   /* "Specific time" lookup tool, under Reading times on the Vocab page */
   .time-tool-row {
@@ -481,14 +511,14 @@
   .time-tool-entry { display: flex; align-items: center; gap: 4px; font-weight: 600; color: var(--text-muted); }
   .time-tool-entry select {
     background: var(--surface2); color: var(--text); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 5px 8px; font-size: 15px; font-weight: 600;
+    border-radius: var(--radius); padding: 5px 8px; font-size: 18px; font-weight: 600;
     font-family: inherit; cursor: pointer;
   }
   .time-tool-output {
     margin-top: 0.5rem; text-align: center; padding: 0.45rem;
     background: var(--surface2); border-radius: var(--radius);
   }
-  .time-tool-output .time-tool-jp { display: block; font-size: 20px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .time-tool-output .time-tool-jp { display: block; font-size: 17px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
   .time-tool-output .time-tool-rd { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
   .time-tool-reset-btn {
     flex-shrink: 0;
@@ -499,6 +529,21 @@
     transition: all 0.15s;
   }
   .time-tool-reset-btn:hover { border-color: var(--border-hover); background: var(--surface2); }
+
+  /* "Specific number" lookup tool, alongside Specific time on the Numbers
+     screen - a big, centered number entry rather than dropdowns, since the
+     range is too wide for a picker to make sense. */
+  .number-tool-input {
+    display: block; width: 100%; box-sizing: border-box; margin-top: 0.4rem;
+    background: var(--surface2); color: var(--text); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 0.5rem; font-size: 32px; font-weight: 800;
+    text-align: center; font-family: inherit;
+  }
+  .number-tool-input:focus { outline: none; border-color: var(--accent); }
+  .number-tool-output { margin-top: 0.5rem; text-align: center; padding: 0.45rem; background: var(--surface2); border-radius: var(--radius); }
+  .number-tool-output .number-tool-jp { display: block; font-size: 26px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .number-tool-output .number-tool-rd { display: block; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  .number-tool-hint { font-size: 12px; color: var(--text-muted); margin-top: 0.35rem; text-align: center; }
 
   /* "Export my scores" debug tool, Settings screen - see HTML comment there */
   .export-scores-box {
@@ -566,7 +611,7 @@
       <button class="nav-pill" onclick="showHiraganaSelection()">ひらがな</button>
       <button class="nav-pill" id="nav-katakana" onclick="showKatakanaSelection()">カタカナ</button>
       <button class="nav-pill" id="nav-kanji" onclick="tryResumeKanji()">漢字</button>
-      <button class="nav-pill" id="nav-drill" onclick="tryResume()">Drill</button>
+      <button class="nav-pill" id="nav-numbers" onclick="tryResumeOrNumbers()">Numbers</button>
       <button class="nav-pill active" id="nav-match" onclick="tryResumeMatch()">Vocab</button>
     </div>
   </div>
@@ -599,22 +644,6 @@
       <div class="toggle" id="show-kanji-toggle"></div>
     </div>
 
-    <div class="group-card" id="show-extra-toggle-card" onclick="toggleShowExtra()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name">Show Extra content</div>
-        <div class="group-count">"Extra" vocab (Colours, Trip-prep, additional UK places) isn't part of the course — on by default so nothing's hidden unless you turn it off</div>
-      </div>
-      <div class="toggle" id="show-extra-toggle"></div>
-    </div>
-
-    <div class="group-card" id="show-themes-toggle-card" onclick="toggleShowThemes()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name">Show "Themes"</div>
-        <div class="group-count">Adds a "Theme" tab to Vocab that brings words together from across Level 1 and Level 2 into broader topics (e.g. Transport + UK Places). Off by default until you turn it on</div>
-      </div>
-      <div class="toggle" id="show-themes-toggle"></div>
-    </div>
-
     <div class="group-card" id="hint-penalty-toggle-card" onclick="toggleHintPenalty()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Half credit for hinted answers</div>
@@ -631,10 +660,18 @@
       <div class="toggle" id="offline-toggle"></div>
     </div>
 
-    <div class="group-card" id="show-andrew-mode-toggle-card" onclick="toggleShowAndrewMode()" style="cursor:pointer;">
+    <div class="group-card" id="show-trip-vocab-toggle-card" onclick="toggleShowTripVocab()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Trip vocabulary</div>
+        <div class="group-count">Words specific to travelling to Japan (food, money, directions, emergencies, tourist phrases) rather than course content — adds a "Trip" pill on its own row under Vocab. Off by default so it doesn't clutter things for anyone not travelling</div>
+      </div>
+      <div class="toggle" id="show-trip-vocab-toggle"></div>
+    </div>
+
+    <div class="group-card dimmed" id="show-andrew-mode-toggle-card" onclick="toggleShowAndrewMode()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Activate Andrew mode</div>
-        <div class="group-count">Personal staging area for new vocab that isn't ready for the class yet — adds an "Andrew" pill on its own row under Vocab. Off by default; nobody else will see it unless they flip this on themselves</div>
+        <div class="group-count">Personal staging area for whatever's being tried out next, before it's decided whether it becomes core or its own gated tier (like Trip vocabulary above) — currently empty, adds an "Andrew" pill on its own row under Vocab when there's something to show</div>
       </div>
       <div class="toggle" id="show-andrew-mode-toggle"></div>
     </div>
@@ -656,7 +693,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260727.029</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260730.013</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -858,82 +895,149 @@
       </div>
     </div>
   </div>
+  <!-- Numbers screen - reading challenges and tools for numbers, times, and
+       (eventually) counters. Reached via its own nav pill rather than living
+       under Vocab, since these are generated-on-the-fly reading challenges,
+       not fixed vocab lists like everything else in Vocab. -->
+  <div class="screen" id="screen-numbers">
+    <div class="settings-title">Numbers</div>
+    <div class="settings-sub">Reading challenges for numbers, times, and counters.</div>
+
+    <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Reading numbers</div>
+        <div class="group-chars">らんだむな すうじ</div>
+        <div class="group-count">10 random numbers per round</div>
+      </div>
+      <div class="score-swatch" id="numbers-score-swatch"></div>
+    </div>
+
+    <div class="group-card" style="cursor:default; display:block;">
+      <div class="group-info">
+        <div class="group-name">Specific number</div>
+        <div class="group-count">Type a number to see how it's said in Japanese</div>
+      </div>
+      <input class="number-tool-input" id="number-tool-input" type="number" inputmode="numeric" min="0" max="99999" step="1" placeholder="0" oninput="updateNumberTool()">
+      <div class="number-tool-hint">Up to 99,999</div>
+      <div class="number-tool-output" id="number-tool-output"></div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Reading times</div>
+        <div class="group-chars">ごぜん くじ はん</div>
+        <div class="group-count">10 random times per round, with qualifiers</div>
+      </div>
+      <div class="score-swatch" id="times-score-swatch"></div>
+    </div>
+    <div class="group-card" style="cursor:default; display:block;">
+      <div class="group-info">
+        <div class="group-name">Specific time</div>
+        <div class="group-count">Pick a time to see how it's said in Japanese</div>
+      </div>
+      <div class="time-tool-row">
+        <div class="time-tool-frames">
+          <button class="level-pill" id="time-tool-frame-ni" onclick="setTimeToolFrame('ni')">at</button>
+          <button class="level-pill" id="time-tool-frame-made" onclick="setTimeToolFrame('made')">until</button>
+          <button class="level-pill" id="time-tool-frame-goro" onclick="setTimeToolFrame('goro')">around</button>
+          <button class="level-pill" id="time-tool-frame-kara" onclick="setTimeToolFrame('kara')">from</button>
+        </div>
+        <div class="time-tool-entry">
+          <select id="time-tool-hour" onchange="updateTimeTool()"></select>
+          <span>:</span>
+          <select id="time-tool-minute" onchange="updateTimeTool()"></select>
+        </div>
+        <div class="time-tool-ampm">
+          <button class="level-pill" id="time-tool-ampm-gozen" onclick="setTimeToolAmpm('gozen')">AM</button>
+          <button class="level-pill" id="time-tool-ampm-gogo" onclick="setTimeToolAmpm('gogo')">PM</button>
+        </div>
+        <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()" title="Reset to current time" aria-label="Reset to current time">↺</button>
+      </div>
+      <div class="time-tool-output" id="time-tool-output"></div>
+    </div>
+
+    <div class="section-divider"></div>
+
+    <div class="vocab-ref-card" onclick="showItemCountersReference()">
+      <span>Counters for people, objects, animals — reference</span><span class="vocab-ref-arrow">→</span>
+    </div>
+    <div class="vocab-ref-card" onclick="showCountersReference()">
+      <span>Minutes / hours / days / weeks / months / years — reference</span><span class="vocab-ref-arrow">→</span>
+    </div>
+
+    <div class="group-card" style="cursor:default; display:block;">
+      <div class="group-info">
+        <div class="group-name">Specific counter</div>
+        <div class="group-count">Pick a counter type and a number to see how it's said</div>
+      </div>
+      <div class="counter-tool-pills level-filter-row counter-unit-pills" id="counter-tool-pills"></div>
+      <div class="counter-tool-desc" id="counter-tool-desc"></div>
+      <input class="number-tool-input" id="counter-tool-input" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" placeholder="1" oninput="updateCounterTool()">
+      <div class="number-tool-hint">1–10 for now</div>
+      <div class="number-tool-output" id="counter-tool-output"></div>
+    </div>
+  </div>
+
   <!-- Match settings screen -->
   <div class="screen visible" id="screen-match-settings">
     <div class="settings-title">Vocab</div>
     <div class="settings-sub">Pick a word set, or try a random reading challenge.</div>
 
     <div class="level-filter-row" id="vocab-level-filter-row">
-      <button class="level-pill active" id="level-pill-read" onclick="setMatchLevel('read')">Read</button>
+      <button class="level-pill active" id="level-pill-theme" onclick="setMatchLevel('theme')">Collections</button>
       <button class="level-pill" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
       <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
-      <button class="level-pill" id="level-pill-extra" onclick="setMatchLevel('extra')">Extra</button>
-      <button class="level-pill" id="level-pill-theme" onclick="setMatchLevel('theme')">Theme</button>
+      <!-- Trip vocabulary - words specific to travelling to Japan, useful to
+           anyone, not just Andrew. In line with the others (unlike Andrew
+           below) since it's a real, named tier rather than a scratchpad -
+           hidden via display:none until switched on (see
+           applyShowTripVocabVisibility). -->
+      <button class="level-pill" id="level-pill-trip" onclick="setMatchLevel('trip')" style="display:none;">Trip</button>
     </div>
 
-    <!-- Andrew's personal staging tier - own row, centered, hidden by
-         default (see applyShowAndrewModeVisibility) so nobody else ever
-         sees it unless they switch "Activate Andrew mode" on themselves. -->
+    <!-- Andrew's personal staging tier - a rotating scratchpad for whatever's
+         being tried out next, not fixed content (see
+         applyShowAndrewModeVisibility). Own row, centered, hidden by default
+         so nobody else ever sees it unless they switch "Andrew mode" on
+         themselves. Currently empty - that's the expected steady state. -->
     <div class="level-filter-row andrew-row" id="vocab-andrew-filter-row" style="display:none;">
       <button class="level-pill" id="level-pill-andrew" onclick="setMatchLevel('andrew')">Andrew</button>
     </div>
 
-    <div id="match-read-view">
-      <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
+
+    <div id="match-theme-view">
+      <!-- Goes straight into drilling with no selection screen first -
+           direct equivalent of the old Read tab's "Reading words -
+           everything". -->
+      <div class="group-card" id="theme-all-vocab-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
         <div class="group-info">
-          <div class="group-name">Reading numbers</div>
-          <div class="group-chars">らんだむな すうじ</div>
-          <div class="group-count">10 random numbers per round</div>
+          <div class="group-name">All vocabulary</div>
+          <div class="group-chars">らんだむな ぜんぶ</div>
+          <div class="group-count">20 random words, from every category you currently have visible</div>
         </div>
-        <div class="score-swatch" id="numbers-score-swatch"></div>
+        <div class="cat-swatch" id="theme-all-vocab-swatch"></div>
       </div>
-      <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
+      <!-- Only relevant if Kanji is switched on - see applyShowKanjiVisibility,
+           which toggles this alongside every other Kanji-gated element. Kept
+           directly under All vocabulary, and above the browse-first
+           collection cards below - these two go straight into drilling with
+           no selection screen first, which makes them a different kind of
+           thing from the rest of this list. -->
+      <div class="group-card" id="theme-all-kanji-card" onclick="startRandomKanji()" style="cursor:pointer; display:none;">
         <div class="group-info">
-          <div class="group-name">Reading times</div>
-          <div class="group-chars">ごぜん くじ はん</div>
-          <div class="group-count">10 random times per round, with qualifiers</div>
+          <div class="group-name">All kanji</div>
+          <div class="group-chars">らんだむな 漢字</div>
+          <div class="group-count">20 random kanji, from every section</div>
         </div>
-        <div class="score-swatch" id="times-score-swatch"></div>
-      </div>
-      <div class="group-card" style="cursor:default; display:block;">
-        <div class="group-info">
-          <div class="group-name">Specific time</div>
-          <div class="group-count">Pick a time to see how it's said in Japanese</div>
-        </div>
-        <div class="time-tool-row">
-          <div class="time-tool-frames">
-            <button class="level-pill" id="time-tool-frame-ni" onclick="setTimeToolFrame('ni')">at</button>
-            <button class="level-pill" id="time-tool-frame-made" onclick="setTimeToolFrame('made')">until</button>
-            <button class="level-pill" id="time-tool-frame-goro" onclick="setTimeToolFrame('goro')">around</button>
-            <button class="level-pill" id="time-tool-frame-kara" onclick="setTimeToolFrame('kara')">from</button>
-          </div>
-          <div class="time-tool-entry">
-            <select id="time-tool-hour" onchange="updateTimeTool()"></select>
-            <span>:</span>
-            <select id="time-tool-minute" onchange="updateTimeTool()"></select>
-          </div>
-          <div class="time-tool-ampm">
-            <button class="level-pill" id="time-tool-ampm-gozen" onclick="setTimeToolAmpm('gozen')">AM</button>
-            <button class="level-pill" id="time-tool-ampm-gogo" onclick="setTimeToolAmpm('gogo')">PM</button>
-          </div>
-          <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()" title="Reset to current time" aria-label="Reset to current time">↺</button>
-        </div>
-        <div class="time-tool-output" id="time-tool-output"></div>
+        <div class="cat-swatch" id="theme-all-kanji-swatch"></div>
       </div>
 
-      <div class="section-divider"></div>
-
-      <div class="match-card-select" id="read-pool-everything" onclick="selectReadRandomPool('everything', this)">
-        <div class="group-name">Reading words — everything</div>
-        <div class="group-chars">らんだむな ぜんぶ</div>
-        <div class="group-count">20 random words per round, from every category</div>
-      </div>
-      <div class="match-card-select" id="read-pool-kanji" onclick="selectReadRandomPool('kanji', this)">
-        <div class="group-name">Random kanji</div>
-        <div class="group-chars">らんだむな 漢字</div>
-        <div class="group-count">20 random kanji per round, from all categories</div>
-      </div>
-
+      <!-- These two only affect the two "genuine random" cards above - the
+           named collections below each have their own selection screen with
+           their own copy of these same toggles (per-collection memory), so
+           nothing here leaks into them. -->
       <div class="group-card" id="drill-mode-toggle-card" onclick="toggleDrillByMeaning()" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Highlight the meaning instead of sound</div>
@@ -948,65 +1052,9 @@
         </div>
         <div class="toggle" id="reversed-mode-toggle"></div>
       </div>
-      <button class="start-btn" id="read-random-start-btn" onclick="startReadRandomDrill()" disabled>Start random drill</button>
-    </div>
 
-    <div id="match-extra-view" style="display:none;">
-      <div class="group-card" data-key="vocab-colours" onclick="showVocabTileSelection('vocab-colours')" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Colours</div>
-          <div class="group-chars">あか あお きいろ…</div>
-          <div class="group-count">Not covered in lessons — 10 words</div>
-        </div>
-        <div class="cat-swatch"></div>
-      </div>
-      <div class="group-card" data-key="vocab-trip-prep" onclick="showVocabTileSelection('vocab-trip-prep')" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Useful words for the trip</div>
-          <div class="group-chars">みず すし きっぷ…</div>
-          <div class="group-count">Not covered in lessons — 27 words</div>
-        </div>
-        <div class="cat-swatch"></div>
-      </div>
-      <div class="group-card" data-key="vocab-places-uk-extra" onclick="showVocabTileSelection('vocab-places-uk-extra')" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">UK Places</div>
-          <div class="group-chars">マンチェスター リバプール…</div>
-          <div class="group-count">Not covered in lessons — 21 words</div>
-        </div>
-        <div class="cat-swatch"></div>
-      </div>
-    </div>
+      <div class="section-divider"></div>
 
-    <div id="match-theme-view" style="display:none;">
-      <!-- Temporary duplicate of the Read tab's "Reading words - everything" -
-           same function (startRandomMatchEverything), reused here rather than
-           reimplemented, so there's only ever one place that actually builds
-           this pool. Once this screen replaces Read's version outright, the
-           original card goes and this becomes the only way in. -->
-      <div class="group-card" id="theme-all-vocab-card" onclick="startRandomMatchEverything()" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">All vocabulary</div>
-          <div class="group-chars">らんだむな ぜんぶ</div>
-          <div class="group-count">20 random words, from every category you currently have visible</div>
-        </div>
-        <div class="cat-swatch" id="theme-all-vocab-swatch"></div>
-      </div>
-      <!-- Only relevant if Kanji is switched on - see applyShowKanjiVisibility,
-           which toggles this alongside every other Kanji-gated element.
-           Temporary duplicate of the Read tab's "Random kanji" card, same
-           reasoning as the All vocabulary card above. Kept directly under All
-           vocabulary, and above the browse-first theme cards below - these
-           two go straight into drilling with no selection screen first, which
-           makes them a different kind of thing from the rest of this list. -->
-      <div class="group-card" id="theme-all-kanji-card" onclick="startRandomKanji()" style="cursor:pointer; display:none;">
-        <div class="group-info">
-          <div class="group-name">All kanji</div>
-          <div class="group-chars">らんだむな 漢字</div>
-          <div class="group-count">20 random kanji, from every section</div>
-        </div>
-        <div class="cat-swatch" id="theme-all-kanji-swatch"></div>
-      </div>
       <div class="group-card" data-theme-key="theme-transport-uk" onclick="showVocabTileSelection('theme-transport-uk')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Transport and UK Places</div>
@@ -1039,14 +1087,10 @@
         </div>
         <div class="cat-swatch"></div>
       </div>
-      <!-- Getting around and Survival vocab (below) only show up in Andrew
-           mode - see applyShowAndrewModeVisibility. They were built earlier
-           but never actually given a card here, so they were live in data
-           only and unreachable in the app - moving them behind this gate now
-           rather than leaving them exposed to everyone, since part of each
-           one's pool is still Andrew-tier content (see the comment on
-           theme-survival-vocab in THEMES) that isn't ready to be presented
-           as finished yet. -->
+      <!-- Getting around and Survival vocab (below) only show up when Trip
+           vocabulary is on - see applyShowTripVocabVisibility. Gated because
+           part of each one's pool is genuinely Trip-tier content (travel
+           vocab, not course material) that not everyone wants surfaced. -->
       <div class="group-card" data-theme-key="theme-getting-around" id="theme-getting-around-card" onclick="showVocabTileSelection('theme-getting-around')" style="cursor:pointer; display:none;">
         <div class="group-info">
           <div class="group-name">Getting around</div>
@@ -1745,7 +1789,13 @@ const VOCAB = {
     ],
   },
   'vocab-colours': {
-    level: 'extra',
+    level: 1,
+    hasReference: true,
+    // Not from the textbook, but harmless and useful enough for everyone
+    // that it doesn't need gating - see buildMatchCategoryList's use of
+    // `note` for how this shows up as "Not covered in lessons" rather than
+    // the usual plain word count.
+    note: 'Not covered in lessons',
     label: 'Colours',
     chars: 'あか あお きいろ…',
     items: [
@@ -1779,6 +1829,7 @@ const VOCAB = {
       {jp:'パーティー', romaji:'paatii', en:'party'},
       {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯', altIsStandard:true},
       {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱', altIsStandard:true},
+      {jp:'はさみ', romaji:'hasami', en:'scissors'},
       {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節', altIsStandard:true},
       {jp:'しごと', romaji:'shigoto', en:'work / job', altForm:'仕事', altIsStandard:true},
     ],
@@ -1876,14 +1927,35 @@ const VOCAB = {
     label: 'UK Places',
     chars: 'エディンバラ ブライトン…',
     items: [
+      {jp:'アバディーン', romaji:'abadiin', en:'Aberdeen', altForm:'あばでぃーん'},
+      {jp:'バース', romaji:'baasu', en:'Bath', altForm:'ばーす'},
+      {jp:'ベルファスト', romaji:'berufasuto', en:'Belfast', altForm:'べるふぁすと'},
+      {jp:'バーミンガム', romaji:'baaminngamu', en:'Birmingham', altForm:'ばーみんがむ'},
       {jp:'ブライトン', romaji:'buraiton', en:'Brighton', altForm:'ぶらいとん'},
+      {jp:'ブリストル', romaji:'burisutoru', en:'Bristol', altForm:'ぶりすとる'},
+      {jp:'ケンブリッジ', romaji:'kenburijji', en:'Cambridge', altForm:'けんぶりっじ'},
+      {jp:'カーディフ', romaji:'kaadifu', en:'Cardiff', altForm:'かーでぃふ'},
       {jp:'コッツウォルズ', romaji:'kottsuworuzu', en:'Cotswolds', altForm:'こっつうぉるず'},
+      {jp:'コベントリー', romaji:'kobentorii', en:'Coventry', altForm:'こべんとりー'},
       {jp:'エディンバラ', romaji:'edinbara', en:'Edinburgh', altForm:'えでぃんばら'},
+      {jp:'グラスゴー', romaji:'gurasugoo', en:'Glasgow', altForm:'ぐらすごー'},
       {jp:'ハムステッドヒース', romaji:'hamusuteddo hiisu', en:'Hampstead Heath', altForm:'はむすてっどひーす'},
+      {jp:'リーズ', romaji:'riizu', en:'Leeds', altForm:'りーず'},
+      {jp:'レスター', romaji:'resutaa', en:'Leicester', altForm:'れすたー'},
+      {jp:'リバプール', romaji:'ribapuuru', en:'Liverpool', altForm:'りばぷーる'},
       {jp:'ろんどん', romaji:'rondon', en:'London'},
+      {jp:'マンチェスター', romaji:'manchesutaa', en:'Manchester', altForm:'まんちぇすたー'},
+      {jp:'ニューカッスル', romaji:'nyuukassuru', en:'Newcastle', altForm:'にゅーかっする'},
+      {jp:'ノッティンガム', romaji:'nottingamu', en:'Nottingham', altForm:'のってぃんがむ'},
+      {jp:'オックスフォード', romaji:'okkusufoodo', en:'Oxford', altForm:'おっくすふぉーど'},
+      {jp:'ポーツマス', romaji:'pootsumasu', en:'Portsmouth', altForm:'ぽーつます'},
       {jp:'リッチモンド', romaji:'ricchimondo', en:'Richmond', altForm:'りっちもんど'},
+      {jp:'シェフィールド', romaji:'shefiirudo', en:'Sheffield', altForm:'しぇふぃーるど'},
+      {jp:'シャーウッドの森', romaji:'shaawuddo no mori', en:'Sherwood Forest', altForm:'しゃーうっどのもり'},
+      {jp:'サウサンプトン', romaji:'sausanputon', en:'Southampton', altForm:'さうさんぷとん'},
       {jp:'ウィンブルドン', romaji:'winburudon', en:'Wimbledon', altForm:'うぃんぶるどん'},
       {jp:'ウィンザー', romaji:'winzaa', en:'Windsor', altForm:'うぃんざー'},
+      {jp:'ヨーク', romaji:'yooku', en:'York', altForm:'よーく'},
     ],
   },
   'vocab-cities': {
@@ -1939,6 +2011,9 @@ const VOCAB = {
       {jp:'せんげつ', romaji:'sengetsu', en:'last month'},
       {jp:'こんげつ', romaji:'kongetsu', en:'this month'},
       {jp:'らいげつ', romaji:'raigetsu', en:'next month'},
+      {jp:'きょねん', romaji:'kyonen', en:'last year'},
+      {jp:'ことし', romaji:'kotoshi', en:'this year'},
+      {jp:'らいねん', romaji:'rainen', en:'next year'},
     ],
   },
   'vocab-days-l2': {
@@ -1957,7 +2032,8 @@ const VOCAB = {
     ],
   },
   'vocab-trip-prep': {
-    level: 'extra',
+    level: 'trip',
+    hasReference: true,
     label: 'Useful words for the trip',
     chars: 'みず すし きっぷ…',
     items: [
@@ -1989,39 +2065,10 @@ const VOCAB = {
       {jp:'みず', romaji:'mizu', en:'water'},
     ],
   },
-  'vocab-places-uk-extra': {
-    level: 'extra',
-    hasReference: true,
-    label: 'UK Places',
-    chars: 'マンチェスター リバプール…',
-    items: [
-      {jp:'アバディーン', romaji:'abadiin', en:'Aberdeen', altForm:'あばでぃーん'},
-      {jp:'バース', romaji:'baasu', en:'Bath', altForm:'ばーす'},
-      {jp:'ベルファスト', romaji:'berufasuto', en:'Belfast', altForm:'べるふぁすと'},
-      {jp:'バーミンガム', romaji:'baaminngamu', en:'Birmingham', altForm:'ばーみんがむ'},
-      {jp:'ブリストル', romaji:'burisutoru', en:'Bristol', altForm:'ぶりすとる'},
-      {jp:'ケンブリッジ', romaji:'kenburijji', en:'Cambridge', altForm:'けんぶりっじ'},
-      {jp:'カーディフ', romaji:'kaadifu', en:'Cardiff', altForm:'かーでぃふ'},
-      {jp:'コベントリー', romaji:'kobentorii', en:'Coventry', altForm:'こべんとりー'},
-      {jp:'グラスゴー', romaji:'gurasugoo', en:'Glasgow', altForm:'ぐらすごー'},
-      {jp:'リーズ', romaji:'riizu', en:'Leeds', altForm:'りーず'},
-      {jp:'レスター', romaji:'resutaa', en:'Leicester', altForm:'れすたー'},
-      {jp:'リバプール', romaji:'ribapuuru', en:'Liverpool', altForm:'りばぷーる'},
-      {jp:'マンチェスター', romaji:'manchesutaa', en:'Manchester', altForm:'まんちぇすたー'},
-      {jp:'ニューカッスル', romaji:'nyuukassuru', en:'Newcastle', altForm:'にゅーかっする'},
-      {jp:'ノッティンガム', romaji:'nottingamu', en:'Nottingham', altForm:'のってぃんがむ'},
-      {jp:'オックスフォード', romaji:'okkusufoodo', en:'Oxford', altForm:'おっくすふぉーど'},
-      {jp:'ポーツマス', romaji:'pootsumasu', en:'Portsmouth', altForm:'ぽーつます'},
-      {jp:'シェフィールド', romaji:'shefiirudo', en:'Sheffield', altForm:'しぇふぃーるど'},
-      {jp:'シャーウッドの森', romaji:'shaawuddo no mori', en:'Sherwood Forest', altForm:'しゃーうっどのもり'},
-      {jp:'サウサンプトン', romaji:'sausanputon', en:'Southampton', altForm:'さうさんぷとん'},
-      {jp:'ヨーク', romaji:'yooku', en:'York', altForm:'よーく'},
-    ],
-  },
-  // First Andrew-mode category - staging area for trip vocab before it's
-  // ready for the class (see showAndrewMode). Same VOCAB shape as every
-  // other category on purpose, so "graduating" it later is just changing
-  // level to 'extra'. A few entries carry altForm+altIsStandard where the
+  // First category built in what was originally the Andrew-mode staging
+  // tier - now graduated to level:'trip' (see showTripVocab), gated but
+  // open to anyone travelling, not just Andrew. A few entries carry
+  // altForm+altIsStandard where the
   // hiragana form genuinely collides with another word (さけ is also
   // "sake/alcohol" in vocab-trip-prep, たい is also "Thailand" in
   // vocab-countries) - the kanji disambiguates on the feedback screen.
@@ -2029,7 +2076,7 @@ const VOCAB = {
   // exists (鮪, 海老 etc.) - those characters are obscure enough that real
   // menus almost always show them in kana/katakana instead.
   'vocab-food-drink': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Food and drink',
     chars: 'ぎょうざ さしみ からい…',
@@ -2078,7 +2125,7 @@ const VOCAB = {
     ],
   },
   'vocab-accommodation': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Accommodation',
     chars: 'ホテル よやく タオル…',
@@ -2101,7 +2148,7 @@ const VOCAB = {
     ],
   },
   'vocab-money-shopping': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Money and shopping',
     chars: 'げんきん わりびき サイズ…',
@@ -2127,7 +2174,7 @@ const VOCAB = {
     ],
   },
   'vocab-directions-navigation': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Directions and navigation',
     chars: 'ひだり みぎ まっすぐ…',
@@ -2153,7 +2200,7 @@ const VOCAB = {
     ],
   },
   'vocab-emergency-survival': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Emergency and survival',
     chars: 'じしん けが たいふう…',
@@ -2177,7 +2224,7 @@ const VOCAB = {
     ],
   },
   'vocab-weather': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Weather',
     chars: 'あめ ゆき あつい…',
@@ -2194,7 +2241,7 @@ const VOCAB = {
     ],
   },
   'vocab-signage-warnings': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Signage and warnings',
     chars: 'きんえん おす ちゅうい…',
@@ -2221,7 +2268,7 @@ const VOCAB = {
   // that Greetings, Money and shopping, Directions and navigation, and
   // Emergency and survival don't already cover.
   'vocab-tourist-phrases': {
-    level: 'andrew',
+    level: 'trip',
     hasReference: true,
     label: 'Polite tourist phrases',
     chars: 'かんぱい おげんきですか…',
@@ -2261,15 +2308,11 @@ const VOCAB = {
 // untouched, in original insertion order, no dividers) - used for themes
 // like Days and times where the taught order IS the content and sorting
 // would actively hurt reference use.
-//
-// UK Places (Level 2) and UK Places (Extra) are deliberately combined into
-// ONE block rather than two, since the level-colour tile border already
-// distinguishes them visually - a second divider there would be redundant.
 const THEMES = {
   'theme-transport-uk': {
     label: 'Transport and UK Places',
     chars: 'でんしゃ ろんどん…',
-    groups: [['vocab-transport'], ['vocab-places-uk', 'vocab-places-uk-extra']],
+    groups: [['vocab-transport'], ['vocab-places-uk']],
   },
   'theme-world': {
     label: 'Around the world',
@@ -2289,11 +2332,11 @@ const THEMES = {
   },
   // level here isn't read by getThemePool - visibility for this one is
   // wired directly on its card (theme-getting-around-card) in
-  // applyShowAndrewModeVisibility, same as every other static theme card.
+  // applyShowTripVocabVisibility, same as every other static theme card.
   // Kept as a field anyway so it reads the same way VOCAB categories do, and
   // is ready to use if the theme list ever becomes level-filtered generically.
   'theme-getting-around': {
-    level: 'andrew',
+    level: 'trip',
     label: 'Getting around',
     chars: 'でんしゃ ひだり きっぷ…',
     groups: [['vocab-transport'], ['vocab-places-to-go'], ['vocab-directions-navigation']],
@@ -2306,18 +2349,16 @@ const THEMES = {
   // sense trip-prep was always going for, just not narrowly about safety.
   // Named to fit what's actually in it rather than oversell the pairing.
   'theme-survival-vocab': {
-    level: 'andrew',
+    level: 'trip',
     label: 'Survival vocab',
     chars: 'たすけて けいさつ びょういん…',
     groups: [['vocab-trip-prep'], ['vocab-emergency-survival']],
   },
 };
 
-// Every source category currently listed above is Level 2 (or, once an Extra
-// UK-places category exists, Extra) - adding a source with level:'extra'
-// needs no change here, since the same showExtra guard used by every other
-// Extra-gated entry point (Reading words everything, the Extra level pill)
-// already applies below.
+// Every source category above is Level 2 or Trip - categoryTierVisible
+// below is the single gate that applies to any tier a source category
+// might carry, so adding a new tier later needs no change here.
 //
 // For noSort themes, items come back in the same flat original order as
 // before (unchanged behavior). For grouped themes, each group's categories
@@ -2784,7 +2825,7 @@ const COLOUR_HUES = {
 // Deliberately distinct from --accent (gold), which .selected already owns -
 // same border-slot handoff the Colours category already does: level colour
 // while unselected, gold once selected.
-const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', extra: '#9b59d0', andrew: '#3fbfa6' };
+const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', trip: '#9b59d0', andrew: '#3fbfa6' };
 
 function interpolateRgb(from, to, t) {
   return from.map((f, i) => Math.round(f + (to[i] - f) * t));
@@ -3079,11 +3120,19 @@ function showScreen(id) {
     navMatch.classList.remove('sub-screen');
     navMatch.onclick = tryResumeMatch;
   }
+  // Numbers pill doubles as a resume shortcut for any in-progress drill (not
+  // just a numbers one - the drill screen is shared across every type), so
+  // its label reflects whichever job it's currently doing.
+  const navNumbers = document.getElementById('nav-numbers');
+  if (navNumbers) {
+    navNumbers.textContent = isPendingDrillNumbers() ? 'Resume' : 'Numbers';
+  }
   if (id === 'hiragana-selection') Object.keys(HIRAGANA_SECTIONS).forEach(key => refreshKanaScoreShading('hiragana-grid-' + key));
   else if (id === 'katakana-selection') Object.keys(KATAKANA_SECTIONS).forEach(key => refreshKanaScoreShading('katakana-grid-' + key));
   else if (id === 'kanji-selection') KANJI_SECTION_KEYS.forEach(key => refreshKanaScoreShading('kanji-grid-' + key));
   else if (id === 'vocab-tile-selection' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
-  else if (id === 'match-settings') { updateNumberTimeSwatches(); buildMatchCategoryList(); refreshExtraCategorySwatches(); }
+  else if (id === 'match-settings') buildMatchCategoryList();
+  else if (id === 'numbers') updateNumberTimeSwatches();
 }
 
 let lastSettingsScreen = 'match-settings';
@@ -3139,8 +3188,39 @@ function tryResume() {
   else goBackToSettings();
 }
 
+function showNumbersScreen() {
+  lastSettingsScreen = 'numbers';
+  showScreen('numbers');
+}
+
+// The Numbers nav pill needs to double as a resume shortcut for ANY
+// in-progress drill (kana, kanji, vocab, or numbers), not just a numbers one
+// - mirrors tryResume(), but lands on the Numbers menu instead of
+// goBackToSettings() when nothing's in progress, since that's this pill's
+// own home screen now rather than a shared fallback.
+// Checks whether the current deck (if any) is actually a numbers/time
+// challenge, by looking at the question shape rather than lastSettingsScreen
+// - lastSettingsScreen gets overwritten just by visiting the Numbers screen
+// itself (see showNumbersScreen), so it can't reliably answer "is the
+// pending drill genuinely mine" the way this needs.
+function isPendingDrillNumbers() {
+  return deck.length > 0 && current < deck.length && deck[0] && (deck[0].disp === 'number' || deck[0].disp === 'time');
+}
+
+function tryResumeOrNumbers() {
+  // Only treats it as "resume" if the in-progress drill is genuinely a
+  // numbers/time challenge - otherwise (a kana/kanji/vocab drill left
+  // mid-way from some other tab) this pill would become a dead end, always
+  // jumping back into that unrelated drill with no way to actually reach
+  // the Numbers menu. Numbers is this pill's own home screen, so it always
+  // wins unless the pending drill is genuinely its own.
+  if (isPendingDrillNumbers()) showScreen('drill');
+  else showNumbersScreen();
+}
+
 /* ---------- Number challenge ---------- */
 const HIRA_TO_ROMA = {
+  'ぜろ':'zero',
   'いち':'ichi','に':'ni','さん':'san','よん':'yon','ご':'go','ろく':'roku','なな':'nana','はち':'hachi','きゅう':'kyuu','じゅう':'juu',
   'にじゅう':'nijuu','さんじゅう':'sanjuu','よんじゅう':'yonjuu','ごじゅう':'gojuu','ろくじゅう':'rokujuu','ななじゅう':'nanajuu','はちじゅう':'hachijuu','きゅうじゅう':'kyuujuu',
   'ひゃく':'hyaku','にひゃく':'nihyaku','さんびゃく':'sanbyaku','よんひゃく':'yonhyaku','ごひゃく':'gohyaku','ろっぴゃく':'roppyaku','ななひゃく':'nanahyaku','はっぴゃく':'happyaku','きゅうひゃく':'kyuuhyaku',
@@ -3246,7 +3326,7 @@ function buildNumberChallengeDeck() {
 }
 
 function startNumberChallenge() {
-  lastSettingsScreen = 'match-settings';
+  lastSettingsScreen = 'numbers';
   lastDeckBuilder = buildNumberChallengeDeck;
   deck = buildNumberChallengeDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
@@ -3428,7 +3508,7 @@ function buildTimeChallengeDeck() {
 }
 
 function startTimeChallenge() {
-  lastSettingsScreen = 'match-settings';
+  lastSettingsScreen = 'numbers';
   lastDeckBuilder = buildTimeChallengeDeck;
   deck = buildTimeChallengeDeck();
   current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
@@ -3524,6 +3604,81 @@ function updateTimeTool() {
 }
 /* ---------- end Specific-time lookup tool ---------- */
 
+/* ---------- Specific-number lookup tool ---------- */
+// Same idea as the time tool above, but free text entry rather than
+// dropdowns - the range (0-99,999) is too wide for a picker to make sense
+// of. Reuses numToJapanese/numReadingToRomaji, the exact same functions the
+// Reading numbers challenge itself uses, so this always matches what you'd
+// be quizzed on.
+function updateNumberTool() {
+  const input = document.getElementById('number-tool-input');
+  const output = document.getElementById('number-tool-output');
+  if (!input || !output) return;
+  const raw = input.value;
+  if (raw === '') { output.innerHTML = ''; return; }
+  const n = Math.floor(Number(raw));
+  if (!Number.isFinite(n) || n < 0 || n > 99999) {
+    output.innerHTML = `<span class="number-tool-rd">Enter a number from 0 to 99,999</span>`;
+    return;
+  }
+  const kana = numToJapanese(n);
+  const romaji = numReadingToRomaji(kana);
+  output.innerHTML = `<span class="number-tool-jp">${markSmallKana(kana)}</span><span class="number-tool-rd">${romaji}</span>`;
+}
+/* ---------- end Specific-number lookup tool ---------- */
+
+/* ---------- Specific-counter lookup tool ---------- */
+// Same idea as Specific number, but with a counter-type pill row alongside
+// the digit entry. Deliberately scoped to the item-type counters (COUNTER_
+// ITEM_UNITS - つ/人/個/本/枚/匹/冊/台/回/歳) and to 1-10 only: extending
+// past 10 needs proper tens+ones composition per counter (each counter's
+// own gemination pattern reapplied to just the ones digit), which is more
+// than tonight's build - this covers the range the reference page already
+// covers, no more, no less. Pills are kanji-only, same as the reference
+// screen right next to this tool, which is judged enough context for now.
+let specificCounterUnit = 'tsu';
+
+function populateCounterToolPills() {
+  const row = document.getElementById('counter-tool-pills');
+  const desc = document.getElementById('counter-tool-desc');
+  if (!row) return;
+  row.innerHTML = '';
+  Object.keys(COUNTER_ITEM_UNITS).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'level-pill' + (key === specificCounterUnit ? ' active' : '');
+    btn.textContent = COUNTER_ITEM_UNITS[key].label;
+    btn.onclick = () => setSpecificCounterUnit(key);
+    row.appendChild(btn);
+  });
+  // English gloss under the pills, always shown alongside whichever kanji
+  // pill is selected - this is what makes kanji-only pills workable here
+  // (unlike a future quiz, where the Japanese and English wouldn't be on
+  // screen at the same time).
+  if (desc) desc.textContent = COUNTER_ITEM_UNITS[specificCounterUnit].desc;
+}
+
+function setSpecificCounterUnit(key) {
+  specificCounterUnit = key;
+  populateCounterToolPills();
+  updateCounterTool();
+}
+
+function updateCounterTool() {
+  const input = document.getElementById('counter-tool-input');
+  const output = document.getElementById('counter-tool-output');
+  if (!input || !output) return;
+  const raw = input.value;
+  if (raw === '') { output.innerHTML = ''; return; }
+  const n = Math.floor(Number(raw));
+  if (!Number.isFinite(n) || n < 1 || n > 10) {
+    output.innerHTML = `<span class="number-tool-rd">Enter a number from 1 to 10</span>`;
+    return;
+  }
+  const [jp, romaji] = COUNTER_ITEM_UNITS[specificCounterUnit].items[n - 1];
+  output.innerHTML = `<span class="number-tool-jp">${markSmallKana(jp)}</span><span class="number-tool-rd">${romaji}</span>`;
+}
+/* ---------- end Specific-counter lookup tool ---------- */
+
 function buildDeck() {
   let d = [];
   selected.forEach(k => { if (DATA[k]) DATA[k].forEach(q => d.push(Object.assign({groupKey: k}, q))); });
@@ -3584,7 +3739,7 @@ const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 // existed, so installing this doesn't change anything for anyone until they
 // actually visit Settings and change something themselves.
 const SETTINGS_KEY = 'jpDrillSettings';
-let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showThemes: false, showAndrewMode: false };
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showTripVocab: false };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
@@ -3623,8 +3778,8 @@ function saveSettings() {
 // gated the same way everywhere rather than each call site re-deriving its
 // own version of this check (and risking one of them forgetting a tier).
 function categoryTierVisible(level) {
-  if (level === 'extra') return appSettings.showExtra;
   if (level === 'andrew') return appSettings.showAndrewMode;
+  if (level === 'trip') return appSettings.showTripVocab;
   return true;
 }
 
@@ -3640,29 +3795,18 @@ function toggleTheme() {
   applyTheme();
 }
 
-// Kanji and Extra vocab used to share one "custom content" switch; they're
-// now independent, and hidden entirely (not just greyed out) when off, same
-// approach as Themes below - see applyThemesVisibility for why.
+// Kanji used to share a "custom content" switch with Extra vocab; they're
+// now independent, and hidden entirely (not just greyed out) when off.
 function applyShowKanjiVisibility() {
   const on = appSettings.showKanji;
   const kanjiPill = document.getElementById('nav-kanji');
   if (kanjiPill) kanjiPill.style.display = on ? '' : 'none';
-  const kanjiReadCard = document.getElementById('read-pool-kanji');
-  if (kanjiReadCard) kanjiReadCard.style.display = on ? '' : 'none';
   const kanjiThemeCard = document.getElementById('theme-all-kanji-card');
   if (kanjiThemeCard) kanjiThemeCard.style.display = on ? 'flex' : 'none';
   // If Kanji gets switched off while its selection screen happens to be
   // open, there's nothing sensible left showing - fall back to Vocab.
   const kanjiScreen = document.getElementById('screen-kanji-selection');
   if (!on && kanjiScreen && kanjiScreen.classList.contains('visible')) showMatchSettings();
-  // Same idea if Kanji was the selected "Random reading" pool - deselect it
-  // rather than leave a hidden card looking chosen.
-  if (!on && selectedReadRandomPool === 'kanji') {
-    selectedReadRandomPool = null;
-    document.querySelectorAll('#match-read-view .match-card-select').forEach(c => c.classList.remove('selected'));
-    const startBtn = document.getElementById('read-random-start-btn');
-    if (startBtn) startBtn.disabled = true;
-  }
   const card = document.getElementById('show-kanji-toggle-card');
   if (card) card.classList.toggle('selected', on);
 }
@@ -3671,23 +3815,6 @@ function toggleShowKanji() {
   appSettings.showKanji = !appSettings.showKanji;
   saveSettings();
   applyShowKanjiVisibility();
-}
-
-function applyShowExtraVisibility() {
-  const on = appSettings.showExtra;
-  const extraPill = document.getElementById('level-pill-extra');
-  if (extraPill) extraPill.style.display = on ? '' : 'none';
-  // If Extra gets switched off while it happens to be the active level tab,
-  // fall back to Read, same idea as the Themes backstop below.
-  if (!on && currentMatchLevel === 'extra') setMatchLevel('read');
-  const card = document.getElementById('show-extra-toggle-card');
-  if (card) card.classList.toggle('selected', on);
-}
-
-function toggleShowExtra() {
-  appSettings.showExtra = !appSettings.showExtra;
-  saveSettings();
-  applyShowExtraVisibility();
 }
 
 function applyHintPenaltyUI() {
@@ -3706,40 +3833,42 @@ function toggleHintPenalty() {
 // how this app treats other work still finding its shape (e.g. Kanji
 // started out as something only Andrew used before the rest of the class
 // needed it).
-function applyThemesVisibility() {
-  const on = appSettings.showThemes;
-  const themePill = document.getElementById('level-pill-theme');
-  if (themePill) themePill.style.display = on ? '' : 'none';
-  // If Themes gets switched off while it happens to be the active tab,
-  // there's nothing sensible left showing - fall back to Read, same idea as
-  // the custom-content backstop rather than leaving an empty screen.
-  if (!on && currentMatchLevel === 'theme') setMatchLevel('read');
-  const card = document.getElementById('show-themes-toggle-card');
-  if (card) card.classList.toggle('selected', on);
-}
-
-function toggleShowThemes() {
-  appSettings.showThemes = !appSettings.showThemes;
-  saveSettings();
-  applyThemesVisibility();
-}
-
-// Andrew's personal staging tier for vocab that isn't ready for the class
-// yet - same hide-entirely, off-by-default pattern as Themes. Lives on its
-// own row (not squeezed into the level-pill row) so it's visually distinct
-// and doesn't compete for space as that row fills up. Categories here use
-// the exact same VOCAB shape as Level 1/2/Extra, so "graduating" one is
-// just changing its level to 'extra' once it's ready - see the showExtra
-// guards in getThemePool/startRandomMatchEverything, which this tier
-// deliberately mirrors so nothing here leaks out to everyone else first.
+// Andrew's personal staging tier - a rotating scratchpad, not a fixed content
+// bucket. Whatever lands here is being tried out before it's decided whether
+// it graduates to core (always-on) or to a named gated tier (like Trip
+// vocabulary below). Once something graduates, this tier empties out again
+// ready for the next thing - it's currently empty, which is the expected
+// steady state between experiments, not a bug. Lives on its own row (not
+// squeezed into the level-pill row) so it's visually distinct.
 function applyShowAndrewModeVisibility() {
   const on = appSettings.showAndrewMode;
   const andrewRow = document.getElementById('vocab-andrew-filter-row');
   if (andrewRow) andrewRow.style.display = on ? 'flex' : 'none';
-  if (!on && currentMatchLevel === 'andrew') setMatchLevel('read');
+  if (!on && currentMatchLevel === 'andrew') setMatchLevel('theme');
   const card = document.getElementById('show-andrew-mode-toggle-card');
   if (card) card.classList.toggle('selected', on);
-  // Themes that still lean on Andrew-tier source categories - see the two
+}
+
+function toggleShowAndrewMode() {
+  appSettings.showAndrewMode = !appSettings.showAndrewMode;
+  saveSettings();
+  applyShowAndrewModeVisibility();
+}
+
+// Trip vocabulary - words specific to travelling to Japan (food, money,
+// directions, emergencies, tourist phrases, etc.) rather than course
+// content. Split out from Andrew mode so "genuinely personal, still being
+// tried out" and "finished, but only relevant if you're travelling" aren't
+// muddled together - anyone might want this, not just Andrew. Same
+// hide-entirely, off-by-default pattern as the rest of the gated tiers.
+function applyShowTripVocabVisibility() {
+  const on = appSettings.showTripVocab;
+  const tripPill = document.getElementById('level-pill-trip');
+  if (tripPill) tripPill.style.display = on ? '' : 'none';
+  if (!on && currentMatchLevel === 'trip') setMatchLevel('theme');
+  const card = document.getElementById('show-trip-vocab-toggle-card');
+  if (card) card.classList.toggle('selected', on);
+  // Collections that lean on Trip-tier source categories - see the two
   // cards' own comments in the Themes list.
   const gettingAroundCard = document.getElementById('theme-getting-around-card');
   if (gettingAroundCard) gettingAroundCard.style.display = on ? 'flex' : 'none';
@@ -3747,10 +3876,10 @@ function applyShowAndrewModeVisibility() {
   if (survivalCard) survivalCard.style.display = on ? 'flex' : 'none';
 }
 
-function toggleShowAndrewMode() {
-  appSettings.showAndrewMode = !appSettings.showAndrewMode;
+function toggleShowTripVocab() {
+  appSettings.showTripVocab = !appSettings.showTripVocab;
   saveSettings();
-  applyShowAndrewModeVisibility();
+  applyShowTripVocabVisibility();
 }
 
 function applyWorkOfflineUI() {
@@ -3793,11 +3922,10 @@ function toggleWorkOffline() {
 function applyAllSettingsUI() {
   applyTheme();
   applyShowKanjiVisibility();
-  applyShowExtraVisibility();
   applyHintPenaltyUI();
   applyWorkOfflineUI();
-  applyThemesVisibility();
   applyShowAndrewModeVisibility();
+  applyShowTripVocabVisibility();
 }
 
 function showSettingsScreen() {
@@ -4096,21 +4224,7 @@ function getItemsAverageScoreKanji(items) {
 
 const CAT_CONF_CLASSES = CONFIDENCE_BANDS.map(b => 'cat-conf-' + b);
 
-// The two Extra-tier cards (Colours, Trip prep) are static HTML, not rebuilt
-// on every view like the Level 1/2 list is - so unlike buildMatchCategoryList
-// (which applies the class fresh at creation time), these need an explicit
-// re-shade whenever the Extra tab is shown or a drill finishes.
-function refreshExtraCategorySwatches() {
-  document.querySelectorAll('#match-extra-view .group-card[data-key]').forEach(card => {
-    const swatch = card.querySelector('.cat-swatch');
-    if (!swatch) return;
-    swatch.classList.remove(...CAT_CONF_CLASSES);
-    const cls = categoryConfidenceClass(getCategoryAverageScore(card.dataset.key));
-    if (cls) swatch.classList.add(cls);
-  });
-}
-
-// Same idea as refreshExtraCategorySwatches, for the Theme tab's static cards -
+// For the Theme tab's static cards -
 // averages each theme's freshly-computed pool (getThemePool) rather than a
 // single VOCAB category's items.
 function refreshThemeCategorySwatches() {
@@ -5133,22 +5247,9 @@ function drillKatakanaSelection() {
   startDrill(shuffle(customDeck));
 }
 
-let currentMatchLevel = 'read';
-
-let selectedReadRandomPool = null;
-
-function selectReadRandomPool(pool, card) {
-  if (pool === 'kanji' && !appSettings.showKanji) return; // backstop - card is also hidden via CSS
-  selectedReadRandomPool = pool;
-  document.querySelectorAll('#match-read-view .match-card-select').forEach(c => c.classList.remove('selected'));
-  card.classList.add('selected');
-  document.getElementById('read-random-start-btn').disabled = false;
-}
-
-function startReadRandomDrill() {
-  if (selectedReadRandomPool === 'everything') startRandomMatchEverything();
-  else if (selectedReadRandomPool === 'kanji' && appSettings.showKanji) startRandomKanji();
-}
+// Collections is the default landing view for Vocab now that Read has
+// retired - see setMatchLevel/showMatchSettings.
+let currentMatchLevel = 'theme';
 
 function updateNumberTimeSwatches() {
   const numSwatch = document.getElementById('numbers-score-swatch');
@@ -5166,32 +5267,30 @@ function updateNumberTimeSwatches() {
 }
 
 function setMatchLevel(level) {
-  if (level === 'extra' && !appSettings.showExtra) return; // backstop - pill is also hidden via CSS
-  if (level === 'theme' && !appSettings.showThemes) return; // backstop - pill is hidden entirely via CSS when off
   if (level === 'andrew' && !appSettings.showAndrewMode) return; // backstop - pill is also hidden via CSS
+  if (level === 'trip' && !appSettings.showTripVocab) return; // backstop - pill is also hidden via CSS
   currentMatchLevel = level;
-  document.getElementById('level-pill-read').classList.toggle('active', level === 'read');
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
   document.getElementById('level-pill-2').classList.toggle('active', level === 2);
-  document.getElementById('level-pill-extra').classList.toggle('active', level === 'extra');
   document.getElementById('level-pill-theme').classList.toggle('active', level === 'theme');
   const andrewPill = document.getElementById('level-pill-andrew');
   if (andrewPill) andrewPill.classList.toggle('active', level === 'andrew');
+  const tripPill = document.getElementById('level-pill-trip');
+  if (tripPill) tripPill.classList.toggle('active', level === 'trip');
   document.getElementById('vocab-level-filter-row').classList.toggle('showing-theme-colours', level === 'theme');
-  document.getElementById('match-read-view').style.display = level === 'read' ? 'flex' : 'none';
-  // Andrew mode deliberately reuses the same generic Level 1/2 list view
-  // (match-vocab-view + buildMatchCategoryList) rather than getting its own
-  // dedicated view like Extra/Theme have - so a new category just needs
-  // level:'andrew' in VOCAB and shows up automatically, no hand-built card
-  // needed, which matters a lot when the whole point is fast iteration.
-  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2 || level === 'andrew') ? 'flex' : 'none';
-  document.getElementById('match-extra-view').style.display = level === 'extra' ? 'flex' : 'none';
+  // Andrew mode and Trip vocabulary both deliberately reuse the same generic
+  // Level 1/2 list view (match-vocab-view + buildMatchCategoryList) rather
+  // than getting their own dedicated view like Collections has - so a new
+  // category just needs level:'andrew' or level:'trip' in VOCAB and shows up
+  // automatically, no hand-built card needed.
+  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2 || level === 'andrew' || level === 'trip') ? 'flex' : 'none';
   document.getElementById('match-theme-view').style.display = level === 'theme' ? 'flex' : 'none';
-  if (level === 'extra') refreshExtraCategorySwatches();
   if (level === 'theme') refreshThemeCategorySwatches();
-  if (level === 'read' || level === 'extra' || level === 'theme') return;
+  if (level === 'theme') return;
   document.getElementById('random-match-count').textContent = level === 'andrew'
     ? '20 random words per round, from Andrew mode categories'
+    : level === 'trip'
+    ? '20 random words per round, from Trip vocabulary categories'
     : `20 random words per round, from all Level ${level} categories`;
   document.getElementById('match-start-btn').disabled = true;
   document.getElementById('random-match-card').classList.remove('selected');
@@ -5205,6 +5304,12 @@ function buildMatchCategoryList() {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
     if (key === 'vocab-time-l2') {
+      const timeUnitRefCard = document.createElement('div');
+      timeUnitRefCard.className = 'vocab-ref-card';
+      timeUnitRefCard.innerHTML = `<span>Day / week / month / year — reference</span><span class="vocab-ref-arrow">→</span>`;
+      timeUnitRefCard.onclick = (e) => { e.stopPropagation(); showTimeUnitsReference(); };
+      container.appendChild(timeUnitRefCard);
+
       const minRefCard = document.createElement('div');
       minRefCard.className = 'vocab-ref-card';
       minRefCard.innerHTML = `<span>Minute endings (1–10) — reference</span><span class="vocab-ref-arrow">→</span>`;
@@ -5222,7 +5327,8 @@ function buildMatchCategoryList() {
     card.className = 'match-card-select';
     card.dataset.key = key;
     const confCls = categoryConfidenceClass(getCategoryAverageScore(key));
-    card.innerHTML = `<div class="group-info"><div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${v.items.length} words</div></div><div class="cat-swatch${confCls ? ' ' + confCls : ''}"></div>`;
+    const countText = v.note ? `${v.note} — ${v.items.length} words` : `${v.items.length} words`;
+    card.innerHTML = `<div class="group-info"><div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${countText}</div></div><div class="cat-swatch${confCls ? ' ' + confCls : ''}"></div>`;
     if (v.hasReference) {
       card.onclick = () => showVocabTileSelection(key);
     } else {
@@ -5244,6 +5350,308 @@ function selectRandomMatchCard(card) {
 let vocabRefBackTarget = 'match-settings';
 function closeVocabReference() {
   showScreen(vocabRefBackTarget);
+}
+
+// Day/week/month/year x past/present/future - the classic "kinou/kyou/ashita"
+// style table. Content mirrors the actual vocab-time-l2 items (see the day,
+// week, month, and year sets there) rather than being computed, since these
+// are fixed vocabulary, not a pattern like minute endings.
+const TIME_UNIT_TABLE = [
+  { label: 'Day', past: ['きのう', 'kinou'], present: ['きょう', 'kyou'], future: ['あした', 'ashita'] },
+  { label: 'Week', past: ['せんしゅう', 'senshuu'], present: ['こんしゅう', 'konshuu'], future: ['らいしゅう', 'raishuu'] },
+  { label: 'Month', past: ['せんげつ', 'sengetsu'], present: ['こんげつ', 'kongetsu'], future: ['らいげつ', 'raigetsu'] },
+  { label: 'Year', past: ['きょねん', 'kyonen'], present: ['ことし', 'kotoshi'], future: ['らいねん', 'rainen'] },
+];
+
+function showTimeUnitsReference() {
+  vocabRefBackTarget = 'match-settings';
+  document.getElementById('vocab-ref-title').textContent = 'Day / week / month / year';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = '';
+  list.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'time-unit-table';
+  const cell = (jp, romaji, extraClass) => `
+    <div class="tu-cell${extraClass ? ' ' + extraClass : ''}">
+      ${jp ? `<div class="tu-jp">${markSmallKana(jp)}</div><div class="tu-romaji">${romaji}</div>` : ''}
+    </div>
+  `;
+  grid.innerHTML =
+    `<div class="tu-cell tu-header"></div>
+     <div class="tu-cell tu-header">Past</div>
+     <div class="tu-cell tu-header">Present</div>
+     <div class="tu-cell tu-header">Future</div>` +
+    TIME_UNIT_TABLE.map(row => `
+      <div class="tu-cell tu-rowlabel">${row.label}</div>
+      ${cell(row.past[0], row.past[1])}
+      ${cell(row.present[0], row.present[1])}
+      ${cell(row.future[0], row.future[1])}
+    `).join('');
+  list.appendChild(grid);
+  showScreen('vocab-reference');
+}
+
+// Duration-counter reference (Numbers > Counters reference). Each unit's
+// 1-10 readings have their own irregular sound changes (gemination, the
+// yon/yo and kyuu/ku substitutions, etc.) so - unlike minutes, which are a
+// computable pattern - these are fixed lookup tables, cross-checked against
+// a Japanese grammar reference rather than derived. Minutes reuses the
+// existing minuteToKana/minuteToRomaji functions instead of duplicating
+// that data here.
+const COUNTER_UNITS = {
+  minutes: { label: 'Mins', items: Array.from({ length: 10 }, (_, i) => [minuteToKana(i + 1), minuteToRomaji(i + 1)]) },
+  hours: {
+    label: 'Hours', items: [
+      ['いちじかん', 'ichijikan'], ['にじかん', 'nijikan'], ['さんじかん', 'sanjikan'],
+      ['よじかん', 'yojikan'], ['ごじかん', 'gojikan'], ['ろくじかん', 'rokujikan'],
+      ['しちじかん', 'shichijikan'], ['はちじかん', 'hachijikan'], ['くじかん', 'kujikan'],
+      ['じゅうじかん', 'juujikan'],
+    ]
+  },
+  days: {
+    label: 'Days', items: [
+      ['いちにち', 'ichinichi'], ['ふつか', 'futsuka'], ['みっか', 'mikka'],
+      ['よっか', 'yokka'], ['いつか', 'itsuka'], ['むいか', 'muika'],
+      ['なのか', 'nanoka'], ['ようか', 'youka'], ['ここのか', 'kokonoka'],
+      ['とおか', 'tooka'],
+    ]
+  },
+  weeks: {
+    label: 'Weeks', items: [
+      ['いっしゅうかん', 'isshuukan'], ['にしゅうかん', 'nishuukan'], ['さんしゅうかん', 'sanshuukan'],
+      ['よんしゅうかん', 'yonshuukan'], ['ごしゅうかん', 'goshuukan'], ['ろくしゅうかん', 'rokushuukan'],
+      ['ななしゅうかん', 'nanashuukan'], ['はちしゅうかん', 'hachishuukan'], ['きゅうしゅうかん', 'kyuushuukan'],
+      ['じゅっしゅうかん', 'jusshuukan'],
+    ]
+  },
+  months: {
+    label: 'Months', items: [
+      ['いっかげつ', 'ikkagetsu'], ['にかげつ', 'nikagetsu'], ['さんかげつ', 'sankagetsu'],
+      ['よんかげつ', 'yonkagetsu'], ['ごかげつ', 'gokagetsu'], ['ろっかげつ', 'rokkagetsu'],
+      ['ななかげつ', 'nanakagetsu'], ['はちかげつ', 'hachikagetsu'], ['きゅうかげつ', 'kyuukagetsu'],
+      ['じゅっかげつ', 'jukkagetsu'],
+    ]
+  },
+  years: {
+    label: 'Years', items: [
+      ['いちねん', 'ichinen'], ['にねん', 'ninen'], ['さんねん', 'sannen'],
+      ['よねん', 'yonen'], ['ごねん', 'gonen'], ['ろくねん', 'rokunen'],
+      ['ななねん', 'nananen'], ['はちねん', 'hachinen'], ['きゅうねん', 'kyuunen'],
+      ['じゅうねん', 'juunen'],
+    ]
+  },
+};
+let activeCounterUnit = 'minutes';
+
+function switchCounterUnit(unit) {
+  activeCounterUnit = unit;
+  renderCountersReference();
+}
+
+function renderCountersReference() {
+  document.getElementById('vocab-ref-title').textContent = 'Counters (1–10)';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+  const pillRow = document.createElement('div');
+  pillRow.className = 'level-filter-row counter-unit-pills';
+  Object.keys(COUNTER_UNITS).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'level-pill' + (key === activeCounterUnit ? ' active' : '');
+    btn.textContent = COUNTER_UNITS[key].label;
+    btn.onclick = () => switchCounterUnit(key);
+    pillRow.appendChild(btn);
+  });
+  list.appendChild(pillRow);
+
+  COUNTER_UNITS[activeCounterUnit].items.forEach((pair, idx) => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row two-col minute-row';
+    row.innerHTML = `
+      <div class="vocab-ref-col-left">
+        <div class="vocab-ref-num-big">${idx + 1}</div>
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-jp minute-jp">${markSmallKana(pair[0])}</div>
+        <div class="vocab-ref-romaji minute-romaji">${pair[1]}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function showCountersReference() {
+  vocabRefBackTarget = 'numbers';
+  renderCountersReference();
+  showScreen('vocab-reference');
+}
+
+// Item-type counters (助数詞) - a second, separate flavour from the duration
+// counters above: these attach to a TYPE of object (flat things, long thin
+// things, small animals...) rather than a stretch of time. Kept as its own
+// entry point/pill set for now rather than merged into one screen with the
+// duration units - 16 pills in one row would be too many; combining them
+// into a sectioned layout is a later step. Ten most common per Minna no
+// Nihongo's own early counter lesson (人/枚/本/冊/台/匹) plus つ/個/回/歳,
+// cross-checked against a Japanese-counters reference site for the sound
+// changes (音便: gemination on 1/6/8/10, h→p/b shifts on 本/匹).
+const COUNTER_ITEM_UNITS = {
+  tsu: {
+    label: 'つ', desc: 'general things', items: [
+      ['ひとつ', 'hitotsu'], ['ふたつ', 'futatsu'], ['みっつ', 'mittsu'],
+      ['よっつ', 'yottsu'], ['いつつ', 'itsutsu'], ['むっつ', 'muttsu'],
+      ['ななつ', 'nanatsu'], ['やっつ', 'yattsu'], ['ここのつ', 'kokonotsu'],
+      ['とお', 'too'],
+    ]
+  },
+  nin: {
+    label: '人', desc: 'people', items: [
+      ['ひとり', 'hitori'], ['ふたり', 'futari'], ['さんにん', 'sannin'],
+      ['よにん', 'yonin'], ['ごにん', 'gonin'], ['ろくにん', 'rokunin'],
+      ['しちにん', 'shichinin'], ['はちにん', 'hachinin'], ['きゅうにん', 'kyuunin'],
+      ['じゅうにん', 'juunin'],
+    ]
+  },
+  ko: {
+    label: '個', desc: 'small objects (general)', items: [
+      ['いっこ', 'ikko'], ['にこ', 'niko'], ['さんこ', 'sanko'],
+      ['よんこ', 'yonko'], ['ごこ', 'goko'], ['ろっこ', 'rokko'],
+      ['ななこ', 'nanako'], ['はっこ', 'hakko'], ['きゅうこ', 'kyuuko'],
+      ['じゅっこ', 'jukko'],
+    ]
+  },
+  hon: {
+    label: '本', desc: 'long, thin things', items: [
+      ['いっぽん', 'ippon'], ['にほん', 'nihon'], ['さんぼん', 'sanbon'],
+      ['よんほん', 'yonhon'], ['ごほん', 'gohon'], ['ろっぽん', 'roppon'],
+      ['ななほん', 'nanahon'], ['はっぽん', 'happon'], ['きゅうほん', 'kyuuhon'],
+      ['じゅっぽん', 'juppon'],
+    ]
+  },
+  mai: {
+    label: '枚', desc: 'flat things', items: [
+      ['いちまい', 'ichimai'], ['にまい', 'nimai'], ['さんまい', 'sanmai'],
+      ['よんまい', 'yonmai'], ['ごまい', 'gomai'], ['ろくまい', 'rokumai'],
+      ['ななまい', 'nanamai'], ['はちまい', 'hachimai'], ['きゅうまい', 'kyuumai'],
+      ['じゅうまい', 'juumai'],
+    ]
+  },
+  hiki: {
+    label: '匹', desc: 'small animals', items: [
+      ['いっぴき', 'ippiki'], ['にひき', 'nihiki'], ['さんびき', 'sanbiki'],
+      ['よんひき', 'yonhiki'], ['ごひき', 'gohiki'], ['ろっぴき', 'roppiki'],
+      ['ななひき', 'nanahiki'], ['はっぴき', 'happiki'], ['きゅうひき', 'kyuuhiki'],
+      ['じゅっぴき', 'juppiki'],
+    ]
+  },
+  satsu: {
+    label: '冊', desc: 'books', items: [
+      ['いっさつ', 'issatsu'], ['にさつ', 'nisatsu'], ['さんさつ', 'sansatsu'],
+      ['よんさつ', 'yonsatsu'], ['ごさつ', 'gosatsu'], ['ろくさつ', 'rokusatsu'],
+      ['ななさつ', 'nanasatsu'], ['はっさつ', 'hassatsu'], ['きゅうさつ', 'kyuusatsu'],
+      ['じゅっさつ', 'jussatsu'],
+    ]
+  },
+  dai: {
+    label: '台', desc: 'machines, vehicles', items: [
+      ['いちだい', 'ichidai'], ['にだい', 'nidai'], ['さんだい', 'sandai'],
+      ['よんだい', 'yondai'], ['ごだい', 'godai'], ['ろくだい', 'rokudai'],
+      ['ななだい', 'nanadai'], ['はちだい', 'hachidai'], ['きゅうだい', 'kyuudai'],
+      ['じゅうだい', 'juudai'],
+    ]
+  },
+  kai: {
+    label: '回', desc: 'times, occurrences', items: [
+      ['いっかい', 'ikkai'], ['にかい', 'nikai'], ['さんかい', 'sankai'],
+      ['よんかい', 'yonkai'], ['ごかい', 'gokai'], ['ろっかい', 'rokkai'],
+      ['ななかい', 'nanakai'], ['はっかい', 'hakkai'], ['きゅうかい', 'kyuukai'],
+      ['じゅっかい', 'jukkai'],
+    ]
+  },
+  sai: {
+    label: '歳', desc: 'age', items: [
+      ['いっさい', 'issai'], ['にさい', 'nisai'], ['さんさい', 'sansai'],
+      ['よんさい', 'yonsai'], ['ごさい', 'gosai'], ['ろくさい', 'rokusai'],
+      ['ななさい', 'nanasai'], ['はっさい', 'hassai'], ['きゅうさい', 'kyuusai'],
+      ['じゅっさい', 'jussai'],
+    ],
+    // 20 is the one genuinely irregular age in Japanese - a fossilised
+    // native reading (はたち) that doesn't follow the さい pattern at all.
+    // The moment anything's added to it the irregularity disappears (21 =
+    // にじゅういっさい, regular), and every other decade (30/40/50...) is a
+    // perfectly regular combination of the 1-10 table above, so this is the
+    // only extra row needed rather than a full second reference page.
+    extra: [{ num: 20, jp: 'はたち', romaji: 'hatachi' }],
+  },
+};
+let activeItemCounterUnit = 'tsu';
+
+function switchItemCounterUnit(unit) {
+  activeItemCounterUnit = unit;
+  renderItemCountersReference();
+}
+
+function renderItemCountersReference() {
+  const unit = COUNTER_ITEM_UNITS[activeItemCounterUnit];
+  document.getElementById('vocab-ref-title').textContent = `${unit.label} — ${unit.desc} (1–10)`;
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+  const pillRow = document.createElement('div');
+  pillRow.className = 'level-filter-row counter-unit-pills';
+  Object.keys(COUNTER_ITEM_UNITS).forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'level-pill' + (key === activeItemCounterUnit ? ' active' : '');
+    btn.textContent = COUNTER_ITEM_UNITS[key].label;
+    btn.onclick = () => switchItemCounterUnit(key);
+    pillRow.appendChild(btn);
+  });
+  list.appendChild(pillRow);
+
+  unit.items.forEach((pair, idx) => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row two-col minute-row';
+    row.innerHTML = `
+      <div class="vocab-ref-col-left">
+        <div class="vocab-ref-num-big">${idx + 1}</div>
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-jp minute-jp">${markSmallKana(pair[0])}</div>
+        <div class="vocab-ref-romaji minute-romaji">${pair[1]}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  // Irregular one-offs (currently just はたち for 20) - set apart with a
+  // divider so it reads as "here's the odd one out", not another item in
+  // the regular 1-10 sequence above.
+  if (unit.extra && unit.extra.length) {
+    const divider = document.createElement('div');
+    divider.className = 'section-divider';
+    list.appendChild(divider);
+    unit.extra.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'vocab-ref-row two-col minute-row';
+      row.innerHTML = `
+        <div class="vocab-ref-col-left">
+          <div class="vocab-ref-num-big">${item.num}</div>
+        </div>
+        <div class="vocab-ref-col-right">
+          <div class="vocab-ref-jp minute-jp">${markSmallKana(item.jp)}</div>
+          <div class="vocab-ref-romaji minute-romaji">${item.romaji}</div>
+        </div>
+      `;
+      list.appendChild(row);
+    });
+  }
+}
+
+function showItemCountersReference() {
+  vocabRefBackTarget = 'numbers';
+  activeItemCounterUnit = 'tsu';
+  renderItemCountersReference();
+  showScreen('vocab-reference');
 }
 
 function showMinuteReference() {
@@ -5430,13 +5838,24 @@ function startRandomMatchEverything() {
 
 applyAllSettingsUI();
 syncServiceWorkerRegistration();
-buildMatchCategoryList();
-refreshExtraCategorySwatches();
+// Runs the real setMatchLevel init (not just buildMatchCategoryList) so the
+// default Collections view starts fully set up - active pill state, the
+// showing-theme-colours pill-text tint, and the confidence swatches on every
+// card - rather than only looking right after leaving and coming back.
+setMatchLevel(currentMatchLevel);
 
 updateDirectionVisibility();
 updateNumberTimeSwatches();
 populateTimeToolSelects();
 resetTimeToolToNow();
+populateCounterToolPills();
+// The number input only shows "1" via placeholder (not a real value), but
+// on some browsers a page refresh can restore an actual leftover value into
+// a number input without firing its own 'input' event - either way, syncing
+// the output once on load (rather than waiting for the user's first
+// keystroke) means whatever's visibly in the box always matches what's
+// shown below it.
+updateCounterTool();
 tryRestoreDrillSession();
 
 // Keyboard shortcuts for the drill screen, for anyone on a laptop/desktop:
