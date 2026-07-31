@@ -443,6 +443,13 @@
   .vocab-ref-romaji { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
   .vocab-ref-jp.minute-jp { font-size: 18px; }
   .vocab-ref-romaji.minute-romaji { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  /* Marks 午 (horse) as the noon pivot on the zodiac-clock reference - the
+     row where AM flips to PM. */
+  .zodiac-pivot-row { border-color: var(--accent); background: var(--accent-dim); }
+  .zodiac-clock-note {
+    font-size: 12px; color: var(--text-dim); background: var(--surface2);
+    border-radius: var(--radius); padding: 0.6rem 0.8rem; margin-top: 0.3rem;
+  }
   /* Day/week/month/year x past/present/future reference - two dimensions
      rather than one, so it's a real grid instead of the usual row list.
      Compact sizing throughout so 4 columns (row label + 3 tenses) fit on a
@@ -716,7 +723,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.004</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.005</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1923,6 +1930,36 @@ const VOCAB = {
       {jp:'ねます', romaji:'nemasu', en:'to sleep / go to bed'},
       {jp:'べんきょうします', romaji:'benkyoushimasu', en:'to study'},
       {jp:'はたらきます', romaji:'hatarakimasu', en:'to work'},
+    ],
+  },
+  // The 12 everyday animal words - not lesson vocab, but a genuine starting
+  // point rather than an arbitrary "let's have animals" category: these are
+  // the same 12 used in the traditional zodiac clock (十二支), which is
+  // where 午前/午後 (gozen/gogo, above) actually come from - 午 (uma, horse)
+  // marks noon, so "before the horse" is AM and "after the horse" is PM.
+  // See the reference card below for the zodiac reading/hour-block side of
+  // that, kept separate from this drillable vocabulary since five of the
+  // twelve zodiac readings (ね/う/たつ/み/い) aren't the everyday word for
+  // the animal and teaching them as if they were would be actively wrong.
+  'vocab-animals-l2': {
+    level: 2,
+    hasReference: true,
+    note: 'Not covered in lessons',
+    label: 'Animals',
+    chars: 'いぬ ねこ うま…',
+    items: [
+      {jp:'ねずみ', romaji:'nezumi', en:'mouse / rat'},
+      {jp:'うし', romaji:'ushi', en:'cow / ox', altForm:'牛', altIsStandard:true},
+      {jp:'とら', romaji:'tora', en:'tiger', altForm:'虎', altIsStandard:true},
+      {jp:'うさぎ', romaji:'usagi', en:'rabbit'},
+      {jp:'りゅう', romaji:'ryuu', en:'dragon', altForm:'竜', altIsStandard:true},
+      {jp:'へび', romaji:'hebi', en:'snake', altForm:'蛇', altIsStandard:true},
+      {jp:'うま', romaji:'uma', en:'horse', altForm:'馬', altIsStandard:true},
+      {jp:'ひつじ', romaji:'hitsuji', en:'sheep', altForm:'羊', altIsStandard:true},
+      {jp:'さる', romaji:'saru', en:'monkey', altForm:'猿', altIsStandard:true},
+      {jp:'とり', romaji:'tori', en:'bird', altForm:'鳥', altIsStandard:true},
+      {jp:'いぬ', romaji:'inu', en:'dog', altForm:'犬', altIsStandard:true},
+      {jp:'いのしし', romaji:'inoshishi', en:'boar / wild pig', altForm:'猪', altIsStandard:true},
     ],
   },
   'vocab-transport': {
@@ -5477,6 +5514,13 @@ function buildMatchCategoryList() {
       daysRefCard.onclick = (e) => { e.stopPropagation(); showVocabReference(key); };
       container.appendChild(daysRefCard);
     }
+    if (key === 'vocab-animals-l2') {
+      const zodiacRefCard = document.createElement('div');
+      zodiacRefCard.className = 'vocab-ref-card';
+      zodiacRefCard.innerHTML = `<span>12 zodiac animals & the clock — reference</span><span class="vocab-ref-arrow">→</span>`;
+      zodiacRefCard.onclick = (e) => { e.stopPropagation(); showZodiacClockReference(); };
+      container.appendChild(zodiacRefCard);
+    }
     const card = document.createElement('div');
     card.className = 'match-card-select';
     card.dataset.key = key;
@@ -5963,6 +6007,55 @@ function showMinuteReference() {
     `;
     list.appendChild(row);
   }
+  showScreen('vocab-reference');
+}
+
+// The traditional zodiac clock (十二支) - each animal marks a 2-hour block,
+// laid out like positions on a clock face rather than literal hours of the
+// day. 午 (uma, horse) sits at the noon position, which is the actual origin
+// of 午前/午後 (gozen/gogo) taught in Time vocabulary - "before the horse"
+// and "after the horse". Kept as a reference rather than drillable
+// vocabulary since five of these readings (ね/う/たつ/み/い) are zodiac-only
+// and not the everyday word for the animal - see vocab-animals-l2 for that.
+const ZODIAC_HOURS = [
+  { kanji: '子', reading: 'ね', romaji: 'ne', animal: 'Rat', hours: '11pm–1am' },
+  { kanji: '丑', reading: 'うし', romaji: 'ushi', animal: 'Ox', hours: '1am–3am' },
+  { kanji: '寅', reading: 'とら', romaji: 'tora', animal: 'Tiger', hours: '3am–5am' },
+  { kanji: '卯', reading: 'う', romaji: 'u', animal: 'Rabbit', hours: '5am–7am' },
+  { kanji: '辰', reading: 'たつ', romaji: 'tatsu', animal: 'Dragon', hours: '7am–9am' },
+  { kanji: '巳', reading: 'み', romaji: 'mi', animal: 'Snake', hours: '9am–11am' },
+  { kanji: '午', reading: 'うま', romaji: 'uma', animal: 'Horse', hours: '11am–1pm', pivot: true },
+  { kanji: '未', reading: 'ひつじ', romaji: 'hitsuji', animal: 'Sheep', hours: '1pm–3pm' },
+  { kanji: '申', reading: 'さる', romaji: 'saru', animal: 'Monkey', hours: '3pm–5pm' },
+  { kanji: '酉', reading: 'とり', romaji: 'tori', animal: 'Rooster', hours: '5pm–7pm' },
+  { kanji: '戌', reading: 'いぬ', romaji: 'inu', animal: 'Dog', hours: '7pm–9pm' },
+  { kanji: '亥', reading: 'い', romaji: 'i', animal: 'Boar', hours: '9pm–11pm' },
+];
+
+function showZodiacClockReference() {
+  vocabRefBackTarget = 'match-settings';
+  document.getElementById('vocab-ref-title').textContent = '12 zodiac animals & the clock';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+  ZODIAC_HOURS.forEach(z => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row two-col minute-row' + (z.pivot ? ' zodiac-pivot-row' : '');
+    row.innerHTML = `
+      <div class="vocab-ref-col-left">
+        <div class="vocab-ref-jp minute-jp">${markSmallKana(z.kanji + '（' + z.reading + '）')}</div>
+        <div class="vocab-ref-romaji minute-romaji">${z.romaji} — ${z.animal}</div>
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-en">${z.hours}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  const note = document.createElement('div');
+  note.className = 'zodiac-clock-note';
+  note.textContent = '午 (horse) marks noon - everything before it is 午前 (gozen, "before the horse" = AM), everything after is 午後 (gogo, "after the horse" = PM).';
+  list.appendChild(note);
   showScreen('vocab-reference');
 }
 
