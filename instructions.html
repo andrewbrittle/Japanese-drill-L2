@@ -95,15 +95,7 @@
   </div>
   <div class="setting">
     <div class="setting-name">Show kanji content</div>
-    <div class="setting-desc">At the beginning of this project I collected together a small set of survival kanji, as things I might encounter on my trip. The list grew and eventually there was significant overlap with N5 kanji. The collection here is aligned with N5 but doesn't include "white" — there was nowhere to put it at the time.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Show Extra content</div>
-    <div class="setting-desc">Shows the extra categories I've added for myself. Initially colours, "useful words for the trip", and more recently "UK Places". UK Places is really just to supplement the selection of places we've come across in the lessons.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Show "Themes"</div>
-    <div class="setting-desc">This might be an interesting one as it develops. The normal reading challenges work on individual categories in one level of the course. Themes can go across levels and can also include words from the Extra categories — things like "Travel and UK places", "Around the world" (countries and cities), "Days and times" (vocab associated with both groups), and so on. If you have Extra turned off, the Extra words won't be included in the drilling.</div>
+    <div class="setting-desc">At the beginning of this project I collected together a small set of survival kanji, as things I might encounter on my trip. The list grew and eventually there was significant overlap with N5 kanji. The collection here is aligned with N5 but doesn't include "white" — there was nowhere to put it at the time. You can turn this off if you don't want to see it.</div>
   </div>
   <div class="setting">
     <div class="setting-name">Half credit for hinted answers</div>
@@ -114,8 +106,12 @@
     <div class="setting-desc">Caches the application so it doesn't need to be online to work. It's a very small app so this doesn't really get in the way. It's a Progressive Web App, which means it's just a webpage that tries to pretend it's not in a browser.</div>
   </div>
   <div class="setting">
+    <div class="setting-name">Trip vocabulary</div>
+    <div class="setting-desc">This has been added as various piles of words that might be useful for me to know for my trip. This entire section will only appear if you turn it on — otherwise the whole app will act as if none of this exists.</div>
+  </div>
+  <div class="setting">
     <div class="setting-name">Activate Andrew mode</div>
-    <div class="setting-desc">Whatever mad scheme I'm working on will be visible by turning this on. I'm unlikely to be taking anything away from the app, so it's probably new stuff that gets enabled by this.</div>
+    <div class="setting-desc">Whatever mad scheme I'm working on will be visible by turning this on. After making a recent big update/shuffle there's nothing in there right now. I'm thinking about adding vocabulary from authentic scanned materials — menus, store directories, station signs, and other random things while I'm there. I might or might not do that, or something else might appear here instead. Andrew mode could be anything! But it's turned off by default.</div>
   </div>
 
   <h3>Keyboard</h3>
@@ -154,18 +150,43 @@
   <p>You can click to hear an audio clip.</p>
   <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
 
-  <h2>Drill</h2>
-  <p>This doesn't actually do very much at all, and I'm looking for a reason to take it off.</p>
+  <h2>Numbers</h2>
+  <p>This brings together some functions that deal with reading numbers, times, and counters.</p>
+
+  <h3>Reading numbers</h3>
+  <p>Presents 10 random numbers. These are mostly 1–9,999 but there's a 1 in 20 chance of a bigger number up to 50,000, to practice <em>man</em>. Correct answers score 0.1, incorrect answers score -0.1.</p>
+
+  <h3>Specific number</h3>
+  <p>Instead of a random number, you can put an actual number in here and it will tell you how that number would be read.</p>
+
+  <h3>Reading times</h3>
+  <p>Presents 10 times with from/until/at and around qualifiers, and am/pm indicators. Correct answers score 0.1, incorrect answers score -0.1.</p>
+
+  <h3>Specific time</h3>
+  <p>Instead of a random time, you can put an actual time in here together with the qualifiers, and it will tell you how that time would be read. It starts with the current time and has a refresh button.</p>
+
+  <h3>Counters</h3>
+  <p>There's a couple of reference pages for different types of counters. I know we haven't covered these in the lessons but the entire page is easily ignored and doesn't feed into anything else — I was just curious.</p>
+  <p>I'm aiming to get some kind of random counter challenge here too, just to be consistent.</p>
+  <p>Choose a counter type and enter a number (1–10 for now) and it'll show you how it's written.</p>
+  <p>You don't have to turn this off if you don't want it — just ignore it.</p>
 
   <h2>Vocab</h2>
   <p>This has a few options.</p>
 
-  <h3>Read</h3>
-  <p><strong>Reading numbers</strong> — presents 10 random numbers. These are mostly 1–9,999 but there's a 1 in 20 chance of a bigger number up to 50,000, to practice <em>man</em>. Correct answers score 0.1, incorrect answers score -0.1.</p>
-  <p><strong>Reading times</strong> — presents 10 times with from/until/at and around qualifiers, and am/pm indicators. Correct answers score 0.1, incorrect answers score -0.1.</p>
-  <p><strong>Specific time</strong> — instead of a random time, you can put an actual time in here together with the qualifiers, and it will tell you how that time would be read. It starts with the current time and has a refresh button.</p>
-  <p><strong>Reading words — everything</strong> — picks 20 random words from across all categories. Works the same way as everything else.</p>
-  <p><strong>Reading kanji — everything</strong> — picks 20 random kanji from across all categories. Works the same way as everything else.</p>
+  <h3>Collections</h3>
+  <p>The normal reading challenges work on individual categories in one level of the course. Collections can go across levels and can also include words from any additional categories that you've got turned on. This pulls together combinations like "All vocabulary" and "All kanji" (if you have it turned on) as well as more specific collections of categories like "Transport and UK Places", "Around the world" (countries and cities), "Days and times" (vocab associated with both groups), and so on.</p>
+  <p>Note that the size of the collection will depend on whether you're just using vocab from the lesson or including other categories too.</p>
+  <p><strong>All vocabulary</strong> — picks 20 random words from across all categories that are visible to you. Works the same way as everything else.</p>
+  <p><strong>All kanji</strong> — picks 20 random words from across all kanji categories, if you have kanji turned on. Works the same way as everything else.</p>
+  <p>Other collections include:</p>
+  <ul>
+    <li>Transport and UK Places</li>
+    <li>Around the world</li>
+    <li>Days and times</li>
+    <li>Everyday items, clothing &amp; general vocab</li>
+  </ul>
+  <p>And if you have Trip vocabulary turned on too you'll also see "Getting around" and "Survival vocab".</p>
   <p><strong>Highlight the meaning instead of sound</strong> — sounds complicated but it just changes the emphasis on the four answer cards. By default you could look at the kana and think "that starts with 'mi'" and guess the word from there by looking at the four romaji alternatives and choosing the one where the it starts with 'mi'. Highlighting the meaning, in English, means you can read and recognise the word but to get it right you need to know the meaning as well – it starts with "mi", but what does it mean? The romaji is still there down below and slightly less visible so it doesn't actually stop you doing it the easy way, but it's a mild deterrent.</p>
   <p><strong>Reverse the drill direction</strong> — shows the English word as the big word and four kana words as the options.</p>
 
@@ -179,6 +200,7 @@
     <li>Clothing and accessories</li>
     <li>Places &amp; around the building</li>
     <li>Numbers</li>
+    <li>Colours</li>
   </ul>
   <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
 
@@ -191,39 +213,16 @@
     <li>Transport</li>
     <li>Places to go</li>
     <li>UK Places</li>
-    <li>World Cities — there's a reference page with the endings of the minute words</li>
-    <li>Time vocabulary</li>
+    <li>World Cities</li>
+    <li>Time vocabulary — there are reference pages for the endings of the minute words, and for day/week/month/year against past/present/future</li>
     <li>Days of the week — there's a reference page with the days of the week listed in order</li>
   </ul>
   <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
 
-  <h3>Extra</h3>
+  <h3>Trip</h3>
   <p>Only appears if you've got it switched on. These all work in the same way.</p>
   <ul>
-    <li>Colours</li>
     <li>Useful words for the trip</li>
-    <li>UK Places — an additional set of 21 (mostly katakana)</li>
-  </ul>
-  <p>Others will be added here.</p>
-  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
-
-  <h3>Theme</h3>
-  <p>Only appears if you've got it switched on. Themes pull together content across levels, and across Extra and Andrew categories if you have them enabled, to give much bigger pools from which to drill random, vaguely connected words. These all work in the same way.</p>
-  <ul>
-    <li>Transport and UK places</li>
-    <li>Around the world</li>
-    <li>Days and times</li>
-    <li>Everyday items, clothing &amp; general vocab</li>
-    <li>Getting around</li>
-    <li>Survival vocab</li>
-  </ul>
-  <p>Others will be added here.</p>
-  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
-
-  <h3>Andrew mode</h3>
-  <p>Only appears if you've got it switched on. Whatever bits and pieces I'm testing at the moment. Most things here will eventually move to a proper home in the app, but can still be turned off if you want just the lessons.</p>
-  <p>At the moment these are new Extra sections I'm looking at, because I have just over a week and I want to know more words I might encounter. There's no chance of me learning them all in the time I have available, but "I think I've heard that word before" is going to be enough. Lots of words that aren't covered in the lessons, so if you don't want them, turn Extra off and don't turn Andrew mode on.</p>
-  <ul>
     <li>Food and drink</li>
     <li>Accommodation</li>
     <li>Money and shopping</li>
@@ -231,9 +230,15 @@
     <li>Emergency and survival</li>
     <li>Weather</li>
     <li>Signage and warnings</li>
+    <li>Polite tourist phrases</li>
   </ul>
-  <p>Others will be added here, or taken away. It's a mystery. Who knows?</p>
+  <p>Others will be added here.</p>
+  <p>If you have Trip turned on, trip vocabulary will feed into the collections and into the "random words" tests. If it's turned off you'll never see it.</p>
   <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
+
+  <h3>Andrew mode</h3>
+  <p>Only appears if you've got it switched on. Whatever bits and pieces I'm testing at the moment. Most things here will eventually move to a proper home in the app, but can still be turned off if you want just the lessons.</p>
+  <p>Nothing to see for now, move along please!</p>
 
   <div class="footer">
     <a class="back-link" href="./index.html">← Back to the app</a>

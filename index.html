@@ -289,6 +289,7 @@
      is applied. */
   .small-kana { font-size: 0.65em; }
   .alt-form { font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
+  .counter-quiz-reminder { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; }
 
   .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; text-align: center; }
 
@@ -396,6 +397,7 @@
     cursor: pointer; transition: border-color 0.15s; user-select: none;
   }
   #match-category-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  #counter-quiz-selection-list { display: flex; flex-direction: column; gap: 0.6rem; }
   .match-card-select:hover { border-color: var(--border-hover); }
   .match-card-select.selected { border-color: var(--accent); background: var(--accent-dim); }
   .match-card-select .group-name { font-size: 15px; font-weight: 700; }
@@ -417,7 +419,11 @@
      single-word labels (Mins/Hours/Days... or a single kanji), so the usual
      generous padding just pushes the row into wrapping sooner than it needs
      to. */
-  .counter-unit-pills .level-pill { padding: 4px 10px; font-size: 13px; }
+  /* min-width matters here specifically because half these pills (the item
+     counters) are a single kanji glyph rather than a word like "Hours" -
+     without it, a lone-glyph pill just shrinks to fit its content and reads
+     as visually smaller than a word pill even at identical padding/font. */
+  .counter-unit-pills .level-pill { padding: 4px 10px; font-size: 13px; min-width: 34px; text-align: center; }
   .counter-tool-pills { margin-top: 0.5rem; }
   .counter-tool-desc { text-align: center; font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 0.35rem; min-height: 15px; }
   .vocab-ref-row {
@@ -477,6 +483,13 @@
 
   /* Level filter pills on Match screen */
   .level-filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* Each Numbers/Times/Counters section is a single flex child of
+     .screen.visible (which only gives direct children a 1rem gap) - without
+     their own flex+gap, the group-cards inside a section would sit flush
+     against each other instead of keeping the usual card spacing. */
+  #numbers-section-numbers, #numbers-section-times, #numbers-section-counters {
+    display: flex; flex-direction: column; gap: 1rem;
+  }
   /* Andrew mode's own row - centered and set apart from the main level row
      so it reads as a separate, personal tier rather than another option in
      the regular lineup. Hidden by default via JS (display:none inline);
@@ -511,15 +524,21 @@
   .time-tool-entry { display: flex; align-items: center; gap: 4px; font-weight: 600; color: var(--text-muted); }
   .time-tool-entry select {
     background: var(--surface2); color: var(--text); border: 1px solid var(--border);
-    border-radius: var(--radius); padding: 5px 8px; font-size: 18px; font-weight: 600;
+    border-radius: var(--radius); padding: 6px 10px; font-size: 28px; font-weight: 700;
     font-family: inherit; cursor: pointer;
   }
   .time-tool-output {
     margin-top: 0.5rem; text-align: center; padding: 0.45rem;
     background: var(--surface2); border-radius: var(--radius);
   }
-  .time-tool-output .time-tool-jp { display: block; font-size: 17px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
-  .time-tool-output .time-tool-rd { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+  /* Sizing standard shared with .number-tool-output below (Specific number
+     and Specific counter): 22px for the big reading, 14px for the romaji
+     underneath. This one used to run smaller (17px) specifically to stop
+     longer strings - a frame word and am/pm stacked on the same line - from
+     wrapping onto a second line, so if that reappears on a narrow phone,
+     revisit this rather than assuming it's a regression. */
+  .time-tool-output .time-tool-jp { display: block; font-size: 22px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  .time-tool-output .time-tool-rd { display: block; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
   .time-tool-reset-btn {
     flex-shrink: 0;
     width: 38px; height: 38px; border-radius: 50%;
@@ -541,7 +560,11 @@
   }
   .number-tool-input:focus { outline: none; border-color: var(--accent); }
   .number-tool-output { margin-top: 0.5rem; text-align: center; padding: 0.45rem; background: var(--surface2); border-radius: var(--radius); }
-  .number-tool-output .number-tool-jp { display: block; font-size: 26px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
+  /* Sizing standard for every "big reading" output on this page (Specific
+     number, Specific counter, and Specific time above): 22px for the
+     reading, 14px for the romaji - any new lookup tool added later should
+     match these rather than picking its own values. */
+  .number-tool-output .number-tool-jp { display: block; font-size: 22px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
   .number-tool-output .number-tool-rd { display: block; font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
   .number-tool-hint { font-size: 12px; color: var(--text-muted); margin-top: 0.35rem; text-align: center; }
 
@@ -693,7 +716,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260730.013</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.004</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -867,6 +890,7 @@
       <div style="text-align:center;"><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
       <div class="alt-form" id="q-alt-form" style="display:none;"></div>
+      <div class="counter-quiz-reminder" id="q-counter-quiz-reminder" style="display:none;"></div>
       <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <polygon points="3 9 8 9 12 5 12 19 8 15 3 15" fill="currentColor" stroke="currentColor"></polygon>
@@ -903,81 +927,115 @@
     <div class="settings-title">Numbers</div>
     <div class="settings-sub">Reading challenges for numbers, times, and counters.</div>
 
-    <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name">Reading numbers</div>
-        <div class="group-chars">らんだむな すうじ</div>
-        <div class="group-count">10 random numbers per round</div>
-      </div>
-      <div class="score-swatch" id="numbers-score-swatch"></div>
+    <!-- Numbers/Times/Counters split into their own pill-switched sections -
+         the page was getting heavy as one long scroll covering three
+         unrelated things at once, and this also leaves room for future
+         challenge types (e.g. the counters quiz) to get their own home
+         without the page just growing forever. Defaults to Times (see
+         currentNumbersSection init) since Specific time always has
+         something live on screen, rather than landing on a blank state. -->
+    <div class="level-filter-row" id="numbers-section-pills">
+      <button class="level-pill" id="numbers-section-pill-times" onclick="setNumbersSection('times')">Times</button>
+      <button class="level-pill" id="numbers-section-pill-numbers" onclick="setNumbersSection('numbers')">Numbers</button>
+      <button class="level-pill" id="numbers-section-pill-counters" onclick="setNumbersSection('counters')">Counters</button>
     </div>
 
-    <div class="group-card" style="cursor:default; display:block;">
-      <div class="group-info">
-        <div class="group-name">Specific number</div>
-        <div class="group-count">Type a number to see how it's said in Japanese</div>
-      </div>
-      <input class="number-tool-input" id="number-tool-input" type="number" inputmode="numeric" min="0" max="99999" step="1" placeholder="0" oninput="updateNumberTool()">
-      <div class="number-tool-hint">Up to 99,999</div>
-      <div class="number-tool-output" id="number-tool-output"></div>
-    </div>
-
-    <div class="section-divider"></div>
-
-    <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
-      <div class="group-info">
-        <div class="group-name">Reading times</div>
-        <div class="group-chars">ごぜん くじ はん</div>
-        <div class="group-count">10 random times per round, with qualifiers</div>
-      </div>
-      <div class="score-swatch" id="times-score-swatch"></div>
-    </div>
-    <div class="group-card" style="cursor:default; display:block;">
-      <div class="group-info">
-        <div class="group-name">Specific time</div>
-        <div class="group-count">Pick a time to see how it's said in Japanese</div>
-      </div>
-      <div class="time-tool-row">
-        <div class="time-tool-frames">
-          <button class="level-pill" id="time-tool-frame-ni" onclick="setTimeToolFrame('ni')">at</button>
-          <button class="level-pill" id="time-tool-frame-made" onclick="setTimeToolFrame('made')">until</button>
-          <button class="level-pill" id="time-tool-frame-goro" onclick="setTimeToolFrame('goro')">around</button>
-          <button class="level-pill" id="time-tool-frame-kara" onclick="setTimeToolFrame('kara')">from</button>
+    <div id="numbers-section-numbers">
+      <div class="group-card" onclick="startNumberChallenge()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading numbers</div>
+          <div class="group-chars">らんだむな すうじ</div>
+          <div class="group-count">10 random numbers per round</div>
         </div>
-        <div class="time-tool-entry">
-          <select id="time-tool-hour" onchange="updateTimeTool()"></select>
-          <span>:</span>
-          <select id="time-tool-minute" onchange="updateTimeTool()"></select>
-        </div>
-        <div class="time-tool-ampm">
-          <button class="level-pill" id="time-tool-ampm-gozen" onclick="setTimeToolAmpm('gozen')">AM</button>
-          <button class="level-pill" id="time-tool-ampm-gogo" onclick="setTimeToolAmpm('gogo')">PM</button>
-        </div>
-        <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()" title="Reset to current time" aria-label="Reset to current time">↺</button>
+        <div class="score-swatch" id="numbers-score-swatch"></div>
       </div>
-      <div class="time-tool-output" id="time-tool-output"></div>
-    </div>
 
-    <div class="section-divider"></div>
-
-    <div class="vocab-ref-card" onclick="showItemCountersReference()">
-      <span>Counters for people, objects, animals — reference</span><span class="vocab-ref-arrow">→</span>
-    </div>
-    <div class="vocab-ref-card" onclick="showCountersReference()">
-      <span>Minutes / hours / days / weeks / months / years — reference</span><span class="vocab-ref-arrow">→</span>
-    </div>
-
-    <div class="group-card" style="cursor:default; display:block;">
-      <div class="group-info">
-        <div class="group-name">Specific counter</div>
-        <div class="group-count">Pick a counter type and a number to see how it's said</div>
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Specific number</div>
+          <div class="group-count">Type a number to see how it's said in Japanese</div>
+        </div>
+        <input class="number-tool-input" id="number-tool-input" type="number" inputmode="numeric" min="0" max="99999" step="1" placeholder="0" oninput="updateNumberTool()">
+        <div class="number-tool-hint">Up to 99,999</div>
+        <div class="number-tool-output" id="number-tool-output"></div>
       </div>
-      <div class="counter-tool-pills level-filter-row counter-unit-pills" id="counter-tool-pills"></div>
-      <div class="counter-tool-desc" id="counter-tool-desc"></div>
-      <input class="number-tool-input" id="counter-tool-input" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" placeholder="1" oninput="updateCounterTool()">
-      <div class="number-tool-hint">1–10 for now</div>
-      <div class="number-tool-output" id="counter-tool-output"></div>
     </div>
+
+    <div id="numbers-section-times">
+      <div class="group-card" onclick="startTimeChallenge()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Reading times</div>
+          <div class="group-chars">ごぜん くじ はん</div>
+          <div class="group-count">10 random times per round, with qualifiers</div>
+        </div>
+        <div class="score-swatch" id="times-score-swatch"></div>
+      </div>
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Specific time</div>
+          <div class="group-count">Pick a time to see how it's said in Japanese</div>
+        </div>
+        <div class="time-tool-row">
+          <div class="time-tool-frames">
+            <button class="level-pill" id="time-tool-frame-ni" onclick="setTimeToolFrame('ni')">at</button>
+            <button class="level-pill" id="time-tool-frame-made" onclick="setTimeToolFrame('made')">until</button>
+            <button class="level-pill" id="time-tool-frame-goro" onclick="setTimeToolFrame('goro')">around</button>
+            <button class="level-pill" id="time-tool-frame-kara" onclick="setTimeToolFrame('kara')">from</button>
+          </div>
+          <div class="time-tool-entry">
+            <select id="time-tool-hour" onchange="updateTimeTool()"></select>
+            <span>:</span>
+            <select id="time-tool-minute" onchange="updateTimeTool()"></select>
+          </div>
+          <div class="time-tool-ampm">
+            <button class="level-pill" id="time-tool-ampm-gozen" onclick="setTimeToolAmpm('gozen')">AM</button>
+            <button class="level-pill" id="time-tool-ampm-gogo" onclick="setTimeToolAmpm('gogo')">PM</button>
+          </div>
+          <button class="time-tool-reset-btn" onclick="resetTimeToolToNow()" title="Reset to current time" aria-label="Reset to current time">↺</button>
+        </div>
+        <div class="time-tool-output" id="time-tool-output"></div>
+      </div>
+    </div>
+
+    <div id="numbers-section-counters">
+      <div class="group-card" onclick="showCounterQuizSelection()" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Random counter challenge</div>
+          <div class="group-chars">つ 人 個 本…</div>
+          <div class="group-count">Pick 4 counter types, then 10 rounds of reading + matching</div>
+        </div>
+        <div class="score-swatch" id="counters-score-swatch"></div>
+      </div>
+
+      <div class="vocab-ref-card" onclick="showItemCountersReference()">
+        <span>Counters for people, objects, animals — reference</span><span class="vocab-ref-arrow">→</span>
+      </div>
+      <div class="vocab-ref-card" onclick="showCountersReference()">
+        <span>Minutes / hours / days / weeks / months / years — reference</span><span class="vocab-ref-arrow">→</span>
+      </div>
+
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Specific counter</div>
+          <div class="group-count">Pick a counter type and a number to see how it's said</div>
+        </div>
+        <div class="counter-tool-pills level-filter-row counter-unit-pills" id="counter-tool-pills"></div>
+        <div class="counter-tool-desc" id="counter-tool-desc"></div>
+        <input class="number-tool-input" id="counter-tool-input" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" placeholder="1" oninput="updateCounterTool()">
+        <div class="number-tool-hint">1–10 for now</div>
+        <div class="number-tool-output" id="counter-tool-output"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Random counter challenge - counter-type selection screen -->
+  <div class="screen" id="screen-counter-quiz-selection">
+    <div class="settings-title">Random counter challenge</div>
+    <div class="settings-sub">Pick exactly 4 counter types - these are the only ones used this round.</div>
+    <div id="counter-quiz-selection-list"></div>
+    <div class="number-tool-hint" id="counter-quiz-selection-count">0 of 4 selected</div>
+    <button class="start-btn" id="counter-quiz-start-btn" onclick="startCounterQuizFromSelection()" disabled>Start</button>
+    <button class="btn-secondary" onclick="showNumbersScreen()">← Back</button>
   </div>
 
   <!-- Match settings screen -->
@@ -2029,6 +2087,32 @@ const VOCAB = {
       {jp:'きんようび', romaji:'kinyoubi', en:'Friday', altForm:'金曜日', altIsStandard:true},
       {jp:'どようび', romaji:'doyoubi', en:'Saturday', altForm:'土曜日', altIsStandard:true},
       {jp:'にちようび', romaji:'nichiyoubi', en:'Sunday', altForm:'日曜日', altIsStandard:true},
+    ],
+  },
+  // A classmate asked the tutor about horse racing, so here it is - same
+  // deal as Colours: not covered in the lessons, but harmless and fun
+  // enough that it doesn't need gating behind Trip vocabulary (nobody's
+  // trip depends on knowing 馬券). うま (horse) is the only animal word in
+  // the app right now - not worth inventing a whole Animals category for
+  // one entry when it already has a natural home here.
+  'vocab-horse-racing': {
+    level: 2,
+    hasReference: true,
+    note: 'Not covered in lessons',
+    label: 'Horse racing',
+    chars: 'けいば うま きしゅ…',
+    items: [
+      {jp:'けいば', romaji:'keiba', en:'horse racing', altForm:'競馬', altIsStandard:true},
+      {jp:'うま', romaji:'uma', en:'horse', altForm:'馬', altIsStandard:true},
+      {jp:'けいばじょう', romaji:'keibajou', en:'racecourse', altForm:'競馬場', altIsStandard:true},
+      {jp:'きしゅ', romaji:'kishu', en:'jockey', altForm:'騎手', altIsStandard:true},
+      {jp:'ばけん', romaji:'baken', en:'betting ticket', altForm:'馬券', altIsStandard:true},
+      {jp:'レース', romaji:'reesu', en:'race', altForm:'れーす'},
+      {jp:'しば', romaji:'shiba', en:'turf (track)', altForm:'芝', altIsStandard:true},
+      {jp:'ダート', romaji:'daato', en:'dirt (track)', altForm:'だーと'},
+      {jp:'かつ', romaji:'katsu', en:'to win', altForm:'勝つ', altIsStandard:true},
+      {jp:'かける', romaji:'kakeru', en:'to bet', altForm:'賭ける', altIsStandard:true},
+      {jp:'いっちゃく', romaji:'icchaku', en:'first place', altForm:'一着', altIsStandard:true},
     ],
   },
   'vocab-trip-prep': {
@@ -3133,6 +3217,7 @@ function showScreen(id) {
   else if (id === 'vocab-tile-selection' && vocabTileCategory) refreshKanaScoreShading('vocab-tile-grid');
   else if (id === 'match-settings') buildMatchCategoryList();
   else if (id === 'numbers') updateNumberTimeSwatches();
+  else if (id === 'counter-quiz-selection') buildCounterQuizSelectionList();
 }
 
 let lastSettingsScreen = 'match-settings';
@@ -3193,6 +3278,26 @@ function showNumbersScreen() {
   showScreen('numbers');
 }
 
+// Numbers/Times/Counters pill split - the page was getting long as one
+// continuous scroll covering three unrelated things at once. Defaults to
+// 'times' (see the init call at the bottom of the script) since Specific
+// time always has something live on screen already, rather than landing on
+// a blank state. Persists across visits within the session, same as
+// currentMatchLevel on the Vocab screen, rather than resetting to Times
+// every single time - once you've picked a section you probably want to
+// stay there.
+let currentNumbersSection = 'times';
+
+function setNumbersSection(section) {
+  currentNumbersSection = section;
+  ['numbers', 'times', 'counters'].forEach(key => {
+    const el = document.getElementById('numbers-section-' + key);
+    if (el) el.style.display = key === section ? 'flex' : 'none';
+    const pill = document.getElementById('numbers-section-pill-' + key);
+    if (pill) pill.classList.toggle('active', key === section);
+  });
+}
+
 // The Numbers nav pill needs to double as a resume shortcut for ANY
 // in-progress drill (kana, kanji, vocab, or numbers), not just a numbers one
 // - mirrors tryResume(), but lands on the Numbers menu instead of
@@ -3204,7 +3309,7 @@ function showNumbersScreen() {
 // itself (see showNumbersScreen), so it can't reliably answer "is the
 // pending drill genuinely mine" the way this needs.
 function isPendingDrillNumbers() {
-  return deck.length > 0 && current < deck.length && deck[0] && (deck[0].disp === 'number' || deck[0].disp === 'time');
+  return deck.length > 0 && current < deck.length && deck[0] && (deck[0].disp === 'number' || deck[0].disp === 'time' || deck[0].disp === 'counter');
 }
 
 function tryResumeOrNumbers() {
@@ -4085,7 +4190,7 @@ function isTrackedItem(q) {
     q.groupKey && (q.groupKey.startsWith('hiragana-') || q.groupKey.startsWith('katakana-')));
   const isKanji = !!(q && (q.disp === 'kanji' || q.disp === 'survival'));
   const isVocabWord = !!(q && q.disp === 'word');
-  const isNumberOrTime = !!(q && (q.disp === 'number' || q.disp === 'time'));
+  const isNumberOrTime = !!(q && (q.disp === 'number' || q.disp === 'time' || q.disp === 'counter'));
   return isKana || isKanji || isVocabWord || isNumberOrTime;
 }
 
@@ -4099,13 +4204,14 @@ function getScoreKey(q) {
   if (q.disp === 'word') return q.char + '|' + (q.answerEn || q.answer);
   if (q.disp === 'number') return 'numbers-consistency';
   if (q.disp === 'time') return 'times-consistency';
+  if (q.disp === 'counter') return 'counters-consistency';
   return q.char;
 }
 
 function recordKanaResult(q, correct) {
   if (!isTrackedItem(q)) return;
   const key = getScoreKey(q);
-  const isConsistencyItem = (q.disp === 'number' || q.disp === 'time');
+  const isConsistencyItem = (q.disp === 'number' || q.disp === 'time' || q.disp === 'counter');
   // Numbers/time track many sub-answers under one key (numbers-consistency /
   // times-consistency), so they keep their original small symmetric step -
   // the asymmetric kana/kanji/word scoring below doesn't apply to them.
@@ -4599,6 +4705,10 @@ const KANJI_READINGS = {
 // question, since the character on screen isn't always the pronounceable side
 // (e.g. reversed mode shows romaji; number/time questions show digits).
 function getSpeechText(q) {
+  // Counter-quiz questions flip the usual direction (Japanese-sounding
+  // prompt, English answer options), so q.answer holds English here - the
+  // speakable form is the stashed kana reading instead.
+  if (q.disp === 'counter') return q.kana;
   if (q.disp === 'number' || q.disp === 'time') return q.answer;
   if (q.disp === 'kanji' || q.disp === 'survival') {
     const reading = KANJI_READINGS[q.char + '|' + q.answer];
@@ -4638,12 +4748,12 @@ function renderQuestion() {
   document.getElementById('stat-left').textContent = deck.length - current;
 
   const badge = document.getElementById('q-badge');
-  badge.textContent = q.disp === 'number' ? 'numbers' : q.disp === 'word' ? 'word reading' : q.disp === 'time' ? 'time reading' : (BADGE_LABELS[q.groupKey] || q.groupKey);
+  badge.textContent = q.disp === 'number' ? 'numbers' : q.disp === 'word' ? 'word reading' : q.disp === 'time' ? 'time reading' : q.disp === 'counter' ? 'counter reading' : (BADGE_LABELS[q.groupKey] || q.groupKey);
   let badgeClass = 'base';
   if (q.disp === 'diacritic') badgeClass = 'diacritic';
   else if (q.disp === 'kanji') badgeClass = 'kanji';
   else if (q.disp === 'survival') badgeClass = 'survival';
-  else if (q.disp === 'number' || q.disp === 'time') badgeClass = 'kanji';
+  else if (q.disp === 'number' || q.disp === 'time' || q.disp === 'counter') badgeClass = 'kanji';
   badge.className = 'type-badge type-' + badgeClass;
 
   const altEl = document.getElementById('q-alt-form');
@@ -4681,9 +4791,27 @@ function renderQuestion() {
   const isNumber = q.disp === 'number';
   const isWord = q.disp === 'word';
   const isTime = q.disp === 'time';
+  const isCounterQuiz = q.disp === 'counter';
   const charDisplay = document.getElementById('q-char');
   const container = document.getElementById('q-options');
   container.innerHTML = '';
+
+  // On-screen reminder of which 4 counters are in play this round, since
+  // the prompt/options alone don't announce it - only shown for this
+  // challenge type, hidden (and left un-populated) for everything else.
+  const reminderEl = document.getElementById('q-counter-quiz-reminder');
+  if (reminderEl) {
+    if (isCounterQuiz && q.quizCounters) {
+      const names = q.quizCounters.map(k => {
+        const unit = COUNTER_ITEM_UNITS[k];
+        return unit.label + ' (' + unit.desc.charAt(0).toUpperCase() + unit.desc.slice(1) + ')';
+      }).join(', ');
+      reminderEl.textContent = 'Testing: ' + names;
+      reminderEl.style.display = 'block';
+    } else {
+      reminderEl.style.display = 'none';
+    }
+  }
 
   if (isWord && vocabReversed) {
     // Reversed: the prompt is always the English meaning, and the 4 options
@@ -4760,6 +4888,26 @@ function renderQuestion() {
       const btn = document.createElement('button');
       btn.className = 'opt';
       btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-jp">${markSmallKana(o.jp)}</span><span class="opt-rd">${o.rd}</span>`;
+      btn.dataset.value = o.en;
+      btn.onclick = () => choose(btn, o.en, q.answer, q.char);
+      container.appendChild(btn);
+    });
+  } else if (isCounterQuiz) {
+    // Deliberately the mirror image of isNumber/isTime above: those show a
+    // digit/English prompt and Japanese-reading options, testing whether you
+    // can read the number. This tests counter knowledge specifically, so the
+    // prompt is the Japanese reading (in romaji - kana would reintroduce
+    // reading ability as a confounding factor) and the options are English,
+    // one per counter in play this round.
+    charDisplay.style.fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
+    const len = q.char.length;
+    charDisplay.style.fontSize = len <= 8 ? '56px' : len <= 14 ? '44px' : '34px';
+    charDisplay.textContent = q.char;
+    document.getElementById('q-prompt').textContent = 'What is this counter counting, and how many?';
+    q.options.forEach((o, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt';
+      btn.innerHTML = `<span class="opt-num">${idx + 1}</span><span class="opt-rd">${o.en}</span>`;
       btn.dataset.value = o.en;
       btn.onclick = () => choose(btn, o.en, q.answer, q.char);
       container.appendChild(btn);
@@ -4878,7 +5026,7 @@ function choose(btn, selectedVal, answer, char) {
     const missedKey = char + '|' + answer;
     if (!missed.includes(missedKey)) {
       missed.push(missedKey);
-      if (currentQ && (currentQ.disp === 'number' || currentQ.disp === 'word' || currentQ.disp === 'time')) missedItems.push(currentQ);
+      if (currentQ && (currentQ.disp === 'number' || currentQ.disp === 'word' || currentQ.disp === 'time' || currentQ.disp === 'counter')) missedItems.push(currentQ);
     }
   }
   document.getElementById('stat-correct').textContent = score;
@@ -5254,6 +5402,7 @@ let currentMatchLevel = 'theme';
 function updateNumberTimeSwatches() {
   const numSwatch = document.getElementById('numbers-score-swatch');
   const timeSwatch = document.getElementById('times-score-swatch');
+  const counterSwatch = document.getElementById('counters-score-swatch');
   if (numSwatch) {
     numSwatch.classList.remove(...SCORE_CLASSES);
     const cls = continuousScoreClass(kanaScores['numbers-consistency']);
@@ -5263,6 +5412,11 @@ function updateNumberTimeSwatches() {
     timeSwatch.classList.remove(...SCORE_CLASSES);
     const cls = continuousScoreClass(kanaScores['times-consistency']);
     if (cls) timeSwatch.classList.add(cls);
+  }
+  if (counterSwatch) {
+    counterSwatch.classList.remove(...SCORE_CLASSES);
+    const cls = continuousScoreClass(kanaScores['counters-consistency']);
+    if (cls) counterSwatch.classList.add(cls);
   }
 }
 
@@ -5654,6 +5808,141 @@ function showItemCountersReference() {
   showScreen('vocab-reference');
 }
 
+/* ---------- Random counter challenge ---------- */
+// Eight of the ten item counters have a real noun to swap in (same number,
+// different object - tests whether you know which counter that object
+// takes). Singular/plural stored explicitly rather than derived, since a
+// couple are irregular (mouse/mice) and getting that wrong would be its own
+// small credibility problem in a vocab app. 回 and 歳 have no object to
+// swap - see COUNTER_QUIZ_NO_NOUN below for how their variety works instead.
+const COUNTER_QUIZ_NOUNS = {
+  tsu: [['chair', 'chairs'], ['bag', 'bags'], ['box', 'boxes'], ['stone', 'stones']],
+  nin: [['person', 'people'], ['man', 'men'], ['woman', 'women'], ['child', 'children']],
+  ko: [['egg', 'eggs'], ['apple', 'apples'], ['ball', 'balls'], ['orange', 'oranges']],
+  hon: [['pencil', 'pencils'], ['pen', 'pens'], ['bottle', 'bottles'], ['umbrella', 'umbrellas']],
+  mai: [['sheet of paper', 'sheets of paper'], ['ticket', 'tickets'], ['photo', 'photos'], ['plate', 'plates']],
+  hiki: [['dog', 'dogs'], ['cat', 'cats'], ['fish', 'fish'], ['mouse', 'mice']],
+  satsu: [['book', 'books'], ['magazine', 'magazines'], ['notebook', 'notebooks'], ['dictionary', 'dictionaries']],
+  dai: [['car', 'cars'], ['computer', 'computers'], ['TV', 'TVs'], ['bicycle', 'bicycles']],
+};
+// 回 (times/occurrences) and 歳 (age) don't attach to an object, so there's
+// no noun pool to draw variety from - instead, a question drawing on one of
+// these varies which NUMBER gets shown ("8 years old" / "10 times") rather
+// than which noun, which is the equivalent trick for a counter whose only
+// "object" is the number itself.
+const COUNTER_QUIZ_NO_NOUN = new Set(['kai', 'sai']);
+
+function counterQuizPhrase(unitKey, n) {
+  if (unitKey === 'kai') return n + ' time' + (n === 1 ? '' : 's');
+  if (unitKey === 'sai') return n + ' year' + (n === 1 ? '' : 's') + ' old';
+  const pool = COUNTER_QUIZ_NOUNS[unitKey];
+  const [sg, pl] = pool[Math.floor(Math.random() * pool.length)];
+  return n + ' ' + (n === 1 ? sg : pl);
+}
+
+let counterQuizSelected = new Set();
+
+function buildCounterQuizSelectionList() {
+  const list = document.getElementById('counter-quiz-selection-list');
+  if (!list) return;
+  list.innerHTML = '';
+  Object.keys(COUNTER_ITEM_UNITS).forEach(key => {
+    const unit = COUNTER_ITEM_UNITS[key];
+    const card = document.createElement('div');
+    card.className = 'match-card-select' + (counterQuizSelected.has(key) ? ' selected' : '');
+    const desc = unit.desc.charAt(0).toUpperCase() + unit.desc.slice(1);
+    card.innerHTML = `<div class="group-info"><div class="group-name">${desc}</div><div class="group-chars">${unit.label}</div></div>`;
+    card.onclick = () => toggleCounterQuizSelection(key, card);
+    list.appendChild(card);
+  });
+  updateCounterQuizSelectionCount();
+}
+
+function toggleCounterQuizSelection(key, card) {
+  if (counterQuizSelected.has(key)) {
+    counterQuizSelected.delete(key);
+  } else {
+    if (counterQuizSelected.size >= 4) return; // deselect one first - exactly 4 required
+    counterQuizSelected.add(key);
+  }
+  card.classList.toggle('selected', counterQuizSelected.has(key));
+  updateCounterQuizSelectionCount();
+}
+
+function updateCounterQuizSelectionCount() {
+  const n = counterQuizSelected.size;
+  const countEl = document.getElementById('counter-quiz-selection-count');
+  if (countEl) countEl.textContent = n + ' of 4 selected';
+  const startBtn = document.getElementById('counter-quiz-start-btn');
+  if (startBtn) startBtn.disabled = n !== 4;
+}
+
+function showCounterQuizSelection() {
+  lastSettingsScreen = 'numbers';
+  showScreen('counter-quiz-selection');
+}
+
+function startCounterQuizFromSelection() {
+  if (counterQuizSelected.size !== 4) return;
+  startCounterQuizChallenge([...counterQuizSelected]);
+}
+
+function buildCounterQuizDeck(selectedKeys) {
+  const questions = [];
+  const usedCombos = new Set();
+  let attempts = 0;
+  while (questions.length < 10 && attempts < 300) {
+    attempts++;
+    const n = Math.floor(Math.random() * 10) + 1;
+    const correctKey = selectedKeys[Math.floor(Math.random() * selectedKeys.length)];
+    const combo = n + '-' + correctKey;
+    if (usedCombos.has(combo)) continue;
+
+    const correctItem = COUNTER_ITEM_UNITS[correctKey].items[n - 1];
+    const correctPhrase = counterQuizPhrase(correctKey, n);
+
+    const otherKeys = selectedKeys.filter(k => k !== correctKey);
+    const distractorPhrases = otherKeys.map(k => {
+      if (COUNTER_QUIZ_NO_NOUN.has(k)) {
+        let dn;
+        let tries = 0;
+        do { dn = Math.floor(Math.random() * 10) + 1; tries++; } while (dn === n && tries < 10);
+        return counterQuizPhrase(k, dn);
+      }
+      return counterQuizPhrase(k, n);
+    });
+
+    // Rare but possible (e.g. two noun pools both roll the same word) -
+    // just retry the whole question rather than ship 4 options with a
+    // literal duplicate in them.
+    const allPhrases = [correctPhrase, ...distractorPhrases];
+    if (new Set(allPhrases).size < 4) continue;
+
+    usedCombos.add(combo);
+    questions.push({
+      char: correctItem[1],
+      kana: correctItem[0],
+      answer: correctPhrase,
+      disp: 'counter',
+      groupKey: 'counter-quiz',
+      quizCounters: selectedKeys,
+      options: shuffle(allPhrases.map(p => ({ en: p }))),
+    });
+  }
+  return questions;
+}
+
+function startCounterQuizChallenge(selectedKeys) {
+  lastSettingsScreen = 'numbers';
+  const builder = () => buildCounterQuizDeck(selectedKeys);
+  lastDeckBuilder = builder;
+  deck = builder();
+  current = 0; score = 0; wrong = 0; hints = 0; answered = false; missed = []; missedItems = [];
+  showScreen('drill');
+  renderQuestion();
+}
+/* ---------- end Random counter challenge ---------- */
+
 function showMinuteReference() {
   vocabRefBackTarget = 'match-settings';
   document.getElementById('vocab-ref-title').textContent = 'Minute endings (1–10)';
@@ -5848,6 +6137,7 @@ updateDirectionVisibility();
 updateNumberTimeSwatches();
 populateTimeToolSelects();
 resetTimeToolToNow();
+setNumbersSection(currentNumbersSection);
 populateCounterToolPills();
 // The number input only shows "1" via placeholder (not a real value), but
 // on some browsers a page refresh can restore an actual leftover value into
