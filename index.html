@@ -500,9 +500,27 @@
      .screen.visible (which only gives direct children a 1rem gap) - without
      their own flex+gap, the group-cards inside a section would sit flush
      against each other instead of keeping the usual card spacing. */
-  #numbers-section-numbers, #numbers-section-times, #numbers-section-counters {
+  #numbers-section-numbers, #numbers-section-times, #numbers-section-counters, #numbers-section-money {
     display: flex; flex-direction: column; gap: 1rem;
   }
+  /* Money section - exchange rate row, and the two calculator cards below it */
+  .money-rate-row {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    margin-top: 0.5rem; font-size: 18px; font-weight: 700;
+  }
+  .money-rate-input {
+    width: 90px; background: var(--surface2); color: var(--text);
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 6px 8px; font-size: 18px; font-weight: 700; text-align: center;
+    font-family: inherit;
+  }
+  .money-rate-input:focus { outline: none; border-color: var(--accent); }
+  .money-rate-hint { font-size: 12px; color: var(--text-muted); margin-top: 0.35rem; text-align: center; }
+  .money-dir-pills { justify-content: center; margin-top: 0.5rem; }
+  /* Second output block within a card (the "with 10% off" line under the
+     full-price line on the shopping-cost card) - same sizing standard as
+     .number-tool-output's own jp/rd pair, just repeated with a gap above. */
+  .money-output-secondary { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
   /* Andrew mode's own row - centered and set apart from the main level row
      so it reads as a separate, personal tier rather than another option in
      the regular lineup. Hidden by default via JS (display:none inline);
@@ -729,7 +747,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.010</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.011</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -951,6 +969,7 @@
       <button class="level-pill" id="numbers-section-pill-times" onclick="setNumbersSection('times')">Times</button>
       <button class="level-pill" id="numbers-section-pill-numbers" onclick="setNumbersSection('numbers')">Numbers</button>
       <button class="level-pill" id="numbers-section-pill-counters" onclick="setNumbersSection('counters')">Counters</button>
+      <button class="level-pill" id="numbers-section-pill-money" onclick="setNumbersSection('money')">Money</button>
     </div>
 
     <div id="numbers-section-numbers">
@@ -1046,6 +1065,54 @@
         <input class="number-tool-input" id="counter-tool-input" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" placeholder="1" oninput="updateCounterTool()">
         <div class="number-tool-hint">1–10 for now</div>
         <div class="number-tool-output" id="counter-tool-output"></div>
+      </div>
+    </div>
+
+    <!-- Money: a trip-prep utility rather than a drill - no scoring, no
+         Japanese reading involved. Sits here because it's the same "type a
+         value, get a computed answer" pattern as Specific number/time/
+         counter above. The rate is a fixed, editable approximation (see
+         appSettings.gbpJpyRate) rather than a live fetch - this app makes
+         no network calls anywhere else, and a value you can nudge yourself
+         is more reliable than a fetch that can fail or behave differently
+         offline. Shared by both cards below. -->
+    <div id="numbers-section-money">
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Exchange rate</div>
+          <div class="group-count">Approximate — edit to match what you're actually getting</div>
+        </div>
+        <div class="money-rate-row">
+          <span>£1 =</span>
+          <input class="money-rate-input" id="money-rate-input" type="number" inputmode="decimal" min="1" step="0.01" oninput="updateMoneyRate()">
+          <span>¥</span>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Currency converter</div>
+          <div class="group-count">Convert between yen and pounds using the rate above</div>
+        </div>
+        <div class="money-dir-pills level-filter-row">
+          <button class="level-pill" id="money-dir-pill-jpy-gbp" onclick="setMoneyDirection('jpy-gbp')">¥ → £</button>
+          <button class="level-pill" id="money-dir-pill-gbp-jpy" onclick="setMoneyDirection('gbp-jpy')">£ → ¥</button>
+        </div>
+        <input class="number-tool-input" id="money-convert-input" type="number" inputmode="decimal" min="0" step="1" placeholder="0" oninput="updateMoneyConverter()">
+        <div class="number-tool-output" id="money-convert-output"></div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <div class="group-card" style="cursor:default; display:block;">
+        <div class="group-info">
+          <div class="group-name">Shopping cost</div>
+          <div class="group-count">Enter the yen price on the label to see the pound cost, and the price with 10% off</div>
+        </div>
+        <input class="number-tool-input" id="money-tax-input" type="number" inputmode="decimal" min="0" step="1" placeholder="0" oninput="updateMoneyTax()">
+        <div class="number-tool-output" id="money-tax-output"></div>
       </div>
     </div>
   </div>
@@ -3342,7 +3409,7 @@ let currentNumbersSection = 'times';
 
 function setNumbersSection(section) {
   currentNumbersSection = section;
-  ['numbers', 'times', 'counters'].forEach(key => {
+  ['numbers', 'times', 'counters', 'money'].forEach(key => {
     const el = document.getElementById('numbers-section-' + key);
     if (el) el.style.display = key === section ? 'flex' : 'none';
     const pill = document.getElementById('numbers-section-pill-' + key);
@@ -3836,6 +3903,90 @@ function updateCounterTool() {
 }
 /* ---------- end Specific-counter lookup tool ---------- */
 
+/* ---------- Money: currency converter + shopping-cost tools ---------- */
+// Both cards below read appSettings.gbpJpyRate directly rather than keeping
+// their own copy, so editing the rate updates whichever output is currently
+// on screen immediately, and the rate is remembered next time via
+// saveSettings() (same persistence as every other setting).
+function populateMoneyRate() {
+  const input = document.getElementById('money-rate-input');
+  if (input) input.value = appSettings.gbpJpyRate;
+}
+
+function updateMoneyRate() {
+  const input = document.getElementById('money-rate-input');
+  if (!input) return;
+  const n = Number(input.value);
+  if (Number.isFinite(n) && n > 0) {
+    appSettings.gbpJpyRate = n;
+    saveSettings();
+  }
+  updateMoneyConverter();
+  updateMoneyTax();
+}
+
+let moneyDirection = 'jpy-gbp';
+
+function setMoneyDirection(dir) {
+  moneyDirection = dir;
+  ['jpy-gbp', 'gbp-jpy'].forEach(key => {
+    const pill = document.getElementById('money-dir-pill-' + key);
+    if (pill) pill.classList.toggle('active', key === dir);
+  });
+  const input = document.getElementById('money-convert-input');
+  if (input) input.placeholder = dir === 'jpy-gbp' ? '¥0' : '£0';
+  updateMoneyConverter();
+}
+
+function updateMoneyConverter() {
+  const input = document.getElementById('money-convert-input');
+  const output = document.getElementById('money-convert-output');
+  if (!input || !output) return;
+  const raw = input.value;
+  if (raw === '') { output.innerHTML = ''; return; }
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) {
+    output.innerHTML = `<span class="number-tool-rd">Enter a positive number</span>`;
+    return;
+  }
+  const rate = appSettings.gbpJpyRate;
+  if (moneyDirection === 'jpy-gbp') {
+    const gbp = n / rate;
+    output.innerHTML = `<span class="number-tool-jp">£${gbp.toFixed(2)}</span><span class="number-tool-rd">¥${n.toLocaleString()}</span>`;
+  } else {
+    const jpy = n * rate;
+    output.innerHTML = `<span class="number-tool-jp">¥${Math.round(jpy).toLocaleString()}</span><span class="number-tool-rd">£${n.toLocaleString()}</span>`;
+  }
+}
+
+// Simple 10% off (x0.9) rather than removing embedded consumption tax
+// (÷1.1) - confirmed this is the version wanted, even though it doesn't
+// exactly match what a tax-free till would charge. It's a quick "what am I
+// roughly looking at" check, not a receipt calculator.
+function updateMoneyTax() {
+  const input = document.getElementById('money-tax-input');
+  const output = document.getElementById('money-tax-output');
+  if (!input || !output) return;
+  const raw = input.value;
+  if (raw === '') { output.innerHTML = ''; return; }
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n < 0) {
+    output.innerHTML = `<span class="number-tool-rd">Enter a positive number</span>`;
+    return;
+  }
+  const rate = appSettings.gbpJpyRate;
+  const fullGbp = n / rate;
+  const discountedJpy = n * 0.9;
+  const discountedGbp = discountedJpy / rate;
+  output.innerHTML = `
+    <span class="number-tool-jp">£${fullGbp.toFixed(2)}</span><span class="number-tool-rd">full price (¥${n.toLocaleString()})</span>
+    <div class="money-output-secondary">
+      <span class="number-tool-jp">¥${Math.round(discountedJpy).toLocaleString()}</span><span class="number-tool-rd">with 10% off (£${discountedGbp.toFixed(2)})</span>
+    </div>
+  `;
+}
+/* ---------- end Money ---------- */
+
 function buildDeck() {
   let d = [];
   selected.forEach(k => { if (DATA[k]) DATA[k].forEach(q => d.push(Object.assign({groupKey: k}, q))); });
@@ -3896,7 +4047,14 @@ const SPEECH_SUPPORTED = ('speechSynthesis' in window);
 // existed, so installing this doesn't change anything for anyone until they
 // actually visit Settings and change something themselves.
 const SETTINGS_KEY = 'jpDrillSettings';
-let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showTripVocab: false };
+// gbpJpyRate: approximate, editable "£1 = ¥___" rate used by the Money
+// section's currency converter and shopping-cost tools. Deliberately not
+// fetched live - this app makes zero network calls anywhere else, and a
+// fixed rate you can nudge yourself before/during the trip is more reliable
+// than a fetch that can fail or behave differently offline. 215 was
+// approximately the mid-market GBP/JPY rate as of build time (July 2026);
+// it'll drift, which is exactly why it's an editable field, not a constant.
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showTripVocab: false, gbpJpyRate: 215 };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
@@ -6271,6 +6429,8 @@ populateCounterToolPills();
 // keystroke) means whatever's visibly in the box always matches what's
 // shown below it.
 updateCounterTool();
+populateMoneyRate();
+setMoneyDirection(moneyDirection);
 tryRestoreDrillSession();
 
 // Keyboard shortcuts for the drill screen, for anyone on a laptop/desktop:
