@@ -747,7 +747,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.011</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.012</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1063,7 +1063,7 @@
         <div class="counter-tool-pills level-filter-row counter-unit-pills" id="counter-tool-pills"></div>
         <div class="counter-tool-desc" id="counter-tool-desc"></div>
         <input class="number-tool-input" id="counter-tool-input" type="number" inputmode="numeric" min="1" max="10" step="1" value="1" placeholder="1" oninput="updateCounterTool()">
-        <div class="number-tool-hint">1–10 for now</div>
+        <div class="number-tool-hint" id="counter-tool-hint">1–10</div>
         <div class="number-tool-output" id="counter-tool-output"></div>
       </div>
     </div>
@@ -1094,7 +1094,7 @@
       <div class="group-card" style="cursor:default; display:block;">
         <div class="group-info">
           <div class="group-name">Currency converter</div>
-          <div class="group-count">Convert between yen and pounds using the rate above</div>
+          <div class="group-count">Convert between yen and pounds, and see the tax-free price in one go</div>
         </div>
         <div class="money-dir-pills level-filter-row">
           <button class="level-pill" id="money-dir-pill-jpy-gbp" onclick="setMoneyDirection('jpy-gbp')">¥ → £</button>
@@ -1102,17 +1102,6 @@
         </div>
         <input class="number-tool-input" id="money-convert-input" type="number" inputmode="decimal" min="0" step="1" placeholder="0" oninput="updateMoneyConverter()">
         <div class="number-tool-output" id="money-convert-output"></div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <div class="group-card" style="cursor:default; display:block;">
-        <div class="group-info">
-          <div class="group-name">Shopping cost</div>
-          <div class="group-count">Enter the yen price on the label to see the pound cost, and the price with 10% off</div>
-        </div>
-        <input class="number-tool-input" id="money-tax-input" type="number" inputmode="decimal" min="0" step="1" placeholder="0" oninput="updateMoneyTax()">
-        <div class="number-tool-output" id="money-tax-output"></div>
       </div>
     </div>
   </div>
@@ -3853,14 +3842,17 @@ function updateNumberTool() {
 
 /* ---------- Specific-counter lookup tool ---------- */
 // Same idea as Specific number, but with a counter-type pill row alongside
-// the digit entry. Deliberately scoped to the item-type counters (COUNTER_
-// ITEM_UNITS - つ/人/個/本/枚/匹/冊/台/回/歳) and to 1-10 only: extending
-// past 10 needs proper tens+ones composition per counter (each counter's
-// own gemination pattern reapplied to just the ones digit), which is more
-// than tonight's build - this covers the range the reference page already
-// covers, no more, no less. Pills are kanji-only, same as the reference
+// the digit entry. Scoped to the item-type counters (COUNTER_ITEM_UNITS -
+// つ/人/個/本/枚/匹/冊/台/回/歳). Range is 1-50 for every counter except つ,
+// which is capped at 10 - native Japanese counting genuinely has no reading
+// past とお (see counterReading() above for the composition rule and the
+// exceptions it handles). Pills are kanji-only, same as the reference
 // screen right next to this tool, which is judged enough context for now.
 let specificCounterUnit = 'tsu';
+
+function counterToolMax(unitKey) {
+  return unitKey === 'tsu' ? 10 : 50;
+}
 
 function populateCounterToolPills() {
   const row = document.getElementById('counter-tool-pills');
@@ -3879,6 +3871,17 @@ function populateCounterToolPills() {
   // (unlike a future quiz, where the Japanese and English wouldn't be on
   // screen at the same time).
   if (desc) desc.textContent = COUNTER_ITEM_UNITS[specificCounterUnit].desc;
+  const input = document.getElementById('counter-tool-input');
+  const hint = document.getElementById('counter-tool-hint');
+  const max = counterToolMax(specificCounterUnit);
+  if (input) {
+    input.max = max;
+    // Existing value would now be out of range for the newly-picked
+    // counter (e.g. had "23" showing, switched to つ which tops out at 10) -
+    // clamp it down rather than leaving an invalid number sitting in the box.
+    if (input.value !== '' && Number(input.value) > max) input.value = max;
+  }
+  if (hint) hint.textContent = `1–${max}`;
 }
 
 function setSpecificCounterUnit(key) {
@@ -3894,11 +3897,17 @@ function updateCounterTool() {
   const raw = input.value;
   if (raw === '') { output.innerHTML = ''; return; }
   const n = Math.floor(Number(raw));
-  if (!Number.isFinite(n) || n < 1 || n > 10) {
-    output.innerHTML = `<span class="number-tool-rd">Enter a number from 1 to 10</span>`;
+  const max = counterToolMax(specificCounterUnit);
+  if (!Number.isFinite(n) || n < 1 || n > max) {
+    output.innerHTML = `<span class="number-tool-rd">Enter a number from 1 to ${max}</span>`;
     return;
   }
-  const [jp, romaji] = COUNTER_ITEM_UNITS[specificCounterUnit].items[n - 1];
+  const pair = counterReading(specificCounterUnit, n);
+  if (!pair) {
+    output.innerHTML = `<span class="number-tool-rd">Not available for this number</span>`;
+    return;
+  }
+  const [jp, romaji] = pair;
   output.innerHTML = `<span class="number-tool-jp">${markSmallKana(jp)}</span><span class="number-tool-rd">${romaji}</span>`;
 }
 /* ---------- end Specific-counter lookup tool ---------- */
@@ -3922,7 +3931,6 @@ function updateMoneyRate() {
     saveSettings();
   }
   updateMoneyConverter();
-  updateMoneyTax();
 }
 
 let moneyDirection = 'jpy-gbp';
@@ -3938,6 +3946,13 @@ function setMoneyDirection(dir) {
   updateMoneyConverter();
 }
 
+// One entry point now instead of two - whatever's typed in becomes a JPY
+// amount either directly (¥→£) or via the rate (£→¥), and the tax-free
+// price is always derived from that same JPY amount, so there's no second
+// box to re-enter the figure into. Tax-free removes the embedded 10%
+// consumption tax properly (÷1.1, e.g. ¥1,100 -> ¥1,000) rather than a flat
+// 10% off - that's the actual discount a tax-free till gives, not an
+// approximation of it.
 function updateMoneyConverter() {
   const input = document.getElementById('money-convert-input');
   const output = document.getElementById('money-convert-output');
@@ -3950,38 +3965,21 @@ function updateMoneyConverter() {
     return;
   }
   const rate = appSettings.gbpJpyRate;
-  if (moneyDirection === 'jpy-gbp') {
-    const gbp = n / rate;
-    output.innerHTML = `<span class="number-tool-jp">£${gbp.toFixed(2)}</span><span class="number-tool-rd">¥${n.toLocaleString()}</span>`;
-  } else {
-    const jpy = n * rate;
-    output.innerHTML = `<span class="number-tool-jp">¥${Math.round(jpy).toLocaleString()}</span><span class="number-tool-rd">£${n.toLocaleString()}</span>`;
-  }
-}
+  const jpy = moneyDirection === 'jpy-gbp' ? n : n * rate;
+  const gbp = jpy / rate;
+  const taxFreeJpy = jpy / 1.1;
+  const taxFreeGbp = taxFreeJpy / rate;
 
-// Simple 10% off (x0.9) rather than removing embedded consumption tax
-// (÷1.1) - confirmed this is the version wanted, even though it doesn't
-// exactly match what a tax-free till would charge. It's a quick "what am I
-// roughly looking at" check, not a receipt calculator.
-function updateMoneyTax() {
-  const input = document.getElementById('money-tax-input');
-  const output = document.getElementById('money-tax-output');
-  if (!input || !output) return;
-  const raw = input.value;
-  if (raw === '') { output.innerHTML = ''; return; }
-  const n = Number(raw);
-  if (!Number.isFinite(n) || n < 0) {
-    output.innerHTML = `<span class="number-tool-rd">Enter a positive number</span>`;
-    return;
+  let mainLine;
+  if (moneyDirection === 'jpy-gbp') {
+    mainLine = `<span class="number-tool-jp">£${gbp.toFixed(2)}</span><span class="number-tool-rd">¥${n.toLocaleString()}</span>`;
+  } else {
+    mainLine = `<span class="number-tool-jp">¥${Math.round(jpy).toLocaleString()}</span><span class="number-tool-rd">£${n.toLocaleString()}</span>`;
   }
-  const rate = appSettings.gbpJpyRate;
-  const fullGbp = n / rate;
-  const discountedJpy = n * 0.9;
-  const discountedGbp = discountedJpy / rate;
   output.innerHTML = `
-    <span class="number-tool-jp">£${fullGbp.toFixed(2)}</span><span class="number-tool-rd">full price (¥${n.toLocaleString()})</span>
+    ${mainLine}
     <div class="money-output-secondary">
-      <span class="number-tool-jp">¥${Math.round(discountedJpy).toLocaleString()}</span><span class="number-tool-rd">with 10% off (£${discountedGbp.toFixed(2)})</span>
+      <span class="number-tool-jp">¥${Math.round(taxFreeJpy).toLocaleString()}</span><span class="number-tool-rd">tax-free price (£${taxFreeGbp.toFixed(2)})</span>
     </div>
   `;
 }
@@ -5955,6 +5953,57 @@ const COUNTER_ITEM_UNITS = {
     extra: [{ num: 20, jp: 'はたち', romaji: 'hatachi' }],
   },
 };
+
+// Extends the 1-10 tables above to any number 11-50, for the Specific
+// counter lookup tool. This is genuinely regular, not guesswork: Japanese
+// builds compound counter readings as [tens word] + [the SAME onbin form
+// already used for that ones digit 1-10] - e.g. 23本 is nijuu + sanbon =
+// nijuusanbon, 十一本 is juu + ippon = juuippon. Exact multiples of ten
+// (20/30/40/50) instead prefix directly onto the existing "10" reading,
+// because it's the "juu" itself that triggers the sound change (十本＝
+// じゅっぽん), and that contraction happens the same way regardless of what
+// precedes it (二十本＝にじゅっぽん, not にじゅうっぽん).
+//
+// One real exception: 人 (nin) has its own standalone irregular words for
+// exactly 1 and 2 (ひとり hitori, ふたり futari) - but those don't carry into
+// compounds. 11/12/21/22/etc people revert to the regular ichinin/ninin
+// forms (十一人＝じゅういちにん, not じゅうひとり) - COUNTER_COMPOUND_ONES_OVERRIDE
+// exists solely to cover that one case.
+//
+// つ doesn't get a formula at all - native Japanese counting (ひとつ..とお)
+// simply stops at 10, there's no juuhitotsu construction to fall back on.
+const COUNTER_TENS_JP = ['', 'じゅう', 'にじゅう', 'さんじゅう', 'よんじゅう', 'ごじゅう'];
+const COUNTER_TENS_ROMAJI = ['', 'juu', 'nijuu', 'sanjuu', 'yonjuu', 'gojuu'];
+const COUNTER_TENS_MULT_JP = ['', '', 'に', 'さん', 'よん', 'ご'];
+const COUNTER_TENS_MULT_ROMAJI = ['', '', 'ni', 'san', 'yon', 'go'];
+const COUNTER_COMPOUND_ONES_OVERRIDE = {
+  nin: { 1: ['いちにん', 'ichinin'], 2: ['ににん', 'ninin'] },
+};
+
+function counterReading(unitKey, n) {
+  const unit = COUNTER_ITEM_UNITS[unitKey];
+  if (!unit) return null;
+  if (n >= 1 && n <= 10) return unit.items[n - 1];
+  // Irregular one-offs (currently just はたち for 20 sai) always win, at
+  // whatever number they're pinned to.
+  if (unit.extra) {
+    const ex = unit.extra.find(e => e.num === n);
+    if (ex) return [ex.jp, ex.romaji];
+  }
+  if (unitKey === 'tsu') return null; // no valid reading past 10
+  const tens = Math.floor(n / 10);
+  const ones = n % 10;
+  if (tens < 1 || tens > 5 || n > 50) return null;
+  if (ones === 0) {
+    const [jp10, romaji10] = unit.items[9];
+    if (tens === 1) return [jp10, romaji10];
+    return [COUNTER_TENS_MULT_JP[tens] + jp10, COUNTER_TENS_MULT_ROMAJI[tens] + romaji10];
+  }
+  const override = COUNTER_COMPOUND_ONES_OVERRIDE[unitKey] && COUNTER_COMPOUND_ONES_OVERRIDE[unitKey][ones];
+  const [jpOnes, romajiOnes] = override || unit.items[ones - 1];
+  return [COUNTER_TENS_JP[tens] + jpOnes, COUNTER_TENS_ROMAJI[tens] + romajiOnes];
+}
+
 let activeItemCounterUnit = 'tsu';
 
 function switchItemCounterUnit(unit) {
