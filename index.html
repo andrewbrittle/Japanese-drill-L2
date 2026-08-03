@@ -800,7 +800,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.019</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.020</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -6528,10 +6528,39 @@ function hasCleanGloss(item) {
   return !/[\/(]/.test(item.en);
 }
 
+// Not drawn from an existing vocab category (there isn't a "names" one in
+// the app) - same kind of small bespoke pool as COUNTER_QUIZ_NOUNS or
+// ZODIAC_HOURS earlier this session, built specifically to support this
+// feature. Ten of the most common Japanese surnames, with さん attached in
+// the jp/romaji forms since referring to a third person by bare surname
+// without it reads as unnaturally blunt - textbooks always teach it as one
+// unit. isName marks these so the English builder below skips the "the"/
+// "a" article that occupations and "friend" get, and keeps the capital S
+// in "-san" rather than lowercasing it mid-sentence.
+const SENTENCE_NAME_POOL = [
+  { jp: 'さとうさん', romaji: 'satou-san', en: 'Satou-san', isName: true },
+  { jp: 'すずきさん', romaji: 'suzuki-san', en: 'Suzuki-san', isName: true },
+  { jp: 'たかはしさん', romaji: 'takahashi-san', en: 'Takahashi-san', isName: true },
+  { jp: 'たなかさん', romaji: 'tanaka-san', en: 'Tanaka-san', isName: true },
+  { jp: 'わたなべさん', romaji: 'watanabe-san', en: 'Watanabe-san', isName: true },
+  { jp: 'いとうさん', romaji: 'itou-san', en: 'Itou-san', isName: true },
+  { jp: 'やまもとさん', romaji: 'yamamoto-san', en: 'Yamamoto-san', isName: true },
+  { jp: 'なかむらさん', romaji: 'nakamura-san', en: 'Nakamura-san', isName: true },
+];
+
 function sentenceStructurePeoplePool() {
   const cleanOccupations = VOCAB['vocab-occupations'].items.filter(hasCleanGloss);
   const friend = VOCAB['vocab-greetings'].items.find(i => i.romaji === 'tomodachi');
-  return friend ? [...cleanOccupations, friend] : cleanOccupations;
+  return [...cleanOccupations, ...(friend ? [friend] : []), ...SENTENCE_NAME_POOL];
+}
+
+// Shared by both topic and companion - names get no article and keep their
+// capital S (Tanaka-san, not the tanaka-san), tomodachi gets "a"/"the
+// friend", everything else (occupations) gets "the doctor" etc.
+function sentencePersonEnglish(item) {
+  if (item.isName) return item.en;
+  if (item.romaji === 'tomodachi') return 'a friend';
+  return 'the ' + item.en.toLowerCase();
 }
 
 function pickRandomItem(arr) {
@@ -6611,7 +6640,7 @@ function buildSentenceExample() {
   } else if (topicState === 'on') {
     topicJp = topicItem.jp + topicSlot.particle;
     topicRomaji = topicItem.romaji + ' ' + topicSlot.particleRomaji;
-    subjectEn = (topicItem.romaji === 'tomodachi' ? 'a friend' : 'the ' + topicItem.en.toLowerCase());
+    subjectEn = sentencePersonEnglish(topicItem);
   }
   // topicState === 'off' -> topicJp/topicRomaji stay '', subjectEn stays 'someone'
 
@@ -6625,7 +6654,7 @@ function buildSentenceExample() {
     : {
         jp: companionItem.jp + SENTENCE_STRUCTURE_SLOTS[2].particle,
         romaji: companionItem.romaji + ' ' + SENTENCE_STRUCTURE_SLOTS[2].particleRomaji,
-        en: 'with ' + (companionItem.romaji === 'tomodachi' ? 'a friend' : 'the ' + companionItem.en.toLowerCase()),
+        en: 'with ' + sentencePersonEnglish(companionItem),
       };
   const meansClause = sentenceClause(3, meansItem, 'by ', 'how');
   const destClause = sentenceClause(4, destItem, 'to the ', 'where');
