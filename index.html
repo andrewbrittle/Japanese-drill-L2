@@ -508,7 +508,15 @@
     font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
     transition: all 0.15s;
   }
-  .sentence-shuffle-btn:hover { background: var(--accent); color: var(--bg); }
+  .sentence-shuffle-btn:active { background: var(--accent); color: var(--bg); }
+  /* Guarded to real-mouse devices only - on a touchscreen, a plain :hover
+     rule fires on tap but never gets a "pointer left" event to clear it
+     afterward, so the button stays stuck fully gold until something else
+     is tapped. :active above still gives a touch tap its own momentary
+     feedback, which clears itself the instant the tap ends. */
+  @media (hover: hover) and (pointer: fine) {
+    .sentence-shuffle-btn:hover { background: var(--accent); color: var(--bg); }
+  }
   /* Day/week/month/year x past/present/future reference - two dimensions
      rather than one, so it's a real grid instead of the usual row list.
      Compact sizing throughout so 4 columns (row label + 3 tenses) fit on a
@@ -800,7 +808,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.020</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.021</div>
   </div>
 
   <!-- Katakana settings screen -->
