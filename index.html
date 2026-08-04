@@ -533,6 +533,38 @@
   }
   .tu-jp { font-size: 16px; font-weight: 700; font-family: 'BIZ UDPGothic', sans-serif; }
   .tu-romaji { font-size: 10.5px; color: var(--text-muted); margin-top: 2px; }
+  /* Verb tense/+-/- reference (いきます/きます/かえります) - three small 2x2
+     grids (one per verb) rather than one big 3x4 table, deliberately, so it
+     reads as three digestible cards instead of a dense spreadsheet. Reuses
+     the .tu-cell/.tu-header/.tu-jp/.tu-romaji styling from the day/week/
+     month/year table above for visual consistency. */
+  /* Pill row spread edge-to-edge ("aligned across the page") rather than
+     packed to the left, with a deliberate gap of its own before the detail
+     block below - without it the active pill and the heading underneath
+     read as one connected unit instead of a selector + its result. */
+  #verb-conj-pills { justify-content: space-between; margin-bottom: 1.4rem; }
+  .verb-conj-block { margin-top: 0.9rem; }
+  .verb-conj-block:first-child { margin-top: 0; }
+  /* Gold heading (jp + english both) so it visually matches the gold active
+     pill above it - bumped a size up from the original heading too. */
+  .verb-conj-heading { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; }
+  .verb-conj-heading .verb-conj-en { font-size: 13px; font-weight: 600; color: var(--accent); margin-left: 6px; }
+  .verb-conj-table { display: grid; grid-template-columns: minmax(56px, auto) repeat(2, 1fr); gap: 5px; }
+  /* Affirmative/Negative bumped up a touch, and Non-past/Past brought down
+     from gold to the same grey - once the pill row above is doing the gold
+     "this is selected" job, gold row labels here were redundant emphasis.
+     Spacing carries the visual hierarchy instead. Scoped to this table only
+     so the day/week/month/year reference (which reuses .tu-header/
+     .tu-rowlabel too) is untouched. */
+  .verb-conj-table .tu-header { font-size: 12.5px; }
+  .verb-conj-table .tu-rowlabel { color: var(--text-muted); }
+  /* Romaji under the hiragana was reading too small at the base 10.5px -
+     scoped bump here only, same reasoning as above. */
+  .verb-conj-table .tu-romaji { font-size: 12px; }
+  .verb-conj-note {
+    font-size: 12px; color: var(--text-dim); background: var(--surface2);
+    border-radius: var(--radius); padding: 0.6rem 0.8rem; margin-top: 0.8rem;
+  }
   /* Dakuten/handakuten sound-shift reference (shown from the Hiragana and
      Katakana selection screens) - groups of "base kana -> voiced kana" pairs
      under a romaji-only heading like "h -> b", since there's no kana glyph
@@ -808,7 +840,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.021</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.025</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -5759,6 +5791,12 @@ function buildMatchCategoryList() {
       sentenceRefCard.innerHTML = `<span>Sentence order for simple sentences — reference</span><span class="vocab-ref-arrow">→</span>`;
       sentenceRefCard.onclick = (e) => { e.stopPropagation(); showSentenceStructureReference(); };
       container.appendChild(sentenceRefCard);
+
+      const verbConjRefCard = document.createElement('div');
+      verbConjRefCard.className = 'vocab-ref-card';
+      verbConjRefCard.innerHTML = `<span>いきます/きます/かえります — tense &amp; +/− reference</span><span class="vocab-ref-arrow">→</span>`;
+      verbConjRefCard.onclick = (e) => { e.stopPropagation(); showVerbConjugationReference(); };
+      container.appendChild(verbConjRefCard);
     }
     const card = document.createElement('div');
     card.className = 'match-card-select';
@@ -5825,6 +5863,133 @@ function showTimeUnitsReference() {
       ${cell(row.future[0], row.future[1])}
     `).join('');
   list.appendChild(grid);
+  showScreen('vocab-reference');
+}
+
+// ます-form tense/+-/- reference for the three motion verbs used throughout
+// all nine vocab-verbs-l2 verbs, not just the three used on the Sentence
+// order reference. This conjugation is completely regular - every ます-form
+// verb in Japanese follows the exact same four-way pattern (stem+ます /
+// stem+ません / stem+ました / stem+ませんでした), including べんきょうします: する
+// verbs are irregular in dictionary form, but once already in ます-form the
+// suffixing is identical to everything else here. Written out directly
+// rather than derived from a stem, same call as TIME_UNIT_TABLE above: a
+// handful of fixed, well-known forms don't need a generator, they need to
+// be right.
+//
+// Nine stacked blocks was too long a page (Andrew's own call after trying
+// the 3-verb version), so this switched to the same "pills up top, one
+// selected item's detail below" pattern already used for the item-counters
+// reference - showVerbConjugationReference() draws the pill row once, then
+// renderVerbConjDetail() redraws just the detail block on each tap.
+const VERB_CONJUGATION_TABLE = [
+  {
+    key: 'kimasu', en: 'to come', nonPastAff: ['きます', 'kimasu'], nonPastNeg: ['きません', 'kimasen'],
+    pastAff: ['きました', 'kimashita'], pastNeg: ['きませんでした', 'kimasendeshita'],
+  },
+  {
+    key: 'owarimasu', en: 'to finish', nonPastAff: ['おわります', 'owarimasu'], nonPastNeg: ['おわりません', 'owarimasen'],
+    pastAff: ['おわりました', 'owarimashita'], pastNeg: ['おわりませんでした', 'owarimasendeshita'],
+  },
+  {
+    key: 'okimasu', en: 'to get up', nonPastAff: ['おきます', 'okimasu'], nonPastNeg: ['おきません', 'okimasen'],
+    pastAff: ['おきました', 'okimashita'], pastNeg: ['おきませんでした', 'okimasendeshita'],
+  },
+  {
+    key: 'ikimasu', en: 'to go', nonPastAff: ['いきます', 'ikimasu'], nonPastNeg: ['いきません', 'ikimasen'],
+    pastAff: ['いきました', 'ikimashita'], pastNeg: ['いきませんでした', 'ikimasendeshita'],
+  },
+  {
+    key: 'yasumimasu', en: 'to rest / take a day off', nonPastAff: ['やすみます', 'yasumimasu'], nonPastNeg: ['やすみません', 'yasumimasen'],
+    pastAff: ['やすみました', 'yasumimashita'], pastNeg: ['やすみませんでした', 'yasumimasendeshita'],
+  },
+  {
+    key: 'kaerimasu', en: 'to return / go home', nonPastAff: ['かえります', 'kaerimasu'], nonPastNeg: ['かえりません', 'kaerimasen'],
+    pastAff: ['かえりました', 'kaerimashita'], pastNeg: ['かえりませんでした', 'kaerimasendeshita'],
+  },
+  {
+    key: 'nemasu', en: 'to sleep / go to bed', nonPastAff: ['ねます', 'nemasu'], nonPastNeg: ['ねません', 'nemasen'],
+    pastAff: ['ねました', 'nemashita'], pastNeg: ['ねませんでした', 'nemasendeshita'],
+  },
+  {
+    key: 'benkyoushimasu', en: 'to study', nonPastAff: ['べんきょうします', 'benkyoushimasu'], nonPastNeg: ['べんきょうしません', 'benkyoushimasen'],
+    pastAff: ['べんきょうしました', 'benkyoushimashita'], pastNeg: ['べんきょうしませんでした', 'benkyoushimasendeshita'],
+  },
+  {
+    key: 'hatarakimasu', en: 'to work', nonPastAff: ['はたらきます', 'hatarakimasu'], nonPastNeg: ['はたらきません', 'hatarakimasen'],
+    pastAff: ['はたらきました', 'hatarakimashita'], pastNeg: ['はたらきませんでした', 'hatarakimasendeshita'],
+  },
+];
+let verbConjSelected = 'kimasu';
+
+function populateVerbConjPills() {
+  const row = document.getElementById('verb-conj-pills');
+  if (!row) return;
+  row.innerHTML = '';
+  VERB_CONJUGATION_TABLE.forEach(v => {
+    const btn = document.createElement('button');
+    btn.className = 'level-pill' + (v.key === verbConjSelected ? ' active' : '');
+    btn.textContent = v.nonPastAff[0];
+    btn.onclick = () => setVerbConjVerb(v.key);
+    row.appendChild(btn);
+  });
+}
+
+function setVerbConjVerb(key) {
+  verbConjSelected = key;
+  populateVerbConjPills();
+  renderVerbConjDetail();
+}
+
+function renderVerbConjDetail() {
+  const container = document.getElementById('verb-conj-detail');
+  if (!container) return;
+  const v = VERB_CONJUGATION_TABLE.find(x => x.key === verbConjSelected);
+  const cell = (jp, romaji) => `
+    <div class="tu-cell">
+      <div class="tu-jp">${markSmallKana(jp)}</div><div class="tu-romaji">${romaji}</div>
+    </div>
+  `;
+  container.innerHTML = `
+    <div class="verb-conj-block">
+      <div class="verb-conj-heading">${v.nonPastAff[0]}<span class="verb-conj-en">${v.en}</span></div>
+      <div class="verb-conj-table">
+        <div class="tu-cell tu-header"></div>
+        <div class="tu-cell tu-header">Affirmative</div>
+        <div class="tu-cell tu-header">Negative</div>
+        <div class="tu-cell tu-rowlabel">Non-past</div>
+        ${cell(v.nonPastAff[0], v.nonPastAff[1])}
+        ${cell(v.nonPastNeg[0], v.nonPastNeg[1])}
+        <div class="tu-cell tu-rowlabel">Past</div>
+        ${cell(v.pastAff[0], v.pastAff[1])}
+        ${cell(v.pastNeg[0], v.pastNeg[1])}
+      </div>
+    </div>
+  `;
+}
+
+function showVerbConjugationReference() {
+  vocabRefBackTarget = 'match-settings';
+  document.getElementById('vocab-ref-title').textContent = 'Verb tense & affirmative/negative';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = '';
+  list.innerHTML = '';
+
+  const pillRow = document.createElement('div');
+  pillRow.className = 'level-filter-row';
+  pillRow.id = 'verb-conj-pills';
+  list.appendChild(pillRow);
+  populateVerbConjPills();
+
+  const detail = document.createElement('div');
+  detail.id = 'verb-conj-detail';
+  list.appendChild(detail);
+  renderVerbConjDetail();
+
+  const note = document.createElement('div');
+  note.className = 'verb-conj-note';
+  note.textContent = 'Only two tenses here, not three - Japanese ます-form doesn’t separate "present" from "future" the way English does. いきます alone covers both "I go" and "I will go"; context (or a time word like あした) carries the rest.';
+  list.appendChild(note);
   showScreen('vocab-reference');
 }
 
