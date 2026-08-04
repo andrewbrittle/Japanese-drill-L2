@@ -542,7 +542,11 @@
      packed to the left, with a deliberate gap of its own before the detail
      block below - without it the active pill and the heading underneath
      read as one connected unit instead of a selector + its result. */
-  #verb-conj-pills { justify-content: space-between; margin-bottom: 1.4rem; }
+  /* Reverted the space-between spread - on a narrow phone it stretched a
+     lone pill or two on the wrap row out to the far edges with a big gap
+     in between, which read worse than just letting pills pack left like
+     every other pill row in the app (.level-filter-row's own default). */
+  #verb-conj-pills { margin-bottom: 1.4rem; }
   .verb-conj-block { margin-top: 0.9rem; }
   .verb-conj-block:first-child { margin-top: 0; }
   /* Gold heading (jp + english both) so it visually matches the gold active
@@ -840,7 +844,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.025</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.026</div>
   </div>
 
   <!-- Katakana settings screen -->
