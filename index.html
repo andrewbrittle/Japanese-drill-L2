@@ -114,7 +114,9 @@
     background: var(--surface);
   }
 
-  .app-heading { font-size: 19px; font-weight: 700; letter-spacing: 0.02em; color: var(--text); }
+  /* The "日本語" in the app's own logo/wordmark was missing this too - same
+     audit that turned up the pill bug. */
+  .app-heading { font-size: 19px; font-weight: 700; letter-spacing: 0.02em; color: var(--text); font-family: 'BIZ UDPGothic', -apple-system, sans-serif; }
   .app-heading span { color: var(--accent); }
 
   .nav-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -155,8 +157,14 @@
   .screen { width: 100%; max-width: 480px; display: none; }
   .screen.visible { display: flex; flex-direction: column; gap: 1rem; }
 
-  /* Settings screen */
-  .settings-title { font-size: 22px; font-weight: 700; text-align: center; }
+  /* Settings screen. Reused as the reference-page title too (#vocab-ref-title/
+     #vocab-tile-selection-title), which occasionally shows a lone kanji label
+     baked into the title text (e.g. item-counters reference: "つ — general
+     things") - font-family added so that renders in the app's own Japanese
+     font rather than falling through to the system sans-serif stack, same
+     fix as .level-pill below. Short single-line headings either way, so this
+     is safe for the plain-English titles too (same reasoning as .nav-pill). */
+  .settings-title { font-size: 22px; font-weight: 700; text-align: center; font-family: 'BIZ UDPGothic', -apple-system, sans-serif; }
   .settings-sub { font-size: 14px; font-weight: 500; color: var(--text-muted); text-align: center; }
 
   #match-vocab-view, #match-theme-view { display: flex; flex-direction: column; gap: 1rem; }
@@ -408,7 +416,7 @@
     border-radius: var(--radius); padding: 0.5rem 1rem;
     cursor: pointer; transition: border-color 0.15s; user-select: none;
     font-size: 13px; font-weight: 600; color: var(--accent);
-    margin-bottom: -0.25rem;
+    margin-bottom: -0.25rem; text-decoration: none;
   }
   .vocab-ref-card:hover { border-color: var(--accent); }
   .vocab-ref-arrow { color: var(--text-muted); }
@@ -551,8 +559,8 @@
   .verb-conj-block:first-child { margin-top: 0; }
   /* Gold heading (jp + english both) so it visually matches the gold active
      pill above it - bumped a size up from the original heading too. */
-  .verb-conj-heading { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; }
-  .verb-conj-heading .verb-conj-en { font-size: 13px; font-weight: 600; color: var(--accent); margin-left: 6px; }
+  .verb-conj-heading { font-size: 16px; font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; font-family: 'BIZ UDPGothic', sans-serif; }
+  .verb-conj-heading .verb-conj-en { font-size: 13px; font-weight: 600; color: var(--accent); margin-left: 6px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
   .verb-conj-table { display: grid; grid-template-columns: minmax(56px, auto) repeat(2, 1fr); gap: 5px; }
   /* Affirmative/Negative bumped up a touch, and Non-past/Past brought down
      from gold to the same grey - once the pill row above is doing the gold
@@ -623,10 +631,19 @@
      the regular lineup. Hidden by default via JS (display:none inline);
      'flex' here only applies once that inline style is switched on. */
   .level-filter-row.andrew-row { justify-content: center; margin-top: 8px; }
+  /* Font-family was missing here, same bug class as .nav-pill already guards
+     against: without it, kana/kanji pill labels (verb-conj-pills' verb forms,
+     the specific-counter/item-counter unit pills - つ/人/個/本/枚/匹/冊/台/回/歳)
+     fall through to the system sans-serif stack, which on some devices
+     renders kana with the strokes visually joined up instead of as separate
+     characters. Applied to ALL level-pills (not just the Japanese-labelled
+     ones) since BIZ UDPGothic renders Latin text fine too - same call as
+     .nav-pill above. */
   .level-pill {
     padding: 6px 18px; border-radius: 99px; border: 1px solid var(--border);
     background: transparent; color: var(--text-muted);
     font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;
+    font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
   }
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
@@ -844,7 +861,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.026</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.028</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -5759,6 +5776,32 @@ function setMatchLevel(level) {
 function buildMatchCategoryList() {
   const container = document.getElementById('match-category-list');
   container.innerHTML = '';
+  // Andrew mode currently has no VOCAB categories of its own (level:'andrew'
+  // is unused right now), so the forEach below never fires for it - these
+  // two links are appended unconditionally instead, the moment this level is
+  // selected, rather than being tied to a category key the way the other
+  // vocab-ref-cards are. They point at standalone HTML notes living
+  // alongside index.html (kept as separate documents, not part of the app's
+  // own reference-screen system, since Andrew publishes them separately on
+  // GitHub too) - opened in a new tab so drilling progress/state in the app
+  // itself isn't lost.
+  if (currentMatchLevel === 'andrew') {
+    const sentenceNoteCard = document.createElement('a');
+    sentenceNoteCard.className = 'vocab-ref-card';
+    sentenceNoteCard.href = './sentence-structure-notes.html';
+    sentenceNoteCard.target = '_blank';
+    sentenceNoteCard.rel = 'noopener';
+    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
+    container.appendChild(sentenceNoteCard);
+
+    const jpEnNoteCard = document.createElement('a');
+    jpEnNoteCard.className = 'vocab-ref-card';
+    jpEnNoteCard.href = './japanese-vs-english-notes.html';
+    jpEnNoteCard.target = '_blank';
+    jpEnNoteCard.rel = 'noopener';
+    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
+    container.appendChild(jpEnNoteCard);
+  }
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
