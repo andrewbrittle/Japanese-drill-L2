@@ -593,19 +593,26 @@
      need the visual weight of a full row each. The 5 genuine exceptions
      (14/19/20/24/29) get a gold border so they stand out from the regular
      grid at a glance, matching how irregulars are called out elsewhere. */
-  .days-month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 0.6rem; }
+  /* 3 columns rather than 4 - a quarter-width column on a real phone wasn't
+     enough room for readings like さんじゅういちにち/sanjuuichinichi, and grid
+     items don't shrink below their content's natural width by default
+     (min-width:auto), so the row was overflowing the screen edge rather
+     than wrapping. min-width:0 below opts back into normal shrink/wrap
+     behaviour, and 3-across leaves enough width that it wasn't needed as
+     a crutch to also cover an over-tight 4-column layout. */
+  .days-month-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 0.6rem; }
   .days-month-cell {
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
-    padding: 0.4rem 0.3rem; text-align: center;
+    padding: 0.4rem 0.3rem; text-align: center; min-width: 0;
   }
   .days-month-irregular { border-color: var(--accent); }
   .days-month-num { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
   .days-month-irregular .days-month-num { color: var(--accent); }
-  /* Readings up to 8 characters (さんじゅういちにち) need to fit a quarter-width
-     column on a phone - scaled down from .tu-jp/.tu-romaji's normal size,
-     same reasoning as .verb-conj-table's own scoped overrides. */
-  .days-month-cell .tu-jp { font-size: 13px; line-height: 1.25; word-break: keep-all; }
-  .days-month-cell .tu-romaji { font-size: 9px; margin-top: 1px; }
+  /* Bumped up now that 3-across leaves room for it - still scaled down from
+     .tu-jp/.tu-romaji's normal size, same reasoning as .verb-conj-table's
+     own scoped overrides, just less aggressively than the 4-column version. */
+  .days-month-cell .tu-jp { font-size: 14.5px; line-height: 1.25; overflow-wrap: break-word; }
+  .days-month-cell .tu-romaji { font-size: 10.5px; margin-top: 2px; overflow-wrap: break-word; }
   /* Dakuten/handakuten sound-shift reference (shown from the Hiragana and
      Katakana selection screens) - groups of "base kana -> voiced kana" pairs
      under a romaji-only heading like "h -> b", since there's no kana glyph
@@ -890,7 +897,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.029</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.030</div>
   </div>
 
   <!-- Katakana settings screen -->
