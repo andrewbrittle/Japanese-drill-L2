@@ -417,6 +417,13 @@
     cursor: pointer; transition: border-color 0.15s; user-select: none;
     font-size: 13px; font-weight: 600; color: var(--accent);
     margin-bottom: -0.25rem; text-decoration: none;
+    /* Some of these labels embed real kana/kanji directly (e.g. the tense
+       card's いきます/きます/かえります, or the new だれも/どこも/なにも card) -
+       missing font-family here is the exact same bug class as .level-pill
+       had, just not caught in that sweep since it required actually
+       rendering the category list rather than the reference screens
+       themselves. Same fix, same reasoning. */
+    font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
   }
   .vocab-ref-card:hover { border-color: var(--accent); }
   .vocab-ref-arrow { color: var(--text-muted); }
@@ -451,6 +458,10 @@
   .vocab-ref-romaji { font-size: 14px; color: var(--text-muted); margin-top: 2px; }
   .vocab-ref-jp.minute-jp { font-size: 18px; }
   .vocab-ref-romaji.minute-romaji { font-size: 15px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+  /* The も+negative example sentences are a full short clause, not a single
+     word/reading like every other user of .minute-jp - scaled down further
+     so they don't crowd the right-hand column on a narrow phone. */
+  .qneg-example-jp { font-size: 14px; }
   /* Marks 午 (horse) as the noon pivot on the zodiac-clock reference - the
      row where AM flips to PM. */
   .zodiac-pivot-row { border-color: var(--accent); background: var(--accent-dim); }
@@ -577,6 +588,24 @@
     font-size: 12px; color: var(--text-dim); background: var(--surface2);
     border-radius: var(--radius); padding: 0.6rem 0.8rem; margin-top: 0.8rem;
   }
+  /* Days-of-month reference (1st-31st) - a compact grid rather than 31
+     stacked rows, since most of these are just "number + にち" and don't
+     need the visual weight of a full row each. The 5 genuine exceptions
+     (14/19/20/24/29) get a gold border so they stand out from the regular
+     grid at a glance, matching how irregulars are called out elsewhere. */
+  .days-month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 0.6rem; }
+  .days-month-cell {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 0.4rem 0.3rem; text-align: center;
+  }
+  .days-month-irregular { border-color: var(--accent); }
+  .days-month-num { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-bottom: 2px; }
+  .days-month-irregular .days-month-num { color: var(--accent); }
+  /* Readings up to 8 characters (さんじゅういちにち) need to fit a quarter-width
+     column on a phone - scaled down from .tu-jp/.tu-romaji's normal size,
+     same reasoning as .verb-conj-table's own scoped overrides. */
+  .days-month-cell .tu-jp { font-size: 13px; line-height: 1.25; word-break: keep-all; }
+  .days-month-cell .tu-romaji { font-size: 9px; margin-top: 1px; }
   /* Dakuten/handakuten sound-shift reference (shown from the Hiragana and
      Katakana selection screens) - groups of "base kana -> voiced kana" pairs
      under a romaji-only heading like "h -> b", since there's no kana glyph
@@ -861,7 +890,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.028</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.029</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2081,6 +2110,9 @@ const VOCAB = {
       {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱', altIsStandard:true},
       {jp:'はさみ', romaji:'hasami', en:'scissors'},
       {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節', altIsStandard:true},
+      {jp:'しょうゆ', romaji:'shouyu', en:'soy sauce', altForm:'醤油', altIsStandard:true},
+      {jp:'とうふ', romaji:'toufu', en:'tofu', altForm:'豆腐', altIsStandard:true},
+      {jp:'じどうはんばいき', romaji:'jidouhanbaiki', en:'vending machine', altForm:'自動販売機', altIsStandard:true},
       {jp:'しごと', romaji:'shigoto', en:'work / job', altForm:'仕事', altIsStandard:true},
     ],
   },
@@ -2117,8 +2149,8 @@ const VOCAB = {
       {jp:'はたらきます', romaji:'hatarakimasu', en:'to work'},
     ],
   },
-  // The 12 everyday animal words - these were actually covered in the
-  // lessons (the zodiac clock came up when discussing 午前/午後 - see
+  // The 12 everyday zodiac animal words - these were actually covered in
+  // the lessons (the zodiac clock came up when discussing 午前/午後 - see
   // below), just never built out into their own category at the time.
   // Also the same 12 used in the traditional zodiac clock (十二支), which is
   // where 午前/午後 (gozen/gogo, above) actually come from - 午 (uma, horse)
@@ -2127,6 +2159,11 @@ const VOCAB = {
   // that, kept separate from this drillable vocabulary since five of the
   // twelve zodiac readings (ね/う/たつ/み/い) aren't the everyday word for
   // the animal and teaching them as if they were would be actively wrong.
+  // ねこ (cat) is added as a 13th, bonus entry - famously not one of the 12
+  // zodiac animals (missed the Buddha's meeting, as the story goes), so
+  // it's deliberately not part of the zodiac-clock reference card below,
+  // just the single most useful animal word to actually have if a cat
+  // wanders past.
   'vocab-animals-l2': {
     level: 2,
     hasReference: true,
@@ -2145,6 +2182,25 @@ const VOCAB = {
       {jp:'とり', romaji:'tori', en:'bird', altForm:'鳥', altIsStandard:true},
       {jp:'いぬ', romaji:'inu', en:'dog', altForm:'犬', altIsStandard:true},
       {jp:'いのしし', romaji:'inoshishi', en:'boar / wild pig', altForm:'猪', altIsStandard:true},
+      {jp:'ねこ', romaji:'neko', en:'cat', altForm:'猫', altIsStandard:true},
+    ],
+  },
+  // First adjectives to enter Vocab (kana drilling) - ながい/みじかい and
+  // ふるい/あたらしい already existed as kanji readings for the Kanji drill,
+  // but had no kana-only home until now. Kept as two antonym pairs plus
+  // かわいい, rather than trying to build a bigger adjectives set from
+  // scratch - matches what's actually shown up in lessons so far.
+  'vocab-adjectives-l2': {
+    level: 2,
+    hasReference: true,
+    label: 'Adjectives',
+    chars: 'ながい みじかい…',
+    items: [
+      {jp:'あたらしい', romaji:'atarashii', en:'new', altForm:'新しい', altIsStandard:true},
+      {jp:'かわいい', romaji:'kawaii', en:'cute', altForm:'可愛い', altIsStandard:true},
+      {jp:'ふるい', romaji:'furui', en:'old (things)', altForm:'古い', altIsStandard:true},
+      {jp:'ながい', romaji:'nagai', en:'long', altForm:'長い', altIsStandard:true},
+      {jp:'みじかい', romaji:'mijikai', en:'short', altForm:'短い', altIsStandard:true},
     ],
   },
   'vocab-transport': {
@@ -2179,9 +2235,11 @@ const VOCAB = {
       {jp:'バレエ', romaji:'baree', en:'ballet', altForm:'ばれえ'},
       {jp:'ぎんこう', romaji:'ginkou', en:'bank', altForm:'銀行', altIsStandard:true},
       {jp:'ほんや', romaji:'honya', en:'bookshop'},
+      {jp:'バスてい', romaji:'basutei', en:'bus stop'},
       {jp:'きっさてん', romaji:'kissaten', en:'café'},
       {jp:'カメラや', romaji:'kameraya', en:'camera shop', altForm:'かめらや'},
       {jp:'えいがかん', romaji:'eigakan', en:'cinema'},
+      {jp:'かいしゃ', romaji:'kaisha', en:'company / office', altForm:'会社', altIsStandard:true},
       {jp:'コンビニ', romaji:'konbini', en:'convenience store', altForm:'こんびに'},
       {jp:'デパート', romaji:'depaato', en:'department store', altForm:'でぱーと'},
       {jp:'はなび', romaji:'hanabi', en:'fireworks'},
@@ -2199,6 +2257,7 @@ const VOCAB = {
       {jp:'がっこう', romaji:'gakkou', en:'school'},
       {jp:'えき', romaji:'eki', en:'station'},
       {jp:'スーパー', romaji:'suupaa', en:'supermarket', altForm:'すーぱー'},
+      {jp:'だいがく', romaji:'daigaku', en:'university', altForm:'大学', altIsStandard:true},
     ],
   },
   'vocab-places-uk': {
@@ -2238,6 +2297,11 @@ const VOCAB = {
       {jp:'ヨーク', romaji:'yooku', en:'York', altForm:'よーく'},
     ],
   },
+  // Tokyo was already sitting in here as the one domestic outlier among
+  // otherwise-international cities, so the rest of the week-5 reference's
+  // Japanese-places list (Kyoto/Osaka/Hokkaido/Yokohama/Nagoya) joins it here
+  // rather than getting a whole separate category for five entries -
+  // especially since these are actual likely stops on the trip.
   'vocab-cities': {
     level: 2,
     hasReference: true,
@@ -2245,17 +2309,22 @@ const VOCAB = {
     chars: 'とうきょう ぱり…',
     items: [
       {jp:'ばんこく', romaji:'bankoku', en:'Bangkok'},
+      {jp:'ほっかいどう', romaji:'hokkaidou', en:'Hokkaido'},
       {jp:'ほのるる', romaji:'honoruru', en:'Honolulu'},
+      {jp:'きょうと', romaji:'kyouto', en:'Kyoto'},
       {jp:'ろさんぜるす', romaji:'rosanzerusu', en:'Los Angeles'},
       {jp:'メキシコシティー', romaji:'mekishiko shitii', en:'Mexico City', altForm:'めきしこしてぃー'},
       {jp:'もすくわ', romaji:'mosukuwa', en:'Moscow'},
+      {jp:'なごや', romaji:'nagoya', en:'Nagoya'},
       {jp:'ニューヨーク', romaji:'nyuuyooku', en:'New York', altForm:'にゅーよーく'},
+      {jp:'おおさか', romaji:'oosaka', en:'Osaka'},
       {jp:'ぱり', romaji:'pari', en:'Paris'},
       {jp:'さんぱうろ', romaji:'sanpauro', en:'Sao Paulo'},
       {jp:'そうる', romaji:'souru', en:'Seoul'},
       {jp:'シドニー', romaji:'shidonii', en:'Sydney', altForm:'しどにー'},
       {jp:'とうきょう', romaji:'toukyou', en:'Tokyo'},
       {jp:'とろんと', romaji:'toronto', en:'Toronto'},
+      {jp:'よこはま', romaji:'yokohama', en:'Yokohama'},
     ],
   },
   'vocab-time-l2': {
@@ -2288,12 +2357,14 @@ const VOCAB = {
       {jp:'せんしゅう', romaji:'senshuu', en:'last week'},
       {jp:'こんしゅう', romaji:'konshuu', en:'this week'},
       {jp:'らいしゅう', romaji:'raishuu', en:'next week'},
+      {jp:'しゅうまつ', romaji:'shuumatsu', en:'weekend', altForm:'週末', altIsStandard:true},
       {jp:'せんげつ', romaji:'sengetsu', en:'last month'},
       {jp:'こんげつ', romaji:'kongetsu', en:'this month'},
       {jp:'らいげつ', romaji:'raigetsu', en:'next month'},
       {jp:'きょねん', romaji:'kyonen', en:'last year'},
       {jp:'ことし', romaji:'kotoshi', en:'this year'},
       {jp:'らいねん', romaji:'rainen', en:'next year'},
+      {jp:'たんじょうび', romaji:'tanjoubi', en:'birthday', altForm:'誕生日', altIsStandard:true},
     ],
   },
   'vocab-days-l2': {
@@ -2309,6 +2380,33 @@ const VOCAB = {
       {jp:'きんようび', romaji:'kinyoubi', en:'Friday', altForm:'金曜日', altIsStandard:true},
       {jp:'どようび', romaji:'doyoubi', en:'Saturday', altForm:'土曜日', altIsStandard:true},
       {jp:'にちようび', romaji:'nichiyoubi', en:'Sunday', altForm:'日曜日', altIsStandard:true},
+    ],
+  },
+  // Same situation as Adjectives above - month names already existed as
+  // kanji readings (一月-十二月) for the Kanji drill, but had no kana-only
+  // home. Completely regular (number + がつ, with April/July using the
+  // し/しち readings rather than よん/なな - see KANJI_READINGS for the
+  // kanji-drill side of these same 12 words), so no reference card needed;
+  // the irregular part of the calendar is the DAYS of the month, not the
+  // months themselves - see the reference card above Time vocabulary below.
+  'vocab-months-l2': {
+    level: 2,
+    hasReference: true,
+    label: 'Months',
+    chars: 'いちがつ にがつ…',
+    items: [
+      {jp:'いちがつ', romaji:'ichigatsu', en:'January'},
+      {jp:'にがつ', romaji:'nigatsu', en:'February'},
+      {jp:'さんがつ', romaji:'sangatsu', en:'March'},
+      {jp:'しがつ', romaji:'shigatsu', en:'April'},
+      {jp:'ごがつ', romaji:'gogatsu', en:'May'},
+      {jp:'ろくがつ', romaji:'rokugatsu', en:'June'},
+      {jp:'しちがつ', romaji:'shichigatsu', en:'July'},
+      {jp:'はちがつ', romaji:'hachigatsu', en:'August'},
+      {jp:'くがつ', romaji:'kugatsu', en:'September'},
+      {jp:'じゅうがつ', romaji:'juugatsu', en:'October'},
+      {jp:'じゅういちがつ', romaji:'juuichigatsu', en:'November'},
+      {jp:'じゅうにがつ', romaji:'juunigatsu', en:'December'},
     ],
   },
   // A classmate asked the tutor about horse racing, so here it is - same
@@ -5817,6 +5915,12 @@ function buildMatchCategoryList() {
       minRefCard.innerHTML = `<span>Minute endings (1–10) — reference</span><span class="vocab-ref-arrow">→</span>`;
       minRefCard.onclick = (e) => { e.stopPropagation(); showMinuteReference(); };
       container.appendChild(minRefCard);
+
+      const daysMonthRefCard = document.createElement('div');
+      daysMonthRefCard.className = 'vocab-ref-card';
+      daysMonthRefCard.innerHTML = `<span>Days of the month (1st–31st) — reference</span><span class="vocab-ref-arrow">→</span>`;
+      daysMonthRefCard.onclick = (e) => { e.stopPropagation(); showDaysOfMonthReference(); };
+      container.appendChild(daysMonthRefCard);
     }
     if (key === 'vocab-days-l2') {
       const daysRefCard = document.createElement('div');
@@ -5831,6 +5935,13 @@ function buildMatchCategoryList() {
       zodiacRefCard.innerHTML = `<span>12 zodiac animals & the clock — reference</span><span class="vocab-ref-arrow">→</span>`;
       zodiacRefCard.onclick = (e) => { e.stopPropagation(); showZodiacClockReference(); };
       container.appendChild(zodiacRefCard);
+    }
+    if (key === 'vocab-question-location') {
+      const qNegRefCard = document.createElement('div');
+      qNegRefCard.className = 'vocab-ref-card';
+      qNegRefCard.innerHTML = `<span>だれも/どこも/なにも + negative — reference</span><span class="vocab-ref-arrow">→</span>`;
+      qNegRefCard.onclick = (e) => { e.stopPropagation(); showQuestionNegationReference(); };
+      container.appendChild(qNegRefCard);
     }
     if (key === 'vocab-verbs-l2') {
       const sentenceRefCard = document.createElement('div');
@@ -5929,42 +6040,62 @@ function showTimeUnitsReference() {
 // selected item's detail below" pattern already used for the item-counters
 // reference - showVerbConjugationReference() draws the pill row once, then
 // renderVerbConjDetail() redraws just the detail block on each tap.
+// Each verb also carries its たい-form ("want to ~") - stem + たい, fully
+// regular for all nine of these (even べんきょうします, since する-verbs are
+// only irregular in DICTIONARY form; once you're already at the ます-stem,
+// たい suffixes on exactly the same way as everywhere else). Checked all
+// nine by hand for anything that reads oddly in English (おわりたい "want to
+// finish" and おきたい "want to get up" both sounded like candidates for
+// being odd, but both are completely normal things to say) before adding.
+// たい itself then conjugates like an い-adjective, NOT like a verb -
+// たい/たくない/たかった/たくなかった - which is a genuinely different
+// conjugation pattern to the ます-form grid above it, and not one the app
+// has shown anywhere else yet.
 const VERB_CONJUGATION_TABLE = [
   {
     key: 'kimasu', en: 'to come', nonPastAff: ['きます', 'kimasu'], nonPastNeg: ['きません', 'kimasen'],
     pastAff: ['きました', 'kimashita'], pastNeg: ['きませんでした', 'kimasendeshita'],
+    tai: { nonPastAff: ['きたい', 'kitai'], nonPastNeg: ['きたくない', 'kitakunai'], pastAff: ['きたかった', 'kitakatta'], pastNeg: ['きたくなかった', 'kitakunakatta'] },
   },
   {
     key: 'owarimasu', en: 'to finish', nonPastAff: ['おわります', 'owarimasu'], nonPastNeg: ['おわりません', 'owarimasen'],
     pastAff: ['おわりました', 'owarimashita'], pastNeg: ['おわりませんでした', 'owarimasendeshita'],
+    tai: { nonPastAff: ['おわりたい', 'owaritai'], nonPastNeg: ['おわりたくない', 'owaritakunai'], pastAff: ['おわりたかった', 'owaritakatta'], pastNeg: ['おわりたくなかった', 'owaritakunakatta'] },
   },
   {
     key: 'okimasu', en: 'to get up', nonPastAff: ['おきます', 'okimasu'], nonPastNeg: ['おきません', 'okimasen'],
     pastAff: ['おきました', 'okimashita'], pastNeg: ['おきませんでした', 'okimasendeshita'],
+    tai: { nonPastAff: ['おきたい', 'okitai'], nonPastNeg: ['おきたくない', 'okitakunai'], pastAff: ['おきたかった', 'okitakatta'], pastNeg: ['おきたくなかった', 'okitakunakatta'] },
   },
   {
     key: 'ikimasu', en: 'to go', nonPastAff: ['いきます', 'ikimasu'], nonPastNeg: ['いきません', 'ikimasen'],
     pastAff: ['いきました', 'ikimashita'], pastNeg: ['いきませんでした', 'ikimasendeshita'],
+    tai: { nonPastAff: ['いきたい', 'ikitai'], nonPastNeg: ['いきたくない', 'ikitakunai'], pastAff: ['いきたかった', 'ikitakatta'], pastNeg: ['いきたくなかった', 'ikitakunakatta'] },
   },
   {
     key: 'yasumimasu', en: 'to rest / take a day off', nonPastAff: ['やすみます', 'yasumimasu'], nonPastNeg: ['やすみません', 'yasumimasen'],
     pastAff: ['やすみました', 'yasumimashita'], pastNeg: ['やすみませんでした', 'yasumimasendeshita'],
+    tai: { nonPastAff: ['やすみたい', 'yasumitai'], nonPastNeg: ['やすみたくない', 'yasumitakunai'], pastAff: ['やすみたかった', 'yasumitakatta'], pastNeg: ['やすみたくなかった', 'yasumitakunakatta'] },
   },
   {
     key: 'kaerimasu', en: 'to return / go home', nonPastAff: ['かえります', 'kaerimasu'], nonPastNeg: ['かえりません', 'kaerimasen'],
     pastAff: ['かえりました', 'kaerimashita'], pastNeg: ['かえりませんでした', 'kaerimasendeshita'],
+    tai: { nonPastAff: ['かえりたい', 'kaeritai'], nonPastNeg: ['かえりたくない', 'kaeritakunai'], pastAff: ['かえりたかった', 'kaeritakatta'], pastNeg: ['かえりたくなかった', 'kaeritakunakatta'] },
   },
   {
     key: 'nemasu', en: 'to sleep / go to bed', nonPastAff: ['ねます', 'nemasu'], nonPastNeg: ['ねません', 'nemasen'],
     pastAff: ['ねました', 'nemashita'], pastNeg: ['ねませんでした', 'nemasendeshita'],
+    tai: { nonPastAff: ['ねたい', 'netai'], nonPastNeg: ['ねたくない', 'netakunai'], pastAff: ['ねたかった', 'netakatta'], pastNeg: ['ねたくなかった', 'netakunakatta'] },
   },
   {
     key: 'benkyoushimasu', en: 'to study', nonPastAff: ['べんきょうします', 'benkyoushimasu'], nonPastNeg: ['べんきょうしません', 'benkyoushimasen'],
     pastAff: ['べんきょうしました', 'benkyoushimashita'], pastNeg: ['べんきょうしませんでした', 'benkyoushimasendeshita'],
+    tai: { nonPastAff: ['べんきょうしたい', 'benkyoushitai'], nonPastNeg: ['べんきょうしたくない', 'benkyoushitakunai'], pastAff: ['べんきょうしたかった', 'benkyoushitakatta'], pastNeg: ['べんきょうしたくなかった', 'benkyoushitakunakatta'] },
   },
   {
     key: 'hatarakimasu', en: 'to work', nonPastAff: ['はたらきます', 'hatarakimasu'], nonPastNeg: ['はたらきません', 'hatarakimasen'],
     pastAff: ['はたらきました', 'hatarakimashita'], pastNeg: ['はたらきませんでした', 'hatarakimasendeshita'],
+    tai: { nonPastAff: ['はたらきたい', 'hatarakitai'], nonPastNeg: ['はたらきたくない', 'hatarakitakunai'], pastAff: ['はたらきたかった', 'hatarakitakatta'], pastNeg: ['はたらきたくなかった', 'hatarakitakunakatta'] },
   },
 ];
 let verbConjSelected = 'kimasu';
@@ -6012,6 +6143,20 @@ function renderVerbConjDetail() {
         ${cell(v.pastNeg[0], v.pastNeg[1])}
       </div>
     </div>
+    <div class="verb-conj-block">
+      <div class="verb-conj-heading verb-conj-tai-heading">${v.tai.nonPastAff[0]}<span class="verb-conj-en">"want to ${v.en.replace(/^to /, '')}"</span></div>
+      <div class="verb-conj-table">
+        <div class="tu-cell tu-header"></div>
+        <div class="tu-cell tu-header">Affirmative</div>
+        <div class="tu-cell tu-header">Negative</div>
+        <div class="tu-cell tu-rowlabel">Non-past</div>
+        ${cell(v.tai.nonPastAff[0], v.tai.nonPastAff[1])}
+        ${cell(v.tai.nonPastNeg[0], v.tai.nonPastNeg[1])}
+        <div class="tu-cell tu-rowlabel">Past</div>
+        ${cell(v.tai.pastAff[0], v.tai.pastAff[1])}
+        ${cell(v.tai.pastNeg[0], v.tai.pastNeg[1])}
+      </div>
+    </div>
   `;
 }
 
@@ -6037,6 +6182,11 @@ function showVerbConjugationReference() {
   note.className = 'verb-conj-note';
   note.textContent = 'Only two tenses here, not three - Japanese ます-form doesn’t separate "present" from "future" the way English does. いきます alone covers both "I go" and "I will go"; context (or a time word like あした) carries the rest.';
   list.appendChild(note);
+
+  const taiNote = document.createElement('div');
+  taiNote.className = 'verb-conj-note';
+  taiNote.textContent = 'The second grid ("want to ~") conjugates differently to the first - たい behaves like an い-adjective once it’s formed, not like a verb: たい → たくない (not たいません), たかった (not たいました), たくなかった. Same pattern as adjectives like たかい/たかくない/たかかった.';
+  list.appendChild(taiNote);
   showScreen('vocab-reference');
 }
 
@@ -6522,6 +6672,80 @@ function showMinuteReference() {
   showScreen('vocab-reference');
 }
 
+// Days of the MONTH (calendar dates, ついたち/ふつか/みっか...), not to be
+// confused with the counter-days table above (durations, いちにち/ふつか/
+// みっか...) - they share readings 2nd-10th, but the 1st is genuinely
+// different: いちにち means "one day" (a duration), ついたち means "the 1st
+// of the month" and is never used for a duration. Source-checked against
+// a live reference (cotoacademy.com) rather than relied on from memory,
+// given how easy it'd be to get one of the 14th/19th/20th/24th/29th
+// exceptions wrong. 1st-10th use their own native-Japanese-number set
+// entirely (not derived from anything); 11th-31st are regular
+// number+にち EXCEPT those five, which keep the native-style よっか/くにち/
+// はつか readings instead of the expected じゅうよんにち/じゅうきゅうにち/
+// にじゅうにち/にじゅうよんにち/にじゅうきゅうにち.
+const DAYS_OF_MONTH = [
+  { day: 1, jp: 'ついたち', romaji: 'tsuitachi', irregular: true },
+  { day: 2, jp: 'ふつか', romaji: 'futsuka', irregular: true },
+  { day: 3, jp: 'みっか', romaji: 'mikka', irregular: true },
+  { day: 4, jp: 'よっか', romaji: 'yokka', irregular: true },
+  { day: 5, jp: 'いつか', romaji: 'itsuka', irregular: true },
+  { day: 6, jp: 'むいか', romaji: 'muika', irregular: true },
+  { day: 7, jp: 'なのか', romaji: 'nanoka', irregular: true },
+  { day: 8, jp: 'ようか', romaji: 'youka', irregular: true },
+  { day: 9, jp: 'ここのか', romaji: 'kokonoka', irregular: true },
+  { day: 10, jp: 'とおか', romaji: 'tooka', irregular: true },
+  { day: 11, jp: 'じゅういちにち', romaji: 'juuichinichi' },
+  { day: 12, jp: 'じゅうににち', romaji: 'juuninichi' },
+  { day: 13, jp: 'じゅうさんにち', romaji: 'juusannichi' },
+  { day: 14, jp: 'じゅうよっか', romaji: 'juuyokka', irregular: true },
+  { day: 15, jp: 'じゅうごにち', romaji: 'juugonichi' },
+  { day: 16, jp: 'じゅうろくにち', romaji: 'juurokunichi' },
+  { day: 17, jp: 'じゅうしちにち', romaji: 'juushichinichi' },
+  { day: 18, jp: 'じゅうはちにち', romaji: 'juuhachinichi' },
+  { day: 19, jp: 'じゅうくにち', romaji: 'juukunichi', irregular: true },
+  { day: 20, jp: 'はつか', romaji: 'hatsuka', irregular: true },
+  { day: 21, jp: 'にじゅういちにち', romaji: 'nijuuichinichi' },
+  { day: 22, jp: 'にじゅうににち', romaji: 'nijuuninichi' },
+  { day: 23, jp: 'にじゅうさんにち', romaji: 'nijuusannichi' },
+  { day: 24, jp: 'にじゅうよっか', romaji: 'nijuuyokka', irregular: true },
+  { day: 25, jp: 'にじゅうごにち', romaji: 'nijuugonichi' },
+  { day: 26, jp: 'にじゅうろくにち', romaji: 'nijuurokunichi' },
+  { day: 27, jp: 'にじゅうしちにち', romaji: 'nijuushichinichi' },
+  { day: 28, jp: 'にじゅうはちにち', romaji: 'nijuuhachinichi' },
+  { day: 29, jp: 'にじゅうくにち', romaji: 'nijuukunichi', irregular: true },
+  { day: 30, jp: 'さんじゅうにち', romaji: 'sanjuunichi' },
+  { day: 31, jp: 'さんじゅういちにち', romaji: 'sanjuuichinichi' },
+];
+
+function showDaysOfMonthReference() {
+  vocabRefBackTarget = 'match-settings';
+  document.getElementById('vocab-ref-title').textContent = 'Days of the month (1st–31st)';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+
+  const note = document.createElement('div');
+  note.className = 'verb-conj-note';
+  note.textContent = 'The 1st–10th don’t follow the number+日 pattern at all - they’re their own set. From the 11th on it’s regular (number+にち), except five days highlighted below that keep the native-style よっか/くにち/はつか readings instead: the 14th, 19th, 20th, 24th, and 29th.';
+  list.appendChild(note);
+
+  const grid = document.createElement('div');
+  grid.className = 'days-month-grid';
+  DAYS_OF_MONTH.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'days-month-cell' + (d.irregular ? ' days-month-irregular' : '');
+    cell.innerHTML = `
+      <div class="days-month-num">${d.day}${d.day === 1 ? 'st' : d.day === 2 ? 'nd' : d.day === 3 ? 'rd' : d.day === 21 ? 'st' : d.day === 22 ? 'nd' : d.day === 23 ? 'rd' : d.day === 31 ? 'st' : 'th'}</div>
+      <div class="tu-jp">${markSmallKana(d.jp)}</div>
+      <div class="tu-romaji">${d.romaji}</div>
+    `;
+    grid.appendChild(cell);
+  });
+  list.appendChild(grid);
+  showScreen('vocab-reference');
+}
+
 // The traditional zodiac clock (十二支) - each animal marks a 2-hour block,
 // laid out like positions on a clock face rather than literal hours of the
 // day. 午 (uma, horse) sits at the noon position, which is the actual origin
@@ -6574,6 +6798,50 @@ function showZodiacClockReference() {
   const note = document.createElement('div');
   note.className = 'zodiac-clock-note';
   note.textContent = '午 (horse) marks noon - everything before it is 午前 (gozen, "before the horse" = AM), everything after is 午後 (gogo, "after the horse" = PM).';
+  list.appendChild(note);
+  showScreen('vocab-reference');
+}
+
+// Question word + も + negative = "deny everything" - だれも/どこも/なにも all
+// work this way with a negative verb (だれも きません, どこも いきません, なにも
+// たべません). いつ deliberately isn't included here even though it's one of
+// the same question words used elsewhere in the app (vocab-question-location,
+// and the sentence-order reference's Time slot) - いつも is already a fixed
+// idiom meaning "always", not "never", so showing it alongside だれも/どこも/
+// なにも as if it followed the same pattern would be teaching something
+// actively wrong. Better to flag the gap explicitly than paper over it.
+const QUESTION_NEGATION_TABLE = [
+  { combined: 'だれも', combinedRomaji: 'dare mo', en: 'nobody', example: { jp: 'だれも きません。', romaji: 'Dare mo kimasen.', en: 'Nobody is coming.' } },
+  { combined: 'どこも', combinedRomaji: 'doko mo', en: 'nowhere', example: { jp: 'どこも いきません。', romaji: 'Doko mo ikimasen.', en: "I'm not going anywhere." } },
+  { combined: 'なにも', combinedRomaji: 'nani mo', en: 'nothing', example: { jp: 'なにも たべません。', romaji: 'Nani mo tabemasen.', en: "I'm not eating anything." } },
+];
+
+function showQuestionNegationReference() {
+  vocabRefBackTarget = 'match-settings';
+  document.getElementById('vocab-ref-title').textContent = 'Question word + も + negative';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+  QUESTION_NEGATION_TABLE.forEach(q => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row two-col minute-row';
+    row.innerHTML = `
+      <div class="vocab-ref-col-left">
+        <div>
+          <div class="vocab-ref-jp minute-jp">${markSmallKana(q.combined)}</div>
+          <div class="vocab-ref-romaji minute-romaji">${q.combinedRomaji} — ${q.en}</div>
+        </div>
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-jp minute-jp qneg-example-jp">${markSmallKana(q.example.jp)}</div>
+        <div class="vocab-ref-romaji minute-romaji">${q.example.en}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+  const note = document.createElement('div');
+  note.className = 'verb-conj-note';
+  note.textContent = 'いつ (when) is deliberately left out here - いつも already means "always" as a fixed idiom, not "never", so it doesn\'t follow this pattern the way だれ/どこ/なに do. Watch out for that one.';
   list.appendChild(note);
   showScreen('vocab-reference');
 }
