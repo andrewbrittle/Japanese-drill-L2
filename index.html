@@ -298,6 +298,19 @@
   .small-kana { font-size: 0.65em; }
   .alt-form { font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
   .counter-quiz-reminder { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; }
+  /* Materials-only "seen in context" note (see q-seen-as in renderQuestion) -
+     shown on the card before answering (pure background, can only help
+     memory - not gated behind getting the question right) and repeated in
+     the post-answer feedback via .feedback-seen-as so it's still visible
+     down near the Next button without having to scroll back up. seenAs text
+     is a real Japanese sentence/sign fragment mixed with its English
+     translation in one string, so the whole line needs the JP font, not
+     just isolated characters - same treatment as .qneg-example-jp. source
+     line (location/date) is Latin-only so stays on the system font stack. */
+  .seen-as-note { margin-top: 0.6rem; margin-bottom: 0.5rem; padding: 0.55rem 0.75rem; background: var(--surface2); border-radius: var(--radius); text-align: left; }
+  .seen-as-text { font-size: 13px; color: var(--text-muted); line-height: 1.45; font-family: 'BIZ UDPGothic', sans-serif; }
+  .seen-as-source { font-size: 11px; color: var(--text-dim); margin-top: 0.25rem; }
+  .feedback-seen-as { font-size: 12.5px; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4; font-family: 'BIZ UDPGothic', sans-serif; }
 
   .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; text-align: center; }
 
@@ -897,7 +910,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.031</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.032</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1071,6 +1084,7 @@
       <div style="text-align:center;"><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
       <div class="alt-form" id="q-alt-form" style="display:none;"></div>
+      <div class="seen-as-note" id="q-seen-as" style="display:none;"></div>
       <div class="counter-quiz-reminder" id="q-counter-quiz-reminder" style="display:none;"></div>
       <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -2751,6 +2765,323 @@ const VOCAB = {
       {jp:'といれは どこですか', romaji:'toire wa doko desu ka', en:'where is the toilet?'},
     ],
   },
+  // "Materials" - authentic vocab pulled from Andrew's own trip photos (see
+  // japan_vocab_consolidated_20260810.json), as opposed to every category
+  // above which is prospective/textbook vocab. Andrew mode only, level:
+  // 'andrew' - no gating beyond that, since it's already Andrew-only.
+  // Every item carries a `source` object (location/date/file) recording which
+  // photo it came from - not shown in full on the drill card (see q-seen-as
+  // in renderQuestion), just location+date, but kept complete in the data in
+  // case a future version wants to do more with it (e.g. linking back to the
+  // photo itself). `seenAs`, where present, is the real sentence/sign context
+  // the word was actually seen in - shown on the card itself before
+  // answering and again in the post-answer feedback, since it's pure
+  // background that can only help memory, not something to gate behind
+  // getting the question right.
+  'vocab-materials-stations': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Materials — Stations & trains',
+    chars: 'インターホン 駅事務室 連絡用…',
+    items: [
+      {jp:'インターホン', romaji:'intahon', en:'intercom', seenAs:'インターホン（駅事務室連絡用） - as labeled on the sign: intercom for contacting the station office', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}},
+      {jp:'駅事務室', romaji:'eki jimushitsu', en:'station office', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}},
+      {jp:'連絡用', romaji:'renraku-you', en:'for contacting / for communication', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}},
+      {jp:'呼び出し', romaji:'yobidashi', en:'call / summon / page', altForm:'呼びだし (as shown on the sign, mixed kana)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}},
+      {jp:'ご案内', romaji:'go-annai', en:'notice / information', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'車いす', romaji:'kuruma-isu', en:'wheelchair', altForm:'車椅子 (full kanji form)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'ご利用', romaji:'go-riyou', en:'use (polite)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'お客様', romaji:'okyaku-sama', en:'customer / passenger', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'西口', romaji:'nishi-guchi', en:'west exit', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'改札', romaji:'kaisatsu', en:'ticket gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'お廻り下さい', romaji:'o-mawari kudasai', en:'please go around / detour', altForm:'お回りください (more common modern spelling)', seenAs:'車いすをご利用のお客様は西口改札へお廻り下さい。- full notice: wheelchair users please go around to the west exit gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}},
+      {jp:'〜階ホームです', romaji:'~-kai hoomu desu', en:'(this) is the ~ floor platform', seenAs:'ここは3階ホームです - as shown on the sign: this is the 3rd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'ホーム', romaji:'hoomu', en:'platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'方面', romaji:'houmen', en:'bound for / direction', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'〜方面への列車', romaji:'~ houmen e no ressha', en:'train bound for ~', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'列車', romaji:'ressha', en:'train', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'発車します', romaji:'hassha shimasu', en:'will depart', seenAs:'品川・新橋方面への列車は2階ホームから発車します。- full sign: trains bound for Shinagawa/Shimbashi depart from the 2nd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'お並びいただき', romaji:'onarabi itadaki', en:'please line up (queue)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'中央', romaji:'chuuou', en:'center / middle', seenAs:'中央はお空けください - please leave the center open (queueing announcement)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'お空けください', romaji:'o-ake kudasai', en:'please leave (a space) open', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'出口', romaji:'deguchi', en:'exit', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}},
+      {jp:'山手線', romaji:'Yamanote-sen', en:'Yamanote Line', seenAs:'山手線（内回り）田町・新橋・東京・上野方面 - route header: Yamanote Line (inner loop), bound for Tamachi/Shimbashi/Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}},
+      {jp:'内回り', romaji:'uchimawari', en:'inner loop (counter-clockwise)', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}},
+      {jp:'約〜分後', romaji:'yaku ~fun go', en:'in approximately ~ minutes', seenAs:'山手線 約2分後 東京・上野方面 - live arrival board: Yamanote Line, in about 2 minutes, bound for Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}},
+      {jp:'バイト', romaji:'baito', en:'part-time job', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'求人', romaji:'kyuujin', en:'job listing / recruitment', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'まとめサイト', romaji:'matome saito', en:'aggregator / summary site', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'アクセス数', romaji:'akusesu-suu', en:'number of visits / access count', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'マナー', romaji:'manaa', en:'manners / etiquette', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'車内', romaji:'shanai', en:'inside the train / vehicle', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'携帯電話', romaji:'keitai denwa', en:'mobile phone', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'ご協力ください', romaji:'gokyouryoku kudasai', en:'please cooperate', seenAs:'車内の携帯電話のご利用マナーにご協力ください。- please observe mobile phone etiquette on the train (full announcement)', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}},
+      {jp:'とことん', romaji:'tokoton', en:'thoroughly / to the utmost', seenAs:'とことん期待を超える。とことん感動を届けていく。まじめに、まっすぐ - we thoroughly exceed expectations, thoroughly deliver inspiration. Sincere and straightforward (company slogan)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'ゼネコン', romaji:'zenekon', en:'general contractor (construction)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'組', romaji:'gumi', en:'company / group / crew (suffix)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'建築', romaji:'kenchiku', en:'architecture / construction', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'土木', romaji:'doboku', en:'civil engineering', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'環境', romaji:'kankyou', en:'environment', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'期待', romaji:'kitai', en:'expectation', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'超える', romaji:'koeru', en:'to exceed / surpass', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'感動', romaji:'kandou', en:'deeply moved / inspiration', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'届ける', romaji:'todokeru', en:'to deliver', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'まじめ', romaji:'majime', en:'serious / sincere / diligent', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+      {jp:'まっすぐ', romaji:'massugu', en:'straight / straightforward', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}},
+    ],
+  },
+  'vocab-materials-airport': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Materials — Airport & flights',
+    chars: '先発 定刻 共同運航便…',
+    items: [
+      {jp:'先発', romaji:'senpatsu', en:'departing first / first (flight)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}},
+      {jp:'定刻', romaji:'teikoku', en:'on schedule / on time', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}},
+      {jp:'共同運航便', romaji:'kyoudou unkou-bin', en:'codeshare flight', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}},
+      {jp:'札幌', romaji:'Sapporo', en:'Sapporo (city)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}},
+      {jp:'荷物', romaji:'nimotsu', en:'luggage / baggage', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'キャスター', romaji:'kyasutaa', en:'caster / wheel', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'〜付き', romaji:'~-tsuki', en:'equipped with / including (suffix)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'バギー', romaji:'bagii', en:'buggy / stroller', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'機内', romaji:'kinai', en:'inside the aircraft / in-cabin', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'お持ち込み', romaji:'omochikomi', en:'bringing in / carrying in', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'搭乗口', romaji:'toujouguchi', en:'boarding gate', seenAs:'大きな荷物、キャスター付きバッグ、ベビーバギーは機内にお持ち込み頂けません。搭乗口係員までお知らせください。- large baggage, wheeled bags, and strollers cannot be brought into the cabin; please inform the boarding gate staff (gate announcement)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'係員', romaji:'kakariin', en:'staff member / attendant', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'お知らせ', romaji:'oshirase', en:'notification / letting (someone) know', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}},
+      {jp:'オニオンスープ', romaji:'onion soup', en:'onion soup', source:{location:'In-flight (Haneda-Sapporo)', date:'2026-08-09', file:'PXL_20260809_025202447.jpg'}},
+      {jp:'ブレンドコーヒー', romaji:'burendo koohii', en:'blend coffee', source:{location:'In-flight (Haneda-Sapporo)', date:'2026-08-09', file:'PXL_20260809_025202447.jpg'}},
+      {jp:'麦茶', romaji:'mugicha', en:'barley tea', source:{location:'In-flight (Haneda-Sapporo)', date:'2026-08-09', file:'PXL_20260809_025202447.jpg'}},
+      {jp:'アップル', romaji:'appuru', en:'apple', source:{location:'In-flight (Haneda-Sapporo)', date:'2026-08-09', file:'PXL_20260809_025202447.jpg'}},
+      {jp:'ミネラル', romaji:'mineraru', en:'mineral', source:{location:'In-flight (Haneda-Sapporo)', date:'2026-08-09', file:'PXL_20260809_025202447.jpg'}},
+      {jp:'ウォーター', romaji:'wootaa', en:'water', source:{location:'In-flight (Haneda-Sapporo)', date:'2026-08-09', file:'PXL_20260809_025202447.jpg'}},
+    ],
+  },
+  'vocab-materials-restaurants': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Materials — Restaurants & menus',
+    chars: '最強 油そば 秘伝…',
+    items: [
+      {jp:'最強', romaji:'saikyou', en:'strongest / the best', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'油そば', romaji:'aburasoba', en:'abura soba (broth-less ramen)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'秘伝', romaji:'hiden', en:'secret (recipe)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'醤油', romaji:'shouyu', en:'soy sauce', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'北海道産', romaji:'Hokkaidou-san', en:'produced in Hokkaido', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'小麦', romaji:'komugi', en:'wheat', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'麺', romaji:'men', en:'noodles', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'究極', romaji:'kyuukyoku', en:'ultimate', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'1番人気', romaji:'ichiban ninki', en:'most popular', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'定番', romaji:'teiban', en:'standard / classic (item)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'復刻版', romaji:'fukkokuban', en:'reissued / revival edition', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'激ウマ', romaji:'geki uma', en:'insanely delicious', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'炙り', romaji:'aburi', en:'flame-seared / torched', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'チャーシュー', romaji:'chaashuu', en:'char siu (braised pork)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'税込', romaji:'zeikomi', en:'tax included', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'メニュー', romaji:'menyuu', en:'menu', seenAs:'4か国語メニューあり - menus available in 4 languages', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'キンキン', romaji:'kinkin', en:'ice-cold', seenAs:'キンキンに冷えてます - it\'s ice-cold in here (shop AC signage)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}},
+      {jp:'選ぶ', romaji:'erabu', en:'to choose', seenAs:'選んで、痺れて、飲み干して！- choose it, feel the tingle, drink it down! (headline)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'痺れる', romaji:'shibireru', en:'to go numb / tingle (spicy sensation)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'飲み干す', romaji:'nomihosu', en:'to drink up / drain (a cup)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'特製', romaji:'tokusei', en:'specially made / house special', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'麻辣湯', romaji:'maaratan', en:'mala tang', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'汁無し', romaji:'shirunashi', en:'without broth / dry style', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'花椒', romaji:'kashou', en:'Sichuan peppercorn', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'酸辣', romaji:'sanra', en:'hot and sour', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'熟成', romaji:'jukusei', en:'aged / matured', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'黒酢', romaji:'kurozu', en:'black vinegar', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'爽快', romaji:'soukai', en:'refreshing / invigorating', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'辛さ', romaji:'karasa', en:'spiciness', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'濃厚', romaji:'noukou', en:'rich / thick (flavor)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'白湯', romaji:'paitan', en:'clear/white bone broth', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'コラーゲン', romaji:'koragen', en:'collagen', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'ダシ', romaji:'dashi', en:'soup stock / broth', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'骨', romaji:'hone', en:'bone', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'発酵', romaji:'hakkou', en:'fermented', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'高菜', romaji:'takana', en:'pickled mustard greens', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'ヴィーガン', romaji:'viigan', en:'vegan', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'刺激', romaji:'shigeki', en:'stimulation / excitement', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'飢える', romaji:'ueru', en:'to starve / hunger for', seenAs:'世界はこの刺激に飢えている - the world is starving for this stimulation (tagline)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}},
+      {jp:'しゃぶしゃぶ', romaji:'shabu-shabu', en:'shabu-shabu (hot pot)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'すきやき', romaji:'sukiyaki', en:'sukiyaki', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'自家製', romaji:'jikasei', en:'homemade / house-made', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'たれ', romaji:'tare', en:'sauce', altForm:'タレ (also seen written in katakana)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'割下', romaji:'warishita', en:'seasoned sukiyaki sauce/broth', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'営業時間', romaji:'eigyou jikan', en:'business hours', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'月〜金', romaji:'getsu ~ kin', en:'Monday to Friday', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'土・日・祝', romaji:'do, nichi, shuku', en:'Saturday, Sunday, holidays', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}},
+      {jp:'生つくね', romaji:'nama tsukune', en:'raw-marinated chicken meatball (skewer)', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'串カツ', romaji:'kushikatsu', en:'deep-fried skewers', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'お通しなし', romaji:'otooshi nashi', en:'no compulsory appetizer charge', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'お席料なし', romaji:'oseki ryou nashi', en:'no seating charge', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'食べ放題', romaji:'tabehoudai', en:'all-you-can-eat', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'飲み放題', romaji:'nomihoudai', en:'all-you-can-drink', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'焼鳥', romaji:'yakitori', en:'grilled chicken skewers', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'甘味', romaji:'kanmi', en:'sweets / dessert', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'揚げ物', romaji:'agemono', en:'fried food', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'刺身', romaji:'sashimi', en:'sashimi', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'サラダ', romaji:'sarada', en:'salad', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'おすすめ', romaji:'osusume', en:'recommended', altForm:'オススメ (also seen written in katakana)', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'当店名物', romaji:'touten meibutsu', en:'restaurant\'s signature dish', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'大盛', romaji:'oomori', en:'large portion', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'生ビール', romaji:'nama biiru', en:'draft beer', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'ハイボール', romaji:'haiboru', en:'highball', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092359849.jpg'}},
+      {jp:'ランチ', romaji:'ranchi', en:'lunch', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'日替わり', romaji:'higawari', en:'daily special', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'とんかつ', romaji:'tonkatsu', en:'pork cutlet', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'おかわり', romaji:'okawari', en:'seconds / refill', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'国産米', romaji:'kokusan mai', en:'domestically produced rice', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'ソフトドリンク', romaji:'sofuto dorinku', en:'soft drink', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'ハッピーアワー', romaji:'happii awaa', en:'happy hour', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092406118.jpg'}},
+      {jp:'昼呑み', romaji:'hiru nomi', en:'daytime drinking', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092412154.jpg'}},
+      {jp:'オトク', romaji:'otoku', en:'a good deal / bargain', altForm:'お得 (kanji form)', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092412154.jpg'}},
+      {jp:'サワー', romaji:'sawaa', en:'sour (alcoholic drink)', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092412154.jpg'}},
+      {jp:'三大名物', romaji:'san dai meibutsu', en:'"three great specialties" (top signature items)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'ヤキトン', romaji:'yakiton', en:'grilled pork skewers', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'シロ', romaji:'shiro', en:'pork intestine (offal skewer)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'鳥レバー', romaji:'tori rebaa', en:'chicken liver', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'ささみ', romaji:'sasami', en:'chicken breast / tenderloin', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'わさび', romaji:'wasabi', en:'wasabi', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'梅しそ', romaji:'ume shiso', en:'plum and shiso (flavor combo)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'おろしポン酢', romaji:'oroshi ponzu', en:'grated daikon with ponzu sauce', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'レバ刺し', romaji:'reba sashi', en:'raw liver sashimi', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'角ハイボール', romaji:'kaku haiboru', en:'"Kaku" whisky highball', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}},
+      {jp:'野菜', romaji:'yasai', en:'vegetables', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'一品', romaji:'ippin', en:'a single dish / a la carte item', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'鶏', romaji:'tori', en:'chicken', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'飯', romaji:'meshi', en:'rice / meal', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'果実酒', romaji:'kajitsushu', en:'fruit liqueur', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'焼酎', romaji:'shouchu', en:'shochu (Japanese spirit)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'日本酒', romaji:'nihonshu', en:'sake (Japanese rice wine)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+      {jp:'ワイン', romaji:'wain', en:'wine', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}},
+    ],
+  },
+  'vocab-materials-shops': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Materials — Shops & everyday purchases',
+    chars: '生活家電 テレビ オーディオ…',
+    items: [
+      {jp:'生活家電', romaji:'seikatsu kaden', en:'household appliances', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'テレビ', romaji:'terebi', en:'TV', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'オーディオ', romaji:'oodio', en:'audio', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'カメラ', romaji:'kamera', en:'camera', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'時計', romaji:'tokei', en:'clock / watch', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'パソコン周辺機器', romaji:'pasokon shuuhen kiki', en:'PC peripherals', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'携帯電話', romaji:'keitai denwa', en:'mobile phone', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'修理受付', romaji:'shuuri uketsuke', en:'repair reception desk', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'お客様案内窓口', romaji:'okyakusama annai madoguchi', en:'customer information counter', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'駐車場', romaji:'chuushajou', en:'parking lot', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'現在フロア', romaji:'genzai furoa', en:'current floor ("you are here")', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'ダイソー', romaji:'Daisou', en:'Daiso (100-yen shop brand)', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'リラクゼーション', romaji:'rirakuzeeshon', en:'relaxation', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'サロン', romaji:'saron', en:'salon', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'クイックガレージ', romaji:'kuikku gareeji', en:'Quick Garage (repair shop name)', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}},
+      {jp:'天然水', romaji:'tennensui', en:'natural water', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'さわやか', romaji:'sawayaka', en:'refreshing', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'味わい', romaji:'ajiwai', en:'flavor / taste', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'シャイン', romaji:'shain', en:'"shine" (as in Shine Muscat grape)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'マスカット', romaji:'masukatto', en:'muscat (grape)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'無糖', romaji:'mutou', en:'sugar-free', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'カフェインゼロ', romaji:'kafein zero', en:'caffeine-free', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'大容量', romaji:'dai youryou', en:'large volume / capacity', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'自販機限定', romaji:'jihanki gentei', en:'vending-machine exclusive', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'キャンペーン', romaji:'kyanpeen', en:'campaign / promotion', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'貯める', romaji:'tameru', en:'to save / collect (points)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'対象商品', romaji:'taishou shouhin', en:'eligible / target product', seenAs:'対象商品を飲んで、貯めて、応募！- drink the eligible products, collect (stamps), and enter! (campaign tagline)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'応募', romaji:'oubo', en:'apply / enter (a promotion)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'電子マネー', romaji:'denshi manee', en:'e-money', seenAs:'sign said 交通系電子マネー (transit e-money) - shortened to the reusable core term', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'おつり', romaji:'otsuri', en:'change (money)', altForm:'お釣り (kanji form)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'返却', romaji:'henkyaku', en:'return (an item)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}},
+      {jp:'まいばすけっと', romaji:'maibasuketto', en:'"My Basket" (discount supermarket chain)', seenAs:'brand name written entirely in hiragana - good reading practice', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_085728020.jpg'}},
+      {jp:'道民', romaji:'doumin', en:'Hokkaido resident', seenAs:'prefecture-resident pattern, cf. 都民 = Tokyo resident', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'ポイント', romaji:'pointo', en:'points (loyalty points)', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'使えます', romaji:'tsukaemasu', en:'can be used', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'取扱店舗', romaji:'toriatsukai tenpo', en:'participating stores', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'手数料', romaji:'tesuuryou', en:'fee / commission', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'金融機関', romaji:'kinyuu kikan', en:'financial institution', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'銀行', romaji:'ginkou', en:'bank', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'からあげ', romaji:'karaage', en:'Japanese fried chicken', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'増量中', romaji:'zouryouchuu', en:'quantity increased (limited time)', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}},
+      {jp:'持込品', romaji:'mochikomihin', en:'items brought in (from outside)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'飲食', romaji:'inshoku', en:'eating and drinking / food & beverage', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'固く', romaji:'kataku', en:'strictly / firmly', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'お断り', romaji:'okotowari', en:'to refuse / decline', seenAs:'勉強等の長時間のご利用はお断り致します - long-term use for studying etc. is not permitted (seat-squatting notice)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'長時間', romaji:'choujikan', en:'long time / extended period', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'勉強', romaji:'benkyou', en:'studying', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'給電', romaji:'kyuuden', en:'power supply', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}},
+      {jp:'オリジナルチキン', romaji:'orijinaru chikin', en:'original chicken (KFC signature product)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'お買上', romaji:'okaiage', en:'purchase (polite)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'合計', romaji:'goukei', en:'total', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'消費税', romaji:'shouhizei', en:'consumption tax', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'対象', romaji:'taishou', en:'applicable / subject to', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'登録番号', romaji:'touroku bangou', en:'registration number', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'注文番号', romaji:'chuumon bangou', en:'order number', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'領収証', romaji:'ryoushuushou', en:'receipt / proof of payment', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}},
+      {jp:'トレー', romaji:'toree', en:'tray', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}},
+      {jp:'バスケット', romaji:'basuketto', en:'basket', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}},
+      {jp:'こちら', romaji:'kochira', en:'here / this way', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}},
+      {jp:'お返しください', romaji:'okaeshi kudasai', en:'please return (an item)', seenAs:'トレーとバスケットは、こちらへお返しください。- please return trays and baskets here (sign)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}},
+      {jp:'捨てる', romaji:'suteru', en:'to throw away / discard', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}},
+    ],
+  },
+  'vocab-materials-entertainment': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Materials — Entertainment & sightseeing',
+    chars: 'パチンコ 全台 計数機…',
+    items: [
+      {jp:'パチンコ', romaji:'pachinko', en:'pachinko (pinball-style game)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'全台', romaji:'zendai', en:'all machines / units', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'計数機', romaji:'keisuuki', en:'counting machine', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'完備', romaji:'kanbi', en:'fully equipped / complete facilities', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'麻雀', romaji:'maajan', en:'mahjong', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'フリー', romaji:'furii', en:'free / walk-in (seating)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'個室', romaji:'koshitsu', en:'private room', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'設置', romaji:'secchi', en:'installation', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'世界一', romaji:'sekaiichi', en:'world\'s number one / best in the world', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'スロット', romaji:'surotto', en:'slot machine', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}},
+      {jp:'夏まつり', romaji:'natsu matsuri', en:'summer festival', source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}},
+      {jp:'協賛', romaji:'kyousan', en:'sponsorship', source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}},
+      {jp:'企業', romaji:'kigyou', en:'company / enterprise', source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}},
+      {jp:'応援', romaji:'ouen', en:'to support / cheer for', source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}},
+      {jp:'実行委員会', romaji:'jikkou iinkai', en:'executive / organizing committee', source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}},
+      {jp:'エントランス', romaji:'entoransu', en:'entrance', source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}},
+      {jp:'レンタル', romaji:'rentaru', en:'rental', source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}},
+      {jp:'展望台', romaji:'tenboudai', en:'observation deck', source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}},
+      {jp:'入場券', romaji:'nyuujouken', en:'admission ticket', source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}},
+      {jp:'売場', romaji:'uriba', en:'sales counter', source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}},
+      {jp:'業務優先', romaji:'gyoumu yuusen', en:'staff duties take priority', source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}},
+      {jp:'名前', romaji:'namae', en:'name', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'生年月日', romaji:'seinengappi', en:'date of birth', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'身長', romaji:'shinchou', en:'height', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'体重', romaji:'taijuu', en:'weight', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'趣味', romaji:'shumi', en:'hobby', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'特技', romaji:'tokugi', en:'special skill', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'長所', romaji:'chousho', en:'strong point / merit', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'チャームポイント', romaji:'chaamu pointo', en:'charm point (appealing feature)', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'好きな食べ物', romaji:'suki na tabemono', en:'favorite food', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'好きな言葉', romaji:'suki na kotoba', en:'favorite word / motto', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'好きな色', romaji:'suki na iro', en:'favorite color', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'大切なもの', romaji:'taisetsu na mono', en:'important thing(s)', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+      {jp:'デビュー', romaji:'debyuu', en:'debut', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}},
+    ],
+  },
+  'vocab-materials-hotel': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Materials — Hotel',
+    chars: '朝食 混雑 提供…',
+    items: [
+      {jp:'朝食', romaji:'choushoku', en:'breakfast', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+      {jp:'混雑', romaji:'konzatsu', en:'congestion / crowding', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+      {jp:'提供', romaji:'teikyou', en:'to provide / serve', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+      {jp:'恐れ入りますが', romaji:'osoreirimasu ga', en:'I\'m terribly sorry, but... (polite opener)', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+      {jp:'余裕', romaji:'yoyou', en:'margin / leeway / spare time', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+      {jp:'ラストオーダー', romaji:'rasuto oodaa', en:'last order', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+      {jp:'支配人', romaji:'shihainin', en:'manager', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}},
+    ],
+  },
 };
 
 // Themes bring together items from several existing VOCAB categories into one
@@ -3518,6 +3849,8 @@ function drillVocabTileSelection() {
       hint: item.en,
       altForm: item.altForm,
       altIsStandard: item.altIsStandard,
+      seenAs: item.seenAs,
+      source: item.source,
     };
   });
   lastSettingsScreen = 'vocab-tile-selection';
@@ -5250,6 +5583,25 @@ function renderQuestion() {
     }
   }
 
+  // Materials items only (see vocab-materials-* in VOCAB) - the real
+  // sentence/sign context a word was actually seen in, plus where/when it
+  // was photographed. Shown up front rather than gated behind answering,
+  // per Andrew's call: this is background that can only help memory, not
+  // something worth treating as a spoiler (see the comment above the
+  // vocab-materials-* categories in VOCAB for the full reasoning).
+  const seenAsEl = document.getElementById('q-seen-as');
+  if (seenAsEl) {
+    if (q.seenAs || q.source) {
+      let html = '';
+      if (q.seenAs) html += `<div class="seen-as-text">${markSmallKana(q.seenAs)}</div>`;
+      if (q.source) html += `<div class="seen-as-source">Seen at: ${q.source.location}${q.source.date ? ' · ' + q.source.date : ''}</div>`;
+      seenAsEl.innerHTML = html;
+      seenAsEl.style.display = 'block';
+    } else {
+      seenAsEl.style.display = 'none';
+    }
+  }
+
   document.getElementById('q-feedback').textContent = '';
   document.getElementById('q-feedback').className = 'feedback';
   document.getElementById('next-btn').style.visibility = 'hidden';
@@ -5475,6 +5827,14 @@ function choose(btn, selectedVal, answer, char) {
   const standardNote = (currentQ && currentQ.altIsStandard && currentQ.altForm)
     ? `<div class="feedback-standard-note">Normally shown as: ${markSmallKana(currentQ.altForm)}</div>`
     : '';
+  // Repeats the same seenAs context shown on the card (see q-seen-as in
+  // renderQuestion) down here next to the feedback/Next button, so it's
+  // still in view after answering without having to scroll back up past
+  // the options - Andrew's explicit ask, since by this point attention has
+  // moved down the card.
+  const seenAsNote = (currentQ && currentQ.seenAs)
+    ? `<div class="feedback-seen-as">${markSmallKana(currentQ.seenAs)}</div>`
+    : '';
   recordKanaResult(currentQ, selectedVal === answer);
   const isKanaItem = currentQ && (currentQ.disp === 'base' || currentQ.disp === 'diacritic' || currentQ.disp === 'youon');
   const showingHiragana = !reversed && showHiraganaOnKatakana && isKanaItem &&
@@ -5488,11 +5848,11 @@ function choose(btn, selectedVal, answer, char) {
   if (selectedVal === answer) {
     score++;
     btn.classList.add('correct');
-    fb.innerHTML = 'Correct!' + hint + standardNote;
+    fb.innerHTML = 'Correct!' + hint + standardNote + seenAsNote;
     fb.className = 'feedback good';
   } else {
     btn.classList.add('wrong');
-    fb.innerHTML = `Not quite — the answer is "${displayAnswerHtml}"` + hint + standardNote;
+    fb.innerHTML = `Not quite — the answer is "${displayAnswerHtml}"` + hint + standardNote + seenAsNote;
     fb.className = 'feedback bad';
     wrong++;
     // Tracked as char+answer, not bare char - a handful of characters do
@@ -7404,6 +7764,8 @@ function buildVocabReadingDeck(items, groupKey) {
       hint: item.en,
       altForm: item.altForm,
       altIsStandard: item.altIsStandard,
+      seenAs: item.seenAs,
+      source: item.source,
     };
   });
 }
