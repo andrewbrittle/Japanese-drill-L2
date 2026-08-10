@@ -298,19 +298,33 @@
   .small-kana { font-size: 0.65em; }
   .alt-form { font-size: 13px; font-weight: 600; color: var(--accent); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; font-family: 'BIZ UDPGothic', sans-serif; }
   .counter-quiz-reminder { font-size: 12px; font-weight: 600; color: var(--text-muted); text-align: center; margin-top: 0.15rem; margin-bottom: 0.5rem; }
-  /* Materials-only "seen in context" note (see q-seen-as in renderQuestion) -
-     shown on the card before answering (pure background, can only help
-     memory - not gated behind getting the question right) and repeated in
-     the post-answer feedback via .feedback-seen-as so it's still visible
-     down near the Next button without having to scroll back up. seenAs text
-     is a real Japanese sentence/sign fragment mixed with its English
-     translation in one string, so the whole line needs the JP font, not
-     just isolated characters - same treatment as .qneg-example-jp. source
-     line (location/date) is Latin-only so stays on the system font stack. */
-  .seen-as-note { margin-top: 0.6rem; margin-bottom: 0.5rem; padding: 0.55rem 0.75rem; background: var(--surface2); border-radius: var(--radius); text-align: left; }
+  /* Materials-only "seen in context" card (see q-context-card in
+     renderQuestion) - a separate card between the main drill card and Next,
+     not a section inside the main card itself. Used to sit inline on the
+     main card (between the character and the audio button), which crowded
+     out the character on longer seenAs entries, and got duplicated down
+     near the feedback text so it would still be visible post-answer without
+     scrolling back up. Moving it to its own card between the feedback text
+     and Next solves both at once - it's out of the way of the character,
+     and it's still the next thing in view after answering, so the feedback
+     duplication (formerly .feedback-seen-as) is gone, not just relocated.
+     Shown from question-load, not gated on answering - it's real-world
+     context, not the reading, so it's not a spoiler. seenAs text is a real
+     Japanese sentence/sign fragment mixed with its English translation in
+     one string, so that line needs the JP font, not just isolated
+     characters - same treatment as .qneg-example-jp. The location/date and
+     filename lines are Latin-only so they stay on the system font stack. */
+  .context-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1rem 1.25rem; text-align: left;
+  }
+  .context-card-label {
+    font-size: 11px; font-weight: 700; letter-spacing: 0.03em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.5rem;
+  }
   .seen-as-text { font-size: 13px; color: var(--text-muted); line-height: 1.45; font-family: 'BIZ UDPGothic', sans-serif; }
-  .seen-as-source { font-size: 11px; color: var(--text-dim); margin-top: 0.25rem; }
-  .feedback-seen-as { font-size: 12.5px; color: var(--text-muted); margin-top: 0.5rem; line-height: 1.4; font-family: 'BIZ UDPGothic', sans-serif; }
+  .context-card-meta { font-size: 12px; color: var(--text-muted); margin-top: 0.4rem; }
+  .context-card-file { font-size: 11px; color: var(--text-dim); margin-top: 0.15rem; }
 
   .prompt { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 1.75rem; text-align: center; }
 
@@ -910,7 +924,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260810.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260810.002</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1084,7 +1098,6 @@
       <div style="text-align:center;"><span class="type-badge" id="q-badge">base</span></div>
       <div class="char-display" id="q-char">あ</div>
       <div class="alt-form" id="q-alt-form" style="display:none;"></div>
-      <div class="seen-as-note" id="q-seen-as" style="display:none;"></div>
       <div class="counter-quiz-reminder" id="q-counter-quiz-reminder" style="display:none;"></div>
       <button class="speak-btn" id="speak-btn" onclick="speakCurrent()" title="Hear it" style="display:none;">
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1096,6 +1109,10 @@
       <div class="prompt" id="q-prompt">What is this character?</div>
       <div class="options" id="q-options"></div>
       <div class="feedback" id="q-feedback"></div>
+    </div>
+    <div class="context-card" id="q-context-card" style="display:none;">
+      <div class="context-card-label">Context seen in:</div>
+      <div id="q-context-card-body"></div>
     </div>
     <button class="next-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
   </div>
@@ -2776,10 +2793,10 @@ const VOCAB = {
   // above which is prospective/textbook vocab. Andrew mode only, level:
   // 'andrew' - no gating beyond that, since it's already Andrew-only.
   // Every item carries a `source` object (location/date/file) recording which
-  // photo it came from - not shown in full on the drill card (see q-seen-as
-  // in renderQuestion), just location+date, but kept complete in the data in
-  // case a future version wants to do more with it (e.g. linking back to the
-  // photo itself). `seenAs`, where present, is the real sentence/sign context
+  // photo it came from - shown in full (including filename, on its own line)
+  // in the .context-card built in renderQuestion, kept complete in the data
+  // in case a future version wants to do more with it (e.g. linking back to
+  // the photo itself). `seenAs`, where present, is the real sentence/sign context
   // the word was actually seen in - shown on the card itself before
   // answering and again in the post-answer feedback, since it's pure
   // background that can only help memory, not something to gate behind
@@ -5760,17 +5777,23 @@ function renderQuestion() {
   // was photographed. Shown up front rather than gated behind answering,
   // per Andrew's call: this is background that can only help memory, not
   // something worth treating as a spoiler (see the comment above the
-  // vocab-materials-* categories in VOCAB for the full reasoning).
-  const seenAsEl = document.getElementById('q-seen-as');
-  if (seenAsEl) {
+  // vocab-materials-* categories in VOCAB for the full reasoning). Lives in
+  // its own card between the feedback text and Next (see .context-card) -
+  // no separate post-answer copy needed, this one card covers both states.
+  const contextCard = document.getElementById('q-context-card');
+  const contextCardBody = document.getElementById('q-context-card-body');
+  if (contextCard && contextCardBody) {
     if (q.seenAs || q.source) {
       let html = '';
       if (q.seenAs) html += `<div class="seen-as-text">${markSmallKana(q.seenAs)}</div>`;
-      if (q.source) html += `<div class="seen-as-source">Seen at: ${q.source.location}${q.source.date ? ' · ' + q.source.date : ''}${q.source.file ? ' · photo: ' + q.source.file : ''}</div>`;
-      seenAsEl.innerHTML = html;
-      seenAsEl.style.display = 'block';
+      if (q.source) {
+        html += `<div class="context-card-meta">${q.source.location}${q.source.date ? ' · ' + q.source.date : ''}</div>`;
+        if (q.source.file) html += `<div class="context-card-file">${q.source.file}</div>`;
+      }
+      contextCardBody.innerHTML = html;
+      contextCard.style.display = 'block';
     } else {
-      seenAsEl.style.display = 'none';
+      contextCard.style.display = 'none';
     }
   }
 
@@ -5999,14 +6022,11 @@ function choose(btn, selectedVal, answer, char) {
   const standardNote = (currentQ && currentQ.altIsStandard && currentQ.altForm)
     ? `<div class="feedback-standard-note">Normally shown as: ${markSmallKana(currentQ.altForm)}</div>`
     : '';
-  // Repeats the same seenAs context shown on the card (see q-seen-as in
-  // renderQuestion) down here next to the feedback/Next button, so it's
-  // still in view after answering without having to scroll back up past
-  // the options - Andrew's explicit ask, since by this point attention has
-  // moved down the card.
-  const seenAsNote = (currentQ && currentQ.seenAs)
-    ? `<div class="feedback-seen-as">${markSmallKana(currentQ.seenAs)}</div>`
-    : '';
+  // seenAs context used to be repeated here too, so it stayed visible near
+  // Next after answering without scrolling back up past the options. Now
+  // that .context-card lives between the feedback text and Next (see
+  // renderQuestion), it's already the next thing in view - no need to
+  // print it twice.
   recordKanaResult(currentQ, selectedVal === answer);
   const isKanaItem = currentQ && (currentQ.disp === 'base' || currentQ.disp === 'diacritic' || currentQ.disp === 'youon');
   const showingHiragana = !reversed && showHiraganaOnKatakana && isKanaItem &&
@@ -6020,11 +6040,11 @@ function choose(btn, selectedVal, answer, char) {
   if (selectedVal === answer) {
     score++;
     btn.classList.add('correct');
-    fb.innerHTML = 'Correct!' + hint + standardNote + seenAsNote;
+    fb.innerHTML = 'Correct!' + hint + standardNote;
     fb.className = 'feedback good';
   } else {
     btn.classList.add('wrong');
-    fb.innerHTML = `Not quite — the answer is "${displayAnswerHtml}"` + hint + standardNote + seenAsNote;
+    fb.innerHTML = `Not quite — the answer is "${displayAnswerHtml}"` + hint + standardNote;
     fb.className = 'feedback bad';
     wrong++;
     // Tracked as char+answer, not bare char - a handful of characters do
