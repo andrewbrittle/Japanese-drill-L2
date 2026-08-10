@@ -910,7 +910,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260731.036</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260810.001</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2043,6 +2043,7 @@ const VOCAB = {
     level: 1,
     hasReference: true,
     noMeaningMode: true,
+    ordinalOrder: true, // 1,2,3... - alphabetizing "eight"/"eighteen"/"eighty" etc would scramble it
     label: 'Numbers',
     chars: 'いち に さん…',
     items: [
@@ -2188,6 +2189,7 @@ const VOCAB = {
   'vocab-animals-l2': {
     level: 2,
     hasReference: true,
+    ordinalOrder: true, // zodiac order, ties to the zodiac-clock reference page - cat stays as the 13th, non-zodiac entry at the end
     label: 'Animals',
     chars: 'いぬ ねこ うま…',
     items: [
@@ -2351,6 +2353,7 @@ const VOCAB = {
   'vocab-time-l2': {
     level: 2,
     hasReference: true,
+    ordinalOrder: true, // grouped by function (qualifiers, AM/PM, then week/month/year past-present-future triads) - alphabetizing would break those groupings
     label: 'Time vocabulary',
     chars: 'から まで に ごぜん ごご…',
     items: [
@@ -2391,6 +2394,7 @@ const VOCAB = {
   'vocab-days-l2': {
     level: 2,
     hasReference: true,
+    ordinalOrder: true, // Monday-Sunday - there's already a reference card showing this exact order
     label: 'Days of the week',
     chars: 'かようび どようび…',
     items: [
@@ -2413,6 +2417,7 @@ const VOCAB = {
   'vocab-months-l2': {
     level: 2,
     hasReference: true,
+    ordinalOrder: true, // January-December
     label: 'Months',
     chars: 'いちがつ にがつ…',
     items: [
@@ -2443,6 +2448,7 @@ const VOCAB = {
     level: 2,
     hasReference: true,
     noMeaningMode: true,
+    ordinalOrder: true, // 1st-31st - alphabetical would put "14th" before "1st"
     label: 'Days of the month',
     chars: 'ついたち ふつか…',
     items: [
@@ -3313,6 +3319,29 @@ function getThemePool(themeKey) {
   return items;
 }
 
+// Alphabetical by English meaning, case-insensitive, stable (true ties keep
+// their original relative order) - same comparator as the grouped-theme sort
+// above. Used to sort a plain VOCAB category's tile-selection view without
+// touching the underlying stored array (see resolveVocabCategory) - that way
+// Materials keeps its chronological/photo-order items array (dateAdded,
+// source, etc. all still make sense read in that order) while what the user
+// actually browses to pick words to drill is always alphabetical, same as
+// every other category. Computed fresh each call rather than pre-sorted by
+// hand in the data - cheap at this scale, and removes the maintenance chore
+// of manually re-alphabetizing VOCAB every time a word gets added or edited
+// (which is exactly how Level 1/2 ended up out of order before).
+function sortItemsAlphabetically(items) {
+  return items
+    .map((item, idx) => ({ item, idx }))
+    .sort((a, b) => {
+      const ak = a.item.en.toLowerCase(), bk = b.item.en.toLowerCase();
+      if (ak < bk) return -1;
+      if (ak > bk) return 1;
+      return a.idx - b.idx;
+    })
+    .map(({ item }) => item);
+}
+
 // Synthesized theme "categories" are kept in their own cache, deliberately
 // separate from VOCAB itself - merging them into VOCAB would make every
 // Object.keys(VOCAB) scan (startRandomMatchEverything, buildMatchCategoryList,
@@ -3321,7 +3350,20 @@ function getThemePool(themeKey) {
 // always reflects the current custom-content toggle state.
 const THEME_CACHE = {};
 function resolveVocabCategory(key) {
-  if (VOCAB[key]) return VOCAB[key];
+  if (VOCAB[key]) {
+    const cat = VOCAB[key];
+    // ordinalOrder categories (days of the week/month, months, numbers,
+    // the zodiac-ordered animal set, time vocab's past/present/future
+    // groupings) carry a taught sequence that alphabetizing would destroy -
+    // everything else gets sorted for browsability on the tile-selection
+    // screen. Returns a shallow copy so VOCAB[key].items itself is never
+    // reordered - other call sites (startVocabReadingDeck, sentence-builder
+    // helpers, average-score calcs) read VOCAB[key].items directly and don't
+    // care about display order, but do care that dateAdded/source stay in
+    // their original entry order.
+    if (cat.ordinalOrder) return cat;
+    return Object.assign({}, cat, { items: sortItemsAlphabetically(cat.items) });
+  }
   const theme = THEMES[key];
   if (!theme) return null;
   THEME_CACHE[key] = {
