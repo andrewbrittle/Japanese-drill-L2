@@ -698,11 +698,42 @@
      full-price line on the shopping-cost card) - same sizing standard as
      .number-tool-output's own jp/rd pair, just repeated with a gap above. */
   .money-output-secondary { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-  /* Andrew mode's own row - centered and set apart from the main level row
-     so it reads as a separate, personal tier rather than another option in
-     the regular lineup. Hidden by default via JS (display:none inline);
-     'flex' here only applies once that inline style is switched on. */
-  .level-filter-row.andrew-row { justify-content: center; margin-top: 8px; }
+  /* Search + Andrew mode's shared row - set apart from the main level row
+     above so both read as distinct from the regular Collections/L1/L2/Trip
+     lineup. The row itself is always visible now (Search is for everyone);
+     the Andrew pill inside it still hides/shows via inline style, same as
+     level-pill-trip does in the row above. */
+  .level-filter-row.andrew-row { margin-top: 8px; }
+  /* Pill-shaped search field - same 99px radius/border language as
+     .level-pill, but a text input + submit icon instead of a button. flex:1
+     so it fills the row on its own when the Andrew pill next to it is
+     hidden, and yields space to it once the pill's shown. Border is gold
+     permanently (Andrew's explicit call), not just while focused - unlike
+     every other input in the app, this is meant to read as a standing
+     feature of the page, not something that only lights up while in use. */
+  .vocab-search-pill {
+    flex: 1; min-width: 0; display: flex; align-items: center;
+    border: 1px solid var(--accent); border-radius: 99px;
+    background: transparent; padding-left: 14px;
+  }
+  .vocab-search-input {
+    flex: 1; min-width: 0; background: transparent; border: none; outline: none;
+    color: var(--text); font-size: 13px; font-weight: 600;
+    font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
+    padding: 6px 4px;
+  }
+  .vocab-search-input::placeholder { color: var(--text-dim); font-weight: 500; }
+  .vocab-search-btn {
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; margin: 3px; border-radius: 50%; border: none;
+    background: transparent; color: var(--text-muted); cursor: pointer;
+    transition: all 0.15s;
+  }
+  .vocab-search-btn:hover { color: var(--accent); background: var(--accent-dim); }
+  /* "Type at least 2 characters" / "No matches yet" - only ever shown when a
+     search doesn't make it to the results screen, so this never competes
+     with the tile-selection screen's own empty state. */
+  .vocab-search-message { font-size: 12.5px; color: var(--text-dim); text-align: center; }
   /* Font-family was missing here, same bug class as .nav-pill already guards
      against: without it, kana/kanji pill labels (verb-conj-pills' verb forms,
      the specific-counter/item-counter unit pills - つ/人/個/本/枚/匹/冊/台/回/歳)
@@ -933,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260811.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260812.004</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1323,14 +1354,31 @@
       <button class="level-pill" id="level-pill-trip" onclick="setMatchLevel('trip')" style="display:none;">Trip</button>
     </div>
 
-    <!-- Andrew's personal staging tier - a rotating scratchpad for whatever's
-         being tried out next, not fixed content (see
-         applyShowAndrewModeVisibility). Own row, centered, hidden by default
-         so nobody else ever sees it unless they switch "Andrew mode" on
-         themselves. Currently empty - that's the expected steady state. -->
-    <div class="level-filter-row andrew-row" id="vocab-andrew-filter-row" style="display:none;">
-      <button class="level-pill" id="level-pill-andrew" onclick="setMatchLevel('andrew')">Andrew</button>
+    <!-- Search + Andrew's personal staging tier, sharing one row. Search is
+         available to everyone regardless of which level tab is open (see
+         submitVocabSearch - it scans whatever's currently visible via
+         categoryTierVisible, not just the active tab), so this row itself is
+         permanent now, unlike before Search existed when it only held the
+         Andrew pill and was hidden entirely off Andrew mode. The pill still
+         gets individually hidden by applyShowAndrewModeVisibility - Search's
+         flex:1 fills the row on its own when that happens, and yields space
+         at the end once the pill's back. -->
+    <div class="level-filter-row andrew-row" id="vocab-andrew-filter-row">
+      <div class="vocab-search-pill">
+        <input type="text" id="vocab-search-input" class="vocab-search-input" placeholder="Search vocab…" onkeydown="handleVocabSearchKeydown(event)">
+        <button class="vocab-search-btn" onclick="submitVocabSearch()" title="Search" aria-label="Search">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="7"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+        </button>
+      </div>
+      <!-- Own row, hidden by default so nobody else ever sees it unless they
+           switch "Andrew mode" on themselves. Currently empty - that's the
+           expected steady state. -->
+      <button class="level-pill" id="level-pill-andrew" onclick="setMatchLevel('andrew')" style="display:none;">Andrew</button>
     </div>
+    <div class="vocab-search-message" id="vocab-search-message" style="display:none;"></div>
 
 
     <div id="match-theme-view">
@@ -2703,6 +2751,10 @@ const VOCAB = {
       {jp:'しんごう', romaji:'shingou', en:'traffic light', altForm:'信号', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'えきは どこですか', romaji:'eki wa doko desu ka', en:'where is the station?', dateAdded:'2026-08-01'},
       {jp:'なんばんせん ですか', romaji:'nanbansen desu ka', en:'which platform is it?', dateAdded:'2026-08-01'},
+      {jp:'きた', romaji:'kita', en:'north', altForm:'北', altIsStandard:true, dateAdded:'2026-08-12'},
+      {jp:'みなみ', romaji:'minami', en:'south', altForm:'南', altIsStandard:true, dateAdded:'2026-08-12'},
+      {jp:'ひがし', romaji:'higashi', en:'east', altForm:'東', altIsStandard:true, dateAdded:'2026-08-12'},
+      {jp:'にし', romaji:'nishi', en:'west', altForm:'西', altIsStandard:true, dateAdded:'2026-08-12'},
     ],
   },
   'vocab-emergency-survival': {
@@ -3263,15 +3315,15 @@ const VOCAB = {
       {jp:'自動投入', romaji:'jidou tounyuu', en:'automatic dispensing', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
       {jp:'目安', romaji:'meyasu', en:'guideline / rough estimate', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_095209622.jpg'}, dateAdded:'2026-08-11'},
       {jp:'掃除', romaji:'souji', en:'cleaning', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_095209622.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'やわらかめ', romaji:'yawarakame', en:'soft-ish', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ふつう', romaji:'futsuu', en:'normal / medium', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'かため', romaji:'katame', en:'firm-ish', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'やわらかめ', romaji:'yawarakame', en:'soft-ish (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ふつう', romaji:'futsuu', en:'normal / medium (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'かため', romaji:'katame', en:'firm-ish (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
       {jp:'通気性', romaji:'tsuukisei', en:'breathability', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
       {jp:'復元性', romaji:'fukugensei', en:'resilience / recovery (of material)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
       {jp:'感触', romaji:'kanshoku', en:'texture / feel', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'もっちり', romaji:'mocchiri', en:'chewy / springy (texture)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ふわふわ', romaji:'fuwafuwa', en:'fluffy', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ザクザク', romaji:'zakuzaku', en:'crunchy / crisp (texture)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'もっちり', romaji:'mocchiri', en:'chewy / springy (pillow texture)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ふわふわ', romaji:'fuwafuwa', en:'fluffy (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ザクザク', romaji:'zakuzaku', en:'crunchy / crisp (pillow texture)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
       {jp:'そばがら', romaji:'sobagara', en:'buckwheat husk (pillow filling)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
       {jp:'枕カバー', romaji:'makura kabaa', en:'pillow case', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
       {jp:'次', romaji:'tsugi', en:'next', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
@@ -3475,6 +3527,23 @@ function resolveVocabCategory(key) {
     if (cat.ordinalOrder) return cat;
     return Object.assign({}, cat, { items: sortItemsAlphabetically(cat.items) });
   }
+  if (key === VOCAB_SEARCH_KEY) {
+    // Not a real category or a theme - a one-off pool built fresh by
+    // submitVocabSearch() each time a search is run, stashed here so the
+    // tile-selection screen (which always resolves its category through
+    // this function) can find it the same way it finds everything else.
+    // isTheme is deliberately left false/unset: unlike Collections, a search
+    // result set is usually small and genuinely useful to select all of, so
+    // "Select all" stays available (see showVocabTileSelection).
+    if (!lastVocabSearchResults) return null;
+    return {
+      label: `Search: "${lastVocabSearchResults.query}"`,
+      chars: '',
+      items: lastVocabSearchResults.items,
+      hasReference: true,
+      noMeaningMode: false,
+    };
+  }
   const theme = THEMES[key];
   if (!theme) return null;
   THEME_CACHE[key] = {
@@ -3486,6 +3555,71 @@ function resolveVocabCategory(key) {
     isTheme: true,
   };
   return THEME_CACHE[key];
+}
+
+// Substring search across whatever's currently visible (L1/L2 always, Trip/
+// Andrew if switched on - see categoryTierVisible) - matches against en and
+// romaji only, deliberately not seenAs: that's incidental sentence context,
+// not vocab that was actually taught or added on purpose, and searching it
+// would surface words by way of unrelated background text. Enter/submit
+// only, not live-as-you-type - a live version would be re-filtering a
+// results screen out from under you on every keystroke, which is exactly
+// the kind of thing that's obvious in hindsight and easy to miss up front.
+const VOCAB_SEARCH_KEY = 'vocab-search-results';
+let lastVocabSearchResults = null; // { query, items } - see resolveVocabCategory
+function handleVocabSearchKeydown(e) {
+  if (e.key === 'Enter') submitVocabSearch();
+}
+function submitVocabSearch() {
+  const input = document.getElementById('vocab-search-input');
+  const msgEl = document.getElementById('vocab-search-message');
+  const raw = input.value.trim();
+  if (raw.length < 2) {
+    msgEl.textContent = 'Type at least 2 characters.';
+    msgEl.style.display = 'block';
+    return;
+  }
+  const query = raw.toLowerCase();
+  const results = [];
+  Object.keys(VOCAB).forEach(catKey => {
+    const cat = VOCAB[catKey];
+    if (!categoryTierVisible(cat.level)) return;
+    cat.items.forEach(item => {
+      const enMatch = item.en && item.en.toLowerCase().includes(query);
+      const romajiMatch = item.romaji && item.romaji.toLowerCase().includes(query);
+      if (enMatch || romajiMatch) {
+        // Tagged with level/groupKey the same way getThemePool tags pooled
+        // theme items - that's what buildVocabTileGrid keys its L1/2/Trip/
+        // Andrew border colour off (see LEVEL_BORDER_COLORS), so results
+        // pulled from several different categories at once get the same
+        // "which tier is this from" treatment Collections already has.
+        results.push(Object.assign({ level: cat.level || 1, groupKey: catKey }, item));
+      }
+    });
+  });
+  if (results.length === 0) {
+    msgEl.textContent = `Nothing found yet for "${raw}".`;
+    msgEl.style.display = 'block';
+    return;
+  }
+  msgEl.style.display = 'none';
+  // The app switches screens by toggling display:none, not a real page
+  // navigation, so nothing forces the input to release focus on its own -
+  // on some mobile browsers a focused element doesn't reliably blur just
+  // because its screen becomes hidden, which left the pill's :focus-within
+  // gold border stuck on permanently after the first search. Blurring here,
+  // right as we're about to navigate away, is the actual moment focus
+  // should end.
+  input.blur();
+  lastVocabSearchResults = { query: raw, items: sortItemsAlphabetically(results) };
+  // Fresh selection state every search - vocabTileSelected persists per
+  // category key by design (so revisiting a real category remembers what
+  // you had picked), but VOCAB_SEARCH_KEY's underlying item pool is
+  // different on every search, so a leftover Set of indices from a
+  // previous, unrelated search would select the wrong words entirely.
+  vocabTileSelected[VOCAB_SEARCH_KEY] = new Set();
+  vocabTileRandomMode[VOCAB_SEARCH_KEY] = false;
+  showVocabTileSelection(VOCAB_SEARCH_KEY);
 }
 
 const BADGE_LABELS = {
@@ -5078,11 +5212,13 @@ function toggleHintPenalty() {
 // vocabulary below). Once something graduates, this tier empties out again
 // ready for the next thing - it's currently empty, which is the expected
 // steady state between experiments, not a bug. Lives on its own row (not
-// squeezed into the level-pill row) so it's visually distinct.
+// squeezed into the level-pill row) so it's visually distinct - shared now
+// with the search pill, which is why only the pill itself (not the row) gets
+// hidden here: the row stays up since Search is for everyone.
 function applyShowAndrewModeVisibility() {
   const on = appSettings.showAndrewMode;
-  const andrewRow = document.getElementById('vocab-andrew-filter-row');
-  if (andrewRow) andrewRow.style.display = on ? 'flex' : 'none';
+  const andrewPill = document.getElementById('level-pill-andrew');
+  if (andrewPill) andrewPill.style.display = on ? '' : 'none';
   if (!on && currentMatchLevel === 'andrew') setMatchLevel('theme');
   const card = document.getElementById('show-andrew-mode-toggle-card');
   if (card) card.classList.toggle('selected', on);
@@ -6618,32 +6754,6 @@ function setMatchLevel(level) {
 function buildMatchCategoryList() {
   const container = document.getElementById('match-category-list');
   container.innerHTML = '';
-  // Andrew mode currently has no VOCAB categories of its own (level:'andrew'
-  // is unused right now), so the forEach below never fires for it - these
-  // two links are appended unconditionally instead, the moment this level is
-  // selected, rather than being tied to a category key the way the other
-  // vocab-ref-cards are. They point at standalone HTML notes living
-  // alongside index.html (kept as separate documents, not part of the app's
-  // own reference-screen system, since Andrew publishes them separately on
-  // GitHub too) - opened in a new tab so drilling progress/state in the app
-  // itself isn't lost.
-  if (currentMatchLevel === 'andrew') {
-    const sentenceNoteCard = document.createElement('a');
-    sentenceNoteCard.className = 'vocab-ref-card';
-    sentenceNoteCard.href = './sentence-structure-notes.html';
-    sentenceNoteCard.target = '_blank';
-    sentenceNoteCard.rel = 'noopener';
-    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
-    container.appendChild(sentenceNoteCard);
-
-    const jpEnNoteCard = document.createElement('a');
-    jpEnNoteCard.className = 'vocab-ref-card';
-    jpEnNoteCard.href = './japanese-vs-english-notes.html';
-    jpEnNoteCard.target = '_blank';
-    jpEnNoteCard.rel = 'noopener';
-    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
-    container.appendChild(jpEnNoteCard);
-  }
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
@@ -6718,6 +6828,35 @@ function buildMatchCategoryList() {
     }
     container.appendChild(card);
   });
+  // Andrew mode currently has no VOCAB categories of its own (level:'andrew'
+  // is unused right now), so the forEach above never fires for it - these
+  // two links are appended unconditionally instead, the moment this level is
+  // selected, rather than being tied to a category key the way the other
+  // vocab-ref-cards are. They point at standalone HTML notes living
+  // alongside index.html (kept as separate documents, not part of the app's
+  // own reference-screen system, since Andrew publishes them separately on
+  // GitHub too) - opened in a new tab so drilling progress/state in the app
+  // itself isn't lost. Sit below the Materials cards now (still inside
+  // #match-category-list, still above the gold .section-divider that
+  // separates the category list from Random reading/toggles/Start below) -
+  // used to sit above every category, ahead of the actual drillable content.
+  if (currentMatchLevel === 'andrew') {
+    const sentenceNoteCard = document.createElement('a');
+    sentenceNoteCard.className = 'vocab-ref-card';
+    sentenceNoteCard.href = './sentence-structure-notes.html';
+    sentenceNoteCard.target = '_blank';
+    sentenceNoteCard.rel = 'noopener';
+    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
+    container.appendChild(sentenceNoteCard);
+
+    const jpEnNoteCard = document.createElement('a');
+    jpEnNoteCard.className = 'vocab-ref-card';
+    jpEnNoteCard.href = './japanese-vs-english-notes.html';
+    jpEnNoteCard.target = '_blank';
+    jpEnNoteCard.rel = 'noopener';
+    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
+    container.appendChild(jpEnNoteCard);
+  }
 }
 
 function selectRandomMatchCard(card) {
