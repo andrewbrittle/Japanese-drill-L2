@@ -323,6 +323,15 @@
     text-transform: uppercase; color: var(--text-dim); margin-bottom: 0.5rem;
   }
   .seen-as-text { font-size: 13px; color: var(--text-muted); line-height: 1.45; font-family: 'BIZ UDPGothic', sans-serif; }
+  /* Marks where the drilled word sits within its own example sentence (see
+     findSeenAsHighlightRange/renderSeenAsHtml) - not every entry finds a
+     match (conjugated verbs partially do via the stripped-ending fallback,
+     a handful of template/meta-note entries don't at all), so this only
+     ever adds emphasis, never required for the sentence to make sense. */
+  mark.seen-as-highlight {
+    background: var(--accent-dim); color: var(--accent); font-weight: 600;
+    border-radius: 3px; padding: 0 0.15em;
+  }
   .context-card-meta { font-size: 12px; color: var(--text-muted); margin-top: 0.4rem; }
   .context-card-file { font-size: 11px; color: var(--text-dim); margin-top: 0.15rem; }
 
@@ -924,7 +933,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260810.002</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260810.003</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3530,6 +3539,48 @@ function markSmallKana(text) {
   ).join('');
 }
 
+// Finds where the drilled word sits inside its own seenAs example sentence,
+// so it can be highlighted - checked against the real data before building
+// this: a plain substring search alone covers about 70% of entries as-is.
+// Most of the rest are verb/adjective conjugation (お買い求めください for
+// 買い求める, 選んで for 選ぶ) - Japanese conjugation only ever changes the
+// tail, the kanji stem stays put, so stripping 1-2 characters off the end
+// and retrying catches most of those too. What's left after that - 〜
+// placeholder words like 〜階ホームです standing in for an already-filled-in
+// number, and the couple of seenAs notes that describe the word rather than
+// quote a sentence containing it (まいばすけっと, 道民) - genuinely has
+// nothing to find, so this returns null and the sentence renders unhighlighted,
+// same as before this existed. Checked separately: every long, hard-to-scan
+// entry (searched by Andrew's own example) matched on the first plain
+// attempt - it's exactly the short entries, easy to read at a glance anyway,
+// where the fallback doesn't land.
+function findSeenAsHighlightRange(word, sentence) {
+  if (!word || !sentence) return null;
+  let idx = sentence.indexOf(word);
+  if (idx !== -1) return { start: idx, end: idx + word.length };
+  for (let strip = 1; strip <= 2 && word.length - strip >= 1; strip++) {
+    const stem = word.slice(0, word.length - strip);
+    idx = sentence.indexOf(stem);
+    if (idx !== -1) return { start: idx, end: idx + stem.length };
+  }
+  return null;
+}
+
+// Renders a seenAs sentence with the drilled word highlighted where it can
+// be found (see findSeenAsHighlightRange) - splits the plain string into
+// before/match/after around the found range *before* running markSmallKana
+// on each piece separately, so small-kana wrapping (っ/ゃ/ゅ/ょ etc) still
+// happens correctly inside and outside the highlighted span rather than
+// getting confused by HTML already injected into the string.
+function renderSeenAsHtml(word, sentence) {
+  const range = findSeenAsHighlightRange(word, sentence);
+  if (!range) return markSmallKana(sentence);
+  const before = sentence.slice(0, range.start);
+  const match = sentence.slice(range.start, range.end);
+  const after = sentence.slice(range.end);
+  return markSmallKana(before) + '<mark class="seen-as-highlight">' + markSmallKana(match) + '</mark>' + markSmallKana(after);
+}
+
 // Rough plausibility score between two option strings (romaji or English
 // gloss, whichever field is being tested) - same starting letter counts as a
 // strong signal of shared "sound", similar length as a weaker one. Used to
@@ -5785,7 +5836,7 @@ function renderQuestion() {
   if (contextCard && contextCardBody) {
     if (q.seenAs || q.source) {
       let html = '';
-      if (q.seenAs) html += `<div class="seen-as-text">${markSmallKana(q.seenAs)}</div>`;
+      if (q.seenAs) html += `<div class="seen-as-text">${renderSeenAsHtml(q.char, q.seenAs)}</div>`;
       if (q.source) {
         html += `<div class="context-card-meta">${q.source.location}${q.source.date ? ' · ' + q.source.date : ''}</div>`;
         if (q.source.file) html += `<div class="context-card-file">${q.source.file}</div>`;
