@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260812.004</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260812.005</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3557,16 +3557,35 @@ function resolveVocabCategory(key) {
   return THEME_CACHE[key];
 }
 
-// Substring search across whatever's currently visible (L1/L2 always, Trip/
-// Andrew if switched on - see categoryTierVisible) - matches against en and
-// romaji only, deliberately not seenAs: that's incidental sentence context,
-// not vocab that was actually taught or added on purpose, and searching it
+// Search across whatever's currently visible (L1/L2 always, Trip/Andrew if
+// switched on - see categoryTierVisible) - matches against en and romaji
+// only, deliberately not seenAs: that's incidental sentence context, not
+// vocab that was actually taught or added on purpose, and searching it
 // would surface words by way of unrelated background text. Enter/submit
 // only, not live-as-you-type - a live version would be re-filtering a
 // results screen out from under you on every keystroke, which is exactly
 // the kind of thing that's obvious in hindsight and easy to miss up front.
+//
+// Matching is word-start, not plain substring - checked against the real
+// data before landing here: a plain substring search for "up" pulled back
+// 20 words, but only 6 were actually about "up" (get up, wake up, line up,
+// drink up, tie up, hold up to) - the other 14 were coincidence, "up"
+// happening to sit inside Spain (supein), soup, occupied, supermarket,
+// support, and so on, with no connection to the query at all. Splitting
+// each field into words and requiring the query to be the START of one of
+// them fixes that (up no longer matches the middle of "occupied") while
+// staying far more flexible than matching only the start of the whole
+// field the way it might look from the outside - "cred" still finds
+// "credit card", "pillo" still finds every pillow entry, "exit" still finds
+// exit/west exit/emergency exit. A multi-word query (e.g. "west exit")
+// requires every word typed to start some word in the entry, not the exact
+// phrase - so word order/spacing in what you type doesn't have to match
+// the entry exactly either.
 const VOCAB_SEARCH_KEY = 'vocab-search-results';
 let lastVocabSearchResults = null; // { query, items } - see resolveVocabCategory
+function vocabSearchWords(str) {
+  return str ? str.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean) : [];
+}
 function handleVocabSearchKeydown(e) {
   if (e.key === 'Enter') submitVocabSearch();
 }
@@ -3579,15 +3598,15 @@ function submitVocabSearch() {
     msgEl.style.display = 'block';
     return;
   }
-  const query = raw.toLowerCase();
+  const queryWords = vocabSearchWords(raw);
   const results = [];
   Object.keys(VOCAB).forEach(catKey => {
     const cat = VOCAB[catKey];
     if (!categoryTierVisible(cat.level)) return;
     cat.items.forEach(item => {
-      const enMatch = item.en && item.en.toLowerCase().includes(query);
-      const romajiMatch = item.romaji && item.romaji.toLowerCase().includes(query);
-      if (enMatch || romajiMatch) {
+      const itemWords = vocabSearchWords(item.en).concat(vocabSearchWords(item.romaji));
+      const matches = queryWords.every(qw => itemWords.some(iw => iw.startsWith(qw)));
+      if (matches) {
         // Tagged with level/groupKey the same way getThemePool tags pooled
         // theme items - that's what buildVocabTileGrid keys its L1/2/Trip/
         // Andrew border colour off (see LEVEL_BORDER_COLORS), so results
