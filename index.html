@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260812.006</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260813.001</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2210,6 +2210,74 @@ const VOCAB = {
       {jp:'とうふ', romaji:'toufu', en:'tofu', altForm:'豆腐', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'じどうはんばいき', romaji:'jidouhanbaiki', en:'vending machine', altForm:'自動販売機', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'しごと', romaji:'shigoto', en:'work / job', altForm:'仕事', altIsStandard:true, dateAdded:'2026-08-01'},
+      // Week 6 additions - the rest of that lesson's object/place/other
+      // words that aren't food (see Food and drink) or family (see Family).
+      // Duplicates already taught elsewhere were left out rather than
+      // re-added here: しんぶん/たばこ/かばん (Everyday items, L1), しょくどう
+      // (Places, L1), しゅうまつ (Time vocabulary, L2).
+      {jp:'おんがく', romaji:'ongaku', en:'music', altForm:'音楽', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'Eメール', romaji:'ii meeru', en:'email', dateAdded:'2026-08-13'},
+      {jp:'しゃしん', romaji:'shashin', en:'photograph', altForm:'写真', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'テニス', romaji:'tenisu', en:'tennis', dateAdded:'2026-08-13'},
+      {jp:'ゲーム', romaji:'geemu', en:'game', dateAdded:'2026-08-13'},
+      {jp:'スポーツ', romaji:'supootsu', en:'sports', dateAdded:'2026-08-13'},
+      {jp:'しゅくだい', romaji:'shukudai', en:'homework', altForm:'宿題', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'てがみ', romaji:'tegami', en:'letter', altForm:'手紙', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'カフェ', romaji:'kafe', en:'café', dateAdded:'2026-08-13'},
+      {jp:'パブ', romaji:'pabu', en:'pub', dateAdded:'2026-08-13'},
+      {jp:'おはなみ', romaji:'ohanami', en:'flower viewing', altForm:'お花見', altIsStandard:true, dateAdded:'2026-08-13'},
+      // Moved in from Trip's "Useful words for the trip" - now taught in the
+      // lesson, so it only needs to live here (see the Week 6 relocation
+      // note above vocab-trip-prep). ビール/ワイン made the same move, into
+      // the new Food and drink (L2) category below.
+      {jp:'みず', romaji:'mizu', en:'water', altForm:'水', altIsStandard:true, dateAdded:'2026-08-13'},
+    ],
+  },
+  // New in Week 6 - the app's first dedicated family-member vocabulary.
+  // かぞく (family, the generic word) already lives in General vocabulary;
+  // these are the individual members that came with it this week. Kept in
+  // the lesson's own logical order (parents, older siblings, younger
+  // siblings, grandparents) rather than pre-alphabetized, same reasoning as
+  // Materials - resolveVocabCategory alphabetizes for display regardless.
+  'vocab-family-l2': {
+    level: 2,
+    hasReference: true,
+    label: 'Family',
+    chars: 'おとうさん おかあさん おにいさん…',
+    items: [
+      {jp:'おとうさん', romaji:'otousan', en:'father', altForm:'お父さん', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'おかあさん', romaji:'okaasan', en:'mother', altForm:'お母さん', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'おにいさん', romaji:'oniisan', en:'older brother', altForm:'お兄さん', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'おねえさん', romaji:'oneesan', en:'older sister', altForm:'お姉さん', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'おとうと', romaji:'otouto', en:'younger brother', altForm:'弟', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'いもうと', romaji:'imouto', en:'younger sister', altForm:'妹', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'おじいさん', romaji:'ojiisan', en:'grandfather', altForm:'お祖父さん', altIsStandard:true, dateAdded:'2026-08-13'},
+      {jp:'おばあさん', romaji:'obaasan', en:'grandmother', altForm:'お祖母さん', altIsStandard:true, dateAdded:'2026-08-13'},
+    ],
+  },
+  // New in Week 6 - the first dedicated L2 food/drink category (the
+  // existing "Food and drink" is Trip-tier only). おさけ (alcohol) is kept
+  // as its own entry even though さけ already means "sake / alcohol" in
+  // Trip's "Useful words for the trip" and "salmon" in Trip's Food and
+  // drink - different kana, and merging them got confusing fast, so all
+  // three stay separate for now.
+  'vocab-food-drink-l2': {
+    level: 2,
+    hasReference: true,
+    label: 'Food and drink',
+    chars: 'りんご パン たまご…',
+    items: [
+      {jp:'りんご', romaji:'ringo', en:'apple', dateAdded:'2026-08-13'},
+      {jp:'パン', romaji:'pan', en:'bread', dateAdded:'2026-08-13'},
+      {jp:'たまご', romaji:'tamago', en:'egg', dateAdded:'2026-08-13'},
+      {jp:'くだもの', romaji:'kudamono', en:'fruit', dateAdded:'2026-08-13'},
+      {jp:'シリアル', romaji:'shiriaru', en:'cereal', dateAdded:'2026-08-13'},
+      {jp:'トースト', romaji:'toosuto', en:'toast', dateAdded:'2026-08-13'},
+      {jp:'おさけ', romaji:'osake', en:'alcohol', dateAdded:'2026-08-13'},
+      // Moved in from Trip tier, now that the lesson covers them - see the
+      // Week 6 relocation note above vocab-trip-prep/vocab-food-drink.
+      {jp:'ビール', romaji:'biiru', en:'beer', altForm:'びーる', dateAdded:'2026-08-13'},
+      {jp:'ワイン', romaji:'wain', en:'wine', dateAdded:'2026-08-13'},
     ],
   },
   'vocab-question-location': {
@@ -2243,6 +2311,23 @@ const VOCAB = {
       {jp:'ねます', romaji:'nemasu', en:'to sleep / go to bed', dateAdded:'2026-08-01'},
       {jp:'べんきょうします', romaji:'benkyoushimasu', en:'to study', dateAdded:'2026-08-01'},
       {jp:'はたらきます', romaji:'hatarakimasu', en:'to work', dateAdded:'2026-08-01'},
+      // Week 6 - the first batch of object-taking verbs (を marks the
+      // object - see the new "を - the object particle" grammar note).
+      // あいます is the one exception in this set: it takes に, not を
+      // (ともだちにあいます, not ともだちをあいます) - called out on the same
+      // grammar note rather than in this gloss, so the drill answer stays
+      // plain like every other verb here.
+      {jp:'たべます', romaji:'tabemasu', en:'to eat', dateAdded:'2026-08-13'},
+      {jp:'のみます', romaji:'nomimasu', en:'to drink', dateAdded:'2026-08-13'},
+      {jp:'よみます', romaji:'yomimasu', en:'to read', dateAdded:'2026-08-13'},
+      {jp:'みます', romaji:'mimasu', en:'to watch / see', dateAdded:'2026-08-13'},
+      {jp:'ききます', romaji:'kikimasu', en:'to listen', dateAdded:'2026-08-13'},
+      {jp:'かきます', romaji:'kakimasu', en:'to write', dateAdded:'2026-08-13'},
+      {jp:'かいます', romaji:'kaimasu', en:'to buy', dateAdded:'2026-08-13'},
+      {jp:'すいます', romaji:'suimasu', en:'to smoke', dateAdded:'2026-08-13'},
+      {jp:'とります', romaji:'torimasu', en:'to take (a photo)', dateAdded:'2026-08-13'},
+      {jp:'します', romaji:'shimasu', en:'to do / play', dateAdded:'2026-08-13'},
+      {jp:'あいます', romaji:'aimasu', en:'to meet', dateAdded:'2026-08-13'},
     ],
   },
   // The 12 everyday zodiac animal words - these were actually covered in
@@ -2585,11 +2670,15 @@ const VOCAB = {
       {jp:'いっちゃく', romaji:'icchaku', en:'first place', altForm:'一着', altIsStandard:true, dateAdded:'2026-08-01'},
     ],
   },
+  // みず (water) moved out to Level 2's General vocabulary in Week 6, now
+  // that the lesson covers it - see the relocation note there. Lesson
+  // content takes precedence over Trip/Andrew tier once something's been
+  // formally taught, so it only needs to exist in one place.
   'vocab-trip-prep': {
     level: 'trip',
     hasReference: true,
     label: 'Useful words for the trip',
-    chars: 'みず すし きっぷ…',
+    chars: 'すし きっぷ たすけて…',
     items: [
       {jp:'おおきい', romaji:'ookii', en:'big', dateAdded:'2026-08-01'},
       {jp:'やすい', romaji:'yasui', en:'cheap', dateAdded:'2026-08-01'},
@@ -2616,7 +2705,6 @@ const VOCAB = {
       {jp:'まち', romaji:'machi', en:'town', dateAdded:'2026-08-01'},
       {jp:'のりかえ', romaji:'norikae', en:'transfer / change trains', dateAdded:'2026-08-01'},
       {jp:'うどん', romaji:'udon', en:'udon noodles', dateAdded:'2026-08-01'},
-      {jp:'みず', romaji:'mizu', en:'water', dateAdded:'2026-08-01'},
     ],
   },
   // First category built in what was originally the Andrew-mode staging
@@ -2636,7 +2724,6 @@ const VOCAB = {
     chars: 'ぎょうざ さしみ からい…',
     items: [
       {jp:'ぎゅうにく', romaji:'gyuuniku', en:'beef', altForm:'牛肉', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'ビール', romaji:'biiru', en:'beer', altForm:'びーる', dateAdded:'2026-08-01'},
       {jp:'おべんとう', romaji:'obentou', en:'bento (boxed lunch)', dateAdded:'2026-08-01'},
       {jp:'おかいけい おねがいします', romaji:'okaikei onegaishimasu', en:'bill, please', dateAdded:'2026-08-01'},
       {jp:'とりにく', romaji:'toriniku', en:'chicken (meat)', altForm:'鶏肉', altIsStandard:true, dateAdded:'2026-08-01'},
@@ -3058,7 +3145,6 @@ const VOCAB = {
       {jp:'果実酒', romaji:'kajitsushu', en:'fruit liqueur', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'焼酎', romaji:'shouchu', en:'shochu (Japanese spirit)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'日本酒', romaji:'nihonshu', en:'sake (Japanese rice wine)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ワイン', romaji:'wain', en:'wine', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'各位', romaji:'kakui', en:'"to all" / everyone (formal address)', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
       {jp:'快適', romaji:'kaiteki', en:'comfortable', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
       {jp:'行為', romaji:'koui', en:'act / conduct', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
@@ -4082,7 +4168,7 @@ const COLOUR_HUES = {
 // Deliberately distinct from --accent (gold), which .selected already owns -
 // same border-slot handoff the Colours category already does: level colour
 // while unselected, gold once selected.
-const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', trip: '#9b59d0', andrew: '#e0475a' };
+const LEVEL_BORDER_COLORS = { 1: '#4d88e5', 2: '#e88a4d', trip: '#9b59d0', andrew: '#43a047' };
 
 function interpolateRgb(from, to, t) {
   return from.map((f, i) => Math.round(f + (to[i] - f) * t));
@@ -6773,6 +6859,24 @@ function setMatchLevel(level) {
 function buildMatchCategoryList() {
   const container = document.getElementById('match-category-list');
   container.innerHTML = '';
+  // Grammar notes hub - one entry point for every cross-cutting sentence/
+  // particle rule (as opposed to the reference cards below that stay tied
+  // to one specific word list, like the zodiac clock or days-in-order).
+  // Used to be scattered: sentence order and verb conjugation both sat
+  // above Verbs, negation sat above Question & location words, and the two
+  // external notes docs only showed up in Andrew mode. Gathered into one
+  // list here instead, shown once at the top of Level 2 rather than tied to
+  // whichever category happened to be nearby when each note was added -
+  // keeps the count from creeping up category-list clutter as more weeks
+  // add grammar points.
+  if (currentMatchLevel === 2) {
+    const grammarHubCard = document.createElement('div');
+    grammarHubCard.className = 'vocab-ref-card';
+    grammarHubCard.innerHTML = `<span>Grammar notes</span><span class="vocab-ref-arrow">→</span>`;
+    grammarHubCard.onclick = () => showGrammarNotesHub();
+    container.appendChild(grammarHubCard);
+    container.appendChild(document.createElement('div')).className = 'section-divider';
+  }
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
@@ -6814,26 +6918,6 @@ function buildMatchCategoryList() {
       zodiacRefCard.onclick = (e) => { e.stopPropagation(); showZodiacClockReference(); };
       container.appendChild(zodiacRefCard);
     }
-    if (key === 'vocab-question-location') {
-      const qNegRefCard = document.createElement('div');
-      qNegRefCard.className = 'vocab-ref-card';
-      qNegRefCard.innerHTML = `<span>だれも/どこも/なにも + negative — reference</span><span class="vocab-ref-arrow">→</span>`;
-      qNegRefCard.onclick = (e) => { e.stopPropagation(); showQuestionNegationReference(); };
-      container.appendChild(qNegRefCard);
-    }
-    if (key === 'vocab-verbs-l2') {
-      const sentenceRefCard = document.createElement('div');
-      sentenceRefCard.className = 'vocab-ref-card';
-      sentenceRefCard.innerHTML = `<span>Sentence order for simple sentences — reference</span><span class="vocab-ref-arrow">→</span>`;
-      sentenceRefCard.onclick = (e) => { e.stopPropagation(); showSentenceStructureReference(); };
-      container.appendChild(sentenceRefCard);
-
-      const verbConjRefCard = document.createElement('div');
-      verbConjRefCard.className = 'vocab-ref-card';
-      verbConjRefCard.innerHTML = `<span>いきます/きます/かえります — tense &amp; +/− reference</span><span class="vocab-ref-arrow">→</span>`;
-      verbConjRefCard.onclick = (e) => { e.stopPropagation(); showVerbConjugationReference(); };
-      container.appendChild(verbConjRefCard);
-    }
     const card = document.createElement('div');
     card.className = 'match-card-select';
     card.dataset.key = key;
@@ -6847,35 +6931,6 @@ function buildMatchCategoryList() {
     }
     container.appendChild(card);
   });
-  // Andrew mode currently has no VOCAB categories of its own (level:'andrew'
-  // is unused right now), so the forEach above never fires for it - these
-  // two links are appended unconditionally instead, the moment this level is
-  // selected, rather than being tied to a category key the way the other
-  // vocab-ref-cards are. They point at standalone HTML notes living
-  // alongside index.html (kept as separate documents, not part of the app's
-  // own reference-screen system, since Andrew publishes them separately on
-  // GitHub too) - opened in a new tab so drilling progress/state in the app
-  // itself isn't lost. Sit below the Materials cards now (still inside
-  // #match-category-list, still above the gold .section-divider that
-  // separates the category list from Random reading/toggles/Start below) -
-  // used to sit above every category, ahead of the actual drillable content.
-  if (currentMatchLevel === 'andrew') {
-    const sentenceNoteCard = document.createElement('a');
-    sentenceNoteCard.className = 'vocab-ref-card';
-    sentenceNoteCard.href = './sentence-structure-notes.html';
-    sentenceNoteCard.target = '_blank';
-    sentenceNoteCard.rel = 'noopener';
-    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
-    container.appendChild(sentenceNoteCard);
-
-    const jpEnNoteCard = document.createElement('a');
-    jpEnNoteCard.className = 'vocab-ref-card';
-    jpEnNoteCard.href = './japanese-vs-english-notes.html';
-    jpEnNoteCard.target = '_blank';
-    jpEnNoteCard.rel = 'noopener';
-    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
-    container.appendChild(jpEnNoteCard);
-  }
 }
 
 function selectRandomMatchCard(card) {
@@ -6889,6 +6944,14 @@ function selectRandomMatchCard(card) {
 // it used to be (always straight back to Vocab settings).
 let vocabRefBackTarget = 'match-settings';
 function closeVocabReference() {
+  // 'grammar-notes-hub' isn't a real screen id - it means "back to the
+  // Grammar notes list", which is itself just another render into
+  // #screen-vocab-reference (see showGrammarNotesHub()), not a distinct
+  // screen to show() into.
+  if (vocabRefBackTarget === 'grammar-notes-hub') {
+    showGrammarNotesHub();
+    return;
+  }
   showScreen(vocabRefBackTarget);
 }
 
@@ -7068,7 +7131,8 @@ function renderVerbConjDetail() {
 }
 
 function showVerbConjugationReference() {
-  vocabRefBackTarget = 'match-settings';
+  // Only reachable through the Grammar notes hub now - see showGrammarNotesHub().
+  vocabRefBackTarget = 'grammar-notes-hub';
   document.getElementById('vocab-ref-title').textContent = 'Verb tense & affirmative/negative';
   const list = document.getElementById('vocab-ref-list');
   list.className = '';
@@ -7709,6 +7773,149 @@ function showZodiacClockReference() {
   showScreen('vocab-reference');
 }
 
+// Grammar notes hub - single entry point for every cross-cutting sentence/
+// particle rule, gathered together from where they used to be scattered
+// (see the "Grammar notes hub" comment in buildMatchCategoryList). Only
+// grammar-rule cards live here - reference cards that are genuinely about
+// one specific word list (zodiac clock, days-in-order, counters) stay
+// attached to their own category, since a hub would just add an extra tap
+// to something that's already exactly where you'd look for it.
+function showGrammarNotesHub() {
+  vocabRefBackTarget = 'match-settings';
+  document.getElementById('vocab-ref-title').textContent = 'Grammar notes';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = '';
+  list.innerHTML = '';
+  const entries = [
+    { label: 'を — the object particle', fn: showObjectParticleReference },
+    { label: 'で — two jobs (means vs. location of action)', fn: showLocationOfActionReference },
+    { label: 'だれも/どこも/なにも + negative', fn: showQuestionNegationReference },
+    { label: 'Sentence order for simple sentences', fn: showSentenceStructureReference },
+    { label: 'いきます/きます/かえります — tense &amp; +/− ', fn: showVerbConjugationReference },
+  ];
+  entries.forEach(entry => {
+    const card = document.createElement('div');
+    card.className = 'vocab-ref-card';
+    card.innerHTML = `<span>${entry.label}</span><span class="vocab-ref-arrow">→</span>`;
+    card.onclick = entry.fn;
+    list.appendChild(card);
+  });
+  // External notes docs - kept as separate documents rather than folded
+  // into the app's own reference-screen system, since Andrew publishes them
+  // separately on GitHub too. Used to only show up in Andrew mode; now live
+  // here instead so they're not tucked behind a level tab that has nothing
+  // to do with what they're actually about.
+  const sentenceNoteCard = document.createElement('a');
+  sentenceNoteCard.className = 'vocab-ref-card';
+  sentenceNoteCard.href = './sentence-structure-notes.html';
+  sentenceNoteCard.target = '_blank';
+  sentenceNoteCard.rel = 'noopener';
+  sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
+  list.appendChild(sentenceNoteCard);
+
+  const jpEnNoteCard = document.createElement('a');
+  jpEnNoteCard.className = 'vocab-ref-card';
+  jpEnNoteCard.href = './japanese-vs-english-notes.html';
+  jpEnNoteCard.target = '_blank';
+  jpEnNoteCard.rel = 'noopener';
+  jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
+  list.appendChild(jpEnNoteCard);
+  showScreen('vocab-reference');
+}
+
+// を marks the direct object of a verb - the thing being eaten, read,
+// bought, written, etc. New in Week 6 alongside the first batch of
+// object-taking verbs (see vocab-verbs-l2). The existing "Sentence order"
+// reference deliberately isn't extended to include を - that card models
+// one specific, standard teaching pattern (the Lesson 5 motion sentence:
+// topic/time/companion/means/destination/verb), and an object-taking
+// sentence (これはパンをたべます type patterns) is a genuinely different
+// sentence shape, not just one more slot bolted onto that one. Worth its
+// own interactive version eventually rather than forcing it into a shape
+// it doesn't fit - flagged separately rather than done here.
+const OBJECT_PARTICLE_EXAMPLES = [
+  { jp: 'パンを たべます。', romaji: 'Pan wo tabemasu.', en: 'I eat bread.' },
+  { jp: 'コーヒーを のみます。', romaji: 'Koohii wo nomimasu.', en: 'I drink coffee.' },
+  { jp: 'しんぶんを よみます。', romaji: 'Shinbun wo yomimasu.', en: 'I read the newspaper.' },
+  { jp: 'てがみを かきます。', romaji: 'Tegami wo kakimasu.', en: 'I write a letter.' },
+  { jp: 'しゃしんを とります。', romaji: 'Shashin wo torimasu.', en: 'I take a photo.' },
+];
+function showObjectParticleReference() {
+  // Only reachable through the Grammar notes hub - see showGrammarNotesHub().
+  vocabRefBackTarget = 'grammar-notes-hub';
+  document.getElementById('vocab-ref-title').textContent = 'を — the object particle';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+
+  const intro = document.createElement('div');
+  intro.className = 'verb-conj-note';
+  intro.textContent = 'を marks the thing a verb acts on - what\'s being eaten, drunk, read, bought, written, watched, listened to, taken, done, or smoked. It sits right after the object and right before the verb.';
+  list.appendChild(intro);
+
+  OBJECT_PARTICLE_EXAMPLES.forEach(ex => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row minute-row';
+    row.innerHTML = `
+      <div class="vocab-ref-jp minute-jp">${markSmallKana(ex.jp)}</div>
+      <div class="vocab-ref-romaji minute-romaji">${ex.romaji} — ${ex.en}</div>
+    `;
+    list.appendChild(row);
+  });
+
+  const exception = document.createElement('div');
+  exception.className = 'verb-conj-note';
+  exception.innerHTML = `<strong>The one exception in this batch:</strong> あいます (to meet) takes に, not を - ともだちに あいます (I meet a friend), not ともだちを あいます. Meeting someone is treated as a shared/mutual action rather than something done to an object, which is why に (the same particle used for destinations and points in time) shows up instead.`;
+  list.appendChild(exception);
+
+  showScreen('vocab-reference');
+}
+
+// で's second job. The Sentence order reference already covers で as
+// "means/how" (でんしゃで/くるまで - travelling BY some method) - this covers
+// its other, unrelated job: marking WHERE an action happens. Easy to
+// confuse with に, which marks where something/someone EXISTS or a
+// destination, not where an action takes place.
+const LOCATION_OF_ACTION_EXAMPLES = [
+  { jp: 'カフェで コーヒーを のみます。', romaji: 'Kafe de koohii wo nomimasu.', en: 'I drink coffee at the café.', particle: 'で', note: 'the café is where the drinking happens' },
+  { jp: 'カフェに います。', romaji: 'Kafe ni imasu.', en: 'I am at the café.', particle: 'に', note: 'the café is just where I exist, no action happening to it' },
+  { jp: 'しょくどうで ひるごはんを たべます。', romaji: 'Shokudou de hirugohan wo tabemasu.', en: 'I eat lunch at the canteen.', particle: 'で', note: 'the canteen is where the eating happens' },
+  { jp: 'がっこうに いきます。', romaji: 'Gakkou ni ikimasu.', en: 'I go to school.', particle: 'に', note: 'destination of a motion verb, not an action happening there' },
+];
+function showLocationOfActionReference() {
+  // Only reachable through the Grammar notes hub - see showGrammarNotesHub().
+  vocabRefBackTarget = 'grammar-notes-hub';
+  document.getElementById('vocab-ref-title').textContent = 'で — means vs. location of action';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+
+  const intro = document.createElement('div');
+  intro.className = 'verb-conj-note';
+  intro.textContent = 'で already marks the method/tool for getting somewhere (でんしゃで, くるまで). Its other job: marking WHERE an action takes place. Contrast that with に, which marks where something exists, or a destination - never where an action happens.';
+  list.appendChild(intro);
+
+  LOCATION_OF_ACTION_EXAMPLES.forEach(ex => {
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row two-col minute-row';
+    row.innerHTML = `
+      <div class="vocab-ref-col-left">
+        <div>
+          <div class="vocab-ref-jp minute-jp">${markSmallKana(ex.jp)}</div>
+          <div class="vocab-ref-romaji minute-romaji">${ex.romaji}</div>
+        </div>
+      </div>
+      <div class="vocab-ref-col-right">
+        <div class="vocab-ref-romaji minute-romaji">${ex.en}</div>
+        <div class="vocab-ref-romaji minute-romaji">${markSmallKana(ex.particle)} — ${ex.note}</div>
+      </div>
+    `;
+    list.appendChild(row);
+  });
+
+  showScreen('vocab-reference');
+}
+
 // Question word + も + negative = "deny everything" - だれも/どこも/なにも all
 // work this way with a negative verb (だれも きません, どこも いきません, なにも
 // たべません). いつ deliberately isn't included here even though it's one of
@@ -7724,7 +7931,8 @@ const QUESTION_NEGATION_TABLE = [
 ];
 
 function showQuestionNegationReference() {
-  vocabRefBackTarget = 'match-settings';
+  // Only reachable through the Grammar notes hub now - see showGrammarNotesHub().
+  vocabRefBackTarget = 'grammar-notes-hub';
   document.getElementById('vocab-ref-title').textContent = 'Question word + も + negative';
   const list = document.getElementById('vocab-ref-list');
   list.className = 'tight-list';
@@ -7801,7 +8009,8 @@ const SENTENCE_STRUCTURE_SLOTS = [
 let sentenceSlotStates = ['on', 'on', 'on', 'on', 'on', 'stmt'];
 
 function showSentenceStructureReference() {
-  vocabRefBackTarget = 'match-settings';
+  // Only reachable through the Grammar notes hub now - see showGrammarNotesHub().
+  vocabRefBackTarget = 'grammar-notes-hub';
   sentenceSlotStates = ['on', 'on', 'on', 'on', 'on', 'stmt'];
   document.getElementById('vocab-ref-title').textContent = 'Sentence order (motion sentences)';
   const list = document.getElementById('vocab-ref-list');
