@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260813.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260813.002</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -6931,6 +6931,34 @@ function buildMatchCategoryList() {
     }
     container.appendChild(card);
   });
+  // Andrew mode currently has no VOCAB categories of its own (level:'andrew'
+  // is unused right now), so the forEach above never fires for it - these
+  // two links are appended unconditionally instead, the moment this level is
+  // selected. Kept Andrew-only rather than folded into the Level 2 Grammar
+  // notes hub (they briefly lived there) - Andrew asked for them to stay
+  // exactly where they were, visible only in Andrew mode, not exposed to
+  // everyone via Level 2. They point at standalone HTML notes living
+  // alongside index.html (kept as separate documents, not part of the app's
+  // own reference-screen system, since Andrew publishes them separately on
+  // GitHub too) - opened in a new tab so drilling progress/state in the app
+  // itself isn't lost.
+  if (currentMatchLevel === 'andrew') {
+    const sentenceNoteCard = document.createElement('a');
+    sentenceNoteCard.className = 'vocab-ref-card';
+    sentenceNoteCard.href = './sentence-structure-notes.html';
+    sentenceNoteCard.target = '_blank';
+    sentenceNoteCard.rel = 'noopener';
+    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
+    container.appendChild(sentenceNoteCard);
+
+    const jpEnNoteCard = document.createElement('a');
+    jpEnNoteCard.className = 'vocab-ref-card';
+    jpEnNoteCard.href = './japanese-vs-english-notes.html';
+    jpEnNoteCard.target = '_blank';
+    jpEnNoteCard.rel = 'noopener';
+    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
+    container.appendChild(jpEnNoteCard);
+  }
 }
 
 function selectRandomMatchCard(card) {
@@ -7800,26 +7828,11 @@ function showGrammarNotesHub() {
     card.onclick = entry.fn;
     list.appendChild(card);
   });
-  // External notes docs - kept as separate documents rather than folded
-  // into the app's own reference-screen system, since Andrew publishes them
-  // separately on GitHub too. Used to only show up in Andrew mode; now live
-  // here instead so they're not tucked behind a level tab that has nothing
-  // to do with what they're actually about.
-  const sentenceNoteCard = document.createElement('a');
-  sentenceNoteCard.className = 'vocab-ref-card';
-  sentenceNoteCard.href = './sentence-structure-notes.html';
-  sentenceNoteCard.target = '_blank';
-  sentenceNoteCard.rel = 'noopener';
-  sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
-  list.appendChild(sentenceNoteCard);
-
-  const jpEnNoteCard = document.createElement('a');
-  jpEnNoteCard.className = 'vocab-ref-card';
-  jpEnNoteCard.href = './japanese-vs-english-notes.html';
-  jpEnNoteCard.target = '_blank';
-  jpEnNoteCard.rel = 'noopener';
-  jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
-  list.appendChild(jpEnNoteCard);
+  // The two external notes docs (sentence structure, Japanese vs English)
+  // are deliberately NOT included here - they stay Andrew-only, appended
+  // directly in buildMatchCategoryList exactly as before. This hub only
+  // ever shows on the Level 2 tab, and Andrew wanted those two kept out of
+  // Level 2's view rather than exposed to everyone.
   showScreen('vocab-reference');
 }
 
