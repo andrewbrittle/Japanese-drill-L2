@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260813.002</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260813.004</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -7022,34 +7022,37 @@ function showTimeUnitsReference() {
   showScreen('vocab-reference');
 }
 
-// ます-form tense/+-/- reference for the three motion verbs used throughout
-// all nine vocab-verbs-l2 verbs, not just the three used on the Sentence
-// order reference. This conjugation is completely regular - every ます-form
-// verb in Japanese follows the exact same four-way pattern (stem+ます /
-// stem+ません / stem+ました / stem+ませんでした), including べんきょうします: する
-// verbs are irregular in dictionary form, but once already in ます-form the
-// suffixing is identical to everything else here. Written out directly
-// rather than derived from a stem, same call as TIME_UNIT_TABLE above: a
-// handful of fixed, well-known forms don't need a generator, they need to
-// be right.
+// ます-form tense/+-/- reference. Split into two tables rather than one -
+// tried as a single 20-verb list first, but the pill row got genuinely hard
+// to scan, and the two halves aren't just an arbitrary batch split: CORE is
+// the original Lesson 5 set (none of these take a direct object), OBJECTS
+// is Week 6's set, all of which take を except あいます. That's a real
+// grammatical line, not just "old words vs new words", so splitting the
+// reference along it is more than a fix for a crowded screen - it's the
+// more accurate way to present it. Each table's own reference screen still
+// uses the same "pills up top, one selected item's detail below" pattern
+// (see showVerbConjugationReferenceFor below).
 //
-// Nine stacked blocks was too long a page (Andrew's own call after trying
-// the 3-verb version), so this switched to the same "pills up top, one
-// selected item's detail below" pattern already used for the item-counters
-// reference - showVerbConjugationReference() draws the pill row once, then
-// renderVerbConjDetail() redraws just the detail block on each tap.
+// This conjugation is completely regular in both tables - every ます-form
+// verb in Japanese follows the exact same four-way pattern (stem+ます /
+// stem+ません / stem+ました / stem+ませんでした), including べんきょうします and
+// します: する verbs are irregular in dictionary form, but once already in
+// ます-form the suffixing is identical to everything else here. Written out
+// directly rather than derived from a stem, same call as TIME_UNIT_TABLE
+// above: a handful of fixed, well-known forms don't need a generator, they
+// need to be right.
 // Each verb also carries its たい-form ("want to ~") - stem + たい, fully
-// regular for all nine of these (even べんきょうします, since する-verbs are
+// regular for every verb here (even べんきょうします/します, since する-verbs are
 // only irregular in DICTIONARY form; once you're already at the ます-stem,
-// たい suffixes on exactly the same way as everywhere else). Checked all
-// nine by hand for anything that reads oddly in English (おわりたい "want to
-// finish" and おきたい "want to get up" both sounded like candidates for
-// being odd, but both are completely normal things to say) before adding.
-// たい itself then conjugates like an い-adjective, NOT like a verb -
-// たい/たくない/たかった/たくなかった - which is a genuinely different
+// たい suffixes on exactly the same way as everywhere else). Checked every
+// entry by hand for anything that reads oddly in English (おわりたい "want to
+// finish", おきたい "want to get up", あいたい "want to meet" all sounded like
+// candidates for being odd, but all are completely normal things to say)
+// before adding. たい itself then conjugates like an い-adjective, NOT like a
+// verb - たい/たくない/たかった/たくなかった - which is a genuinely different
 // conjugation pattern to the ます-form grid above it, and not one the app
 // has shown anywhere else yet.
-const VERB_CONJUGATION_TABLE = [
+const VERB_CONJUGATION_TABLE_CORE = [
   {
     key: 'kimasu', en: 'to come', nonPastAff: ['きます', 'kimasu'], nonPastNeg: ['きません', 'kimasen'],
     pastAff: ['きました', 'kimashita'], pastNeg: ['きませんでした', 'kimasendeshita'],
@@ -7096,13 +7099,86 @@ const VERB_CONJUGATION_TABLE = [
     tai: { nonPastAff: ['はたらきたい', 'hatarakitai'], nonPastNeg: ['はたらきたくない', 'hatarakitakunai'], pastAff: ['はたらきたかった', 'hatarakitakatta'], pastNeg: ['はたらきたくなかった', 'hatarakitakunakatta'] },
   },
 ];
+
+// Week 6's object-taking verbs (all take を except あいます, which takes に -
+// see the "を - the object particle" grammar note). Same regular ます-form
+// conjugation pattern as VERB_CONJUGATION_TABLE_CORE above, します included:
+// する is only irregular in dictionary form, and by the time it's already
+// conjugated to します the suffixing behaves exactly like every other verb
+// here (same reasoning as べんきょうします above).
+const VERB_CONJUGATION_TABLE_OBJECTS = [
+  {
+    key: 'tabemasu', en: 'to eat', nonPastAff: ['たべます', 'tabemasu'], nonPastNeg: ['たべません', 'tabemasen'],
+    pastAff: ['たべました', 'tabemashita'], pastNeg: ['たべませんでした', 'tabemasendeshita'],
+    tai: { nonPastAff: ['たべたい', 'tabetai'], nonPastNeg: ['たべたくない', 'tabetakunai'], pastAff: ['たべたかった', 'tabetakatta'], pastNeg: ['たべたくなかった', 'tabetakunakatta'] },
+  },
+  {
+    key: 'nomimasu', en: 'to drink', nonPastAff: ['のみます', 'nomimasu'], nonPastNeg: ['のみません', 'nomimasen'],
+    pastAff: ['のみました', 'nomimashita'], pastNeg: ['のみませんでした', 'nomimasendeshita'],
+    tai: { nonPastAff: ['のみたい', 'nomitai'], nonPastNeg: ['のみたくない', 'nomitakunai'], pastAff: ['のみたかった', 'nomitakatta'], pastNeg: ['のみたくなかった', 'nomitakunakatta'] },
+  },
+  {
+    key: 'yomimasu', en: 'to read', nonPastAff: ['よみます', 'yomimasu'], nonPastNeg: ['よみません', 'yomimasen'],
+    pastAff: ['よみました', 'yomimashita'], pastNeg: ['よみませんでした', 'yomimasendeshita'],
+    tai: { nonPastAff: ['よみたい', 'yomitai'], nonPastNeg: ['よみたくない', 'yomitakunai'], pastAff: ['よみたかった', 'yomitakatta'], pastNeg: ['よみたくなかった', 'yomitakunakatta'] },
+  },
+  {
+    key: 'mimasu', en: 'to watch / see', nonPastAff: ['みます', 'mimasu'], nonPastNeg: ['みません', 'mimasen'],
+    pastAff: ['みました', 'mimashita'], pastNeg: ['みませんでした', 'mimasendeshita'],
+    tai: { nonPastAff: ['みたい', 'mitai'], nonPastNeg: ['みたくない', 'mitakunai'], pastAff: ['みたかった', 'mitakatta'], pastNeg: ['みたくなかった', 'mitakunakatta'] },
+  },
+  {
+    key: 'kikimasu', en: 'to listen', nonPastAff: ['ききます', 'kikimasu'], nonPastNeg: ['ききません', 'kikimasen'],
+    pastAff: ['ききました', 'kikimashita'], pastNeg: ['ききませんでした', 'kikimasendeshita'],
+    tai: { nonPastAff: ['ききたい', 'kikitai'], nonPastNeg: ['ききたくない', 'kikitakunai'], pastAff: ['ききたかった', 'kikitakatta'], pastNeg: ['ききたくなかった', 'kikitakunakatta'] },
+  },
+  {
+    key: 'kakimasu', en: 'to write', nonPastAff: ['かきます', 'kakimasu'], nonPastNeg: ['かきません', 'kakimasen'],
+    pastAff: ['かきました', 'kakimashita'], pastNeg: ['かきませんでした', 'kakimasendeshita'],
+    tai: { nonPastAff: ['かきたい', 'kakitai'], nonPastNeg: ['かきたくない', 'kakitakunai'], pastAff: ['かきたかった', 'kakitakatta'], pastNeg: ['かきたくなかった', 'kakitakunakatta'] },
+  },
+  {
+    key: 'kaimasu', en: 'to buy', nonPastAff: ['かいます', 'kaimasu'], nonPastNeg: ['かいません', 'kaimasen'],
+    pastAff: ['かいました', 'kaimashita'], pastNeg: ['かいませんでした', 'kaimasendeshita'],
+    tai: { nonPastAff: ['かいたい', 'kaitai'], nonPastNeg: ['かいたくない', 'kaitakunai'], pastAff: ['かいたかった', 'kaitakatta'], pastNeg: ['かいたくなかった', 'kaitakunakatta'] },
+  },
+  {
+    key: 'suimasu', en: 'to smoke', nonPastAff: ['すいます', 'suimasu'], nonPastNeg: ['すいません', 'suimasen'],
+    pastAff: ['すいました', 'suimashita'], pastNeg: ['すいませんでした', 'suimasendeshita'],
+    tai: { nonPastAff: ['すいたい', 'suitai'], nonPastNeg: ['すいたくない', 'suitakunai'], pastAff: ['すいたかった', 'suitakatta'], pastNeg: ['すいたくなかった', 'suitakunakatta'] },
+  },
+  {
+    key: 'torimasu', en: 'to take (a photo)', nonPastAff: ['とります', 'torimasu'], nonPastNeg: ['とりません', 'torimasen'],
+    pastAff: ['とりました', 'torimashita'], pastNeg: ['とりませんでした', 'torimasendeshita'],
+    tai: { nonPastAff: ['とりたい', 'toritai'], nonPastNeg: ['とりたくない', 'toritakunai'], pastAff: ['とりたかった', 'toritakatta'], pastNeg: ['とりたくなかった', 'toritakunakatta'] },
+  },
+  {
+    key: 'shimasu', en: 'to do / play', nonPastAff: ['します', 'shimasu'], nonPastNeg: ['しません', 'shimasen'],
+    pastAff: ['しました', 'shimashita'], pastNeg: ['しませんでした', 'shimasendeshita'],
+    tai: { nonPastAff: ['したい', 'shitai'], nonPastNeg: ['したくない', 'shitakunai'], pastAff: ['したかった', 'shitakatta'], pastNeg: ['したくなかった', 'shitakunakatta'] },
+  },
+  {
+    key: 'aimasu', en: 'to meet', nonPastAff: ['あいます', 'aimasu'], nonPastNeg: ['あいません', 'aimasen'],
+    pastAff: ['あいました', 'aimashita'], pastNeg: ['あいませんでした', 'aimasendeshita'],
+    tai: { nonPastAff: ['あいたい', 'aitai'], nonPastNeg: ['あいたくない', 'aitakunai'], pastAff: ['あいたかった', 'aitakatta'], pastNeg: ['あいたくなかった', 'aitakunakatta'] },
+  },
+];
+// Which table the pill row/detail below are currently reading from - set by
+// showVerbConjugationReferenceFor() each time either reference screen opens.
+let verbConjActiveTable = VERB_CONJUGATION_TABLE_CORE;
 let verbConjSelected = 'kimasu';
 
 function populateVerbConjPills() {
   const row = document.getElementById('verb-conj-pills');
   if (!row) return;
   row.innerHTML = '';
-  VERB_CONJUGATION_TABLE.forEach(v => {
+  // Sorted alphabetically by English gloss for browsing, same as every
+  // other selection screen in the app (sortItemsAlphabetically) - the
+  // underlying tables stay in teaching order in storage, this is a display-
+  // only sort computed fresh each time. Reused directly since these entries
+  // already carry an `en` field in the same shape sortItemsAlphabetically
+  // expects.
+  sortItemsAlphabetically(verbConjActiveTable).forEach(v => {
     const btn = document.createElement('button');
     btn.className = 'level-pill' + (v.key === verbConjSelected ? ' active' : '');
     btn.textContent = v.nonPastAff[0];
@@ -7120,7 +7196,7 @@ function setVerbConjVerb(key) {
 function renderVerbConjDetail() {
   const container = document.getElementById('verb-conj-detail');
   if (!container) return;
-  const v = VERB_CONJUGATION_TABLE.find(x => x.key === verbConjSelected);
+  const v = verbConjActiveTable.find(x => x.key === verbConjSelected);
   const cell = (jp, romaji) => `
     <div class="tu-cell">
       <div class="tu-jp">${markSmallKana(jp)}</div><div class="tu-romaji">${romaji}</div>
@@ -7158,10 +7234,14 @@ function renderVerbConjDetail() {
   `;
 }
 
-function showVerbConjugationReference() {
-  // Only reachable through the Grammar notes hub now - see showGrammarNotesHub().
+// Shared by both verb-conjugation reference screens (core and object-taking
+// verbs) - only the table, screen title and default-selected verb differ.
+function showVerbConjugationReferenceFor(table, title, defaultKey) {
+  // Only reachable through the Grammar notes hub - see showGrammarNotesHub().
   vocabRefBackTarget = 'grammar-notes-hub';
-  document.getElementById('vocab-ref-title').textContent = 'Verb tense & affirmative/negative';
+  verbConjActiveTable = table;
+  verbConjSelected = defaultKey;
+  document.getElementById('vocab-ref-title').textContent = title;
   const list = document.getElementById('vocab-ref-list');
   list.className = '';
   list.innerHTML = '';
@@ -7187,6 +7267,18 @@ function showVerbConjugationReference() {
   taiNote.textContent = 'The second grid ("want to ~") conjugates differently to the first - たい behaves like an い-adjective once it’s formed, not like a verb: たい → たくない (not たいません), たかった (not たいました), たくなかった. Same pattern as adjectives like たかい/たかくない/たかかった.';
   list.appendChild(taiNote);
   showScreen('vocab-reference');
+}
+
+function showVerbConjugationReference() {
+  showVerbConjugationReferenceFor(VERB_CONJUGATION_TABLE_CORE, 'Verb tense & affirmative/negative', 'kimasu');
+}
+
+// Object-taking verbs (Week 6) get their own screen rather than sharing the
+// core one - see the comment above VERB_CONJUGATION_TABLE_CORE for why this
+// is a real grammatical split (transitivity), not just an interface fix for
+// a crowded pill row.
+function showObjectVerbConjugationReference() {
+  showVerbConjugationReferenceFor(VERB_CONJUGATION_TABLE_OBJECTS, 'Verb tense & affirmative/negative (object verbs)', 'tabemasu');
 }
 
 // Duration-counter reference (Numbers > Counters reference). Each unit's
@@ -7819,7 +7911,13 @@ function showGrammarNotesHub() {
     { label: 'で — two jobs (means vs. location of action)', fn: showLocationOfActionReference },
     { label: 'だれも/どこも/なにも + negative', fn: showQuestionNegationReference },
     { label: 'Sentence order for simple sentences', fn: showSentenceStructureReference },
-    { label: 'いきます/きます/かえります — tense &amp; +/− ', fn: showVerbConjugationReference },
+    // Plain descriptions rather than embedding example verbs in hiragana -
+    // this list is already busy with real kana/kanji in several of the
+    // other labels above, and split into two cards (see
+    // VERB_CONJUGATION_TABLE_CORE's comment for why that split is real
+    // grammar, not just a fix for a crowded pill row).
+    { label: 'Verb tense & affirmative/negative', fn: showVerbConjugationReference },
+    { label: 'Object-taking verbs — tense & affirmative/negative', fn: showObjectVerbConjugationReference },
   ];
   entries.forEach(entry => {
     const card = document.createElement('div');
