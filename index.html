@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260813.006</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260814.001</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2400,7 +2400,11 @@ const VOCAB = {
       {jp:'バイク', romaji:'baiku', en:'motorbike (casual)', altForm:'ばいく', dateAdded:'2026-08-01'},
       {jp:'オートバイ', romaji:'otobai', en:'motorbike (formal)', altForm:'おーとばい', dateAdded:'2026-08-01'},
       {jp:'あるいて', romaji:'aruite', en:'on foot', dateAdded:'2026-08-01'},
-      {jp:'ちかてつ', romaji:'chikatetsu', en:'subway', dateAdded:'2026-08-01'},
+      // altForm added 2026-08-14 - 地下鉄 is what actually showed up on real
+      // Sapporo signage (batch 6), so rather than add a duplicate Materials
+      // entry for a word already taught here, the real kanji got folded
+      // into this existing entry instead.
+      {jp:'ちかてつ', romaji:'chikatetsu', en:'subway', altForm:'地下鉄', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'タクシー', romaji:'takushii', en:'taxi', altForm:'たくしー', dateAdded:'2026-08-01'},
       {jp:'でんしゃ', romaji:'densha', en:'train', dateAdded:'2026-08-01'},
       {jp:'トラック', romaji:'torakku', en:'truck', altForm:'とらっく', dateAdded:'2026-08-01'},
@@ -2417,7 +2421,10 @@ const VOCAB = {
       {jp:'バレエ', romaji:'baree', en:'ballet', altForm:'ばれえ', dateAdded:'2026-08-01'},
       {jp:'ぎんこう', romaji:'ginkou', en:'bank', altForm:'銀行', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'ほんや', romaji:'honya', en:'bookshop', dateAdded:'2026-08-01'},
-      {jp:'バスてい', romaji:'basutei', en:'bus stop', dateAdded:'2026-08-01'},
+      // altForm added 2026-08-14 - same reasoning as ちかてつ above: real
+      // kanji from batch 6 signage folded into the existing entry rather
+      // than duplicated as a new Materials word.
+      {jp:'バスてい', romaji:'basutei', en:'bus stop', altForm:'バス停', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'きっさてん', romaji:'kissaten', en:'café', dateAdded:'2026-08-01'},
       {jp:'カメラや', romaji:'kameraya', en:'camera shop', altForm:'かめらや', dateAdded:'2026-08-01'},
       {jp:'えいがかん', romaji:'eigakan', en:'cinema', dateAdded:'2026-08-01'},
@@ -3020,6 +3027,21 @@ const VOCAB = {
       {jp:'使えません', romaji:'tsukaemasen', en:'cannot be used', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
       {jp:'きっぷ', romaji:'kippu', en:'ticket', altForm:'切符 (kanji form)', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
       {jp:'買い求める', romaji:'kaimotomeru', en:'to purchase', seenAs:'当駅にて「きっぷ」をお買い求めください。- please purchase a ticket at this station', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'食べらさる', romaji:'taberasaru', en:'can\'t help but eat (Hokkaido dialect)', source:{location:'Sapporo (subway/train car)', date:'2026-08-13', file:'PXL_20260813_003723150.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'北海道米', romaji:'Hokkaidou-mai', en:'Hokkaido-grown rice', source:{location:'Sapporo (subway/train car)', date:'2026-08-13', file:'PXL_20260813_003723150.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'安全', romaji:'anzen', en:'safety', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'停止後', romaji:'teishigo', en:'after stopping', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'移動しない', romaji:'idou shinai', en:'do not move', seenAs:'安全のため停止後扉が開くまで移動しないようにお願いします。- for safety, please do not move until the doors open after stopping', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'お降りの方', romaji:'oori no kata', en:'those getting off', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_030441338.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'押してください', romaji:'oshite kudasai', en:'please press', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_030441338.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'おまかせ下さい', romaji:'omakase kudasai', en:'please leave it to us', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_030444946.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'お出かけの足', romaji:'odekake no ashi', en:'your transportation for going out', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_030444946.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'みんなの', romaji:'minna no', en:'everyone\'s', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'のりば', romaji:'noriba', en:'boarding point / platform', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'北改札口', romaji:'kita kaisatsuguchi', en:'north ticket gate', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'系統', romaji:'keitou', en:'(bus) route / line', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033026992.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'手を離さない', romaji:'te wo hanasanai', en:'don\'t let go of your hand', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'離す', romaji:'hanasu', en:'to let go / release', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
     ],
   },
   'vocab-materials-airport': {
@@ -3182,6 +3204,30 @@ const VOCAB = {
       {jp:'内税', romaji:'uchizei', en:'tax included (as opposed to 外税, tax added separately)', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111921577.jpg'}, dateAdded:'2026-08-11'},
       {jp:'当日限り有効', romaji:'toujitsu kagiri yuukou', en:'valid today only', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111921577.jpg'}, dateAdded:'2026-08-11'},
       {jp:'コーラ', romaji:'koora', en:'cola', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111943166.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'新規', romaji:'shinki', en:'new', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'会員', romaji:'kaiin', en:'member', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'募集中', romaji:'boshuuchuu', en:'currently recruiting', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'相性抜群', romaji:'aishou batsugun', en:'excellent pairing / great match', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'達成', romaji:'tassei', en:'achievement', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'選べる', romaji:'eraberu', en:'can choose', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'クーポン', romaji:'kuupon', en:'coupon', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'フライドポテト', romaji:'furaido poteto', en:'french fries', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'ダウンロード', romaji:'daunroodo', en:'download', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'サバ', romaji:'saba', en:'mackerel', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'塩焼', romaji:'shioyaki', en:'salt-grilled', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'ジューシー', romaji:'juushii', en:'juicy', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'肉汁', romaji:'nikujiru', en:'meat juice', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'たまらない', romaji:'tamaranai', en:'irresistible', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'チキン南蛮', romaji:'chikin nanban', en:'fried chicken with tartar sauce', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'デミハンバーグ', romaji:'demi hanbaagu', en:'hamburger steak with demi-glace sauce', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105645435.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'人気コンビ', romaji:'ninki konbi', en:'popular combo', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'なす味噌', romaji:'nasu miso', en:'eggplant miso', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'焼魚', romaji:'yakizakana', en:'grilled fish', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'懐かしい', romaji:'natsukashii', en:'nostalgic', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'エビフライ', romaji:'ebi furai', en:'fried shrimp', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'となり', romaji:'tonari', en:'next to / neighboring', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-13', file:'PXL_20260812_234344125.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'レジ', romaji:'reji', en:'cash register', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-13', file:'PXL_20260812_234344125.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'どうぞ', romaji:'douzo', en:'please / go ahead', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-13', file:'PXL_20260812_234344125.jpg'}, dateAdded:'2026-08-14'},
     ],
   },
   'vocab-materials-shops': {
@@ -3416,6 +3462,8 @@ const VOCAB = {
       {jp:'希望', romaji:'kibou', en:'wish / request', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
       {jp:'預かる', romaji:'azukaru', en:'to keep / hold (something) for someone', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ご了承ください', romaji:'goryoushou kudasai', en:'please understand / accept', seenAs:'次のお客様がご利用を希望される場合、洗濯物をフロントでお預かりすることがあります。ご了承ください。- if the next guest wishes to use the facility we may need to store your laundry at the front desk', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'2泊以上', romaji:'nihaku ijou', en:'2 nights or more', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'エコ清掃', romaji:'eko seisou', en:'eco cleaning', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
     ],
   },
   'vocab-materials-street': {
