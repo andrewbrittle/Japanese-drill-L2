@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260815.003</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260815.006</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3125,7 +3125,7 @@ const VOCAB = {
       {jp:'白湯', romaji:'paitan', en:'clear/white bone broth', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'コラーゲン', romaji:'koragen', en:'collagen', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'ダシ', romaji:'dashi', en:'soup stock / broth', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'骨', romaji:'hone', en:'bone', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'骨', romaji:'hone', en:'bone', speakAs:'ほね', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'発酵', romaji:'hakkou', en:'fermented', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'高菜', romaji:'takana', en:'pickled mustard greens', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'ヴィーガン', romaji:'viigan', en:'vegan', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
@@ -3164,8 +3164,8 @@ const VOCAB = {
       {jp:'レバ刺し', romaji:'reba sashi', en:'raw liver sashimi', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}, dateAdded:'2026-08-10'},
       {jp:'角ハイボール', romaji:'kaku haiboru', en:'"Kaku" whisky highball', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_102915964.jpg'}, dateAdded:'2026-08-10'},
       {jp:'野菜', romaji:'yasai', en:'vegetables', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'鶏', romaji:'tori', en:'chicken', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'飯', romaji:'meshi', en:'rice / meal', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'鶏', romaji:'tori', en:'chicken', speakAs:'とり', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'飯', romaji:'meshi', en:'rice / meal', speakAs:'めし', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'果実酒', romaji:'kajitsushu', en:'fruit liqueur', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'焼酎', romaji:'shouchu', en:'shochu (Japanese spirit)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'日本酒', romaji:'nihonshu', en:'sake (Japanese rice wine)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
@@ -4527,6 +4527,12 @@ function drillVocabTileSelection() {
       altIsStandard: item.altIsStandard,
       seenAs: item.seenAs,
       source: item.source,
+      // Optional per-item override of what speech synthesis should actually
+      // say - only needed when the on-screen script is genuinely ambiguous
+      // to a TTS engine (e.g. a bare kanji like 骨 that a voice may read
+      // on'yomi "kotsu" instead of the correct kun'yomi "hone"). See
+      // getSpeechText().
+      speakAs: item.speakAs,
     };
   });
   lastSettingsScreen = 'vocab-tile-selection';
@@ -6213,6 +6219,13 @@ function getSpeechText(q) {
     const reading = KANJI_READINGS[q.char + '|' + q.answer];
     return reading || q.char;
   }
+  // Vocab word questions: normally q.char (the on-screen kanji/kana) is what
+  // gets spoken, but some words are genuinely ambiguous to a TTS voice - e.g.
+  // a bare kanji like 骨 has both a kun'yomi (hone, "bone") and an on'yomi
+  // (kotsu) reading, and the browser's engine can guess the wrong one. Items
+  // that need this get an explicit speakAs override (a hiragana form) in
+  // their VOCAB entry.
+  if (q.disp === 'word' && q.speakAs) return q.speakAs;
   // word / base / diacritic / youon — q.char is already proper kana/kanji script here
   return q.char;
 }
@@ -8696,6 +8709,9 @@ function buildVocabReadingDeck(items, groupKey) {
       altIsStandard: item.altIsStandard,
       seenAs: item.seenAs,
       source: item.source,
+      // See the matching comment in drillVocabTileSelection - lets specific
+      // items override what speech synthesis actually says.
+      speakAs: item.speakAs,
     };
   });
 }
