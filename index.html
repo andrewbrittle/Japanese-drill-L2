@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260814.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260815.002</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2355,7 +2355,11 @@ const VOCAB = {
       {jp:'ねずみ', romaji:'nezumi', en:'mouse / rat', dateAdded:'2026-08-01'},
       {jp:'うし', romaji:'ushi', en:'cow / ox', altForm:'牛', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'とら', romaji:'tora', en:'tiger', altForm:'虎', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'うさぎ', romaji:'usagi', en:'rabbit', dateAdded:'2026-08-01'},
+      // altForm added 2026-08-15 - ウサギ turned up on a nature-trail quiz
+      // board (batch 6 part 2) rather than a duplicate entry, same reasoning
+      // as たれ/おすすめ elsewhere: katakana is a common styling choice for
+      // animal names on this kind of signage, not a different word.
+      {jp:'うさぎ', romaji:'usagi', en:'rabbit', altForm:'ウサギ (also seen written in katakana, e.g. on nature signage)', dateAdded:'2026-08-01'},
       {jp:'りゅう', romaji:'ryuu', en:'dragon', altForm:'竜', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'へび', romaji:'hebi', en:'snake', altForm:'蛇', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'うま', romaji:'uma', en:'horse', altForm:'馬', altIsStandard:true, dateAdded:'2026-08-01'},
@@ -2705,7 +2709,10 @@ const VOCAB = {
       {jp:'みせ', romaji:'mise', en:'shop', dateAdded:'2026-08-01'},
       {jp:'ちいさい', romaji:'chiisai', en:'small', dateAdded:'2026-08-01'},
       {jp:'そば', romaji:'soba', en:'soba noodles', dateAdded:'2026-08-01'},
-      {jp:'おみやげ', romaji:'omiyage', en:'souvenir', dateAdded:'2026-08-01'},
+      // altForm added 2026-08-15 - お土産 seen on real signage (batch 6 part
+      // 2, Osaka hotel lobby), same "fold the real form in rather than
+      // duplicate" call made for ちかてつ/バスてい in batch 6 part 1.
+      {jp:'おみやげ', romaji:'omiyage', en:'souvenir', altForm:'お土産', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'すし', romaji:'sushi', en:'sushi', dateAdded:'2026-08-01'},
       {jp:'てんぷら', romaji:'tenpura', en:'tempura', dateAdded:'2026-08-01'},
       {jp:'きっぷ', romaji:'kippu', en:'ticket', dateAdded:'2026-08-01'},
@@ -2765,7 +2772,9 @@ const VOCAB = {
       {jp:'いか', romaji:'ika', en:'squid', dateAdded:'2026-08-01'},
       {jp:'すきやき', romaji:'sukiyaki', en:'sukiyaki', dateAdded:'2026-08-01'},
       {jp:'あまい', romaji:'amai', en:'sweet', dateAdded:'2026-08-01'},
-      {jp:'たこやき', romaji:'takoyaki', en:'takoyaki (octopus balls)', dateAdded:'2026-08-01'},
+      // altForm added 2026-08-15 - たこ焼き seen on real signage (batch 6
+      // part 2, Osaka hotel lobby food promo).
+      {jp:'たこやき', romaji:'takoyaki', en:'takoyaki (octopus balls)', altForm:'たこ焼き', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'てんどん', romaji:'tendon', en:'tempura rice bowl (tendon)', dateAdded:'2026-08-01'},
       {jp:'まぐろ', romaji:'maguro', en:'tuna', dateAdded:'2026-08-01'},
       {jp:'やきとり', romaji:'yakitori', en:'yakitori (grilled chicken skewers)', dateAdded:'2026-08-01'},
@@ -2780,7 +2789,10 @@ const VOCAB = {
     items: [
       {jp:'もうふ', romaji:'moufu', en:'blanket', dateAdded:'2026-08-01'},
       {jp:'チェックイン', romaji:'chekkuin', en:'check-in', dateAdded:'2026-08-01'},
-      {jp:'チェックアウト', romaji:'chekkuauto', en:'check-out', dateAdded:'2026-08-01'},
+      // seenAs added 2026-08-15 - real context from an Osaka hotel door
+      // status card (batch 6 part 2), rather than adding a duplicate entry
+      // for the same word with nothing new except where it was seen.
+      {jp:'チェックアウト', romaji:'chekkuauto', en:'check-out', seenAs:'チェックアウトしました - checked out (door status card)', dateAdded:'2026-08-01'},
       {jp:'ダブルルーム', romaji:'daburu ruumu', en:'double room', dateAdded:'2026-08-01'},
       {jp:'りょうきん', romaji:'ryoukin', en:'fee / charge', altForm:'料金', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'フロント', romaji:'furonto', en:'front desk', dateAdded:'2026-08-01'},
@@ -3016,7 +3028,8 @@ const VOCAB = {
       {jp:'リズム', romaji:'rizumu', en:'rhythm', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
       {jp:'整える', romaji:'totonoeru', en:'to arrange / regulate', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
       {jp:'快適', romaji:'kaiteki', en:'comfortable', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'車内', romaji:'shanai', en:'inside the train', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
+      // 車内/shanai from this photo dropped - exact repeat of the entry
+      // already added from the Shinagawa-Tamachi train a few days earlier.
       {jp:'ガタゴト', romaji:'gatagoto', en:'clickety-clack (train sound)', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
       {jp:'スタンプラリー', romaji:'sutanpu rarii', en:'stamp rally', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
       {jp:'住民', romaji:'juumin', en:'resident / inhabitant', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
@@ -3042,6 +3055,12 @@ const VOCAB = {
       {jp:'系統', romaji:'keitou', en:'(bus) route / line', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033026992.jpg'}, dateAdded:'2026-08-14'},
       {jp:'手を離さない', romaji:'te wo hanasanai', en:'don\'t let go of your hand', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
       {jp:'離す', romaji:'hanasu', en:'to let go / release', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'たてかけない', romaji:'tatekakenai', en:'don\'t lean objects (against it)', source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'乗り出さない', romaji:'noridasanai', en:'don\'t lean out / over', source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'かけ込み禁止', romaji:'kakekomi kinshi', en:'no rushing in (e.g. through closing doors)', source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'広げて', romaji:'hirogete', en:'widening / making more room', seenAs:'少しスペースを広げております。- we are making a little more space (priority area for luggage, strollers, etc.)', source:{location:'Osaka Monorail (train)', date:'2026-08-14', file:'PXL_20260814_050231807.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'反対側', romaji:'hantaigawa', en:'opposite side', source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'開きます', romaji:'hirakimasu', en:'will open (polite)', source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
     ],
   },
   'vocab-materials-airport': {
@@ -3353,6 +3372,22 @@ const VOCAB = {
       {jp:'好きな色', romaji:'suki na iro', en:'favorite color', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
       {jp:'大切なもの', romaji:'taisetsu na mono', en:'important thing(s)', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
       {jp:'デビュー', romaji:'debyuu', en:'debut', source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
+      // 地獄谷 (jigokudani) - the place name itself is deliberately left out
+      // here, same call as the lake/volcano names skipped earlier: real, but
+      // only useful locally, not generalizable vocabulary. 温泉 (the actual
+      // word "hot spring") is kept below.
+      {jp:'温泉', romaji:'onsen', en:'hot spring', source:{location:'Jigokudani, Noboribetsu Onsen', date:'2026-08-12', file:'PXL_20260812_003515734.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'湧出', romaji:'yuushutsu', en:'gushing out / spouting (hot spring)', source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'名勝地', romaji:'meishouchi', en:'scenic spot', source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'景観', romaji:'keikan', en:'scenery / view', source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'国立公園', romaji:'kokuritsu kouen', en:'national park', source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'停止線', romaji:'teishisen', en:'stop line (road marking)', source:{location:'Muroran (roadside, seen from bus)', date:'2026-08-12', file:'PXL_20260812_013049380.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'開発局', romaji:'kaihatsukyoku', en:'development bureau (road authority)', source:{location:'Muroran (roadside, seen from bus)', date:'2026-08-12', file:'PXL_20260812_013049380.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'動物', romaji:'doubutsu', en:'animal', source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'シカ', romaji:'shika', en:'deer', source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'住んでいます', romaji:'sundeimasu', en:'lives / inhabits (polite)', source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'いない', romaji:'inai', en:'not present / doesn\'t live there', source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'鉄橋', romaji:'tekkyou', en:'iron bridge / railway bridge', seenAs:'やませんてつきょう - Yamase Tekkyou (bridge name plaque)', source:{location:'Chitose (Yamase Bridge)', date:'2026-08-12', file:'PXL_20260812_073105020.jpg'}, dateAdded:'2026-08-15'},
     ],
   },
   'vocab-materials-hotel': {
@@ -3373,7 +3408,14 @@ const VOCAB = {
       {jp:'運転', romaji:'unten', en:'operation / running (of a machine)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}, dateAdded:'2026-08-10'},
       {jp:'停止', romaji:'teishi', en:'stop', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}, dateAdded:'2026-08-10'},
       {jp:'風量', romaji:'fuuryou', en:'air volume / fan strength', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'風向', romaji:'fuukou', en:'air direction', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}, dateAdded:'2026-08-10'},
+      // Note added 2026-08-15 - a second AC remote (Osaka, batch 6 part 2)
+      // labelled this same kanji compound with a different furigana
+      // (かざむき/kazamuki, "wind direction") rather than this unit's ふうこう
+      // (fuukou). Same word, genuine alternate reading depending on the
+      // manufacturer - not added as a second entry, since two cards sharing
+      // identical kanji but expecting different readings would just make
+      // the drill ambiguous rather than useful.
+      {jp:'風向', romaji:'fuukou', en:'air direction', dateAdded:'2026-08-10', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}},
       {jp:'確定', romaji:'kakutei', en:'confirm / finalize', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}, dateAdded:'2026-08-10'},
       {jp:'カードキー', romaji:'kaado kii', en:'card key', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234208029.jpg'}, dateAdded:'2026-08-10'},
       {jp:'入れてください', romaji:'irete kudasai', en:'please insert / put in', seenAs:'カードを入れてください - please insert the card', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234208029.jpg'}, dateAdded:'2026-08-10'},
@@ -3384,7 +3426,10 @@ const VOCAB = {
       {jp:'係', romaji:'kakari', en:'staff in charge / attendant', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
       {jp:'指示', romaji:'shiji', en:'instructions', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
       {jp:'使用', romaji:'shiyou', en:'use', seenAs:'避難にあたっては、絶対にエレベーターを使用しないでください。- when evacuating, absolutely do not use the elevator', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'扉', romaji:'tobira', en:'door (formal word)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
+      // seenAs added 2026-08-15 - real context from an Osaka train door
+      // sticker (batch 6 part 2), same word already taught here from a
+      // Sapporo hotel encounter.
+      {jp:'扉', romaji:'tobira', en:'door (formal word)', seenAs:'扉に注意 - mind the door', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
       {jp:'大声', romaji:'oogoe', en:'loud voice', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
       {jp:'会話', romaji:'kaiwa', en:'conversation', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
       {jp:'迷惑', romaji:'meiwaku', en:'trouble / inconvenience', seenAs:'扉を開けたまま大声で会話をされますと、まわりのお客様のご迷惑になりますのでご遠慮ください。- talking loudly with the door open may inconvenience other guests (hotel notice)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
@@ -3464,6 +3509,41 @@ const VOCAB = {
       {jp:'ご了承ください', romaji:'goryoushou kudasai', en:'please understand / accept', seenAs:'次のお客様がご利用を希望される場合、洗濯物をフロントでお預かりすることがあります。ご了承ください。- if the next guest wishes to use the facility we may need to store your laundry at the front desk', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
       {jp:'2泊以上', romaji:'nihaku ijou', en:'2 nights or more', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
       {jp:'エコ清掃', romaji:'eko seisou', en:'eco cleaning', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
+      // たこ焼き and 串カツ from this lobby promo are left out - たこ焼き is
+      // now an altForm on the existing たこやき entry (Food and drink,
+      // Trip), and 串カツ is an exact repeat of the word already added from
+      // the Sapporo izakaya batch.
+      {jp:'いか焼き', romaji:'ikayaki', en:'grilled squid', source:{location:'Super Hotel Premier Osaka Honmachi (lobby)', date:'2026-08-14', file:'PXL_20260814_055446487.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'うまいもん', romaji:'umaimon', en:'delicious food (Osaka dialect)', source:{location:'Super Hotel Premier Osaka Honmachi (lobby)', date:'2026-08-14', file:'PXL_20260814_055446487.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'ご当地', romaji:'gotouchi', en:'local / regional (specialty)', source:{location:'Super Hotel Premier Osaka Honmachi (lobby)', date:'2026-08-14', file:'PXL_20260814_055446487.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'暗証番号', romaji:'anshou bangou', en:'PIN / passcode', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'ご利用期間', romaji:'goriyou kikan', en:'period of use', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'入館', romaji:'nyuukan', en:'entering the building', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'くつろぎ', romaji:'kutsurogi', en:'relaxation', seenAs:'ごゆっくりおくつろぎ下さい - please take your time and relax', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'珪藻土', romaji:'keisoudo', en:'diatomaceous earth (ceiling material)', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'湿度', romaji:'shitsudo', en:'humidity', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'調整', romaji:'chousei', en:'adjustment', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'断熱性', romaji:'dannetsusei', en:'thermal insulation', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'健康的', romaji:'kenkouteki', en:'healthy', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'化石', romaji:'kaseki', en:'fossil', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      // 冷房 and 風量 from this AC remote are left out - both exact repeats of
+      // words already added from the Sapporo hotel's own AC remote.
+      {jp:'暖房', romaji:'danbou', en:'heating', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'除湿', romaji:'joshitsu', en:'dehumidify', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'しずか', romaji:'shizuka', en:'quiet (AC fan mode)', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'パワフル', romaji:'pawafuru', en:'powerful (AC fan mode)', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'内部クリーン', romaji:'naibu kuriin', en:'internal clean (AC self-clean function)', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'決定', romaji:'kettei', en:'confirm / decide (remote button)', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'取消', romaji:'torikeshi', en:'cancel (remote button)', source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
+      // チェックアウト from this door status card is left out - its seenAs
+      // was folded into the existing Accommodation entry instead. 清掃 from
+      // the next card is also left out - an exact repeat of the word
+      // already disambiguated as "cleaning (housekeeping)" above.
+      {jp:'滞在', romaji:'taizai', en:'stay / reside', seenAs:'11時〜15時はお部屋に滞在できません。- you are not allowed to stay in the room between 11:00 and 15:00', source:{location:'Super Hotel Premier Osaka Honmachi (room door card)', date:'2026-08-14', file:'PXL_20260814_061017398.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'連泊', romaji:'renpaku', en:'consecutive nights\' stay (hotel)', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'マグネット', romaji:'magunetto', en:'magnet', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'ご希望', romaji:'gokibou', en:'your wish / request (polite)', seenAs:'清掃ご希望の場合、こちらのマグネットを11時までにドアの外へ貼ってください。- if you\'d like cleaning, please put this magnet outside the door by 11:00', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'行いません', romaji:'okonaimasen', en:'will not carry out / perform (polite negative)', seenAs:'ドアの外にマグネットが貼られていない場合、清掃を行いません。- if the magnet is not on the door, we will not clean', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
     ],
   },
   'vocab-materials-street': {
