@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260816.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260817.001</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2441,7 +2441,7 @@ const VOCAB = {
       {jp:'としょかん', romaji:'toshokan', en:'library', dateAdded:'2026-08-01'},
       {jp:'ミュージカル', romaji:'myuujikaru', en:'musical', altForm:'みゅーじかる', dateAdded:'2026-08-01'},
       {jp:'オペラ', romaji:'opera', en:'opera', altForm:'おぺら', dateAdded:'2026-08-01'},
-      {jp:'こうえん', romaji:'kouen', en:'park', dateAdded:'2026-08-01'},
+      {jp:'こうえん', romaji:'kouen', en:'park', altForm:'公園', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'おしばい', romaji:'oshibai', en:'play', dateAdded:'2026-08-01'},
       {jp:'プール', romaji:'puuru', en:'pool', altForm:'ぷーる', dateAdded:'2026-08-01'},
       {jp:'ゆうびんきょく', romaji:'yuubinkyoku', en:'post office', dateAdded:'2026-08-01'},
@@ -3061,6 +3061,13 @@ const VOCAB = {
       {jp:'広げて', romaji:'hirogete', en:'widening / making more room', seenAs:'少しスペースを広げております。- we are making a little more space (priority area for luggage, strollers, etc.)', source:{location:'Osaka Monorail (train)', date:'2026-08-14', file:'PXL_20260814_050231807.jpg'}, dateAdded:'2026-08-15'},
       {jp:'反対側', romaji:'hantaigawa', en:'opposite side', source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
       {jp:'開きます', romaji:'hirakimasu', en:'will open (polite)', source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
+      // 携帯電話 and ご協力 from this photo were skipped - already exact
+      // duplicates elsewhere (携帯電話 is already in this very category;
+      // ご協力 is in Materials — Shops).
+      {jp:'歩行', romaji:'hokou', en:'walking', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'大変危険', romaji:'taihen kiken', en:'extremely dangerous', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'おやめください', romaji:'oyame kudasai', en:'please stop / refrain from', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'事故防止', romaji:'jiko boushi', en:'accident prevention', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
     ],
   },
   'vocab-materials-airport': {
@@ -3188,6 +3195,29 @@ const VOCAB = {
       {jp:'焼魚', romaji:'yakizakana', en:'grilled fish', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
       {jp:'懐かしい', romaji:'natsukashii', en:'nostalgic', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
       {jp:'エビフライ', romaji:'ebi furai', en:'fried shrimp', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105653120.jpg'}, dateAdded:'2026-08-14'},
+      // 大盛 and おにぎり from this photo were skipped - already exact
+      // duplicates (大盛 already in this category; おにぎり already covered
+      // by the Trip-tier Food & drink category).
+      {jp:'かけ', romaji:'kake', en:'plain broth udon/soba (no toppings)', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'月見', romaji:'tsukimi', en:'moon-viewing (raw egg topping)', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'きつね', romaji:'kitsune', en:'fried tofu topping', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'たぬき', romaji:'tanuki', en:'tempura scraps topping', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'かき揚げ', romaji:'kakiage', en:'mixed vegetable/seafood tempura fritter', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'いなり', romaji:'inari', en:'inari sushi (fried tofu pouch)', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'かやくご飯', romaji:'kayaku gohan', en:'mixed rice (with vegetables/meat)', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'ざるうどん', romaji:'zaru udon', en:'cold udon served on a tray', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_014500496.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'じゃがいも', romaji:'jagaimo', en:'potato', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'さつま芋', romaji:'satsumaimo', en:'sweet potato', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'紅しょうが', romaji:'beni shouga', en:'red pickled ginger', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'かぼちゃ', romaji:'kabocha', en:'pumpkin', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'ししとう', romaji:'shishitou', en:'shishito pepper', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'げそ', romaji:'geso', en:'squid legs (skewer)', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'うずら卵', romaji:'uzura tamago', en:'quail egg', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'どて焼き', romaji:'doteyaki', en:'beef tendon simmered in miso', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'ゴボ天', romaji:'gobou ten', en:'burdock root tempura', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'こんにゃく', romaji:'konnyaku', en:'konjac (jelly-like root vegetable)', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'厚あげ', romaji:'atsuage', en:'thick fried tofu', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'冷奴', romaji:'hiyayakko', en:'cold tofu (dish)', source:{location:'Tenjinbashi-suji Shopping Street, Osaka', date:'2026-08-17', file:'PXL_20260817_064540897.jpg'}, dateAdded:'2026-08-17'},
     ],
   },
   'vocab-materials-restaurants-ops': {
@@ -3255,6 +3285,9 @@ const VOCAB = {
       {jp:'となり', romaji:'tonari', en:'next to / neighboring', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-13', file:'PXL_20260812_234344125.jpg'}, dateAdded:'2026-08-14'},
       {jp:'レジ', romaji:'reji', en:'cash register', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-13', file:'PXL_20260812_234344125.jpg'}, dateAdded:'2026-08-14'},
       {jp:'どうぞ', romaji:'douzo', en:'please / go ahead', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-13', file:'PXL_20260812_234344125.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'四連休', romaji:'yon renkyuu', en:'four-day consecutive holiday', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_044520696.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'材料', romaji:'zairyou', en:'ingredients / materials', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_044520696.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'閉店します', romaji:'heiten shimasu', en:'will close (the shop)', seenAs:'明日より四連休の為、材料なくなり次第閉店します。- from tomorrow is a four-day holiday, so we\'ll close as soon as we run out of ingredients', source:{location:'Shinsekai, Osaka', date:'2026-08-17', file:'PXL_20260817_044520696.jpg'}, dateAdded:'2026-08-17'},
     ],
   },
   'vocab-materials-shops': {
@@ -3412,6 +3445,13 @@ const VOCAB = {
       {jp:'経口補水液', romaji:'keikou hosuieki', en:'oral rehydration solution', source:{location:'Nunobiki Park (布引公園), Kobe', date:'2026-08-16', file:'PXL_20260816_083434642.jpg'}, dateAdded:'2026-08-16'},
       {jp:'冷却パック', romaji:'reikyaku pakku', en:'cooling pack', source:{location:'Nunobiki Park (布引公園), Kobe', date:'2026-08-16', file:'PXL_20260816_083434642.jpg'}, dateAdded:'2026-08-16'},
       {jp:'閉まってます', romaji:'shimattemasu', en:'is closed', source:{location:'Nunobiki Park (布引公園), Kobe', date:'2026-08-16', file:'PXL_20260816_083434642.jpg'}, dateAdded:'2026-08-16'},
+      // 公園 from this photo was skipped - it's just the kanji form of the
+      // existing こうえん (Level 1), folded in as that entry's altForm
+      // instead of duplicated here.
+      {jp:'市役所', romaji:'shiyakusho', en:'city hall', source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'鉄道駅', romaji:'tetsudou eki', en:'railway station', source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'史跡', romaji:'shiseki', en:'historical site', source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'ようこそ', romaji:'youkoso', en:'welcome', source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17'},
     ],
   },
   'vocab-materials-hotel-appliances': {
