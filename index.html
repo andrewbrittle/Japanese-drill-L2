@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260817.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260817.003</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3302,7 +3302,10 @@ const VOCAB = {
       {jp:'カメラ', romaji:'kamera', en:'camera', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'時計', romaji:'tokei', en:'clock / watch', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'パソコン周辺機器', romaji:'pasokon shuuhen kiki', en:'PC peripherals', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'携帯電話', romaji:'keitai denwa', en:'mobile phone', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      // 携帯電話 (mobile phone) from this photo removed - exact duplicate,
+      // already covered in Materials - Stations & trains (added same day,
+      // earlier in file order, so that one wins per the materials-vs-
+      // materials dedup rule).
       {jp:'修理受付', romaji:'shuuri uketsuke', en:'repair reception desk', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お客様案内窓口', romaji:'okyakusama annai madoguchi', en:'customer information counter', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'駐車場', romaji:'chuushajou', en:'parking lot', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
@@ -8103,7 +8106,8 @@ function showGrammarNotesHub() {
     { label: 'を — the object particle', fn: showObjectParticleReference },
     { label: 'で — two jobs (means vs. location of action)', fn: showLocationOfActionReference },
     { label: 'だれも/どこも/なにも + negative', fn: showQuestionNegationReference },
-    { label: 'Sentence order for simple sentences', fn: showSentenceStructureReference },
+    { label: 'Sentence order (motion sentences)', fn: showSentenceStructureReference },
+    { label: 'Sentence order (を + object)', fn: showObjectSentenceOrderReference },
     // Plain descriptions rather than embedding example verbs in hiragana -
     // this list is already busy with real kana/kanji in several of the
     // other labels above, and split into two cards (see
@@ -8635,6 +8639,312 @@ function renderSentenceExampleDisplay() {
 function shuffleSentenceExample() {
   pickFreshSentenceWords();
   renderSentenceExampleDisplay();
+}
+
+// を + object sentence pattern - a second "Sentence order" card, deliberately
+// separate from the motion-sentence one above rather than folded into it,
+// matching the earlier decision that を introduces a genuinely different
+// shape (Topic/Time/Location-of-action/Object/Verb) rather than a variant of
+// the motion sentence's Topic/Time/Companion/Means/Destination one. There's
+// no travelling involved, so Companion and Means/Destination don't apply -
+// but で reappears here in its OTHER job (see showLocationOfActionReference):
+// marking where the action happens, not how you got there.
+//
+// Every word used on this page - verbs, days, places, objects - comes from
+// existing Level 1/2 vocab items, which are stored kana-only (kanji only
+// ever lives in an optional altForm field that this page never reads). Kanji
+// isn't taught on the course for months yet, so that's exactly what's wanted
+// here, not an extra rule to maintain.
+const OBJECT_SENTENCE_SLOTS = [
+  { num: 1, role: 'Topic (who)', particle: 'は', particleRomaji: 'wa',
+    questionWord: 'だれ', questionRomaji: 'dare', questionParticle: 'が', questionParticleRomaji: 'ga',
+    note: 'introduces who is doing the action' },
+  { num: 2, role: 'Time (when)', particle: 'に', particleRomaji: 'ni',
+    questionWord: 'いつ', questionRomaji: 'itsu', questionParticle: '', questionParticleRomaji: '',
+    note: 'a specific point in time - a day, date, or clock time' },
+  { num: 3, role: 'Location of action (where)', particle: 'で', particleRomaji: 'de',
+    questionWord: 'どこ', questionRomaji: 'doko', questionParticle: 'で', questionParticleRomaji: 'de',
+    note: 'where the action happens - で\'s "location of action" job, not motion' },
+  { num: 4, role: 'Object (what)', particle: 'を', particleRomaji: 'o',
+    questionWord: 'なに', questionRomaji: 'nani', questionParticle: 'を', questionParticleRomaji: 'o',
+    note: 'the thing being eaten/read/bought etc - marks the direct object' },
+  { num: 5, role: 'Verb (+か for a question)', note: 'the action itself, optionally turned into a question' },
+];
+
+// Index 0-3 track slots 1-4's state ('on' / 'off' / 'q'); index 4 tracks
+// slot 5's state ('q' = ends in か, 'stmt' = statement). Same shape as
+// sentenceSlotStates above, kept as its own variable since this is a
+// genuinely separate page/pattern rather than a mode on the existing one.
+let objSentenceSlotStates = ['on', 'on', 'on', 'on', 'stmt'];
+
+function showObjectSentenceOrderReference() {
+  // Only reachable through the Grammar notes hub - see showGrammarNotesHub().
+  vocabRefBackTarget = 'grammar-notes-hub';
+  objSentenceSlotStates = ['on', 'on', 'on', 'on', 'stmt'];
+  document.getElementById('vocab-ref-title').textContent = 'Sentence order (を + object)';
+  const list = document.getElementById('vocab-ref-list');
+  list.className = 'tight-list';
+  list.innerHTML = '';
+
+  const hint = document.createElement('div');
+  hint.className = 'sentence-structure-hint';
+  hint.textContent = 'Tap a slot to cycle it between included, skipped, and asked as a question.';
+  list.appendChild(hint);
+
+  const rowsWrap = document.createElement('div');
+  rowsWrap.id = 'sentence-structure-rows';
+  list.appendChild(rowsWrap);
+  renderObjectSentenceRows();
+
+  const example = document.createElement('div');
+  example.className = 'sentence-structure-example';
+  example.innerHTML = `
+    <div class="sentence-structure-example-jp" id="sentence-structure-example-jp"></div>
+    <div class="sentence-structure-example-romaji" id="sentence-structure-example-romaji"></div>
+    <div class="sentence-structure-example-en" id="sentence-structure-example-en"></div>
+  `;
+  list.appendChild(example);
+
+  const shuffleBtn = document.createElement('button');
+  shuffleBtn.className = 'sentence-shuffle-btn';
+  shuffleBtn.textContent = '🔀 Try another example';
+  shuffleBtn.onclick = shuffleObjectSentenceExample;
+  list.appendChild(shuffleBtn);
+
+  pickFreshObjectSentenceWords();
+  renderObjectSentenceExampleDisplay();
+  showScreen('vocab-reference');
+}
+
+function renderObjectSentenceRows() {
+  const wrap = document.getElementById('sentence-structure-rows');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  OBJECT_SENTENCE_SLOTS.forEach((slot, idx) => {
+    const isVerbSlot = idx === 4;
+    const state = objSentenceSlotStates[idx];
+    const row = document.createElement('div');
+    row.className = 'vocab-ref-row minute-row sentence-slot-row' + (state === 'off' ? ' sentence-slot-off' : '');
+    row.onclick = () => cycleObjectSentenceSlotState(idx);
+
+    let badgeText, badgeClass = 'sentence-particle-badge', stateLabel = '';
+    if (isVerbSlot) {
+      badgeText = state === 'q' ? 'か' : '。';
+      stateLabel = state === 'q' ? '(question)' : '(statement)';
+    } else if (state === 'off') {
+      badgeText = '–';
+      badgeClass += ' sentence-particle-badge-off';
+      stateLabel = '(skipped)';
+    } else if (state === 'q') {
+      badgeText = slot.questionWord + slot.questionParticle;
+      badgeClass += ' sentence-particle-badge-q';
+      stateLabel = '(asked as a question)';
+    } else {
+      badgeText = slot.particle;
+    }
+
+    row.innerHTML = `
+      <div class="sentence-structure-inner">
+        <div class="vocab-ref-num-big">${slot.num}</div>
+        <div class="sentence-structure-text">
+          <div class="sentence-structure-role">${slot.role}</div>
+          <div class="sentence-structure-note">${slot.note}${stateLabel ? ` <span class="sentence-structure-state">${stateLabel}</span>` : ''}</div>
+        </div>
+        <div class="${badgeClass}">${markSmallKana(badgeText)}</div>
+      </div>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function cycleObjectSentenceSlotState(idx) {
+  if (idx === 4) {
+    objSentenceSlotStates[4] = objSentenceSlotStates[4] === 'q' ? 'stmt' : 'q';
+  } else {
+    const order = ['on', 'off', 'q'];
+    objSentenceSlotStates[idx] = order[(order.indexOf(objSentenceSlotStates[idx]) + 1) % order.length];
+  }
+  renderObjectSentenceRows();
+  renderObjectSentenceExampleDisplay();
+}
+
+// Small lookup helper - pulls one specific item out of an existing category
+// by its romaji, same "constrained to what we actually know" idea as the
+// motion-sentence pools above, rather than inventing new vocab for this page.
+function vItem(catKey, romaji) {
+  return VOCAB[catKey].items.find(i => i.romaji === romaji);
+}
+
+// Which objects make sense with which verb - kept per-verb rather than one
+// shared pool, since (unlike the motion sentence's means/destination, which
+// pair freely with any motion verb) "drink a photograph" or "smoke an apple"
+// would be grammatical but nonsensical. あいます isn't listed here at all -
+// it's excluded from the verb pool below since it takes に, not を (see the
+// note on vocab-verbs-l2). りょうり/れきし are deliberately left out of the
+// kaimasu pool below - "buy the cooking"/"buy the history" don't read as
+// real purchases the way everything else in Everyday items does.
+const OBJECT_SENTENCE_VERB_POOLS = {
+  tabemasu: [
+    vItem('vocab-food-drink-l2', 'ringo'), vItem('vocab-food-drink-l2', 'pan'),
+    vItem('vocab-food-drink-l2', 'tamago'), vItem('vocab-food-drink-l2', 'kudamono'),
+    vItem('vocab-food-drink-l2', 'shiriaru'), vItem('vocab-food-drink-l2', 'toosuto'),
+    vItem('vocab-general-l2', 'toufu'), vItem('vocab-general-l2', 'gohan'),
+    vItem('vocab-objects', 'niku'), vItem('vocab-objects', 'chokoreeto'),
+  ],
+  nomimasu: [
+    vItem('vocab-food-drink-l2', 'osake'), vItem('vocab-food-drink-l2', 'biiru'),
+    vItem('vocab-food-drink-l2', 'wain'), vItem('vocab-general-l2', 'mizu'),
+    vItem('vocab-objects', 'koohii'),
+  ],
+  yomimasu: [
+    vItem('vocab-objects', 'hon'), vItem('vocab-objects', 'zasshi'),
+    vItem('vocab-objects', 'shinbun'), vItem('vocab-general-l2', 'tegami'),
+  ],
+  mimasu: [vItem('vocab-objects', 'terebi'), vItem('vocab-general-l2', 'eiga')],
+  kikimasu: [vItem('vocab-objects', 'rajio'), vItem('vocab-general-l2', 'ongaku')],
+  kakimasu: [vItem('vocab-general-l2', 'tegami'), vItem('vocab-general-l2', 'ii meeru')],
+  kaimasu: [
+    ...VOCAB['vocab-objects'].items.filter(i => hasCleanGloss(i) && !['ryouri', 'rekishi'].includes(i.romaji)),
+    ...VOCAB['vocab-clothing'].items.filter(hasCleanGloss),
+    ...VOCAB['vocab-food-drink-l2'].items.filter(hasCleanGloss),
+  ],
+  suimasu: [vItem('vocab-objects', 'tabako')],
+  torimasu: [vItem('vocab-general-l2', 'shashin')],
+  shimasu: [
+    vItem('vocab-general-l2', 'tenisu'), vItem('vocab-general-l2', 'geemu'),
+    vItem('vocab-general-l2', 'supootsu'), vItem('vocab-general-l2', 'shukudai'),
+  ],
+};
+
+// English gloss for the verb in its "-ing" form, for the "X is [verb]ing Y"
+// sentence shape - same progressive-tense style the motion sentence uses
+// ("is going", "is coming").
+const OBJECT_SENTENCE_VERB_GERUND = {
+  tabemasu: 'eating', nomimasu: 'drinking', yomimasu: 'reading', mimasu: 'watching',
+  kikimasu: 'listening to', kakimasu: 'writing', kaimasu: 'buying', suimasu: 'smoking',
+  torimasu: 'taking a photo of', shimasu: 'doing / playing',
+};
+
+// Verb pool is whatever object-taking verb has an entry above - purely data
+// driven, so あいます (no entry) is naturally excluded without a separate
+// exclude-list to keep in sync.
+const OBJECT_SENTENCE_VERB_LIST = VOCAB['vocab-verbs-l2'].items.filter(v => OBJECT_SENTENCE_VERB_POOLS[v.romaji]);
+
+let currentObjectSentenceWords = null;
+
+function pickFreshObjectSentenceWords() {
+  const people = sentenceStructurePeoplePool();
+  const topicItem = pickRandomItem(people);
+  const timeItem = pickRandomItem(VOCAB['vocab-days-l2'].items);
+  const locationItem = pickRandomItem(VOCAB['vocab-places-to-go'].items.filter(hasCleanGloss));
+  const verbItem = pickRandomItem(OBJECT_SENTENCE_VERB_LIST);
+  const objectPool = OBJECT_SENTENCE_VERB_POOLS[verbItem.romaji].filter(hasCleanGloss);
+  const objectItem = pickRandomItem(objectPool);
+  currentObjectSentenceWords = { topicItem, timeItem, locationItem, objectItem, verbItem };
+}
+
+// Builds the jp/romaji/en fragment for the Time/Location/Object slots, which
+// all share the same on/off/q shape - mirrors sentenceClause() above but
+// against this page's own slots/state.
+function objectSentenceClause(idx, item, enPrefix, enPlaceholderLabel) {
+  const slot = OBJECT_SENTENCE_SLOTS[idx];
+  const state = objSentenceSlotStates[idx];
+  if (state === 'off') return null;
+  if (state === 'q') {
+    return {
+      jp: slot.questionWord + slot.questionParticle,
+      romaji: (slot.questionRomaji + ' ' + slot.questionParticleRomaji).trim(),
+      en: enPrefix + '[' + enPlaceholderLabel + ']',
+    };
+  }
+  return {
+    jp: item.jp + slot.particle,
+    romaji: item.romaji + ' ' + slot.particleRomaji,
+    en: enPrefix + item.en.toLowerCase(),
+  };
+}
+
+function buildObjectSentenceExample() {
+  const { topicItem, timeItem, locationItem, objectItem, verbItem: verb } = currentObjectSentenceWords;
+  const topicState = objSentenceSlotStates[0];
+  const isQuestion = objSentenceSlotStates[4] === 'q';
+  const verbEn = OBJECT_SENTENCE_VERB_GERUND[verb.romaji];
+
+  let topicJp = '', topicRomaji = '', subjectEn = 'someone', subjectIsPlaceholder = false;
+  const topicSlot = OBJECT_SENTENCE_SLOTS[0];
+  if (topicState === 'q') {
+    topicJp = topicSlot.questionWord + topicSlot.questionParticle;
+    topicRomaji = topicSlot.questionRomaji + ' ' + topicSlot.questionParticleRomaji;
+    subjectEn = 'who';
+    subjectIsPlaceholder = true;
+  } else if (topicState === 'on') {
+    topicJp = topicItem.jp + topicSlot.particle;
+    topicRomaji = topicItem.romaji + ' ' + topicSlot.particleRomaji;
+    subjectEn = sentencePersonEnglish(topicItem);
+  }
+
+  const timeClause = objectSentenceClause(1, timeItem, 'on ', 'when');
+  const locationClause = objectSentenceClause(2, locationItem, 'at the ', 'where');
+  const objectClause = objectSentenceClause(3, objectItem, 'the ', 'what');
+
+  const jpParts = [topicJp, timeClause && timeClause.jp, locationClause && locationClause.jp, objectClause && objectClause.jp].filter(Boolean);
+  const romajiParts = [topicRomaji, timeClause && timeClause.romaji, locationClause && locationClause.romaji, objectClause && objectClause.romaji].filter(Boolean);
+  const verbJp = verb.jp + (isQuestion ? 'か' : '');
+  const verbRomaji = verb.romaji + (isQuestion ? ' ka' : '');
+  const jp = [...jpParts, verbJp].join(' ') + '。';
+  const romaji = [...romajiParts, verbRomaji].join(' ') + '.';
+
+  // Same rule as the motion sentence: front the question word naturally only
+  // when exactly one non-topic slot is being asked about. Two or more asked
+  // at once falls back to the plain bracket-gloss style instead of forcing
+  // unreadable English.
+  const qFlags = {
+    topic: subjectIsPlaceholder,
+    time: objSentenceSlotStates[1] === 'q',
+    location: objSentenceSlotStates[2] === 'q',
+    object: objSentenceSlotStates[3] === 'q',
+  };
+  const qCount = Object.values(qFlags).filter(Boolean).length;
+
+  let en;
+  if (isQuestion && qCount === 1 && !qFlags.topic) {
+    if (qFlags.time) {
+      const rest = [objectClause && objectClause.en, locationClause && locationClause.en].filter(Boolean).join(' ');
+      en = `When is ${subjectEn} ${verbEn}${rest ? ' ' + rest : ''}?`;
+    } else if (qFlags.location) {
+      const rest = [objectClause && objectClause.en, timeClause && timeClause.en].filter(Boolean).join(' ');
+      en = `Where is ${subjectEn} ${verbEn}${rest ? ' ' + rest : ''}?`;
+    } else {
+      // qFlags.object
+      const rest = [locationClause && locationClause.en, timeClause && timeClause.en].filter(Boolean).join(' ');
+      en = `What is ${subjectEn} ${verbEn}${rest ? ' ' + rest : ''}?`;
+    }
+  } else {
+    const enParts = [objectClause && objectClause.en, locationClause && locationClause.en, timeClause && timeClause.en].filter(Boolean);
+    const bodyText = [verbEn, ...enParts].join(' ');
+    if (isQuestion) {
+      en = subjectIsPlaceholder ? `Who is ${bodyText}?` : `Is ${subjectEn} ${bodyText}?`;
+    } else {
+      en = subjectIsPlaceholder ? `Who is ${bodyText}.` : `${sentenceCapitalize(subjectEn)} is ${bodyText}.`;
+    }
+  }
+  return { jp, romaji, en };
+}
+
+function renderObjectSentenceExampleDisplay() {
+  const { jp, romaji, en } = buildObjectSentenceExample();
+  const jpEl = document.getElementById('sentence-structure-example-jp');
+  const romajiEl = document.getElementById('sentence-structure-example-romaji');
+  const enEl = document.getElementById('sentence-structure-example-en');
+  if (jpEl) jpEl.innerHTML = markSmallKana(jp);
+  if (romajiEl) romajiEl.textContent = romaji;
+  if (enEl) enEl.textContent = `"${en}"`;
+}
+
+// Button handler - mirrors shuffleSentenceExample above.
+function shuffleObjectSentenceExample() {
+  pickFreshObjectSentenceWords();
+  renderObjectSentenceExampleDisplay();
 }
 
 function showVocabReference(categoryKey) {
