@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260821.001</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260821.002</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3673,46 +3673,6 @@ const VOCAB = {
       {jp:'透明', romaji:'toumei', en:'transparent / clear', source:{location:'Otaru (Shinonome-cho)', date:'2026-08-10', file:'PXL_20260810_043351907.jpg'}, dateAdded:'2026-08-10'},
       {jp:'半透明', romaji:'hantoumei', en:'semi-transparent / translucent', source:{location:'Otaru (Shinonome-cho)', date:'2026-08-10', file:'PXL_20260810_043351907.jpg'}, dateAdded:'2026-08-10'},
       {jp:'排出', romaji:'haishutsu', en:'disposal / discharge (of waste)', source:{location:'Otaru (Shinonome-cho)', date:'2026-08-10', file:'PXL_20260810_043351907.jpg'}, dateAdded:'2026-08-10'},
-    ],
-  },
-  // First of a new "Reference" bucket, distinct from Materials - these are
-  // curated study-reference words pulled from an external learner resource
-  // (an Instagram graphic), not real-world signage/menus encountered on the
-  // trip. Uses the same source shape as Materials (location/date/file), just
-  // with location naming the source account instead of a place, and no time
-  // (never actually stored on Materials items either - it was only ever in
-  // the raw photo metadata). 3 words from the source graphic - どこ/いつ/いくら
-  // - were left out here since they're exact duplicates of existing Level 2
-  // vocab; Andrew wants to revisit this with a proper tagging system rather
-  // than a permanent decision baked into which words got typed in.
-  'vocab-reference-question-words': {
-    level: 'andrew',
-    hasReference: true,
-    label: 'Reference — Question words',
-    chars: '何 どうして 何時…',
-    items: [
-      {jp:'何', romaji:'nani', en:'what', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どうして', romaji:'doushite', en:'why', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'何時', romaji:'nanji', en:'what time', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'誰', romaji:'dare', en:'who', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'なぜ', romaji:'naze', en:'why (more formal)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どう', romaji:'dou', en:'how', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どっち', romaji:'dotchi', en:'which way / which one (of two)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どれ', romaji:'dore', en:'which one (of three or more)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どうやって', romaji:'dou yatte', en:'how (do you do it) / how does it work', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'大丈夫', romaji:'daijoubu', en:'are you okay? / it\'s fine', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'本当', romaji:'hontou', en:'really', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'まだ', romaji:'mada', en:'yet / still', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'何のため', romaji:'nan no tame', en:'what for', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どう思う', romaji:'dou omou', en:'what do you think', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どんな', romaji:'donna', en:'what kind of', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'なにが', romaji:'nani ga', en:'what (as the subject)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'何を', romaji:'nani wo', en:'what (as the object)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どうしよう', romaji:'dou shiyou', en:'what should I do', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'どのくらい', romaji:'dono kurai', en:'how long / how much (extent)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'できる', romaji:'dekiru', en:'can you do it / is it possible', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'知ってる', romaji:'shitteru', en:'do you know (casual)', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'わかった', romaji:'wakatta', en:'got it / understood', source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-21'},
     ],
   },
 };
