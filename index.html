@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260821.003</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.002</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2677,7 +2677,8 @@ const VOCAB = {
     chars: 'けいば うま きしゅ…',
     items: [
       {jp:'けいば', romaji:'keiba', en:'horse racing', altForm:'競馬', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'うま', romaji:'uma', en:'horse', altForm:'馬', altIsStandard:true, dateAdded:'2026-08-01'},
+      // うま/horse removed - duplicate of the Animals entry, consolidated
+      // there since it's minor here.
       {jp:'けいばじょう', romaji:'keibajou', en:'racecourse', altForm:'競馬場', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'きしゅ', romaji:'kishu', en:'jockey', altForm:'騎手', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'ばけん', romaji:'baken', en:'betting ticket', altForm:'馬券', altIsStandard:true, dateAdded:'2026-08-01'},
@@ -2698,12 +2699,15 @@ const VOCAB = {
     hasReference: true,
     label: 'Useful words for the trip',
     chars: 'すし きっぷ たすけて…',
+    // See resolveVocabCategory - references a single word actually stored in
+    // Materials rather than duplicating it here too.
+    includeItems: [{ cat: 'vocab-materials-stations', romaji: 'kippu' }],
     items: [
       {jp:'おおきい', romaji:'ookii', en:'big', dateAdded:'2026-08-01'},
       {jp:'やすい', romaji:'yasui', en:'cheap', dateAdded:'2026-08-01'},
       {jp:'のみもの', romaji:'nomimono', en:'drink', dateAdded:'2026-08-01'},
       {jp:'いりぐち', romaji:'iriguchi', en:'entrance', dateAdded:'2026-08-01'},
-      {jp:'でぐち', romaji:'deguchi', en:'exit', dateAdded:'2026-08-01'},
+      {jp:'でぐち', romaji:'deguchi', en:'exit', altForm:'出口', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'たかい', romaji:'takai', en:'expensive', dateAdded:'2026-08-01'},
       {jp:'たべもの', romaji:'tabemono', en:'food', dateAdded:'2026-08-01'},
       {jp:'おちゃ', romaji:'ocha', en:'green tea', dateAdded:'2026-08-01'},
@@ -2723,7 +2727,9 @@ const VOCAB = {
       {jp:'おみやげ', romaji:'omiyage', en:'souvenir', altForm:'お土産', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'すし', romaji:'sushi', en:'sushi', dateAdded:'2026-08-01'},
       {jp:'てんぷら', romaji:'tenpura', en:'tempura', dateAdded:'2026-08-01'},
-      {jp:'きっぷ', romaji:'kippu', en:'ticket', dateAdded:'2026-08-01'},
+      // きっぷ moved out - now referenced from Materials (see includeItems
+      // below) instead of stored here too, since it's the same word with
+      // its kanji form already folded in there.
       {jp:'まち', romaji:'machi', en:'town', dateAdded:'2026-08-01'},
       {jp:'のりかえ', romaji:'norikae', en:'transfer / change trains', dateAdded:'2026-08-01'},
       {jp:'うどん', romaji:'udon', en:'udon noodles', dateAdded:'2026-08-01'},
@@ -2744,6 +2750,12 @@ const VOCAB = {
     hasReference: true,
     label: 'Food and drink',
     chars: 'ぎょうざ さしみ からい…',
+    includeItems: [
+      { cat: 'vocab-materials-restaurants-ops', romaji: 'menyuu' },
+      { cat: 'vocab-materials-restaurants-ops', romaji: 'okawari' },
+      { cat: 'vocab-materials-restaurants-food', romaji: 'shabushabu' },
+      { cat: 'vocab-materials-restaurants-food', romaji: 'sukiyaki' },
+    ],
     items: [
       {jp:'ぎゅうにく', romaji:'gyuuniku', en:'beef', altForm:'牛肉', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'おべんとう', romaji:'obentou', en:'bento (boxed lunch)', dateAdded:'2026-08-01'},
@@ -2756,7 +2768,9 @@ const VOCAB = {
       {jp:'にほんしゅ', romaji:'nihonshu', en:'Japanese sake / rice wine', dateAdded:'2026-08-01'},
       {jp:'かつどん', romaji:'katsudon', en:'katsudon (pork cutlet rice bowl)', dateAdded:'2026-08-01'},
       {jp:'ラム', romaji:'ramu', en:'lamb', altForm:'らむ', dateAdded:'2026-08-01'},
-      {jp:'メニュー', romaji:'menyuu', en:'menu', altForm:'めにゅー', dateAdded:'2026-08-01'},
+      // メニュー moved out - referenced from Materials now (see includeItems
+      // below), which already had its own seenAs; its hiragana altForm
+      // (めにゅー) was copied across so that doesn't get lost.
       {jp:'ミルク', romaji:'miruku', en:'milk', altForm:'みるく', dateAdded:'2026-08-01'},
       {jp:'みそしる', romaji:'misoshiru', en:'miso soup', dateAdded:'2026-08-01'},
       {jp:'なべ', romaji:'nabe', en:'nabe / hot pot', dateAdded:'2026-08-01'},
@@ -2771,14 +2785,13 @@ const VOCAB = {
       {jp:'さしみ', romaji:'sashimi', en:'sashimi / raw fish', dateAdded:'2026-08-01'},
       {jp:'たい', romaji:'tai', en:'sea bream', altForm:'鯛', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'うに', romaji:'uni', en:'sea urchin', dateAdded:'2026-08-01'},
-      {jp:'おかわり', romaji:'okawari', en:'seconds / refill, please', dateAdded:'2026-08-01'},
+      // おかわり/しゃぶしゃぶ/すきやき moved out - referenced from Materials
+      // now (see includeItems below), which had its own copies of all three.
       {jp:'べつべつに', romaji:'betsubetsuni', en:'separately (splitting the bill)', dateAdded:'2026-08-01'},
-      {jp:'ていしょく', romaji:'teishoku', en:'set meal', dateAdded:'2026-08-01'},
-      {jp:'しゃぶしゃぶ', romaji:'shabushabu', en:'shabu-shabu', dateAdded:'2026-08-01'},
+      {jp:'ていしょく', romaji:'teishoku', en:'set meal', altForm:'定食', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'えび', romaji:'ebi', en:'shrimp / prawn', dateAdded:'2026-08-01'},
       {jp:'からい', romaji:'karai', en:'spicy', dateAdded:'2026-08-01'},
       {jp:'いか', romaji:'ika', en:'squid', dateAdded:'2026-08-01'},
-      {jp:'すきやき', romaji:'sukiyaki', en:'sukiyaki', dateAdded:'2026-08-01'},
       {jp:'あまい', romaji:'amai', en:'sweet', dateAdded:'2026-08-01'},
       // altForm added 2026-08-15 - たこ焼き seen on real signage (batch 6
       // part 2, Osaka hotel lobby food promo).
@@ -2794,6 +2807,9 @@ const VOCAB = {
     hasReference: true,
     label: 'Accommodation',
     chars: 'ホテル よやく タオル…',
+    includeItems: [
+      { cat: 'vocab-materials-hotel-facilities', romaji: 'furonto' },
+    ],
     items: [
       {jp:'もうふ', romaji:'moufu', en:'blanket', dateAdded:'2026-08-01'},
       {jp:'チェックイン', romaji:'chekkuin', en:'check-in', dateAdded:'2026-08-01'},
@@ -2803,12 +2819,13 @@ const VOCAB = {
       {jp:'チェックアウト', romaji:'chekkuauto', en:'check-out', seenAs:'チェックアウトしました - checked out (door status card)', dateAdded:'2026-08-01'},
       {jp:'ダブルルーム', romaji:'daburu ruumu', en:'double room', dateAdded:'2026-08-01'},
       {jp:'りょうきん', romaji:'ryoukin', en:'fee / charge', altForm:'料金', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'フロント', romaji:'furonto', en:'front desk', dateAdded:'2026-08-01'},
+      // フロント moved to vocab-materials-hotel-facilities (real-world
+      // evidenced copy) - see includeItems below.
       {jp:'ホテル', romaji:'hoteru', en:'hotel', dateAdded:'2026-08-01'},
       {jp:'キーカード', romaji:'kii kaado', en:'key card', dateAdded:'2026-08-01'},
       {jp:'にもつ', romaji:'nimotsu', en:'luggage', altForm:'荷物', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'まくら', romaji:'makura', en:'pillow', dateAdded:'2026-08-01'},
-      {jp:'よやく', romaji:'yoyaku', en:'reservation', altForm:'予約', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'まくら', romaji:'makura', en:'pillow', altForm:'枕', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'よやく', romaji:'yoyaku', en:'reservation', altForm:'予約', altIsStandard:true, seenAs:'予約 also labels the delayed-start timer button on a washing machine (Tokyu Stay Kyoto) - same underlying idea, "set this to happen later," not a separate word', dateAdded:'2026-08-01'},
       {jp:'へやの ばんごう', romaji:'heya no bangou', en:'room number', dateAdded:'2026-08-01'},
       {jp:'シングルルーム', romaji:'shinguru ruumu', en:'single room', dateAdded:'2026-08-01'},
       {jp:'タオル', romaji:'taoru', en:'towel', dateAdded:'2026-08-01'},
@@ -2820,12 +2837,18 @@ const VOCAB = {
     hasReference: true,
     label: 'Money and shopping',
     chars: 'げんきん わりびき サイズ…',
+    includeItems: [
+      { cat: 'vocab-materials-shops', romaji: 'otsuri' },
+      { cat: 'vocab-materials-hotel-appliances', romaji: 'kurejitto kaado' },
+    ],
     items: [
       {jp:'げんきん', romaji:'genkin', en:'cash', altForm:'現金', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'げんきんのみ', romaji:'genkin nomi', en:'cash only', altForm:'現金のみ', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'おつり', romaji:'otsuri', en:'change (money)', dateAdded:'2026-08-01'},
+      // おつり moved to vocab-materials-shops (real-world evidenced copy)
+      // - see includeItems above.
       {jp:'しょうひぜい', romaji:'shouhizei', en:'consumption tax', altForm:'消費税', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'クレジットカード', romaji:'kurejitto kaado', en:'credit card', dateAdded:'2026-08-01'},
+      // クレジットカード moved to vocab-materials-hotel-appliances (real-
+      // world evidenced copy) - see includeItems above.
       {jp:'りょうがえ', romaji:'ryougae', en:'currency exchange', altForm:'両替', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'わりびき', romaji:'waribiki', en:'discount', altForm:'割引', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'カードは つかえますか', romaji:'kaado wa tsukaemasu ka', en:'do you accept cards?', dateAdded:'2026-08-01'},
@@ -2846,6 +2869,10 @@ const VOCAB = {
     hasReference: true,
     label: 'Directions and navigation',
     chars: 'ひだり みぎ まっすぐ…',
+    includeItems: [
+      { cat: 'vocab-materials-stations', romaji: 'hoomu' },
+      { cat: 'vocab-materials-stations', romaji: 'massugu' },
+    ],
     items: [
       {jp:'かど', romaji:'kado', en:'corner', altForm:'角', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'とおい', romaji:'tooi', en:'far', dateAdded:'2026-08-01'},
@@ -2856,11 +2883,13 @@ const VOCAB = {
       {jp:'ちかい', romaji:'chikai', en:'near', dateAdded:'2026-08-01'},
       {jp:'かたみちきっぷ', romaji:'katamichi kippu', en:'one-way ticket', dateAdded:'2026-08-01'},
       {jp:'おうだんほどう', romaji:'oudanhodou', en:'pedestrian crossing', altForm:'横断歩道', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'ホーム', romaji:'hoomu', en:'platform (train)', dateAdded:'2026-08-01'},
+      // ホーム moved to vocab-materials-stations (real-world evidenced
+      // copy) - see includeItems above.
       {jp:'おうふくきっぷ', romaji:'oufuku kippu', en:'return ticket', dateAdded:'2026-08-01'},
       {jp:'みぎ', romaji:'migi', en:'right', dateAdded:'2026-08-01'},
       {jp:'ろせんず', romaji:'rosenzu', en:'route map', altForm:'路線図', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'まっすぐ', romaji:'massugu', en:'straight ahead', dateAdded:'2026-08-01'},
+      // まっすぐ moved to vocab-materials-stations (real-world evidenced
+      // copy) - see includeItems above.
       {jp:'かいさつぐち', romaji:'kaisatsuguchi', en:'ticket gate', altForm:'改札口', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'しんごう', romaji:'shingou', en:'traffic light', altForm:'信号', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'えきは どこですか', romaji:'eki wa doko desu ka', en:'where is the station?', dateAdded:'2026-08-01'},
@@ -2994,7 +3023,7 @@ const VOCAB = {
       {jp:'改札', romaji:'kaisatsu', en:'ticket gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お廻り下さい', romaji:'o-mawari kudasai', en:'please go around / detour', altForm:'お回りください (more common modern spelling)', seenAs:'車いすをご利用のお客様は西口改札へお廻り下さい。- full notice: wheelchair users please go around to the west exit gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
       {jp:'〜階ホームです', romaji:'~-kai hoomu desu', en:'(this) is the ~ floor platform', seenAs:'ここは3階ホームです - as shown on the sign: this is the 3rd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ホーム', romaji:'hoomu', en:'platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ホーム', romaji:'hoomu', en:'platform (train)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       {jp:'方面', romaji:'houmen', en:'bound for / direction', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       {jp:'〜方面への列車', romaji:'~ houmen e no ressha', en:'train bound for ~', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       {jp:'列車', romaji:'ressha', en:'train', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
@@ -3002,7 +3031,8 @@ const VOCAB = {
       {jp:'お並びいただき', romaji:'onarabi itadaki', en:'please line up (queue)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       {jp:'中央', romaji:'chuuou', en:'center / middle', seenAs:'中央はお空けください - please leave the center open (queueing announcement)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お空けください', romaji:'o-ake kudasai', en:'please leave (a space) open', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'出口', romaji:'deguchi', en:'exit', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      // 出口 from this photo removed - same word as the existing でぐち
+      // (Trip), now folded in there as its altForm instead.
       {jp:'山手線', romaji:'Yamanote-sen', en:'Yamanote Line', seenAs:'山手線（内回り）田町・新橋・東京・上野方面 - route header: Yamanote Line (inner loop), bound for Tamachi/Shimbashi/Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
       {jp:'内回り', romaji:'uchimawari', en:'inner loop (counter-clockwise)', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
       {jp:'約〜分後', romaji:'yaku ~fun go', en:'in approximately ~ minutes', seenAs:'山手線 約2分後 東京・上野方面 - live arrival board: Yamanote Line, in about 2 minutes, bound for Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
@@ -3086,12 +3116,16 @@ const VOCAB = {
     hasReference: true,
     label: 'Materials — Airport & flights',
     chars: '先発 定刻 共同運航便…',
+    includeItems: [
+      { cat: 'vocab-accommodation', romaji: 'nimotsu' },
+    ],
     items: [
       {jp:'先発', romaji:'senpatsu', en:'departing first / first (flight)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10'},
       {jp:'定刻', romaji:'teikoku', en:'on schedule / on time', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10'},
       {jp:'共同運航便', romaji:'kyoudou unkou-bin', en:'codeshare flight', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10'},
       {jp:'札幌', romaji:'Sapporo', en:'Sapporo (city)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'荷物', romaji:'nimotsu', en:'luggage / baggage', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10'},
+      // 荷物 moved to vocab-accommodation (Trip-canonical copy, already
+      // has the kana/kanji altForm structure) - see includeItems below.
       {jp:'キャスター', romaji:'kyasutaa', en:'caster / wheel', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10'},
       {jp:'〜付き', romaji:'~-tsuki', en:'equipped with / including (suffix)', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10'},
       {jp:'バギー', romaji:'bagii', en:'buggy / stroller', source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10'},
@@ -3149,7 +3183,7 @@ const VOCAB = {
       {jp:'ヴィーガン', romaji:'viigan', en:'vegan', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'刺激', romaji:'shigeki', en:'stimulation / excitement', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'飢える', romaji:'ueru', en:'to starve / hunger for', seenAs:'世界はこの刺激に飢えている - the world is starving for this stimulation (tagline)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'しゃぶしゃぶ', romaji:'shabu-shabu', en:'shabu-shabu (hot pot)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'しゃぶしゃぶ', romaji:'shabushabu', en:'shabu-shabu (hot pot)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}, dateAdded:'2026-08-10'},
       {jp:'すきやき', romaji:'sukiyaki', en:'sukiyaki', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}, dateAdded:'2026-08-10'},
       {jp:'自家製', romaji:'jikasei', en:'homemade / house-made', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}, dateAdded:'2026-08-10'},
       {jp:'たれ', romaji:'tare', en:'sauce', altForm:'タレ (also seen written in katakana)', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}, dateAdded:'2026-08-10'},
@@ -3189,7 +3223,8 @@ const VOCAB = {
       {jp:'日本酒', romaji:'nihonshu', en:'sake (Japanese rice wine)', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'出来立て', romaji:'dekitate', en:'freshly made', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111851441.jpg'}, dateAdded:'2026-08-11'},
       {jp:'こだわり', romaji:'kodawari', en:'particular commitment to quality', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111851441.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'定食', romaji:'teishoku', en:'set meal', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111921577.jpg'}, dateAdded:'2026-08-11'},
+      // 定食 from this photo removed - same word as the existing ていしょく
+      // (Trip), now folded in there as its altForm instead.
       {jp:'特', romaji:'toku', en:'special (prefix)', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111921577.jpg'}, dateAdded:'2026-08-11'},
       {jp:'コーラ', romaji:'koora', en:'cola', source:{location:'Yayoiken, Sapporo Station area', date:'2026-08-11', file:'PXL_20260811_111943166.jpg'}, dateAdded:'2026-08-11'},
       {jp:'相性抜群', romaji:'aishou batsugun', en:'excellent pairing / great match', source:{location:'Yayoiken, Sapporo', date:'2026-08-12', file:'PXL_20260812_105641436.jpg'}, dateAdded:'2026-08-14'},
@@ -3238,7 +3273,7 @@ const VOCAB = {
     chars: '税込 メニュー キンキン…',
     items: [
       {jp:'税込', romaji:'zeikomi', en:'tax included (as opposed to 税別, tax excluded)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'メニュー', romaji:'menyuu', en:'menu', seenAs:'4か国語メニューあり - menus available in 4 languages', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'メニュー', romaji:'menyuu', en:'menu', altForm:'めにゅー', seenAs:'4か国語メニューあり - menus available in 4 languages', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}, dateAdded:'2026-08-10'},
       {jp:'キンキン', romaji:'kinkin', en:'ice-cold', seenAs:'キンキンに冷えてます - it\'s ice-cold in here (shop AC signage)', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_084941221.jpg'}, dateAdded:'2026-08-10'},
       {jp:'選ぶ', romaji:'erabu', en:'to choose', seenAs:'選んで、痺れて、飲み干して！- choose it, feel the tingle, drink it down! (headline)', source:{location:'Kanda / Akihabara', date:'2026-08-08', file:'PXL_20260808_091437118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'営業時間', romaji:'eigyou jikan', en:'business hours', source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092746556.jpg'}, dateAdded:'2026-08-10'},
@@ -3255,7 +3290,9 @@ const VOCAB = {
       {jp:'オトク', romaji:'otoku', en:'a good deal / bargain', altForm:'お得 (kanji form)', source:{location:'Sapporo (izakaya)', date:'2026-08-09', file:'PXL_20260809_092412154.jpg'}, dateAdded:'2026-08-10'},
       {jp:'一品', romaji:'ippin', en:'a single dish / a la carte item', source:{location:'JR Inn Sapporo (hotel, researching restaurants)', date:'2026-08-09', file:'PXL_20260809_103035424.jpg'}, dateAdded:'2026-08-10'},
       {jp:'各位', romaji:'kakui', en:'"to all" / everyone (formal address)', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'快適', romaji:'kaiteki', en:'comfortable', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
+      // 快適 removed - duplicate of the Materials — Stations & trains
+      // entry (same date, earlier in file order; dedup rule for two
+      // Materials copies).
       {jp:'行為', romaji:'koui', en:'act / conduct', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
       {jp:'持ち込み', romaji:'mochikomi', en:'bringing in (items)', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
       {jp:'ワンオーダー制', romaji:'wan oodaa sei', en:'one-order-minimum policy', source:{location:'JR Inn Sapporo (Cafe de Crie)', date:'2026-08-10', file:'PXL_20260810_002319977.jpg'}, dateAdded:'2026-08-10'},
@@ -3318,6 +3355,10 @@ const VOCAB = {
     hasReference: true,
     label: 'Materials — Shops & everyday purchases',
     chars: '生活家電 テレビ オーディオ…',
+    includeItems: [
+      { cat: 'vocab-money-shopping', romaji: 'shouhizei' },
+      { cat: 'vocab-signage-warnings', romaji: 'chuui' },
+    ],
     items: [
       {jp:'生活家電', romaji:'seikatsu kaden', en:'household appliances', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'テレビ', romaji:'terebi', en:'TV', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
@@ -3373,7 +3414,8 @@ const VOCAB = {
       {jp:'オリジナルチキン', romaji:'orijinaru chikin', en:'original chicken (KFC signature product)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お買上', romaji:'okaiage', en:'purchase (polite)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       {jp:'合計', romaji:'goukei', en:'total', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'消費税', romaji:'shouhizei', en:'consumption tax', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      // 消費税 moved to vocab-money-shopping (Trip-canonical copy) - see
+      // includeItems below.
       {jp:'対象', romaji:'taishou', en:'applicable / subject to', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       {jp:'登録番号', romaji:'touroku bangou', en:'registration number', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       {jp:'注文番号', romaji:'chuumon bangou', en:'order number', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
@@ -3383,14 +3425,18 @@ const VOCAB = {
       {jp:'こちら', romaji:'kochira', en:'here / this way', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お返しください', romaji:'okaeshi kudasai', en:'please return (an item)', seenAs:'トレーとバスケットは、こちらへお返しください。- please return trays and baskets here (sign)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       {jp:'捨てる', romaji:'suteru', en:'to throw away / discard', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'営業時間', romaji:'eigyou jikan', en:'business hours', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      // 営業時間 removed - duplicate of the Materials — Restaurants: Ops
+      // entry (earlier date, dedup rule for two Materials copies).
       {jp:'夏季無休', romaji:'kaki mukyuu', en:'open all summer, no holidays', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ペット', romaji:'petto', en:'pet', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ご同伴', romaji:'go-douhan', en:'accompanying / bringing along', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ご遠慮ください', romaji:'go-enryo kudasai', en:'please refrain from', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      // ご遠慮ください removed - duplicate of the Materials — Hotel:
+      // Facilities entry (earlier date, dedup rule for two Materials
+      // copies).
       {jp:'補助犬', romaji:'hojoken', en:'service / assistance dog', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'カラス', romaji:'karasu', en:'crow', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'注意', romaji:'chuui', en:'caution / warning', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      // 注意 moved to vocab-signage-warnings (Trip-canonical copy) - see
+      // includeItems below.
       {jp:'商品', romaji:'shouhin', en:'product / merchandise', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'可能性', romaji:'kanousei', en:'possibility', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ご協力', romaji:'go-kyouryoku', en:'cooperation', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
@@ -3596,7 +3642,8 @@ const VOCAB = {
       {jp:'消毒', romaji:'shoudoku', en:'disinfection / sterilization', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002426356.jpg'}, dateAdded:'2026-08-10'},
       {jp:'客室', romaji:'kyakushitsu', en:'guest room', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
       {jp:'大浴場', romaji:'daiyokujou', en:'large communal bath', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'枕', romaji:'makura', en:'pillow', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      // 枕 from this photo removed - same word as the existing まくら (Trip),
+      // now folded in there as its altForm instead.
       {jp:'自動販売機', romaji:'jidou hanbaiki', en:'vending machine', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
       {jp:'コインランドリー', romaji:'koin randorii', en:'coin laundry / laundromat', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
       {jp:'製氷機', romaji:'seihyouki', en:'ice machine', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
@@ -3651,6 +3698,9 @@ const VOCAB = {
     hasReference: true,
     label: 'Materials — Street & neighbourhood',
     chars: '詩人 漂泊 想い出…',
+    includeItems: [
+      { cat: 'vocab-accommodation', romaji: 'yoyaku' },
+    ],
     // Doesn't fit stations/shops/restaurants/entertainment/airport/hotel -
     // this is for signage and notices you run into incidentally while just
     // wandering a town on foot (historical plaques, shopfronts, community
@@ -3664,7 +3714,8 @@ const VOCAB = {
       {jp:'想い出', romaji:'omoide', en:'memories', altForm:'思い出 (more common kanji form)', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024845118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'駅長', romaji:'ekichou', en:'station master', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024845118.jpg'}, dateAdded:'2026-08-10'},
       {jp:'歯科', romaji:'shika', en:'dentistry / dental clinic', source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'予約', romaji:'yoyaku', en:'reservation / appointment', seenAs:'予約 also labels the delayed-start timer button on a washing machine (Tokyu Stay Kyoto) - same underlying idea, "set this to happen later," not a separate word', source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10'},
+      // 予約 moved to vocab-accommodation (Trip-canonical copy; its seenAs
+      // washing-machine note was copied across) - see includeItems below.
       {jp:'受付', romaji:'uketsuke', en:'reception / accepting', source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10'},
       {jp:'小児', romaji:'shouni', en:'pediatric / small child', source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10'},
       {jp:'矯正', romaji:'kyousei', en:'orthodontics / correction', source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10'},
@@ -3846,6 +3897,29 @@ const THEME_CACHE = {};
 function resolveVocabCategory(key) {
   if (VOCAB[key]) {
     const cat = VOCAB[key];
+    // includeItems lets a category display a word it doesn't actually store -
+    // the word stays a single entry, kept in whichever category is its real
+    // home (used for words that exist both as curated Trip prep and as
+    // something genuinely photographed in Materials: the Materials copy is
+    // the one stored copy, Trip references it instead of duplicating it).
+    // Resolved fresh here rather than stored, same reasoning as theme pools
+    // below - always reflects the current state of the source category.
+    // Scoring needs no special handling: progress is keyed by the word's own
+    // jp+en text (see kanaScores), not by which category holds it, so this
+    // is naturally one shared score no matter which screen you drill it from.
+    if (cat.includeItems && cat.includeItems.length) {
+      const extra = cat.includeItems.map(ref => {
+        const sourceCat = VOCAB[ref.cat];
+        const item = sourceCat && sourceCat.items.find(i => i.romaji === ref.romaji);
+        // Tagged with the true source category/level (not this one) so the
+        // border colour and any future tier-specific display stays honest
+        // about where the word actually lives.
+        return item ? Object.assign({ level: sourceCat.level || 1, groupKey: ref.cat }, item) : null;
+      }).filter(Boolean);
+      const items = cat.items.concat(extra);
+      if (cat.ordinalOrder) return Object.assign({}, cat, { items });
+      return Object.assign({}, cat, { items: sortItemsAlphabetically(items) });
+    }
     // ordinalOrder categories (days of the week/month, months, numbers,
     // the zodiac-ordered animal set, time vocab's past/present/future
     // groupings) carry a taught sequence that alphabetizing would destroy -
@@ -5916,7 +5990,10 @@ function continuousScoreClass(score) {
 // show no shading at all, same convention as kanaScoreClass for single items.
 // Returns null when zero items in the category have been drilled.
 function getCategoryAverageScore(categoryKey) {
-  const v = VOCAB[categoryKey];
+  // Routed through resolveVocabCategory (not raw VOCAB[categoryKey]) so a
+  // category using includeItems gets a swatch that reflects the referenced
+  // word's score too, not just its own stored items.
+  const v = resolveVocabCategory(categoryKey);
   if (!v) return null;
   return getItemsAverageScore(v.items);
 }
@@ -7180,7 +7257,10 @@ function buildMatchCategoryList() {
     card.className = 'match-card-select';
     card.dataset.key = key;
     const confCls = categoryConfidenceClass(getCategoryAverageScore(key));
-    const countText = v.note ? `${v.note} — ${v.items.length} words` : `${v.items.length} words`;
+    // resolveVocabCategory here too (not raw v.items) - so a category using
+    // includeItems shows an accurate count including the referenced word.
+    const resolvedCount = resolveVocabCategory(key).items.length;
+    const countText = v.note ? `${v.note} — ${resolvedCount} words` : `${resolvedCount} words`;
     card.innerHTML = `<div class="group-info"><div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${countText}</div></div><div class="cat-swatch${confCls ? ' ' + confCls : ''}"></div>`;
     if (v.hasReference) {
       card.onclick = () => showVocabTileSelection(key);
