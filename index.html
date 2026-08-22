@@ -976,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.006</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.007</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1478,6 +1478,19 @@
           <div class="group-name">Core grammar words</div>
           <div class="group-chars">きます あたらしい ここ…</div>
           <div class="group-count">Verbs + Adjectives + Question & location words, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <!-- First tag-driven Collection - see theme-question-words in THEMES
+           and getThemePool's tagQuery branch. Always visible (unlike the two
+           Trip-gated cards below) since part of its pool is ordinary L2
+           content; the Andrew-tier portion appears/disappears from the pool
+           on its own via categoryTierVisible, no card-level hiding needed. -->
+      <div class="group-card" data-theme-key="theme-question-words" onclick="showVocabTileSelection('theme-question-words')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Question words</div>
+          <div class="group-chars">なに どこ いつ…</div>
+          <div class="group-count">Every word tagged question-word, wherever it lives</div>
         </div>
         <div class="cat-swatch"></div>
       </div>
@@ -2307,13 +2320,16 @@ const VOCAB = {
     chars: 'なん だれ どこ…',
     items: [
       {jp:'ここ', romaji:'koko', en:'here', dateAdded:'2026-08-01'},
-      {jp:'いくら', romaji:'ikura', en:'how much', dateAdded:'2026-08-01'},
+      {jp:'いくら', romaji:'ikura', en:'how much', tags:['question-word'], dateAdded:'2026-08-01'},
       {jp:'あそこ', romaji:'asoko', en:'over there', dateAdded:'2026-08-01'},
       {jp:'そこ', romaji:'soko', en:'there', dateAdded:'2026-08-01'},
+      // なん (nan) is a distinct reading of 何 from なに (nani) used in the
+      // Reference - Question words category - not the same word, kept
+      // separate rather than tagged together.
       {jp:'なん', romaji:'nan', en:'what', dateAdded:'2026-08-01'},
-      {jp:'いつ', romaji:'itsu', en:'when', dateAdded:'2026-08-01'},
-      {jp:'どこ', romaji:'doko', en:'where', dateAdded:'2026-08-01'},
-      {jp:'だれ', romaji:'dare', en:'who', dateAdded:'2026-08-01'},
+      {jp:'いつ', romaji:'itsu', en:'when', tags:['question-word'], dateAdded:'2026-08-01'},
+      {jp:'どこ', romaji:'doko', en:'where', tags:['question-word'], dateAdded:'2026-08-01'},
+      {jp:'だれ', romaji:'dare', en:'who', tags:['question-word'], dateAdded:'2026-08-01'},
     ],
   },
   'vocab-verbs-l2': {
@@ -3793,6 +3809,43 @@ const VOCAB = {
       {jp:'排出', romaji:'haishutsu', en:'disposal / discharge (of waste)', source:{location:'Otaru (Shinonome-cho)', date:'2026-08-10', file:'PXL_20260810_043351907.jpg'}, dateAdded:'2026-08-10'},
     ],
   },
+  // First real content pulled from an outside reference source rather than
+  // the trip itself or a class lesson (an Instagram graphic, not a photo of
+  // real signage) - and the first proving ground for the `tags` mechanism
+  // (see getThemePool's tagQuery branch and the "Question words" Collection
+  // below). Browsable on its own here like any other Andrew-tier category,
+  // same words also surface pooled together with the matching L2 lesson
+  // words via that Collection - no duplication, single shared score either
+  // way. Kanji-primary words from the source graphic were converted to
+  // kana-primary + kanji altForm to match the rest of the question-word set
+  // (see the L2 duplicates above) rather than standing out as the only
+  // kanji-heavy entries in the pool - kanji isn't taught yet, so nothing
+  // here should read differently than an ordinary L2 word until it is.
+  // A handful of words from the same graphic (大丈夫, 本当, まだ, どう思う,
+  // どうしよう, できる, 知ってる, わかった) were deliberately left out - real
+  // words, but reaction/set phrases rather than question words themselves,
+  // and not part of this tag.
+  'vocab-reference-question-words': {
+    level: 'andrew',
+    hasReference: true,
+    label: 'Reference — Question words',
+    chars: 'なに どこ いつ…',
+    items: [
+      {jp:'なに', romaji:'nani', en:'what', altForm:'何', altIsStandard:true, tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どうして', romaji:'doushite', en:'why', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'なんじ', romaji:'nanji', en:'what time', altForm:'何時', altIsStandard:true, tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'なぜ', romaji:'naze', en:'why (more formal)', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どう', romaji:'dou', en:'how', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どっち', romaji:'dotchi', en:'which way / which one (of two)', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どれ', romaji:'dore', en:'which one (of three or more)', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どうやって', romaji:'dou yatte', en:'how (do you do it) / how does it work', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どんな', romaji:'donna', en:'what kind of', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'なにが', romaji:'nani ga', en:'what (as the subject)', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'なにを', romaji:'nani wo', en:'what (as the object)', altForm:'何を', altIsStandard:true, tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'どのくらい', romaji:'dono kurai', en:'how long / how much (extent)', tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'なんのため', romaji:'nan no tame', en:'what for', altForm:'何のため', altIsStandard:true, tags:['question-word'], source:{location:'Instagram (@tokyowords.jp)', date:'2026-08-20', file:'Screenshot_20260820-122400.jpg'}, dateAdded:'2026-08-22'},
+    ],
+  },
 };
 
 // Themes bring together items from several existing VOCAB categories into one
@@ -3873,6 +3926,23 @@ const THEMES = {
     chars: 'たすけて けいさつ びょういん…',
     groups: [['vocab-trip-prep'], ['vocab-emergency-survival']],
   },
+  // First Collection built from a tag rather than a hand-picked list of
+  // source categories - see getThemePool's tagQuery branch. Pulls every
+  // item anywhere carrying tags:['question-word'], which right now means
+  // the 4 already-taught L2 duplicates (いつ/どこ/だれ/いくら, tagged in
+  // place in Question & location words - no duplication, same score either
+  // way) plus the 13 new ones in Reference - Question words. No level set
+  // here deliberately, unlike the Trip-only Collections above: this card
+  // always shows, and the pool itself grows or shrinks depending on the
+  // Andrew mode toggle (the 13 reference words live in an Andrew-tier
+  // category, so categoryTierVisible drops them from the pool the moment
+  // Andrew mode is off, same as it would drop them from their own category -
+  // nothing extra to wire on the card itself for that to work).
+  'theme-question-words': {
+    label: 'Question words',
+    chars: 'なに どこ いつ…',
+    tagQuery: 'question-word',
+  },
 };
 
 // Every source category above is Level 2 or Trip - categoryTierVisible
@@ -3894,6 +3964,27 @@ function getThemePool(themeKey) {
     if (!cat) return [];
     if (!categoryTierVisible(cat.level)) return [];
     return cat.items.map(item => Object.assign({ level: cat.level || 1, groupKey: catKey }, item));
+  }
+
+  // Tag-query themes - membership isn't a hand-picked list of whole
+  // categories (like sources/groups below), it's "every item anywhere that
+  // carries this tag", found by scanning every category once. Still respects
+  // categoryTierVisible per source category, same as buildCategoryItems
+  // above - a tagged item living in an Andrew-only category still
+  // disappears from a tag pool the moment Andrew mode is switched off, same
+  // as it would from its own category. This is deliberately the same
+  // membership concept as sources/groups (a named, curated pool of words to
+  // drill) just resolved a different way - a word doesn't need to be
+  // duplicated or manually added to a category list to show up here, it just
+  // needs the tag, wherever it happens to actually live.
+  if (theme.tagQuery) {
+    const items = [];
+    Object.keys(VOCAB).forEach(catKey => {
+      buildCategoryItems(catKey).forEach(item => {
+        if (item.tags && item.tags.includes(theme.tagQuery)) items.push(item);
+      });
+    });
+    return sortItemsAlphabetically(items);
   }
 
   if (theme.noSort) {
