@@ -976,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.005</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.006</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2222,7 +2222,7 @@ const VOCAB = {
       {jp:'かいぎ', romaji:'kaigi', en:'meeting', altForm:'会議', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'えいが', romaji:'eiga', en:'movie', altForm:'映画', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'パーティー', romaji:'paatii', en:'party', dateAdded:'2026-08-01'},
-      {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'ごはん', romaji:'gohan', en:'rice / meal', altForm:'ご飯', altIsStandard:true, seenAs:'ごはん also labels the rice preset button on a microwave (Tokyu Stay Kyoto) - same word, not a separate one', dateAdded:'2026-08-01'},
       {jp:'ごみばこ', romaji:'gomibako', en:'rubbish bin', altForm:'ゴミ箱', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'はさみ', romaji:'hasami', en:'scissors', dateAdded:'2026-08-01'},
       {jp:'きせつ', romaji:'kisetsu', en:'season', altForm:'季節', altIsStandard:true, dateAdded:'2026-08-01'},
@@ -2713,11 +2713,16 @@ const VOCAB = {
     chars: 'すし きっぷ たすけて…',
     // See resolveVocabCategory - references a single word actually stored in
     // Materials rather than duplicating it here too.
-    includeItems: [{ cat: 'vocab-materials-stations', romaji: 'kippu' }],
+    includeItems: [
+      { cat: 'vocab-materials-stations', romaji: 'kippu' },
+      { cat: 'vocab-materials-hotel-appliances', romaji: 'nomimono' },
+    ],
     items: [
       {jp:'おおきい', romaji:'ookii', en:'big', dateAdded:'2026-08-01'},
       {jp:'やすい', romaji:'yasui', en:'cheap', dateAdded:'2026-08-01'},
-      {jp:'のみもの', romaji:'nomimono', en:'drink', dateAdded:'2026-08-01'},
+      // のみもの moved to vocab-materials-hotel-appliances (real-world
+      // evidenced copy, seen as a microwave preset button) - see
+      // includeItems above.
       {jp:'いりぐち', romaji:'iriguchi', en:'entrance', dateAdded:'2026-08-01'},
       {jp:'でぐち', romaji:'deguchi', en:'exit', altForm:'出口', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'たかい', romaji:'takai', en:'expensive', dateAdded:'2026-08-01'},
@@ -3565,25 +3570,25 @@ const VOCAB = {
       {jp:'使用', romaji:'shiyou', en:'use', seenAs:'避難にあたっては、絶対にエレベーターを使用しないでください。- when evacuating, absolutely do not use the elevator', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
       {jp:'かざす', romaji:'kazasu', en:'to hold (something) over/up to', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002426356.jpg'}, dateAdded:'2026-08-10'},
       {jp:'かんたん', romaji:'kantan', en:'easy / simple', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002426356.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'キャッシュレス', romaji:'kyasshuresu', en:'cashless', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'決済', romaji:'kessai', en:'payment / settlement', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'キャッシュレス', romaji:'kyasshuresu', en:'cashless', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'決済', romaji:'kessai', en:'payment / settlement', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
       {jp:'各種', romaji:'kakushu', en:'various types / each kind', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'クレジットカード', romaji:'kurejitto kaado', en:'credit card', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'コード決済', romaji:'koodo kessai', en:'QR code payment', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'洗濯', romaji:'sentaku', en:'laundry / washing', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'クレジットカード', romaji:'kurejitto kaado', en:'credit card', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'コード決済', romaji:'koodo kessai', en:'QR code payment', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'洗濯', romaji:'sentaku', en:'laundry / washing', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'順序', romaji:'junjo', en:'order / procedure', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'硬貨', romaji:'kouka', en:'coin', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'投入', romaji:'tounyuu', en:'insert / put in', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ソフト剤', romaji:'sofuto zai', en:'fabric softener', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'硬貨', romaji:'kouka', en:'coin', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'投入', romaji:'tounyuu', en:'insert / put in', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ソフト剤', romaji:'sofuto zai', en:'fabric softener', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'据え付け', romaji:'suetsuke', en:'installation', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'警告', romaji:'keikoku', en:'warning', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'感電', romaji:'kanden', en:'electric shock', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'操作', romaji:'sousa', en:'operation', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ドラム', romaji:'doramu', en:'drum', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'排気フィルター', romaji:'haiki firutaa', en:'exhaust filter', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'脱水', romaji:'dassui', en:'spin-dry / dehydration', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ドラム', romaji:'doramu', en:'drum', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'排気フィルター', romaji:'haiki firutaa', en:'exhaust filter', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'脱水', romaji:'dassui', en:'spin-dry / dehydration', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
       {jp:'乾燥容量', romaji:'kansou youryou', en:'drying capacity', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'硬貨専用', romaji:'kouka senyou', en:'coins only', devices:['washing-machine'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'硬貨専用', romaji:'kouka senyou', en:'coins only', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
       {jp:'にぎる', romaji:'nigiru', en:'to grip / hold', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054656071.TS-000.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ゆらす', romaji:'yurasu', en:'to shake / sway', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054656071.TS-000.jpg'}, dateAdded:'2026-08-11'},
       {jp:'引き抜く', romaji:'hikinuku', en:'to pull out', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054656071.TS-000.jpg'}, dateAdded:'2026-08-11'},
@@ -3596,8 +3601,8 @@ const VOCAB = {
       {jp:'解凍', romaji:'kaitou', en:'defrost', devices:['microwave'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_061436925.jpg'}, dateAdded:'2026-08-11'},
       {jp:'インストール', romaji:'insutooru', en:'install', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
       {jp:'必要', romaji:'hitsuyou', en:'necessary', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'洗剤', romaji:'senzai', en:'detergent', devices:['washing-machine'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'自動投入', romaji:'jidou tounyuu', en:'automatic dispensing', devices:['washing-machine'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'洗剤', romaji:'senzai', en:'detergent', devices:['laundry'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'自動投入', romaji:'jidou tounyuu', en:'automatic dispensing', devices:['laundry'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_090603573.jpg'}, dateAdded:'2026-08-11'},
       {jp:'目安', romaji:'meyasu', en:'guideline / rough estimate', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_095209622.jpg'}, dateAdded:'2026-08-11'},
       {jp:'掃除', romaji:'souji', en:'cleaning (e.g. the washing machine)', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_095209622.jpg'}, dateAdded:'2026-08-11'},
       {jp:'暖房', romaji:'danbou', en:'heating', devices:['ac'], source:{location:'Super Hotel Premier Osaka Honmachi (room, AC remote)', date:'2026-08-14', file:'PXL_20260814_061846966.jpg'}, dateAdded:'2026-08-15'},
@@ -3611,12 +3616,12 @@ const VOCAB = {
       // kanji/reading already covered by the 予約 entry in Materials -
       // Street, just enriched with a seenAs there showing this delayed-start
       // timer usage as a new example of the same word.
-      {jp:'お手入れ', romaji:'oteire', en:'maintenance / care (appliance cleaning cycle)', devices:['washing-machine'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'温水', romaji:'onsui', en:'warm water', devices:['washing-machine'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'すすぎ', romaji:'susugi', en:'rinse', devices:['washing-machine'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'乾燥', romaji:'kansou', en:'drying', devices:['washing-machine'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'標準', romaji:'hyoujun', en:'standard (setting)', devices:['washing-machine'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'ドアロック', romaji:'doa rokku', en:'door lock (appliance status)', devices:['washing-machine'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'お手入れ', romaji:'oteire', en:'maintenance / care (appliance cleaning cycle)', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'温水', romaji:'onsui', en:'warm water', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'すすぎ', romaji:'susugi', en:'rinse', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'乾燥', romaji:'kansou', en:'drying', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'標準', romaji:'hyoujun', en:'standard (setting)', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'ドアロック', romaji:'doa rokku', en:'door lock (appliance status)', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, washing machine)', date:'2026-08-20', file:'PXL_20260820_073154857.jpg'}, dateAdded:'2026-08-21'},
       // 設定温度 from this photo skipped - exact duplicate already covered
       // above.
       {jp:'運転/停止', romaji:'unten/teishi', en:'operate / stop', devices:['ac'], source:{location:'Tokyu Stay Kyoto (hotel room, AC unit)', date:'2026-08-22', file:'PXL_20260822_003816959.jpg'}, dateAdded:'2026-08-22'},
@@ -3630,6 +3635,35 @@ const VOCAB = {
       {jp:'フィルター清掃', romaji:'firutaa seisou', en:'filter cleaning', devices:['ac'], source:{location:'Tokyu Stay Kyoto (hotel room, AC unit)', date:'2026-08-22', file:'PXL_20260822_003816959.jpg'}, dateAdded:'2026-08-22'},
       {jp:'故障', romaji:'koshou', en:'malfunction / breakdown', devices:['ac'], seenAs:'風向、風速がリモコン表示と異なりますが故障ではありません。- the vane/fan speed may differ from the remote display, but this is not a malfunction', source:{location:'Tokyu Stay Kyoto (hotel room, AC unit)', date:'2026-08-22', file:'PXL_20260822_003816959.jpg'}, dateAdded:'2026-08-22'},
       {jp:'クリア', romaji:'kuria', en:'clear (button)', devices:['ac'], source:{location:'Tokyu Stay Kyoto (hotel room, AC unit)', date:'2026-08-22', file:'PXL_20260822_003816959.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'画面表示', romaji:'gamen hyouji', en:'screen display (button)', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'番組表', romaji:'bangumihyou', en:'TV program guide', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'入力切換', romaji:'nyuuryoku kirikae', en:'input switch', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'音量', romaji:'onryou', en:'volume', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'チャンネル', romaji:'channeru', en:'channel', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'字幕', romaji:'jimaku', en:'subtitles', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'早送り', romaji:'hayaokuri', en:'fast forward', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'早戻し', romaji:'hayamodoshi', en:'rewind', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'一時停止', romaji:'ichiji teishi', en:'pause', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'消音', romaji:'shouon', en:'mute', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'音声切換', romaji:'onsei kirikae', en:'audio track switch', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'録画リスト', romaji:'rokuga risuto', en:'recording list', devices:['tv-remote'], source:{location:'Tokyu Stay Kyoto (hotel room, TV remote)', date:'2026-08-22', file:'PXL_20260822_125930013.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'飲み物', romaji:'nomimono', en:'drink / beverage (preset button)', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      // ごはん from this photo skipped as a standalone item - same word
+      // already covered by the ごはん entry in Level 2's General vocabulary,
+      // just enriched with a seenAs there showing this microwave preset
+      // button usage as a new example of the same word.
+      {jp:'レンジ', romaji:'renji', en:'microwave (reheat mode)', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'弱', romaji:'jaku', en:'weak (power level)', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'強', romaji:'kyou', en:'strong (power level)', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'時短', romaji:'jitan', en:'time-saving (mode)', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'冷食時短', romaji:'reishoku jitan', en:'quick-time for frozen food', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'あたためスタート', romaji:'atatame sutaato', en:'start warming/heating (button)', devices:['microwave'], source:{location:'Tokyu Stay Kyoto (hotel room, microwave)', date:'2026-08-22', file:'PXL_20260822_125942537.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'ドラム式専用', romaji:'doramu shiki senyou', en:'for drum-type (washing machines) only', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, laundry detergent bottle)', date:'2026-08-22', file:'PXL_20260822_125956962.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'洗浄力', romaji:'senjouryoku', en:'cleaning power', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, laundry detergent bottle)', date:'2026-08-22', file:'PXL_20260822_125956962.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'抗菌', romaji:'koukin', en:'antibacterial', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, laundry detergent bottle)', date:'2026-08-22', file:'PXL_20260822_125956962.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'防カビ', romaji:'bou kabi', en:'mold prevention', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, laundry detergent bottle)', date:'2026-08-22', file:'PXL_20260822_125956962.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'プッシュ', romaji:'pusshu', en:'push (pump count unit for dosing)', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, laundry detergent bottle)', date:'2026-08-22', file:'PXL_20260822_125956962.jpg'}, dateAdded:'2026-08-22'},
+      {jp:'使用量', romaji:'shiyouryou', en:'amount to use / dosage', devices:['laundry'], source:{location:'Tokyu Stay Kyoto (hotel, laundry detergent bottle)', date:'2026-08-22', file:'PXL_20260822_125956962.jpg'}, dateAdded:'2026-08-22'},
     ],
   },
   'vocab-materials-hotel-facilities': {
@@ -9159,11 +9193,14 @@ function showVocabReference(categoryKey) {
 // hotel room has it, more niche panels after.
 const APPLIANCE_DEVICE_LABELS = {
   'ac': 'Air conditioning',
-  'washing-machine': 'Washing machine',
+  'tv-remote': 'TV remote',
+  'laundry': 'Laundry', // was "Washing machine" - widened to cover the
+                         // machine's own panel plus things like detergent
+                         // bottle labels once those started showing up too.
   'microwave': 'Microwave',
   'door-lock': 'Door lock / key card',
 };
-const APPLIANCE_DEVICE_ORDER = ['ac', 'washing-machine', 'microwave', 'door-lock'];
+const APPLIANCE_DEVICE_ORDER = ['ac', 'tv-remote', 'laundry', 'microwave', 'door-lock'];
 
 // Reference-only cross-cut of Materials — Hotel: Appliances & machines,
 // grouped by which physical panel/remote/dispenser each word was actually
