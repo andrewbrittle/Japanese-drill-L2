@@ -964,7 +964,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260821.002</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260821.003</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1447,9 +1447,9 @@
       </div>
       <div class="group-card" data-theme-key="theme-days-times" onclick="showVocabTileSelection('theme-days-times')" style="cursor:pointer;">
         <div class="group-info">
-          <div class="group-name">Days and times</div>
-          <div class="group-chars">げつようび ごぜん はん…</div>
-          <div class="group-count">Days of the week + Time vocabulary, brought together</div>
+          <div class="group-name">Calendar & time</div>
+          <div class="group-chars">げつようび いちがつ ついたち…</div>
+          <div class="group-count">Days of the week + Months + Days of the month + Time vocabulary, brought together</div>
         </div>
         <div class="cat-swatch"></div>
       </div>
@@ -1458,6 +1458,14 @@
           <div class="group-name">Everyday items, clothing & general vocab</div>
           <div class="group-chars">かさ くつ かぞく…</div>
           <div class="group-count">Everyday items + Clothing + General vocabulary, brought together</div>
+        </div>
+        <div class="cat-swatch"></div>
+      </div>
+      <div class="group-card" data-theme-key="theme-core-grammar" onclick="showVocabTileSelection('theme-core-grammar')" style="cursor:pointer;">
+        <div class="group-info">
+          <div class="group-name">Core grammar words</div>
+          <div class="group-chars">きます あたらしい ここ…</div>
+          <div class="group-count">Verbs + Adjectives + Question & location words, brought together</div>
         </div>
         <div class="cat-swatch"></div>
       </div>
@@ -3703,16 +3711,33 @@ const THEMES = {
     chars: 'あめりか とうきょう…',
     groups: [['vocab-countries'], ['vocab-cities']],
   },
+  // Renamed from "Days and times" and widened to cover the whole calendar -
+  // Months and Days of the month previously had no Collection at all, sitting
+  // as two standalone tiles nobody would think to combine on their own.
+  // Still noSort (see above) since all four source categories are themselves
+  // ordinal (Mon-Sun, Jan-Dec, 1st-31st) and alphabetizing would scramble
+  // that. Order here is deliberately "the calendar, then the clock" - days,
+  // months, dates, then the more general time expressions.
   'theme-days-times': {
-    label: 'Days and times',
-    chars: 'げつようび ごぜん はん…',
+    label: 'Calendar & time',
+    chars: 'げつようび いちがつ ついたち…',
     noSort: true,
-    sources: ['vocab-days-l2', 'vocab-time-l2'],
+    sources: ['vocab-days-l2', 'vocab-months-l2', 'vocab-days-of-month-l2', 'vocab-time-l2'],
   },
   'theme-items-clothing-general': {
     label: 'Everyday items, clothing & general vocab',
     chars: 'かさ くつ かぞく…',
     groups: [['vocab-objects'], ['vocab-clothing'], ['vocab-general-l2']],
+  },
+  // New - Verbs/Adjectives/Question words are all "functional" categories
+  // (the words a sentence is built FROM) rather than themed nouns, and none
+  // of the three had a Collection either. Grouped (not noSort) since there's
+  // no single taught order spanning all three the way the calendar has -
+  // each block alphabetizes on its own, with a divider between blocks.
+  'theme-core-grammar': {
+    label: 'Core grammar words',
+    chars: 'きます あたらしい ここ…',
+    groups: [['vocab-verbs-l2'], ['vocab-adjectives-l2'], ['vocab-question-location']],
   },
   // level here isn't read by getThemePool - visibility for this one is
   // wired directly on its card (theme-getting-around-card) in
