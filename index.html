@@ -659,6 +659,18 @@
     margin: 0.9rem 0 0.3rem; padding-left: 0.2rem;
   }
   .kana-transform-group-label:first-child { margin-top: 0; }
+  /* Device headings on the Appliances reference page - deliberately its own
+     class rather than reusing .kana-transform-group-label above, so this
+     doesn't also change the unrelated dakuten/handakuten reference page.
+     Sized a step below #vocab-ref-title (22px) and picked out in the app's
+     gold accent so each device name reads as a clear section break while
+     scanning, rather than blending into the entry rows below it. */
+  .appliance-device-heading {
+    font-size: 17px; font-weight: 800; color: var(--accent);
+    margin: 1rem 0 0.4rem; padding-left: 0.2rem;
+    font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
+  }
+  .appliance-device-heading:first-child { margin-top: 0; }
   .kana-transform-row {
     display: flex; align-items: center; justify-content: center; gap: 1.1rem;
     background: var(--surface); border: 1px solid var(--border);
@@ -964,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.004</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.005</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -9183,7 +9195,7 @@ function showApplianceDeviceReference() {
     const matches = items.filter(item => item.devices && item.devices.includes(device));
     if (!matches.length) return;
     const heading = document.createElement('div');
-    heading.className = 'kana-transform-group-label';
+    heading.className = 'appliance-device-heading';
     heading.textContent = APPLIANCE_DEVICE_LABELS[device] || device;
     list.appendChild(heading);
     // Alphabetical within each device (by en) - this page is meant to give
