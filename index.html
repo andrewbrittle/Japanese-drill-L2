@@ -976,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.007</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260822.008</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2909,24 +2909,24 @@ const VOCAB = {
     items: [
       {jp:'かど', romaji:'kado', en:'corner', altForm:'角', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'とおい', romaji:'tooi', en:'far', dateAdded:'2026-08-01'},
-      {jp:'ICカード', romaji:'ai shii kaado', en:'IC (transit) card', dateAdded:'2026-08-01'},
+      {jp:'ICカード', romaji:'ai shii kaado', en:'IC (transit) card', tags:['stations'], dateAdded:'2026-08-01'},
       {jp:'あんないじょ', romaji:'annaijo', en:'information desk', altForm:'案内所', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'こうさてん', romaji:'kousaten', en:'intersection', altForm:'交差点', altIsStandard:true, dateAdded:'2026-08-01'},
       {jp:'ひだり', romaji:'hidari', en:'left', dateAdded:'2026-08-01'},
       {jp:'ちかい', romaji:'chikai', en:'near', dateAdded:'2026-08-01'},
-      {jp:'かたみちきっぷ', romaji:'katamichi kippu', en:'one-way ticket', dateAdded:'2026-08-01'},
+      {jp:'かたみちきっぷ', romaji:'katamichi kippu', en:'one-way ticket', tags:['stations'], dateAdded:'2026-08-01'},
       {jp:'おうだんほどう', romaji:'oudanhodou', en:'pedestrian crossing', altForm:'横断歩道', altIsStandard:true, dateAdded:'2026-08-01'},
       // ホーム moved to vocab-materials-stations (real-world evidenced
       // copy) - see includeItems above.
-      {jp:'おうふくきっぷ', romaji:'oufuku kippu', en:'return ticket', dateAdded:'2026-08-01'},
+      {jp:'おうふくきっぷ', romaji:'oufuku kippu', en:'return ticket', tags:['stations'], dateAdded:'2026-08-01'},
       {jp:'みぎ', romaji:'migi', en:'right', dateAdded:'2026-08-01'},
-      {jp:'ろせんず', romaji:'rosenzu', en:'route map', altForm:'路線図', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'ろせんず', romaji:'rosenzu', en:'route map', altForm:'路線図', altIsStandard:true, tags:['stations'], dateAdded:'2026-08-01'},
       // まっすぐ moved to vocab-materials-stations (real-world evidenced
       // copy) - see includeItems above.
-      {jp:'かいさつぐち', romaji:'kaisatsuguchi', en:'ticket gate', altForm:'改札口', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'かいさつぐち', romaji:'kaisatsuguchi', en:'ticket gate', altForm:'改札口', altIsStandard:true, tags:['stations'], dateAdded:'2026-08-01'},
       {jp:'しんごう', romaji:'shingou', en:'traffic light', altForm:'信号', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'えきは どこですか', romaji:'eki wa doko desu ka', en:'where is the station?', dateAdded:'2026-08-01'},
-      {jp:'なんばんせん ですか', romaji:'nanbansen desu ka', en:'which platform is it?', dateAdded:'2026-08-01'},
+      {jp:'えきは どこですか', romaji:'eki wa doko desu ka', en:'where is the station?', tags:['stations'], dateAdded:'2026-08-01'},
+      {jp:'なんばんせん ですか', romaji:'nanbansen desu ka', en:'which platform is it?', tags:['stations'], dateAdded:'2026-08-01'},
       {jp:'きた', romaji:'kita', en:'north', altForm:'北', altIsStandard:true, dateAdded:'2026-08-12'},
       {jp:'みなみ', romaji:'minami', en:'south', altForm:'南', altIsStandard:true, dateAdded:'2026-08-12'},
       {jp:'ひがし', romaji:'higashi', en:'east', altForm:'東', altIsStandard:true, dateAdded:'2026-08-12'},
@@ -3044,104 +3044,104 @@ const VOCAB = {
     label: 'Materials — Stations & trains',
     chars: 'インターホン 駅事務室 連絡用…',
     items: [
-      {jp:'インターホン', romaji:'intahon', en:'intercom', seenAs:'インターホン（駅事務室連絡用） - as labeled on the sign: intercom for contacting the station office', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'駅事務室', romaji:'eki jimushitsu', en:'station office', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'連絡用', romaji:'renraku-you', en:'for contacting / for communication', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'呼び出し', romaji:'yobidashi', en:'call / summon / page', altForm:'呼びだし (as shown on the sign, mixed kana)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ご案内', romaji:'go-annai', en:'notice / information', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'車いす', romaji:'kuruma-isu', en:'wheelchair', altForm:'車椅子 (full kanji form)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ご利用', romaji:'go-riyou', en:'use (polite)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お客様', romaji:'okyaku-sama', en:'customer / passenger', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'西口', romaji:'nishi-guchi', en:'west exit', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'改札', romaji:'kaisatsu', en:'ticket gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お廻り下さい', romaji:'o-mawari kudasai', en:'please go around / detour', altForm:'お回りください (more common modern spelling)', seenAs:'車いすをご利用のお客様は西口改札へお廻り下さい。- full notice: wheelchair users please go around to the west exit gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'〜階ホームです', romaji:'~-kai hoomu desu', en:'(this) is the ~ floor platform', seenAs:'ここは3階ホームです - as shown on the sign: this is the 3rd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ホーム', romaji:'hoomu', en:'platform (train)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'方面', romaji:'houmen', en:'bound for / direction', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'〜方面への列車', romaji:'~ houmen e no ressha', en:'train bound for ~', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'列車', romaji:'ressha', en:'train', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'発車します', romaji:'hassha shimasu', en:'will depart', seenAs:'品川・新橋方面への列車は2階ホームから発車します。- full sign: trains bound for Shinagawa/Shimbashi depart from the 2nd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お並びいただき', romaji:'onarabi itadaki', en:'please line up (queue)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'中央', romaji:'chuuou', en:'center / middle', seenAs:'中央はお空けください - please leave the center open (queueing announcement)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お空けください', romaji:'o-ake kudasai', en:'please leave (a space) open', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'インターホン', romaji:'intahon', en:'intercom', tags:['stations'], seenAs:'インターホン（駅事務室連絡用） - as labeled on the sign: intercom for contacting the station office', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'駅事務室', romaji:'eki jimushitsu', en:'station office', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'連絡用', romaji:'renraku-you', en:'for contacting / for communication', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'呼び出し', romaji:'yobidashi', en:'call / summon / page', tags:['stations'], altForm:'呼びだし (as shown on the sign, mixed kana)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233744426.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ご案内', romaji:'go-annai', en:'notice / information', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'車いす', romaji:'kuruma-isu', en:'wheelchair', tags:['stations'], altForm:'車椅子 (full kanji form)', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ご利用', romaji:'go-riyou', en:'use (polite)', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お客様', romaji:'okyaku-sama', en:'customer / passenger', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'西口', romaji:'nishi-guchi', en:'west exit', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'改札', romaji:'kaisatsu', en:'ticket gate', tags:['stations'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お廻り下さい', romaji:'o-mawari kudasai', en:'please go around / detour', tags:['stations'], altForm:'お回りください (more common modern spelling)', seenAs:'車いすをご利用のお客様は西口改札へお廻り下さい。- full notice: wheelchair users please go around to the west exit gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'〜階ホームです', romaji:'~-kai hoomu desu', en:'(this) is the ~ floor platform', tags:['stations'], seenAs:'ここは3階ホームです - as shown on the sign: this is the 3rd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ホーム', romaji:'hoomu', en:'platform (train)', tags:['stations'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'方面', romaji:'houmen', en:'bound for / direction', tags:['stations'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'〜方面への列車', romaji:'~ houmen e no ressha', en:'train bound for ~', tags:['stations'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'列車', romaji:'ressha', en:'train', tags:['stations'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'発車します', romaji:'hassha shimasu', en:'will depart', tags:['stations'], seenAs:'品川・新橋方面への列車は2階ホームから発車します。- full sign: trains bound for Shinagawa/Shimbashi depart from the 2nd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お並びいただき', romaji:'onarabi itadaki', en:'please line up (queue)', tags:['stations'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'中央', romaji:'chuuou', en:'center / middle', tags:['stations'], seenAs:'中央はお空けください - please leave the center open (queueing announcement)', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お空けください', romaji:'o-ake kudasai', en:'please leave (a space) open', tags:['stations'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       // 出口 from this photo removed - same word as the existing でぐち
       // (Trip), now folded in there as its altForm instead.
-      {jp:'山手線', romaji:'Yamanote-sen', en:'Yamanote Line', seenAs:'山手線（内回り）田町・新橋・東京・上野方面 - route header: Yamanote Line (inner loop), bound for Tamachi/Shimbashi/Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'内回り', romaji:'uchimawari', en:'inner loop (counter-clockwise)', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'約〜分後', romaji:'yaku ~fun go', en:'in approximately ~ minutes', seenAs:'山手線 約2分後 東京・上野方面 - live arrival board: Yamanote Line, in about 2 minutes, bound for Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'バイト', romaji:'baito', en:'part-time job', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'求人', romaji:'kyuujin', en:'job listing / recruitment', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'まとめサイト', romaji:'matome saito', en:'aggregator / summary site', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'アクセス数', romaji:'akusesu-suu', en:'number of visits / access count', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'マナー', romaji:'manaa', en:'manners / etiquette', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'車内', romaji:'shanai', en:'inside the train / vehicle', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'携帯電話', romaji:'keitai denwa', en:'mobile phone', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ご協力ください', romaji:'gokyouryoku kudasai', en:'please cooperate', seenAs:'車内の携帯電話のご利用マナーにご協力ください。- please observe mobile phone etiquette on the train (full announcement)', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'とことん', romaji:'tokoton', en:'thoroughly / to the utmost', seenAs:'とことん期待を超える。とことん感動を届けていく。まじめに、まっすぐ - we thoroughly exceed expectations, thoroughly deliver inspiration. Sincere and straightforward (company slogan)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ゼネコン', romaji:'zenekon', en:'general contractor (construction)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'組', romaji:'gumi', en:'company / group / crew (suffix)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'建築', romaji:'kenchiku', en:'architecture / construction', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'土木', romaji:'doboku', en:'civil engineering', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'環境', romaji:'kankyou', en:'environment', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'期待', romaji:'kitai', en:'expectation', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'超える', romaji:'koeru', en:'to exceed / surpass', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'感動', romaji:'kandou', en:'deeply moved / inspiration', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'届ける', romaji:'todokeru', en:'to deliver', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'まじめ', romaji:'majime', en:'serious / sincere / diligent', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'まっすぐ', romaji:'massugu', en:'straight / straightforward', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'自由席', romaji:'jiyuuseki', en:'non-reserved seat', source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'乗車口', romaji:'jousha-guchi', en:'boarding entrance', source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'号車', romaji:'gousha', en:'train car number', source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'起きる', romaji:'okiru', en:'to wake up / get up', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'朝陽', romaji:'asahi', en:'morning sun', altForm:'朝日 (more common kanji form)', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'代わりに', romaji:'kawari ni', en:'instead of / in place of', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'生活', romaji:'seikatsu', en:'daily life / living', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'リズム', romaji:'rizumu', en:'rhythm', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'整える', romaji:'totonoeru', en:'to arrange / regulate', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'快適', romaji:'kaiteki', en:'comfortable', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'山手線', romaji:'Yamanote-sen', en:'Yamanote Line', tags:['stations'], seenAs:'山手線（内回り）田町・新橋・東京・上野方面 - route header: Yamanote Line (inner loop), bound for Tamachi/Shimbashi/Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'内回り', romaji:'uchimawari', en:'inner loop (counter-clockwise)', tags:['stations'], source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'約〜分後', romaji:'yaku ~fun go', en:'in approximately ~ minutes', tags:['stations'], seenAs:'山手線 約2分後 東京・上野方面 - live arrival board: Yamanote Line, in about 2 minutes, bound for Tokyo/Ueno', source:{location:'Shinagawa Station', date:'2026-08-08', file:'PXL_20260808_082737195.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'バイト', romaji:'baito', en:'part-time job', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'求人', romaji:'kyuujin', en:'job listing / recruitment', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'まとめサイト', romaji:'matome saito', en:'aggregator / summary site', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'アクセス数', romaji:'akusesu-suu', en:'number of visits / access count', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'マナー', romaji:'manaa', en:'manners / etiquette', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'車内', romaji:'shanai', en:'inside the train / vehicle', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'携帯電話', romaji:'keitai denwa', en:'mobile phone', tags:['stations'], source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ご協力ください', romaji:'gokyouryoku kudasai', en:'please cooperate', tags:['stations'], seenAs:'車内の携帯電話のご利用マナーにご協力ください。- please observe mobile phone etiquette on the train (full announcement)', source:{location:'JR train, in transit (Shinagawa-Tamachi)', date:'2026-08-08', file:'PXL_20260808_083357653.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'とことん', romaji:'tokoton', en:'thoroughly / to the utmost', tags:['stations'], seenAs:'とことん期待を超える。とことん感動を届けていく。まじめに、まっすぐ - we thoroughly exceed expectations, thoroughly deliver inspiration. Sincere and straightforward (company slogan)', source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ゼネコン', romaji:'zenekon', en:'general contractor (construction)', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'組', romaji:'gumi', en:'company / group / crew (suffix)', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'建築', romaji:'kenchiku', en:'architecture / construction', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'土木', romaji:'doboku', en:'civil engineering', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'環境', romaji:'kankyou', en:'environment', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'期待', romaji:'kitai', en:'expectation', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'超える', romaji:'koeru', en:'to exceed / surpass', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'感動', romaji:'kandou', en:'deeply moved / inspiration', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'届ける', romaji:'todokeru', en:'to deliver', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'まじめ', romaji:'majime', en:'serious / sincere / diligent', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'まっすぐ', romaji:'massugu', en:'straight / straightforward', tags:['stations'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'自由席', romaji:'jiyuuseki', en:'non-reserved seat', tags:['stations'], source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'乗車口', romaji:'jousha-guchi', en:'boarding entrance', tags:['stations'], source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'号車', romaji:'gousha', en:'train car number', tags:['stations'], source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'起きる', romaji:'okiru', en:'to wake up / get up', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'朝陽', romaji:'asahi', en:'morning sun', tags:['stations'], altForm:'朝日 (more common kanji form)', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'代わりに', romaji:'kawari ni', en:'instead of / in place of', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'生活', romaji:'seikatsu', en:'daily life / living', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'リズム', romaji:'rizumu', en:'rhythm', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'整える', romaji:'totonoeru', en:'to arrange / regulate', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022129975.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'快適', romaji:'kaiteki', en:'comfortable', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
       // 車内/shanai from this photo dropped - exact repeat of the entry
       // already added from the Shinagawa-Tamachi train a few days earlier.
-      {jp:'ガタゴト', romaji:'gatagoto', en:'clickety-clack (train sound)', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'スタンプラリー', romaji:'sutanpu rarii', en:'stamp rally', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'住民', romaji:'juumin', en:'resident / inhabitant', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'会いに行こう', romaji:'ai ni ikou', en:'let\'s go meet', source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'当駅', romaji:'toueki', en:'this station', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'より先', romaji:'yori saki', en:'beyond / from...onward', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'エリア外', romaji:'earia gai', en:'outside the (coverage) area', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'使えません', romaji:'tsukaemasen', en:'cannot be used', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'きっぷ', romaji:'kippu', en:'ticket', altForm:'切符 (kanji form)', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'買い求める', romaji:'kaimotomeru', en:'to purchase', seenAs:'当駅にて「きっぷ」をお買い求めください。- please purchase a ticket at this station', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'食べらさる', romaji:'taberasaru', en:'can\'t help but eat (Hokkaido dialect)', source:{location:'Sapporo (subway/train car)', date:'2026-08-13', file:'PXL_20260813_003723150.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'北海道米', romaji:'Hokkaidou-mai', en:'Hokkaido-grown rice', source:{location:'Sapporo (subway/train car)', date:'2026-08-13', file:'PXL_20260813_003723150.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'安全', romaji:'anzen', en:'safety', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'停止後', romaji:'teishigo', en:'after stopping', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'移動しない', romaji:'idou shinai', en:'do not move', seenAs:'安全のため停止後扉が開くまで移動しないようにお願いします。- for safety, please do not move until the doors open after stopping', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'お降りの方', romaji:'oori no kata', en:'those getting off', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_030441338.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'押してください', romaji:'oshite kudasai', en:'please press', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_030441338.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'おまかせ下さい', romaji:'omakase kudasai', en:'please leave it to us', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_030444946.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'お出かけの足', romaji:'odekake no ashi', en:'your transportation for going out', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_030444946.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'みんなの', romaji:'minna no', en:'everyone\'s', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'のりば', romaji:'noriba', en:'boarding point / platform', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'北改札口', romaji:'kita kaisatsuguchi', en:'north ticket gate', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'系統', romaji:'keitou', en:'(bus) route / line', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033026992.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'手を離さない', romaji:'te wo hanasanai', en:'don\'t let go of your hand', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'離す', romaji:'hanasu', en:'to let go / release', source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'たてかけない', romaji:'tatekakenai', en:'don\'t lean objects (against it)', source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'乗り出さない', romaji:'noridasanai', en:'don\'t lean out / over', source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'かけ込み禁止', romaji:'kakekomi kinshi', en:'no rushing in (e.g. through closing doors)', source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'広げて', romaji:'hirogete', en:'widening / making more room', seenAs:'少しスペースを広げております。- we are making a little more space (priority area for luggage, strollers, etc.)', source:{location:'Osaka Monorail (train)', date:'2026-08-14', file:'PXL_20260814_050231807.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'反対側', romaji:'hantaigawa', en:'opposite side', source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'開きます', romaji:'hirakimasu', en:'will open (polite)', source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'ガタゴト', romaji:'gatagoto', en:'clickety-clack (train sound)', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'スタンプラリー', romaji:'sutanpu rarii', en:'stamp rally', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'住民', romaji:'juumin', en:'resident / inhabitant', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'会いに行こう', romaji:'ai ni ikou', en:'let\'s go meet', tags:['stations'], source:{location:'JR train, in transit (Sapporo-Otaru)', date:'2026-08-10', file:'PXL_20260810_022247922.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'当駅', romaji:'toueki', en:'this station', tags:['stations'], source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'より先', romaji:'yori saki', en:'beyond / from...onward', tags:['stations'], source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'エリア外', romaji:'earia gai', en:'outside the (coverage) area', tags:['stations'], source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'使えません', romaji:'tsukaemasen', en:'cannot be used', tags:['stations'], source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'きっぷ', romaji:'kippu', en:'ticket', tags:['stations'], altForm:'切符 (kanji form)', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'買い求める', romaji:'kaimotomeru', en:'to purchase', tags:['stations'], seenAs:'当駅にて「きっぷ」をお買い求めください。- please purchase a ticket at this station', source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024627628.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'食べらさる', romaji:'taberasaru', en:'can\'t help but eat (Hokkaido dialect)', tags:['stations'], source:{location:'Sapporo (subway/train car)', date:'2026-08-13', file:'PXL_20260813_003723150.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'北海道米', romaji:'Hokkaidou-mai', en:'Hokkaido-grown rice', tags:['stations'], source:{location:'Sapporo (subway/train car)', date:'2026-08-13', file:'PXL_20260813_003723150.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'安全', romaji:'anzen', en:'safety', tags:['stations'], source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'停止後', romaji:'teishigo', en:'after stopping', tags:['stations'], source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'移動しない', romaji:'idou shinai', en:'do not move', tags:['stations'], seenAs:'安全のため停止後扉が開くまで移動しないようにお願いします。- for safety, please do not move until the doors open after stopping', source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_005721923.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'お降りの方', romaji:'oori no kata', en:'those getting off', tags:['stations'], source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_030441338.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'押してください', romaji:'oshite kudasai', en:'please press', tags:['stations'], source:{location:'Sapporo (bus)', date:'2026-08-13', file:'PXL_20260813_030441338.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'おまかせ下さい', romaji:'omakase kudasai', en:'please leave it to us', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_030444946.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'お出かけの足', romaji:'odekake no ashi', en:'your transportation for going out', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_030444946.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'みんなの', romaji:'minna no', en:'everyone\'s', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'のりば', romaji:'noriba', en:'boarding point / platform', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'北改札口', romaji:'kita kaisatsuguchi', en:'north ticket gate', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033016237.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'系統', romaji:'keitou', en:'(bus) route / line', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033026992.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'手を離さない', romaji:'te wo hanasanai', en:'don\'t let go of your hand', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'離す', romaji:'hanasu', en:'to let go / release', tags:['stations'], source:{location:'Makomanai Station, Sapporo', date:'2026-08-13', file:'PXL_20260813_033132901.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'たてかけない', romaji:'tatekakenai', en:'don\'t lean objects (against it)', tags:['stations'], source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'乗り出さない', romaji:'noridasanai', en:'don\'t lean out / over', tags:['stations'], source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'かけ込み禁止', romaji:'kakekomi kinshi', en:'no rushing in (e.g. through closing doors)', tags:['stations'], source:{location:'Osaka Monorail, Itami Airport', date:'2026-08-14', file:'PXL_20260814_043118193.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'広げて', romaji:'hirogete', en:'widening / making more room', tags:['stations'], seenAs:'少しスペースを広げております。- we are making a little more space (priority area for luggage, strollers, etc.)', source:{location:'Osaka Monorail (train)', date:'2026-08-14', file:'PXL_20260814_050231807.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'反対側', romaji:'hantaigawa', en:'opposite side', tags:['stations'], source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'開きます', romaji:'hirakimasu', en:'will open (polite)', tags:['stations'], source:{location:'Osaka train (door indicator)', date:'2026-08-14', file:'PXL_20260814_050617517.jpg'}, dateAdded:'2026-08-15'},
       // 携帯電話 and ご協力 from this photo were skipped - already exact
       // duplicates elsewhere (携帯電話 is already in this very category;
       // ご協力 is in Materials — Shops).
-      {jp:'歩行', romaji:'hokou', en:'walking', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
-      {jp:'大変危険', romaji:'taihen kiken', en:'extremely dangerous', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
-      {jp:'おやめください', romaji:'oyame kudasai', en:'please stop / refrain from', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
-      {jp:'事故防止', romaji:'jiko boushi', en:'accident prevention', source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'歩行', romaji:'hokou', en:'walking', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'大変危険', romaji:'taihen kiken', en:'extremely dangerous', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'おやめください', romaji:'oyame kudasai', en:'please stop / refrain from', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'事故防止', romaji:'jiko boushi', en:'accident prevention', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
       // きっぷ and 列車 from this photo were skipped - already exact
       // duplicates in this same category.
-      {jp:'座席', romaji:'zaseki', en:'seat', source:{location:'Hiroshima Station', date:'2026-08-20', file:'PXL_20260820_022523457.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'座席', romaji:'zaseki', en:'seat', tags:['stations'], source:{location:'Hiroshima Station', date:'2026-08-20', file:'PXL_20260820_022523457.jpg'}, dateAdded:'2026-08-21'},
     ],
   },
   'vocab-materials-airport': {
@@ -3942,6 +3942,29 @@ const THEMES = {
     label: 'Question words',
     chars: 'なに どこ いつ…',
     tagQuery: 'question-word',
+  },
+  // TEST ONLY - first real proving ground for merging Trip and Andrew via
+  // tags instead of two separate gated tiers (see the "Andrew and Trip
+  // merge into one pill" discussion). Deliberately not given a static
+  // Collections card like theme-question-words above - it's appended
+  // programmatically at the bottom of the Andrew mode list instead (see
+  // buildMatchCategoryList), below the two notes links, purely so Andrew can
+  // look at the shape of a combined category without disturbing the real
+  // Trip/Materials-Stations categories classmates and Andrew both already
+  // use day to day. Pulls from vocab-materials-stations (tagged wholesale -
+  // the whole category is genuinely stations/trains content by definition of
+  // being photographed there) plus the handful of station-specific words in
+  // Directions and navigation (ICカード, かたみちきっぷ, おうふくきっぷ,
+  // ろせんず, かいさつぐち, and the two "where is/which platform" phrases -
+  // the general direction words in that category were deliberately left
+  // untagged). If this turns out to feel right, the eventual real version
+  // would replace Materials — Stations & trains and the relevant slice of
+  // Directions and navigation outright rather than living alongside them;
+  // for now nothing is removed or retired, this is purely additive.
+  'theme-stations-combined': {
+    label: 'Stations & trains (combined test)',
+    chars: 'ホーム きっぷ かいさつ…',
+    tagQuery: 'stations',
   },
 };
 
@@ -7460,6 +7483,20 @@ function buildMatchCategoryList() {
     jpEnNoteCard.rel = 'noopener';
     jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
     container.appendChild(jpEnNoteCard);
+
+    // TEST ONLY - see theme-stations-combined in THEMES for the full
+    // reasoning. Appended here rather than given a permanent Collections
+    // card so it only ever shows up in Andrew mode, alongside the two notes
+    // links above, and can be removed just as easily once it's served its
+    // purpose. Uses the exact same resolveVocabCategory/getThemePool path
+    // as every real Collection - this is a placement choice, not a
+    // different mechanism.
+    container.appendChild(document.createElement('div')).className = 'section-divider';
+    const stationsTestCard = document.createElement('div');
+    stationsTestCard.className = 'vocab-ref-card';
+    stationsTestCard.innerHTML = `<span>TEST: Stations & trains, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
+    stationsTestCard.onclick = () => showVocabTileSelection('theme-stations-combined');
+    container.appendChild(stationsTestCard);
   }
 }
 
