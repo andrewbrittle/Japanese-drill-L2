@@ -976,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260825.002</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260825.004</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -2844,25 +2844,25 @@ const VOCAB = {
       { cat: 'vocab-materials-hotel-facilities', romaji: 'furonto' },
     ],
     items: [
-      {jp:'もうふ', romaji:'moufu', en:'blanket', dateAdded:'2026-08-01'},
-      {jp:'チェックイン', romaji:'chekkuin', en:'check-in', dateAdded:'2026-08-01'},
+      {jp:'もうふ', romaji:'moufu', en:'blanket', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'チェックイン', romaji:'chekkuin', en:'check-in', tags:['accommodation'], dateAdded:'2026-08-01'},
       // seenAs added 2026-08-15 - real context from an Osaka hotel door
       // status card (batch 6 part 2), rather than adding a duplicate entry
       // for the same word with nothing new except where it was seen.
-      {jp:'チェックアウト', romaji:'chekkuauto', en:'check-out', seenAs:'チェックアウトしました - checked out (door status card)', dateAdded:'2026-08-01'},
-      {jp:'ダブルルーム', romaji:'daburu ruumu', en:'double room', dateAdded:'2026-08-01'},
-      {jp:'りょうきん', romaji:'ryoukin', en:'fee / charge', altForm:'料金', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'チェックアウト', romaji:'chekkuauto', en:'check-out', tags:['accommodation'], seenAs:'チェックアウトしました - checked out (door status card)', dateAdded:'2026-08-01'},
+      {jp:'ダブルルーム', romaji:'daburu ruumu', en:'double room', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'りょうきん', romaji:'ryoukin', en:'fee / charge', tags:['accommodation'], altForm:'料金', altIsStandard:true, dateAdded:'2026-08-01'},
       // フロント moved to vocab-materials-hotel-facilities (real-world
       // evidenced copy) - see includeItems below.
-      {jp:'ホテル', romaji:'hoteru', en:'hotel', dateAdded:'2026-08-01'},
-      {jp:'キーカード', romaji:'kii kaado', en:'key card', dateAdded:'2026-08-01'},
-      {jp:'にもつ', romaji:'nimotsu', en:'luggage', altForm:'荷物', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'まくら', romaji:'makura', en:'pillow', altForm:'枕', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'よやく', romaji:'yoyaku', en:'reservation', altForm:'予約', altIsStandard:true, seenAs:'予約 also labels the delayed-start timer button on a washing machine (Tokyu Stay Kyoto) - same underlying idea, "set this to happen later," not a separate word', dateAdded:'2026-08-01'},
-      {jp:'へやの ばんごう', romaji:'heya no bangou', en:'room number', dateAdded:'2026-08-01'},
-      {jp:'シングルルーム', romaji:'shinguru ruumu', en:'single room', dateAdded:'2026-08-01'},
-      {jp:'タオル', romaji:'taoru', en:'towel', dateAdded:'2026-08-01'},
-      {jp:'ワイファイ', romaji:'waifai', en:'wifi', dateAdded:'2026-08-01'},
+      {jp:'ホテル', romaji:'hoteru', en:'hotel', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'キーカード', romaji:'kii kaado', en:'key card', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'にもつ', romaji:'nimotsu', en:'luggage', tags:['accommodation'], altForm:'荷物', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'まくら', romaji:'makura', en:'pillow', tags:['accommodation'], altForm:'枕', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'よやく', romaji:'yoyaku', en:'reservation', tags:['accommodation'], altForm:'予約', altIsStandard:true, seenAs:'予約 also labels the delayed-start timer button on a washing machine (Tokyu Stay Kyoto) - same underlying idea, "set this to happen later," not a separate word', dateAdded:'2026-08-01'},
+      {jp:'へやの ばんごう', romaji:'heya no bangou', en:'room number', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'シングルルーム', romaji:'shinguru ruumu', en:'single room', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'タオル', romaji:'taoru', en:'towel', tags:['accommodation'], dateAdded:'2026-08-01'},
+      {jp:'ワイファイ', romaji:'waifai', en:'wifi', tags:['accommodation'], dateAdded:'2026-08-01'},
     ],
   },
   'vocab-money-shopping': {
@@ -2875,26 +2875,26 @@ const VOCAB = {
       { cat: 'vocab-materials-hotel-appliances', romaji: 'kurejitto kaado' },
     ],
     items: [
-      {jp:'げんきん', romaji:'genkin', en:'cash', altForm:'現金', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'げんきんのみ', romaji:'genkin nomi', en:'cash only', altForm:'現金のみ', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'げんきん', romaji:'genkin', en:'cash', tags:['shopping'], altForm:'現金', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'げんきんのみ', romaji:'genkin nomi', en:'cash only', tags:['shopping'], altForm:'現金のみ', altIsStandard:true, dateAdded:'2026-08-01'},
       // おつり moved to vocab-materials-shops (real-world evidenced copy)
       // - see includeItems above.
-      {jp:'しょうひぜい', romaji:'shouhizei', en:'consumption tax', altForm:'消費税', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'しょうひぜい', romaji:'shouhizei', en:'consumption tax', tags:['shopping'], altForm:'消費税', altIsStandard:true, dateAdded:'2026-08-01'},
       // クレジットカード moved to vocab-materials-hotel-appliances (real-
       // world evidenced copy) - see includeItems above.
-      {jp:'りょうがえ', romaji:'ryougae', en:'currency exchange', altForm:'両替', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'わりびき', romaji:'waribiki', en:'discount', altForm:'割引', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'カードは つかえますか', romaji:'kaado wa tsukaemasu ka', en:'do you accept cards?', dateAdded:'2026-08-01'},
-      {jp:'りょうしゅうしょ', romaji:'ryoushuusho', en:'formal receipt', altForm:'領収書', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'ラッピング', romaji:'rappingu', en:'gift wrap', dateAdded:'2026-08-01'},
-      {jp:'いくらですか', romaji:'ikura desu ka', en:'how much is this?', dateAdded:'2026-08-01'},
-      {jp:'しなぎれ', romaji:'shinagire', en:'out of stock / sold out', altForm:'品切れ', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'しはらい', romaji:'shiharai', en:'payment', altForm:'支払い', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'ねだん', romaji:'nedan', en:'price', altForm:'値段', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'レシート', romaji:'reshiito', en:'receipt', dateAdded:'2026-08-01'},
-      {jp:'サイズ', romaji:'saizu', en:'size', dateAdded:'2026-08-01'},
-      {jp:'めんぜい', romaji:'menzei', en:'tax-free', altForm:'免税', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'しちゃく', romaji:'shichaku', en:'trying on (clothes)', altForm:'試着', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'りょうがえ', romaji:'ryougae', en:'currency exchange', tags:['shopping'], altForm:'両替', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'わりびき', romaji:'waribiki', en:'discount', tags:['shopping'], altForm:'割引', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'カードは つかえますか', romaji:'kaado wa tsukaemasu ka', en:'do you accept cards?', tags:['shopping'], dateAdded:'2026-08-01'},
+      {jp:'りょうしゅうしょ', romaji:'ryoushuusho', en:'formal receipt', tags:['shopping'], altForm:'領収書', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'ラッピング', romaji:'rappingu', en:'gift wrap', tags:['shopping'], dateAdded:'2026-08-01'},
+      {jp:'いくらですか', romaji:'ikura desu ka', en:'how much is this?', tags:['shopping'], dateAdded:'2026-08-01'},
+      {jp:'しなぎれ', romaji:'shinagire', en:'out of stock / sold out', tags:['shopping'], altForm:'品切れ', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'しはらい', romaji:'shiharai', en:'payment', tags:['shopping'], altForm:'支払い', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'ねだん', romaji:'nedan', en:'price', tags:['shopping'], altForm:'値段', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'レシート', romaji:'reshiito', en:'receipt', tags:['shopping'], dateAdded:'2026-08-01'},
+      {jp:'サイズ', romaji:'saizu', en:'size', tags:['shopping'], dateAdded:'2026-08-01'},
+      {jp:'めんぜい', romaji:'menzei', en:'tax-free', tags:['shopping'], altForm:'免税', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'しちゃく', romaji:'shichaku', en:'trying on (clothes)', tags:['shopping'], altForm:'試着', altIsStandard:true, dateAdded:'2026-08-01'},
     ],
   },
   'vocab-directions-navigation': {
@@ -3431,50 +3431,50 @@ const VOCAB = {
       { cat: 'vocab-signage-warnings', romaji: 'chuui' },
     ],
     items: [
-      {jp:'生活家電', romaji:'seikatsu kaden', en:'household appliances', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'テレビ', romaji:'terebi', en:'TV', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'オーディオ', romaji:'oodio', en:'audio', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'カメラ', romaji:'kamera', en:'camera', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'時計', romaji:'tokei', en:'clock / watch', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'パソコン周辺機器', romaji:'pasokon shuuhen kiki', en:'PC peripherals', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'生活家電', romaji:'seikatsu kaden', en:'household appliances', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'テレビ', romaji:'terebi', en:'TV', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'オーディオ', romaji:'oodio', en:'audio', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'カメラ', romaji:'kamera', en:'camera', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'時計', romaji:'tokei', en:'clock / watch', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'パソコン周辺機器', romaji:'pasokon shuuhen kiki', en:'PC peripherals', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       // 携帯電話 (mobile phone) from this photo removed - exact duplicate,
       // already covered in Materials - Stations & trains (added same day,
       // earlier in file order, so that one wins per the materials-vs-
       // materials dedup rule).
-      {jp:'修理受付', romaji:'shuuri uketsuke', en:'repair reception desk', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お客様案内窓口', romaji:'okyakusama annai madoguchi', en:'customer information counter', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'修理受付', romaji:'shuuri uketsuke', en:'repair reception desk', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お客様案内窓口', romaji:'okyakusama annai madoguchi', en:'customer information counter', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'駐車場', romaji:'chuushajou', en:'parking lot', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'現在フロア', romaji:'genzai furoa', en:'current floor ("you are here")', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ダイソー', romaji:'Daisou', en:'Daiso (100-yen shop brand)', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'リラクゼーション', romaji:'rirakuzeeshon', en:'relaxation', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'サロン', romaji:'saron', en:'salon', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'クイックガレージ', romaji:'kuikku gareeji', en:'Quick Garage (repair shop name)', source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'天然水', romaji:'tennensui', en:'natural water', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'さわやか', romaji:'sawayaka', en:'refreshing', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'味わい', romaji:'ajiwai', en:'flavor / taste', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'シャイン', romaji:'shain', en:'"shine" (as in Shine Muscat grape)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'マスカット', romaji:'masukatto', en:'muscat (grape)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'無糖', romaji:'mutou', en:'sugar-free', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'カフェインゼロ', romaji:'kafein zero', en:'caffeine-free', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'大容量', romaji:'dai youryou', en:'large volume / capacity', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'自販機限定', romaji:'jihanki gentei', en:'vending-machine exclusive', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'キャンペーン', romaji:'kyanpeen', en:'campaign / promotion', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'貯める', romaji:'tameru', en:'to save / collect (points)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'対象商品', romaji:'taishou shouhin', en:'eligible / target product', seenAs:'対象商品を飲んで、貯めて、応募！- drink the eligible products, collect (stamps), and enter! (campaign tagline)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'応募', romaji:'oubo', en:'apply / enter (a promotion)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'電子マネー', romaji:'denshi manee', en:'e-money', seenAs:'sign said 交通系電子マネー (transit e-money) - shortened to the reusable core term', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'おつり', romaji:'otsuri', en:'change (money)', altForm:'お釣り (kanji form)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'返却', romaji:'henkyaku', en:'return (an item)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'まいばすけっと', romaji:'maibasuketto', en:'"My Basket" (discount supermarket chain)', seenAs:'brand name written entirely in hiragana - good reading practice', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_085728020.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'現在フロア', romaji:'genzai furoa', en:'current floor ("you are here")', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ダイソー', romaji:'Daisou', en:'Daiso (100-yen shop brand)', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'リラクゼーション', romaji:'rirakuzeeshon', en:'relaxation', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'サロン', romaji:'saron', en:'salon', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'クイックガレージ', romaji:'kuikku gareeji', en:'Quick Garage (repair shop name)', tags:['shopping'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'天然水', romaji:'tennensui', en:'natural water', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'さわやか', romaji:'sawayaka', en:'refreshing', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'味わい', romaji:'ajiwai', en:'flavor / taste', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'シャイン', romaji:'shain', en:'"shine" (as in Shine Muscat grape)', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'マスカット', romaji:'masukatto', en:'muscat (grape)', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'無糖', romaji:'mutou', en:'sugar-free', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'カフェインゼロ', romaji:'kafein zero', en:'caffeine-free', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'大容量', romaji:'dai youryou', en:'large volume / capacity', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'自販機限定', romaji:'jihanki gentei', en:'vending-machine exclusive', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'キャンペーン', romaji:'kyanpeen', en:'campaign / promotion', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'貯める', romaji:'tameru', en:'to save / collect (points)', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'対象商品', romaji:'taishou shouhin', en:'eligible / target product', tags:['shopping'], seenAs:'対象商品を飲んで、貯めて、応募！- drink the eligible products, collect (stamps), and enter! (campaign tagline)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'応募', romaji:'oubo', en:'apply / enter (a promotion)', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'電子マネー', romaji:'denshi manee', en:'e-money', tags:['shopping'], seenAs:'sign said 交通系電子マネー (transit e-money) - shortened to the reusable core term', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'おつり', romaji:'otsuri', en:'change (money)', tags:['shopping'], altForm:'お釣り (kanji form)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'返却', romaji:'henkyaku', en:'return (an item)', tags:['shopping'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'まいばすけっと', romaji:'maibasuketto', en:'"My Basket" (discount supermarket chain)', tags:['shopping'], seenAs:'brand name written entirely in hiragana - good reading practice', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_085728020.jpg'}, dateAdded:'2026-08-10'},
       {jp:'道民', romaji:'doumin', en:'Hokkaido resident', seenAs:'prefecture-resident pattern, cf. 都民 = Tokyo resident', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ポイント', romaji:'pointo', en:'points (loyalty points)', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'使えます', romaji:'tsukaemasu', en:'can be used', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'取扱店舗', romaji:'toriatsukai tenpo', en:'participating stores', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'手数料', romaji:'tesuuryou', en:'fee / commission', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'金融機関', romaji:'kinyuu kikan', en:'financial institution', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'銀行', romaji:'ginkou', en:'bank', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ポイント', romaji:'pointo', en:'points (loyalty points)', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'使えます', romaji:'tsukaemasu', en:'can be used', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'取扱店舗', romaji:'toriatsukai tenpo', en:'participating stores', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'手数料', romaji:'tesuuryou', en:'fee / commission', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'金融機関', romaji:'kinyuu kikan', en:'financial institution', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'銀行', romaji:'ginkou', en:'bank', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
       {jp:'からあげ', romaji:'karaage', en:'Japanese fried chicken', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'増量中', romaji:'zouryouchuu', en:'quantity increased (limited time)', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'増量中', romaji:'zouryouchuu', en:'quantity increased (limited time)', tags:['shopping'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
       {jp:'持込品', romaji:'mochikomihin', en:'items brought in (from outside)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10'},
       {jp:'飲食', romaji:'inshoku', en:'eating and drinking / food & beverage', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10'},
       {jp:'固く', romaji:'kataku', en:'strictly / firmly', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10'},
@@ -3482,23 +3482,23 @@ const VOCAB = {
       {jp:'長時間', romaji:'choujikan', en:'long time / extended period', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10'},
       {jp:'勉強', romaji:'benkyou', en:'studying', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10'},
       {jp:'給電', romaji:'kyuuden', en:'power supply', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'オリジナルチキン', romaji:'orijinaru chikin', en:'original chicken (KFC signature product)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お買上', romaji:'okaiage', en:'purchase (polite)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'合計', romaji:'goukei', en:'total', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'オリジナルチキン', romaji:'orijinaru chikin', en:'original chicken (KFC signature product)', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お買上', romaji:'okaiage', en:'purchase (polite)', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'合計', romaji:'goukei', en:'total', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       // 消費税 moved to vocab-money-shopping (Trip-canonical copy) - see
       // includeItems below.
-      {jp:'対象', romaji:'taishou', en:'applicable / subject to', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'登録番号', romaji:'touroku bangou', en:'registration number', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'注文番号', romaji:'chuumon bangou', en:'order number', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'領収証', romaji:'ryoushuushou', en:'receipt / proof of payment', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'トレー', romaji:'toree', en:'tray', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'バスケット', romaji:'basuketto', en:'basket', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'対象', romaji:'taishou', en:'applicable / subject to', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'登録番号', romaji:'touroku bangou', en:'registration number', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'注文番号', romaji:'chuumon bangou', en:'order number', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'領収証', romaji:'ryoushuushou', en:'receipt / proof of payment', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'トレー', romaji:'toree', en:'tray', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'バスケット', romaji:'basuketto', en:'basket', tags:['shopping'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       {jp:'こちら', romaji:'kochira', en:'here / this way', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'お返しください', romaji:'okaeshi kudasai', en:'please return (an item)', seenAs:'トレーとバスケットは、こちらへお返しください。- please return trays and baskets here (sign)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'お返しください', romaji:'okaeshi kudasai', en:'please return (an item)', tags:['shopping'], seenAs:'トレーとバスケットは、こちらへお返しください。- please return trays and baskets here (sign)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       {jp:'捨てる', romaji:'suteru', en:'to throw away / discard', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       // 営業時間 removed - duplicate of the Materials — Restaurants: Ops
       // entry (earlier date, dedup rule for two Materials copies).
-      {jp:'夏季無休', romaji:'kaki mukyuu', en:'open all summer, no holidays', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'夏季無休', romaji:'kaki mukyuu', en:'open all summer, no holidays', tags:['shopping'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ペット', romaji:'petto', en:'pet', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ご同伴', romaji:'go-douhan', en:'accompanying / bringing along', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       // ご遠慮ください removed - duplicate of the Materials — Hotel:
@@ -3508,12 +3508,12 @@ const VOCAB = {
       {jp:'カラス', romaji:'karasu', en:'crow', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       // 注意 moved to vocab-signage-warnings (Trip-canonical copy) - see
       // includeItems below.
-      {jp:'商品', romaji:'shouhin', en:'product / merchandise', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'商品', romaji:'shouhin', en:'product / merchandise', tags:['shopping'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'可能性', romaji:'kanousei', en:'possibility', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ご協力', romaji:'go-kyouryoku', en:'cooperation', source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'朝もぎ', romaji:'asa-mogi', en:'morning-picked', source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ゆでたて', romaji:'yudetate', en:'freshly boiled', source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'とうもろこし', romaji:'toumorokoshi', en:'corn', source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'朝もぎ', romaji:'asa-mogi', en:'morning-picked', tags:['shopping'], source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ゆでたて', romaji:'yudetate', en:'freshly boiled', tags:['shopping'], source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'とうもろこし', romaji:'toumorokoshi', en:'corn', tags:['shopping'], source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
     ],
   },
   'vocab-materials-entertainment': {
@@ -3744,84 +3744,84 @@ const VOCAB = {
     label: 'Materials — Hotel: Facilities & stay',
     chars: '朝食 混雑 提供…',
     items: [
-      {jp:'朝食', romaji:'choushoku', en:'breakfast', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'混雑', romaji:'konzatsu', en:'congestion / crowding', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'提供', romaji:'teikyou', en:'to provide / serve', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'恐れ入りますが', romaji:'osoreirimasu ga', en:'I\'m terribly sorry, but... (polite opener)', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'余裕', romaji:'yoyou', en:'margin / leeway / spare time', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ラストオーダー', romaji:'rasuto oodaa', en:'last order', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'支配人', romaji:'shihainin', en:'manager', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'避難経路', romaji:'hinan keiro', en:'evacuation route', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'消火器', romaji:'shoukaki', en:'fire extinguisher', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'非常時', romaji:'hijouji', en:'emergency / time of emergency', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'係', romaji:'kakari', en:'staff in charge / attendant', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'指示', romaji:'shiji', en:'instructions', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'扉', romaji:'tobira', en:'door (formal word)', seenAs:'扉に注意 - mind the door', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'大声', romaji:'oogoe', en:'loud voice', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'会話', romaji:'kaiwa', en:'conversation', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'迷惑', romaji:'meiwaku', en:'trouble / inconvenience', seenAs:'扉を開けたまま大声で会話をされますと、まわりのお客様のご迷惑になりますのでご遠慮ください。- talking loudly with the door open may inconvenience other guests (hotel notice)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ご遠慮ください', romaji:'goenryo kudasai', en:'please refrain from', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'補充', romaji:'hojuu', en:'replenishment / restocking', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'清掃', romaji:'seisou', en:'cleaning (housekeeping)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'不要', romaji:'fuyou', en:'not needed / unnecessary', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'入室', romaji:'nyuushitsu', en:'entering a room', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'ゴミ箱', romaji:'gomibako', en:'trash can', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'縛って', romaji:'shibatte', en:'tie up (and...)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'廊下', romaji:'rouka', en:'hallway / corridor', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'人数分', romaji:'ninzuubun', en:'portion for the number of people', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'清掃不要', romaji:'seisou fuyou', en:'cleaning not needed (door sign)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234239066.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'消毒', romaji:'shoudoku', en:'disinfection / sterilization', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002426356.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'客室', romaji:'kyakushitsu', en:'guest room', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'大浴場', romaji:'daiyokujou', en:'large communal bath', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'朝食', romaji:'choushoku', en:'breakfast', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'混雑', romaji:'konzatsu', en:'congestion / crowding', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'提供', romaji:'teikyou', en:'to provide / serve', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'恐れ入りますが', romaji:'osoreirimasu ga', en:'I\'m terribly sorry, but... (polite opener)', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'余裕', romaji:'yoyou', en:'margin / leeway / spare time', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ラストオーダー', romaji:'rasuto oodaa', en:'last order', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'支配人', romaji:'shihainin', en:'manager', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'避難経路', romaji:'hinan keiro', en:'evacuation route', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'消火器', romaji:'shoukaki', en:'fire extinguisher', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'非常時', romaji:'hijouji', en:'emergency / time of emergency', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'係', romaji:'kakari', en:'staff in charge / attendant', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'指示', romaji:'shiji', en:'instructions', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'扉', romaji:'tobira', en:'door (formal word)', tags:['accommodation'], seenAs:'扉に注意 - mind the door', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'大声', romaji:'oogoe', en:'loud voice', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'会話', romaji:'kaiwa', en:'conversation', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'迷惑', romaji:'meiwaku', en:'trouble / inconvenience', tags:['accommodation'], seenAs:'扉を開けたまま大声で会話をされますと、まわりのお客様のご迷惑になりますのでご遠慮ください。- talking loudly with the door open may inconvenience other guests (hotel notice)', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ご遠慮ください', romaji:'goenryo kudasai', en:'please refrain from', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'補充', romaji:'hojuu', en:'replenishment / restocking', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'清掃', romaji:'seisou', en:'cleaning (housekeeping)', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'不要', romaji:'fuyou', en:'not needed / unnecessary', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'入室', romaji:'nyuushitsu', en:'entering a room', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ゴミ箱', romaji:'gomibako', en:'trash can', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'縛って', romaji:'shibatte', en:'tie up (and...)', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'廊下', romaji:'rouka', en:'hallway / corridor', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'人数分', romaji:'ninzuubun', en:'portion for the number of people', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234235475.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'清掃不要', romaji:'seisou fuyou', en:'cleaning not needed (door sign)', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234239066.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'消毒', romaji:'shoudoku', en:'disinfection / sterilization', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002426356.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'客室', romaji:'kyakushitsu', en:'guest room', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'大浴場', romaji:'daiyokujou', en:'large communal bath', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
       // 枕 from this photo removed - same word as the existing まくら (Trip),
       // now folded in there as its altForm instead.
-      {jp:'自動販売機', romaji:'jidou hanbaiki', en:'vending machine', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'コインランドリー', romaji:'koin randorii', en:'coin laundry / laundromat', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'製氷機', romaji:'seihyouki', en:'ice machine', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'電子レンジ', romaji:'denshi renji', en:'microwave', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'フロント', romaji:'furonto', en:'front desk (reception)', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'喫煙室', romaji:'kitsuenshitsu', en:'smoking room', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'入浴', romaji:'nyuuyoku', en:'bathing', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_085004055.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'いただけます', romaji:'itadakemasu', en:'you may (do something) - polite potential', seenAs:'ご入浴いただけます。- you may enter for bathing at this time', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_085004055.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'やわらかめ', romaji:'yawarakame', en:'soft-ish (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ふつう', romaji:'futsuu', en:'normal / medium (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'かため', romaji:'katame', en:'firm-ish (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'通気性', romaji:'tsuukisei', en:'breathability', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'復元性', romaji:'fukugensei', en:'resilience / recovery (of material)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'感触', romaji:'kanshoku', en:'texture / feel', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'もっちり', romaji:'mocchiri', en:'chewy / springy (pillow texture)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ふわふわ', romaji:'fuwafuwa', en:'fluffy (pillow)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ザクザク', romaji:'zakuzaku', en:'crunchy / crisp (pillow texture)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'そばがら', romaji:'sobagara', en:'buckwheat husk (pillow filling)', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'枕カバー', romaji:'makura kabaa', en:'pillow case', source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'次', romaji:'tsugi', en:'next', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'希望', romaji:'kibou', en:'wish / request', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'預かる', romaji:'azukaru', en:'to keep / hold (something) for someone', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ご了承ください', romaji:'goryoushou kudasai', en:'please understand / accept', seenAs:'次のお客様がご利用を希望される場合、洗濯物をフロントでお預かりすることがあります。ご了承ください。- if the next guest wishes to use the facility we may need to store your laundry at the front desk', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'2泊以上', romaji:'nihaku ijou', en:'2 nights or more', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
-      {jp:'エコ清掃', romaji:'eko seisou', en:'eco cleaning', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'自動販売機', romaji:'jidou hanbaiki', en:'vending machine', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'コインランドリー', romaji:'koin randorii', en:'coin laundry / laundromat', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'製氷機', romaji:'seihyouki', en:'ice machine', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'電子レンジ', romaji:'denshi renji', en:'microwave', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'フロント', romaji:'furonto', en:'front desk (reception)', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'喫煙室', romaji:'kitsuenshitsu', en:'smoking room', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-10', file:'PXL_20260810_002521850.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'入浴', romaji:'nyuuyoku', en:'bathing', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_085004055.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'いただけます', romaji:'itadakemasu', en:'you may (do something) - polite potential', tags:['accommodation'], seenAs:'ご入浴いただけます。- you may enter for bathing at this time', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_085004055.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'やわらかめ', romaji:'yawarakame', en:'soft-ish (pillow)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ふつう', romaji:'futsuu', en:'normal / medium (pillow)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'かため', romaji:'katame', en:'firm-ish (pillow)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'通気性', romaji:'tsuukisei', en:'breathability', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'復元性', romaji:'fukugensei', en:'resilience / recovery (of material)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'感触', romaji:'kanshoku', en:'texture / feel', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'もっちり', romaji:'mocchiri', en:'chewy / springy (pillow texture)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ふわふわ', romaji:'fuwafuwa', en:'fluffy (pillow)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ザクザク', romaji:'zakuzaku', en:'crunchy / crisp (pillow texture)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'そばがら', romaji:'sobagara', en:'buckwheat husk (pillow filling)', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'枕カバー', romaji:'makura kabaa', en:'pillow case', tags:['accommodation'], source:{location:'JR Inn Sapporo (pillow corner)', date:'2026-08-11', file:'PXL_20260811_103351617.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'次', romaji:'tsugi', en:'next', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'希望', romaji:'kibou', en:'wish / request', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'預かる', romaji:'azukaru', en:'to keep / hold (something) for someone', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ご了承ください', romaji:'goryoushou kudasai', en:'please understand / accept', tags:['accommodation'], seenAs:'次のお客様がご利用を希望される場合、洗濯物をフロントでお預かりすることがあります。ご了承ください。- if the next guest wishes to use the facility we may need to store your laundry at the front desk', source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-11', file:'PXL_20260811_103547311.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'2泊以上', romaji:'nihaku ijou', en:'2 nights or more', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
+      {jp:'エコ清掃', romaji:'eko seisou', en:'eco cleaning', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-13', file:'PXL_20260813_051947873.jpg'}, dateAdded:'2026-08-14'},
       {jp:'いか焼き', romaji:'ikayaki', en:'grilled squid', source:{location:'Super Hotel Premier Osaka Honmachi (lobby)', date:'2026-08-14', file:'PXL_20260814_055446487.jpg'}, dateAdded:'2026-08-15'},
       {jp:'うまいもん', romaji:'umaimon', en:'delicious food (Osaka dialect)', source:{location:'Super Hotel Premier Osaka Honmachi (lobby)', date:'2026-08-14', file:'PXL_20260814_055446487.jpg'}, dateAdded:'2026-08-15'},
       {jp:'ご当地', romaji:'gotouchi', en:'local / regional (specialty)', source:{location:'Super Hotel Premier Osaka Honmachi (lobby)', date:'2026-08-14', file:'PXL_20260814_055446487.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'暗証番号', romaji:'anshou bangou', en:'PIN / passcode', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'ご利用期間', romaji:'goriyou kikan', en:'period of use', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'入館', romaji:'nyuukan', en:'entering the building', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'くつろぎ', romaji:'kutsurogi', en:'relaxation', seenAs:'ごゆっくりおくつろぎ下さい - please take your time and relax', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'珪藻土', romaji:'keisoudo', en:'diatomaceous earth (ceiling material)', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'湿度', romaji:'shitsudo', en:'humidity', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'調整', romaji:'chousei', en:'adjustment', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'断熱性', romaji:'dannetsusei', en:'thermal insulation', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'健康的', romaji:'kenkouteki', en:'healthy', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'化石', romaji:'kaseki', en:'fossil', source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'滞在', romaji:'taizai', en:'stay / reside', seenAs:'11時〜15時はお部屋に滞在できません。- you are not allowed to stay in the room between 11:00 and 15:00', source:{location:'Super Hotel Premier Osaka Honmachi (room door card)', date:'2026-08-14', file:'PXL_20260814_061017398.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'連泊', romaji:'renpaku', en:'consecutive nights\' stay (hotel)', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'マグネット', romaji:'magunetto', en:'magnet', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'ご希望', romaji:'gokibou', en:'your wish / request (polite)', seenAs:'清掃ご希望の場合、こちらのマグネットを11時までにドアの外へ貼ってください。- if you\'d like cleaning, please put this magnet outside the door by 11:00', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'行いません', romaji:'okonaimasen', en:'will not carry out / perform (polite negative)', seenAs:'ドアの外にマグネットが貼られていない場合、清掃を行いません。- if the magnet is not on the door, we will not clean', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
-      {jp:'お荷物', romaji:'onimotsu', en:'luggage / baggage (polite)', source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'預かり', romaji:'azukari', en:'keeping / holding (something for someone)', source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'届いて', romaji:'todoite', en:'has arrived', seenAs:'下記のものが届いておりますので、フロントまでお越しください。- the following has arrived, so please come to the front desk', source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'貴重品', romaji:'kichouhin', en:'valuables', source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'暗証番号', romaji:'anshou bangou', en:'PIN / passcode', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'ご利用期間', romaji:'goriyou kikan', en:'period of use', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'入館', romaji:'nyuukan', en:'entering the building', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'くつろぎ', romaji:'kutsurogi', en:'relaxation', tags:['accommodation'], seenAs:'ごゆっくりおくつろぎ下さい - please take your time and relax', source:{location:'Super Hotel Premier Osaka Honmachi (room 922 key receipt)', date:'2026-08-14', file:'PXL_20260814_060412583.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'珪藻土', romaji:'keisoudo', en:'diatomaceous earth (ceiling material)', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'湿度', romaji:'shitsudo', en:'humidity', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'調整', romaji:'chousei', en:'adjustment', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'断熱性', romaji:'dannetsusei', en:'thermal insulation', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'健康的', romaji:'kenkouteki', en:'healthy', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'化石', romaji:'kaseki', en:'fossil', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room ceiling plaque)', date:'2026-08-14', file:'PXL_20260814_060827721.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'滞在', romaji:'taizai', en:'stay / reside', tags:['accommodation'], seenAs:'11時〜15時はお部屋に滞在できません。- you are not allowed to stay in the room between 11:00 and 15:00', source:{location:'Super Hotel Premier Osaka Honmachi (room door card)', date:'2026-08-14', file:'PXL_20260814_061017398.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'連泊', romaji:'renpaku', en:'consecutive nights\' stay (hotel)', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'マグネット', romaji:'magunetto', en:'magnet', tags:['accommodation'], source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'ご希望', romaji:'gokibou', en:'your wish / request (polite)', tags:['accommodation'], seenAs:'清掃ご希望の場合、こちらのマグネットを11時までにドアの外へ貼ってください。- if you\'d like cleaning, please put this magnet outside the door by 11:00', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'行いません', romaji:'okonaimasen', en:'will not carry out / perform (polite negative)', tags:['accommodation'], seenAs:'ドアの外にマグネットが貼られていない場合、清掃を行いません。- if the magnet is not on the door, we will not clean', source:{location:'Super Hotel Premier Osaka Honmachi (room door card, continues in PXL_20260814_061037505.jpg)', date:'2026-08-14', file:'PXL_20260814_061034969.jpg'}, dateAdded:'2026-08-15'},
+      {jp:'お荷物', romaji:'onimotsu', en:'luggage / baggage (polite)', tags:['accommodation'], source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'預かり', romaji:'azukari', en:'keeping / holding (something for someone)', tags:['accommodation'], source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'届いて', romaji:'todoite', en:'has arrived', tags:['accommodation'], seenAs:'下記のものが届いておりますので、フロントまでお越しください。- the following has arrived, so please come to the front desk', source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'貴重品', romaji:'kichouhin', en:'valuables', tags:['accommodation'], source:{location:'Tokyu Stay Kyoto (hotel)', date:'2026-08-20', file:'PXL_20260820_071712736.jpg'}, dateAdded:'2026-08-21'},
     ],
   },
   'vocab-materials-street': {
@@ -4034,6 +4034,44 @@ const THEMES = {
     label: 'Food & drink (combined test)',
     chars: 'おまかせ とりあえず メニュー…',
     tagQuery: 'food-drink',
+  },
+  // TEST ONLY - third proving ground for the same Trip+Andrew tag merge,
+  // same reasoning as theme-stations-combined above. Also appended
+  // programmatically (see buildMatchCategoryList), not given a static
+  // Collections card. Pulls from vocab-money-shopping (Trip, tagged
+  // wholesale - all 16 items are genuinely shopping/transaction vocabulary)
+  // plus a hand-picked 52 of the 70 items in vocab-materials-shops (Andrew) -
+  // that category is a mixed bag like Directions and navigation was, so the
+  // 18 left untagged are general facility/policy/animal-notice words that
+  // just happened to be photographed at a shop (parking lot, pet policy,
+  // crows, studying-in-seat notices, and so on), not shopping content
+  // itself. Nothing removed or retired; purely additive, same as the other
+  // two tests.
+  'theme-shopping-combined': {
+    label: 'Shopping (combined test)',
+    chars: 'ねだん わりびき レシート…',
+    tagQuery: 'shopping',
+  },
+  // TEST ONLY - fourth proving ground for the same Trip+Andrew tag merge,
+  // same reasoning as theme-stations-combined above. Also appended
+  // programmatically (see buildMatchCategoryList), not given a static
+  // Collections card. Pulls from vocab-accommodation (Trip, tagged
+  // wholesale) plus a hand-picked 73 of the 76 items in vocab-materials-
+  // hotel-facilities (Andrew) - the 3 left untagged (いか焼き, うまいもん,
+  // ご当地) are a hotel-lobby local-food advert, topically food rather than
+  // accommodation despite being photographed in the hotel. This is also the
+  // pairing that motivated the whole tag approach: にもつ and よやく are
+  // Trip-canonical words that physically live in vocab-accommodation but
+  // get pulled into vocab-materials-airport and vocab-materials-street via
+  // includeItems - under the old category model they'd have no natural home
+  // under "Accommodation" at all without that wiring. Tagging vocab-
+  // accommodation wholesale picks them both up automatically, no extra
+  // includeItems bookkeeping needed. Nothing removed or retired; purely
+  // additive, same as the other three tests.
+  'theme-accommodation-combined': {
+    label: 'Accommodation (combined test)',
+    chars: 'ホテル よやく タオル…',
+    tagQuery: 'accommodation',
   },
 };
 
@@ -7574,6 +7612,22 @@ function buildMatchCategoryList() {
     foodDrinkTestCard.innerHTML = `<span>TEST: Food & drink, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
     foodDrinkTestCard.onclick = () => showVocabTileSelection('theme-food-drink-combined');
     container.appendChild(foodDrinkTestCard);
+
+    // TEST ONLY - third combined-tag test, same reasoning as the Stations
+    // card above (see theme-shopping-combined in THEMES).
+    const shoppingTestCard = document.createElement('div');
+    shoppingTestCard.className = 'vocab-ref-card';
+    shoppingTestCard.innerHTML = `<span>TEST: Shopping, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
+    shoppingTestCard.onclick = () => showVocabTileSelection('theme-shopping-combined');
+    container.appendChild(shoppingTestCard);
+
+    // TEST ONLY - fourth combined-tag test, same reasoning as the Stations
+    // card above (see theme-accommodation-combined in THEMES).
+    const accommodationTestCard = document.createElement('div');
+    accommodationTestCard.className = 'vocab-ref-card';
+    accommodationTestCard.innerHTML = `<span>TEST: Accommodation, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
+    accommodationTestCard.onclick = () => showVocabTileSelection('theme-accommodation-combined');
+    container.appendChild(accommodationTestCard);
   }
 }
 
