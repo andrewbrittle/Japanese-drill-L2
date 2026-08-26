@@ -976,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260825.004</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260826.001</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1973,6 +1973,73 @@ const DATA = {
   ],
 };
 
+// =============================================================================
+// FUTURE DIRECTION - not yet started, written down so it survives conversation
+// compaction rather than living only as chat history. Last discussed
+// 2026-08-26. Nothing below this comment reflects current behavior; it's a
+// plan for infrastructure Andrew wants built out BEFORE L3 arrives, so L3
+// becomes a data-entry exercise (add tagged vocab, mostly to a separate data
+// file) rather than an app-design exercise.
+//
+// THE FLIP: every drilling screen gets created the same way, and buckets stop
+// mattering. Concretely, that means:
+//
+// 1. `level` stops being a category-level property (`level: 1`, `level:
+//    'trip'`, etc. on a whole VOCAB entry) and becomes a per-item property.
+//    Today `categoryTierVisible(cat.level)` gates a whole category at once;
+//    it would need to gate per item instead, the same way Trip/Andrew
+//    already works for tag pools (see the tagQuery branch of getThemePool -
+//    a tagged item in an Andrew-only category already disappears from a tag
+//    pool the moment Andrew mode is off, without the pool needing to know
+//    that itself). Level should become "the most recent level this word was
+//    genuinely re-taught at" (see the "bring forward" idea below), not "the
+//    level it was first introduced at" - dateAdded keeps serving as the
+//    historical record of first introduction, level moves forward.
+//
+// 2. Trip/Andrew membership becomes a per-item tag too, not a category-level
+//    gate. Today a category is either Trip-tier or Andrew-tier as a whole;
+//    the goal is for Trip and Andrew to eventually merge into one pill/toggle
+//    (Andrew mode is what surfaces the word, not which category it happens
+//    to sit in). The four combined-tag test cards built in August 2026
+//    (Stations, Food & drink, Shopping, Accommodation - see the
+//    theme-*-combined THEMES entries and their "TEST ONLY" comments) proved
+//    the query mechanism itself works and behaves correctly under every
+//    Trip/Andrew toggle combination. What they did NOT test: making this the
+//    ONLY way a word is found, with the old per-category Trip/Andrew gating
+//    retired rather than running in parallel.
+//
+// 3. Categories stop being storage-plus-display and become pure display -
+//    every screen (today's Level 1, Level 2, Trip, Andrew mode, and today's
+//    hand-picked Collections) gets built the same way a tagQuery theme is
+//    built now: a named, curated query over one flat item store, resolved
+//    fresh each time. `includeItems` (the cross-reference mechanism used
+//    before tags existed) becomes fully unnecessary once every word just
+//    carries the tags it needs, wherever it physically lives - there should
+//    be nothing left to cross-reference by then.
+//
+// 4. "Bring forward" for level: level updates in place (not duplicated) only
+//    when a word is genuinely re-taught something new - a new conjugation,
+//    or a script promotion (kana primary -> kanji primary, swapping
+//    jp/altForm and flipping altIsStandard) - not incidental reuse in an
+//    example sentence (that's what `seenAs` is for). This needs real L3
+//    content to prove against before it can be built for real.
+//
+// 5. Once the shape above settles, the vocab data (VOCAB/THEMES) is a good
+//    candidate to split into its own file, separate from the app logic
+//    (index.html's screens/scoring/drilling code), with independent
+//    versioning between the two - the app loads a given data file version
+//    rather than the two being bumped in lockstep every time. This is what
+//    "L3 becomes mostly a data-entry exercise" means in practice.
+//
+// Before starting: trace through exactly what currently assumes "a category
+// has one level" - the L1/L2/Trip/Andrew screen navigation, the settings
+// toggles, and buildCategoryItems all do today. Explicitly deferred until
+// after the current pass of additive topic-tagging (Stations/Food-drink/
+// Shopping/Accommodation and whatever else gets tagged before this starts) -
+// and deferred until L3 exists, so classmates using the app between L2 and
+// L3 aren't disrupted by an L1/L2 merge landing before they're ready for it.
+// =============================================================================
+
 const VOCAB = {
   'vocab-greetings': {
     level: 1,
@@ -2939,22 +3006,22 @@ const VOCAB = {
     label: 'Emergency and survival',
     chars: 'じしん けが たいふう…',
     items: [
-      {jp:'じこ', romaji:'jiko', en:'accident', altForm:'事故', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'アレルギー', romaji:'arerugii', en:'allergy', dateAdded:'2026-08-01'},
-      {jp:'きゅうきゅうしゃ', romaji:'kyuukyuusha', en:'ambulance', altForm:'救急車', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'だいじょうぶですか', romaji:'daijoubu desu ka', en:'are you okay?', dateAdded:'2026-08-01'},
-      {jp:'じしん', romaji:'jishin', en:'earthquake', altForm:'地震', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'たいしかん', romaji:'taishikan', en:'embassy', altForm:'大使館', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'きんきゅう', romaji:'kinkyuu', en:'emergency', altForm:'緊急', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'ひじょうぐち', romaji:'hijouguchi', en:'emergency exit', altForm:'非常口', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'かじ', romaji:'kaji', en:'fire (emergency)', altForm:'火事', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'なくしました', romaji:'nakushimashita', en:'I lost (something)', dateAdded:'2026-08-01'},
-      {jp:'けが', romaji:'kega', en:'injury', altForm:'怪我', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'パスポート', romaji:'pasupooto', en:'passport', dateAdded:'2026-08-01'},
-      {jp:'やっきょく', romaji:'yakkyoku', en:'pharmacy', altForm:'薬局', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'けいさつを よんでください', romaji:'keisatsu wo yonde kudasai', en:'please call the police', dateAdded:'2026-08-01'},
-      {jp:'つなみ', romaji:'tsunami', en:'tsunami', altForm:'津波', altIsStandard:true, dateAdded:'2026-08-01'},
-      {jp:'たいふう', romaji:'taifuu', en:'typhoon', altForm:'台風', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'じこ', romaji:'jiko', en:'accident', tags:['emergency'], altForm:'事故', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'アレルギー', romaji:'arerugii', en:'allergy', tags:['emergency'], dateAdded:'2026-08-01'},
+      {jp:'きゅうきゅうしゃ', romaji:'kyuukyuusha', en:'ambulance', tags:['emergency'], altForm:'救急車', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'だいじょうぶですか', romaji:'daijoubu desu ka', en:'are you okay?', tags:['emergency'], dateAdded:'2026-08-01'},
+      {jp:'じしん', romaji:'jishin', en:'earthquake', tags:['emergency'], altForm:'地震', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'たいしかん', romaji:'taishikan', en:'embassy', tags:['emergency'], altForm:'大使館', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'きんきゅう', romaji:'kinkyuu', en:'emergency', tags:['emergency'], altForm:'緊急', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'ひじょうぐち', romaji:'hijouguchi', en:'emergency exit', tags:['emergency'], altForm:'非常口', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'かじ', romaji:'kaji', en:'fire (emergency)', tags:['emergency'], altForm:'火事', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'なくしました', romaji:'nakushimashita', en:'I lost (something)', tags:['emergency'], dateAdded:'2026-08-01'},
+      {jp:'けが', romaji:'kega', en:'injury', tags:['emergency'], altForm:'怪我', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'パスポート', romaji:'pasupooto', en:'passport', tags:['emergency'], dateAdded:'2026-08-01'},
+      {jp:'やっきょく', romaji:'yakkyoku', en:'pharmacy', tags:['emergency'], altForm:'薬局', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'けいさつを よんでください', romaji:'keisatsu wo yonde kudasai', en:'please call the police', tags:['emergency'], dateAdded:'2026-08-01'},
+      {jp:'つなみ', romaji:'tsunami', en:'tsunami', tags:['emergency'], altForm:'津波', altIsStandard:true, dateAdded:'2026-08-01'},
+      {jp:'たいふう', romaji:'taifuu', en:'typhoon', tags:['emergency'], altForm:'台風', altIsStandard:true, dateAdded:'2026-08-01'},
     ],
   },
   'vocab-weather': {
@@ -3138,7 +3205,7 @@ const VOCAB = {
       {jp:'歩行', romaji:'hokou', en:'walking', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
       {jp:'大変危険', romaji:'taihen kiken', en:'extremely dangerous', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
       {jp:'おやめください', romaji:'oyame kudasai', en:'please stop / refrain from', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
-      {jp:'事故防止', romaji:'jiko boushi', en:'accident prevention', tags:['stations'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
+      {jp:'事故防止', romaji:'jiko boushi', en:'accident prevention', tags:['stations','emergency'], source:{location:'Kintetsu Railway', date:'2026-08-17', file:'PXL_20260817_024515967.jpg'}, dateAdded:'2026-08-17'},
       // きっぷ and 列車 from this photo were skipped - already exact
       // duplicates in this same category.
       {jp:'座席', romaji:'zaseki', en:'seat', tags:['stations'], source:{location:'Hiroshima Station', date:'2026-08-20', file:'PXL_20260820_022523457.jpg'}, dateAdded:'2026-08-21'},
@@ -3598,7 +3665,7 @@ const VOCAB = {
       {jp:'庭園', romaji:'teien', en:'garden', source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
       {jp:'藩主', romaji:'hanshu', en:'feudal lord (Edo-period domain ruler)', source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
       {jp:'別邸', romaji:'bettei', en:'villa / secondary residence', source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
-      {jp:'避難', romaji:'hinan', en:'evacuation / taking refuge', source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
+      {jp:'避難', romaji:'hinan', en:'evacuation / taking refuge', tags:['emergency'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
       {jp:'埋葬', romaji:'maisou', en:'burial / interment', source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
       {jp:'名称', romaji:'meishou', en:'name / designation', source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21'},
       {jp:'トンビ', romaji:'tonbi', en:'black kite (bird of prey)', source:{location:'Kyoto Station area', date:'2026-08-20', file:'PXL_20260820_050611881.jpg'}, dateAdded:'2026-08-21'},
@@ -3635,8 +3702,8 @@ const VOCAB = {
       {jp:'投入', romaji:'tounyuu', en:'insert / put in', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ソフト剤', romaji:'sofuto zai', en:'fabric softener', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'据え付け', romaji:'suetsuke', en:'installation', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'警告', romaji:'keikoku', en:'warning', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'感電', romaji:'kanden', en:'electric shock', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'警告', romaji:'keikoku', en:'warning', tags:['emergency'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'感電', romaji:'kanden', en:'electric shock', tags:['emergency'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11'},
       {jp:'操作', romaji:'sousa', en:'operation', source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
       {jp:'ドラム', romaji:'doramu', en:'drum', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
       {jp:'排気フィルター', romaji:'haiki firutaa', en:'exhaust filter', devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054440182.jpg'}, dateAdded:'2026-08-11'},
@@ -3751,9 +3818,9 @@ const VOCAB = {
       {jp:'余裕', romaji:'yoyou', en:'margin / leeway / spare time', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
       {jp:'ラストオーダー', romaji:'rasuto oodaa', en:'last order', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
       {jp:'支配人', romaji:'shihainin', en:'manager', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel)', date:'2026-08-09', file:'PXL_20260809_081340205.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'避難経路', romaji:'hinan keiro', en:'evacuation route', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'消火器', romaji:'shoukaki', en:'fire extinguisher', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'非常時', romaji:'hijouji', en:'emergency / time of emergency', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'避難経路', romaji:'hinan keiro', en:'evacuation route', tags:['accommodation','emergency'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'消火器', romaji:'shoukaki', en:'fire extinguisher', tags:['accommodation','emergency'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'非常時', romaji:'hijouji', en:'emergency / time of emergency', tags:['accommodation','emergency'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
       {jp:'係', romaji:'kakari', en:'staff in charge / attendant', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
       {jp:'指示', romaji:'shiji', en:'instructions', tags:['accommodation'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234219833.jpg'}, dateAdded:'2026-08-10'},
       {jp:'扉', romaji:'tobira', en:'door (formal word)', tags:['accommodation'], seenAs:'扉に注意 - mind the door', source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234230785.jpg'}, dateAdded:'2026-08-10'},
@@ -4072,6 +4139,26 @@ const THEMES = {
     label: 'Accommodation (combined test)',
     chars: 'ホテル よやく タオル…',
     tagQuery: 'accommodation',
+  },
+  // TEST ONLY - fifth proving ground for the same Trip+Andrew tag merge,
+  // same reasoning as theme-stations-combined above. Also appended
+  // programmatically (see buildMatchCategoryList), not given a static
+  // Collections card. Pulls from vocab-emergency-survival (Trip, tagged
+  // wholesale - all 16 items are genuinely emergency/safety vocabulary)
+  // plus 7 items scattered across four different Andrew categories: 事故防止
+  // in Materials - Stations, 避難 in Materials - Street, 警告 and 感電 in
+  // Materials - Hotel: Appliances & machines, and 避難経路/消火器/非常時 in
+  // Materials - Hotel: Facilities. Unlike the first four pairings, this is
+  // the first case where a word carries two topic tags at once - the three
+  // Hotel: Facilities items already carry tags:['accommodation'] and now
+  // also carry 'emergency', proving a word can belong to more than one
+  // combined pool simultaneously without duplication (it shows up correctly
+  // in both theme-accommodation-combined and this one). Nothing removed or
+  // retired; purely additive, same as the other four tests.
+  'theme-emergency-combined': {
+    label: 'Emergency & survival (combined test)',
+    chars: 'じしん けが たいふう…',
+    tagQuery: 'emergency',
   },
 };
 
@@ -7628,6 +7715,14 @@ function buildMatchCategoryList() {
     accommodationTestCard.innerHTML = `<span>TEST: Accommodation, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
     accommodationTestCard.onclick = () => showVocabTileSelection('theme-accommodation-combined');
     container.appendChild(accommodationTestCard);
+
+    // TEST ONLY - fifth combined-tag test, same reasoning as the Stations
+    // card above (see theme-emergency-combined in THEMES).
+    const emergencyTestCard = document.createElement('div');
+    emergencyTestCard.className = 'vocab-ref-card';
+    emergencyTestCard.innerHTML = `<span>TEST: Emergency & survival, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
+    emergencyTestCard.onclick = () => showVocabTileSelection('theme-emergency-combined');
+    container.appendChild(emergencyTestCard);
   }
 }
 
