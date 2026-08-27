@@ -976,7 +976,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260827.002</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260827.007</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1457,14 +1457,11 @@
         </div>
         <div class="cat-swatch"></div>
       </div>
-      <div class="group-card" data-theme-key="theme-days-times" onclick="showVocabTileSelection('theme-days-times')" style="cursor:pointer;">
-        <div class="group-info">
-          <div class="group-name">Calendar & time</div>
-          <div class="group-chars">げつようび いちがつ ついたち…</div>
-          <div class="group-count">Days of the week + Months + Days of the month + Time vocabulary, brought together</div>
-        </div>
-        <div class="cat-swatch"></div>
-      </div>
+      <!-- Calendar & time card removed 2026-08-27 - see the "REMOVED"
+           comment above theme-days-times's old spot in THEMES for why.
+           Days of the week/Months/Days of the month/Time vocabulary are
+           all still there under Level 2, untouched. -->
+
       <div class="group-card" data-theme-key="theme-items-clothing-general" onclick="showVocabTileSelection('theme-items-clothing-general')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Everyday items, clothing & general vocab</div>
@@ -1506,14 +1503,9 @@
         </div>
         <div class="cat-swatch"></div>
       </div>
-      <div class="group-card" data-theme-key="theme-survival-vocab" id="theme-survival-vocab-card" onclick="showVocabTileSelection('theme-survival-vocab')" style="cursor:pointer; display:none;">
-        <div class="group-info">
-          <div class="group-name">Survival vocab</div>
-          <div class="group-chars">たすけて けいさつ びょういん…</div>
-          <div class="group-count">Trip-prep + Emergency and survival, brought together</div>
-        </div>
-        <div class="cat-swatch"></div>
-      </div>
+      <!-- Survival vocab card removed 2026-08-27 - see the "REMOVED" comment
+           above theme-survival-vocab's old spot in THEMES for why. -->
+
     </div>
 
     <div id="match-vocab-view" style="display:none;">
@@ -2015,6 +2007,21 @@ const DATA = {
 // carries the 'weather' tag, so there's no merging to reason about - pure
 // proof the mechanism itself works before trying it somewhere riskier.
 //
+// RANDOM POOLS REBUILT (2026-08-27): startRandomMatch's Level 1/2 branch and
+// getAllVocabPool were the last two places reading VOCAB[key].items
+// directly and gating by a category's own `level` property - the bucket
+// model this whole file has been moving away from. Rebuilt from scratch
+// rather than patched: "what would Random - Level 1 look like if tags were
+// the only thing that existed" turned out to be "every item tagged 'L1',
+// full stop" - see scanVocabByTag, shared by both functions now. Andrew/
+// Trip stayed on the old per-category level match deliberately (they've
+// never had a universal per-item tier tag the way L1/L2 now do - see point
+// 2 below, still open). Proved this actually matters, not just tidier:
+// tagged an existing L1 word forward with an extra 'L2' tag, no data moved
+// or duplicated, and it correctly appeared in both levels' random pools
+// immediately - confirming bring-forward (point 1 below) needs no "moving"
+// mechanism at all once a pool is a genuine tag query.
+//
 // ALL 24 L1/L2 CATEGORIES FLIPPED (2026-08-27): every Level 1 and Level 2
 // category now carries `tagQuery: ['L1'|'L2', <topic>]` (e.g.
 // ['L1','places']) instead of relying on `items` alone. This needed one
@@ -2048,21 +2055,38 @@ const DATA = {
 //
 // Also surfaced while planning this: most of the hand-picked Collections
 // (theme-transport-uk, theme-world, theme-items-clothing-general,
-// theme-core-grammar, theme-getting-around - see their `groups:` arrays)
-// are simple unions of whole categories that already have their own topic
-// tag, so they could become tagQuery lookups with an OR condition
-// (tagQueryMatches has no OR yet, only the AND added here) and need zero
-// new tags on any word - membership would just follow each category's
-// existing tag automatically. theme-survival-vocab is the one exception:
-// it used to be "all of Trip prep + all of Emergency", but Trip prep no
-// longer has one tag of its own (deliberately dissolved into food-drink/
-// emergency/shopping/adjectives/places/stations by purpose - see the
-// purpose-tagging pass above) so recreating it needs either a dedicated
-// tag or an accepted change in what "survival" means now. Calendar & time
-// (theme-days-times) is a standing exception regardless - it concatenates
-// four categories in a fixed unsorted order, which no tagQuery variant
-// (AND or OR) can express without also inventing explicit multi-source
-// ordering.
+// theme-core-grammar, theme-getting-around) were simple unions of whole
+// categories that already had their own topic tag, so they became
+// tagQuery {any:[...]} lookups with zero new tags on any word - done
+// 2026-08-27, see tagQueryMatches and getThemePool's dividerGroup handling
+// for the OR branch. theme-survival-vocab did NOT convert the same way:
+// it used to be "all of Trip prep + all of Emergency" as whole categories,
+// but Trip prep never had one tag of its own to build a query from
+// (deliberately dissolved into food-drink/emergency/shopping/adjectives/
+// places/stations by purpose). Rather than invent a tag just to preserve
+// the old boundary, both source categories were checked word-by-word and
+// found to already be fully covered elsewhere (every trip-prep and
+// emergency-survival word has a real purpose tag and shows up in an
+// existing Collection or combined pool) - so the Collection, and both
+// source categories as standalone browsable tiles, were retired instead of
+// rebuilt. See the standaloneCard: false comments on vocab-trip-prep and
+// vocab-emergency-survival - the words themselves were never touched, only
+// the now-redundant container screens.
+//
+// Calendar & time (theme-days-times) turned out not to be a mechanism
+// question at all, on reflection (2026-08-27) - the "no tagQuery variant
+// can express fixed multi-source ordering" limitation was real, but
+// fixable (respect ordinalOrder within an {any:[...]} group, make the
+// divider optional). The actual question was whether mixing Days/Months/
+// Days-of-month/Time into one drill deck was ever worth doing, and it
+// wasn't: unlike Core grammar or Getting around, these four don't get
+// confused with each other or used together in one sentence, each is
+// already a solid standalone category, and pickDistractorItems draws
+// distractors from the whole combined pool by text shape alone - so a
+// "Monday" question could get a month name as an obviously-wrong option,
+// undermining the whole point of distractor biasing. Removed rather than
+// fixed - see the REMOVED comment at its old spot in THEMES. The four
+// source categories themselves are completely untouched.
 //
 // THE FLIP: every drilling screen gets created the same way, and buckets stop
 // mattering. Concretely, that means:
@@ -2902,9 +2926,24 @@ const VOCAB = {
   // that the lesson covers it - see the relocation note there. Lesson
   // content takes precedence over Trip/Andrew tier once something's been
   // formally taught, so it only needs to exist in one place.
+  // standaloneCard: false (2026-08-27) - default is true (every category
+  // gets its own tile), explicitly turned off here. NOT the same thing as
+  // "this word data is retired" - all 23 words already carry a real
+  // purpose tag (adjectives/food-drink/emergency/places/shopping/stations,
+  // see below) and are still fully drillable through those Collections/
+  // combined tags. Checked first: nothing else references this category
+  // except the also-removed theme-survival-vocab (deleted outright, not
+  // flagged - it was a pure view with no storage of its own, unlike this).
+  // `items` below is left completely untouched and is still the one
+  // physical home for these words. Every scan that reads by tag
+  // (resolveVocabCategory, getThemePool, scanVocabByTag, the Trip random
+  // pool) has no idea this flag exists and keeps including these words
+  // exactly as before - nothing about the words changed, only whether this
+  // specific category still gets its own tile in the list.
   'vocab-trip-prep': {
     level: 'trip',
     hasReference: true,
+    standaloneCard: false,
     label: 'Useful words for the trip',
     chars: 'すし きっぷ たすけて…',
     // See resolveVocabCategory - references a single word actually stored in
@@ -3113,9 +3152,16 @@ const VOCAB = {
       {jp:'にし', romaji:'nishi', en:'west', tags:['directions'], altForm:'西', altIsStandard:true, dateAdded:'2026-08-12'},
     ],
   },
+  // standaloneCard: false (2026-08-27) - same reasoning as vocab-trip-prep
+  // above: all 16 words already carry tags:['emergency'], which is a
+  // strict subset of the existing 'emergency' combined pool (36 words -
+  // these 16 plus trip-prep's 4 plus scattered Materials items), so
+  // nothing here is only findable through this specific category. `items`
+  // untouched, still the physical home for these words.
   'vocab-emergency-survival': {
     level: 'trip',
     hasReference: true,
+    standaloneCard: false,
     label: 'Emergency and survival',
     chars: 'じしん けが たいふう…',
     items: [
@@ -4115,68 +4161,90 @@ const VOCAB = {
 // like Days and times where the taught order IS the content and sorting
 // would actively hurt reference use.
 const THEMES = {
+  // Converted from groups:[['vocab-transport'],['vocab-places-uk']] to a
+  // tagQuery OR (2026-08-27) - both categories already carry their own
+  // exclusive topic tag, so this needs no new tagging at all. dividerGroup
+  // still separates Transport from UK Places, same as groups did - see the
+  // {any:[...]} branch of getThemePool.
   'theme-transport-uk': {
     label: 'Transport and UK Places',
     chars: 'でんしゃ ろんどん…',
-    groups: [['vocab-transport'], ['vocab-places-uk']],
+    tagQuery: { any: ['transport', 'places-uk'] },
   },
   'theme-world': {
     label: 'Around the world',
     chars: 'あめりか とうきょう…',
-    groups: [['vocab-countries'], ['vocab-cities']],
+    tagQuery: { any: ['countries', 'cities'] },
   },
-  // Renamed from "Days and times" and widened to cover the whole calendar -
-  // Months and Days of the month previously had no Collection at all, sitting
-  // as two standalone tiles nobody would think to combine on their own.
-  // Still noSort (see above) since all four source categories are themselves
-  // ordinal (Mon-Sun, Jan-Dec, 1st-31st) and alphabetizing would scramble
-  // that. Order here is deliberately "the calendar, then the clock" - days,
-  // months, dates, then the more general time expressions.
-  'theme-days-times': {
-    label: 'Calendar & time',
-    chars: 'げつようび いちがつ ついたち…',
-    noSort: true,
-    sources: ['vocab-days-l2', 'vocab-months-l2', 'vocab-days-of-month-l2', 'vocab-time-l2'],
-  },
+  // REMOVED (2026-08-27) - unlike Core grammar or Getting around, Days/
+  // Months/Days-of-month/Time don't get used together in a way that makes
+  // mixing them a useful drill (you don't confuse "Monday" with "March" the
+  // way you might confuse a verb with an adjective), and each of the four
+  // is already a solid standalone category (7/12/31/32 words). Checking
+  // pickDistractorItems/distractorSimilarity confirmed a real downside too:
+  // distractors are drawn from the whole combined pool by pure text shape
+  // (first letter + length), with no concept of semantic category - so a
+  // "Monday" question could get a month name as a wrong answer, trivially
+  // dismissible on sight in meaning mode without knowing any Japanese,
+  // undermining the exact thing distractor-biasing exists to prevent. This
+  // one had a place when it was built (Months/Days-of-month had no
+  // Collection of their own yet) but not a reason to exist now - the four
+  // source categories (vocab-days-l2, vocab-months-l2,
+  // vocab-days-of-month-l2, vocab-time-l2) are completely untouched and
+  // still fully drillable on their own under Level 2, exactly as before.
+  //
+  // Converted from groups to a tagQuery OR (2026-08-27) - see
+  // theme-transport-uk above for why this is safe with no new tagging.
   'theme-items-clothing-general': {
     label: 'Everyday items, clothing & general vocab',
     chars: 'かさ くつ かぞく…',
-    groups: [['vocab-objects'], ['vocab-clothing'], ['vocab-general-l2']],
+    tagQuery: { any: ['objects', 'clothing', 'general-l2'] },
   },
   // New - Verbs/Adjectives/Question words are all "functional" categories
   // (the words a sentence is built FROM) rather than themed nouns, and none
   // of the three had a Collection either. Grouped (not noSort) since there's
   // no single taught order spanning all three the way the calendar has -
   // each block alphabetizes on its own, with a divider between blocks.
+  // Converted from groups to a tagQuery OR (2026-08-27), keeping the
+  // divider between Verbs/Adjectives/Question & location - a flat
+  // interleaved list mixing verbs and adjectives read badly here in
+  // testing, unlike some of the other Collections. Uses 'adjectives-l2'
+  // (not the level-agnostic 'adjectives' tag) deliberately, so this stays
+  // exactly the same 5 L2 adjectives it always was rather than also
+  // pulling in Trip prep's adjectives.
   'theme-core-grammar': {
     label: 'Core grammar words',
     chars: 'きます あたらしい ここ…',
-    groups: [['vocab-verbs-l2'], ['vocab-adjectives-l2'], ['vocab-question-location']],
+    tagQuery: { any: ['verbs-l2', 'adjectives-l2', 'question-location'] },
   },
   // level here isn't read by getThemePool - visibility for this one is
   // wired directly on its card (theme-getting-around-card) in
   // applyShowTripVocabVisibility, same as every other static theme card.
   // Kept as a field anyway so it reads the same way VOCAB categories do, and
   // is ready to use if the theme list ever becomes level-filtered generically.
+  // Converted from groups to a tagQuery OR (2026-08-27) - divider still
+  // separates Transport/Places to go/Directions. Directions' own tag came
+  // from the full-coverage baseline pass and is exclusive to that
+  // category, so no new tagging needed here either.
   'theme-getting-around': {
     level: 'trip',
     label: 'Getting around',
     chars: 'でんしゃ ひだり きっぷ…',
-    groups: [['vocab-transport'], ['vocab-places-to-go'], ['vocab-directions-navigation']],
+    tagQuery: { any: ['transport', 'places-to-go', 'directions'] },
   },
-  // Not called "Staying safe" deliberately - trip-prep is pulled in whole
-  // (themes source entire categories, not individual items - see
-  // getThemePool), and only 4 of its 26 words are actually emergency-
-  // flavoured (help/it hurts/medicine/police). The rest is food, tickets,
-  // shops - genuinely "useful survival vocab for the trip" in the broad
-  // sense trip-prep was always going for, just not narrowly about safety.
-  // Named to fit what's actually in it rather than oversell the pairing.
-  'theme-survival-vocab': {
-    level: 'trip',
-    label: 'Survival vocab',
-    chars: 'たすけて けいさつ びょういん…',
-    groups: [['vocab-trip-prep'], ['vocab-emergency-survival']],
-  },
+  // REMOVED (2026-08-27) - this Collection was always "all of Trip prep +
+  // all of Emergency" as whole categories, not a tag concept (see the old
+  // comment this replaced: only 4 of trip-prep's 26 words were actually
+  // emergency-flavoured, the rest was food/tickets/shops). Once trip-prep
+  // itself retired (see vocab-trip-prep - every word already had a real
+  // purpose tag), there was no tag left to rebuild this from - the
+  // emergency quarter is already the existing 'emergency' combined pool,
+  // the rest is already covered by Food & drink/Shopping/Adjectives/
+  // Places/Stations. Nothing lost: every word this used to show is still
+  // fully drillable through those. If a genuinely tag-shaped "survival"
+  // concept is ever wanted, build it fresh from actual use rather than
+  // recreating this exact old boundary.
+  //
   // First Collection built from a tag rather than a hand-picked list of
   // source categories - see getThemePool's tagQuery branch. Pulls every
   // item anywhere carrying tags:['question-word'], which right now means
@@ -4388,6 +4456,30 @@ function getThemePool(themeKey) {
         if (tagQueryMatches(item.tags, theme.tagQuery)) items.push(item);
       });
     });
+    // {any:[...]} OR queries get dividerGroup treatment same as `groups`
+    // below - grouped by which "any" tag matched (in the order that tag
+    // appears in the any list), alphabetized within each group, so a
+    // Collection like Core grammar words can move from a hand-picked
+    // groups list to a tag query without losing the divider between
+    // Verbs and Adjectives (added 2026-08-27 - a flat interleaved list
+    // turned out to genuinely read worse for a mixed-part-of-speech
+    // Collection like that one, not just "different").
+    const anyQuery = theme.tagQuery && typeof theme.tagQuery === 'object' && !Array.isArray(theme.tagQuery) ? theme.tagQuery.any : null;
+    if (anyQuery) {
+      return items
+        .map((item, idx) => ({
+          item, idx,
+          groupIndex: anyQuery.findIndex(tag => item.tags && item.tags.includes(tag)),
+        }))
+        .sort((a, b) => {
+          if (a.groupIndex !== b.groupIndex) return a.groupIndex - b.groupIndex;
+          const ak = a.item.en.toLowerCase(), bk = b.item.en.toLowerCase();
+          if (ak < bk) return -1;
+          if (ak > bk) return 1;
+          return a.idx - b.idx;
+        })
+        .map(({ item, groupIndex }) => Object.assign({ dividerGroup: groupIndex }, item));
+    }
     return sortItemsAlphabetically(items);
   }
 
@@ -6182,6 +6274,28 @@ function categoryTierVisible(level) {
   return true;
 }
 
+// Walks every VOCAB category once and keeps items matching a tag query -
+// the same scanning shape resolveVocabCategory and getThemePool's tagQuery
+// branches already use, pulled out here so startRandomMatch (below) can
+// reuse it instead of copying the loop a third time. Added 2026-08-27 so
+// "Random - Level 1/2" is a genuine tag query (item has tag 'L1'/'L2')
+// rather than a bucket walk (category's own level property) - the
+// difference matters the moment a word is tagged forward to a later level
+// (e.g. tags:['L1','L3',...]) without moving its physical storage: a tag
+// query finds it in both level's random pools automatically, a bucket walk
+// never would, since the word's home category only has one level stamp.
+function scanVocabByTag(query) {
+  const items = [];
+  Object.keys(VOCAB).forEach(catKey => {
+    const cat = VOCAB[catKey];
+    if (!categoryTierVisible(cat.level)) return;
+    (cat.items || []).forEach(item => {
+      if (tagQueryMatches(item.tags, query)) items.push(item);
+    });
+  });
+  return items;
+}
+
 function applyTheme() {
   document.documentElement.setAttribute('data-theme', appSettings.theme === 'light' ? 'light' : 'dark');
   const card = document.getElementById('theme-toggle-card');
@@ -6273,8 +6387,7 @@ function applyShowTripVocabVisibility() {
   // cards' own comments in the Themes list.
   const gettingAroundCard = document.getElementById('theme-getting-around-card');
   if (gettingAroundCard) gettingAroundCard.style.display = on ? 'flex' : 'none';
-  const survivalCard = document.getElementById('theme-survival-vocab-card');
-  if (survivalCard) survivalCard.style.display = on ? 'flex' : 'none';
+  // Survival vocab card removed 2026-08-27 - no longer anything to wire up.
 }
 
 function toggleShowTripVocab() {
@@ -7825,6 +7938,12 @@ function buildMatchCategoryList() {
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
+    // standaloneCard: false (2026-08-27, see vocab-trip-prep/vocab-
+    // emergency-survival above) - default is true (every category gets its
+    // own tile), explicitly false here. The category still exists as pure
+    // storage so every tag scan keeps finding its words, it just no longer
+    // gets its own tile in this list.
+    if (v.standaloneCard === false) return;
     if (key === 'vocab-time-l2') {
       const timeUnitRefCard = document.createElement('div');
       timeUnitRefCard.className = 'vocab-ref-card';
@@ -9924,13 +10043,29 @@ function tryResumeMatch() {
 }
 
 function startRandomMatch() {
-  // Pull vocab items from categories at the current level, hand off to the
-  // shared reading-challenge deck builder (same format as every other card)
-  const allItems = [];
-  Object.keys(VOCAB).forEach(key => {
-    if ((VOCAB[key].level || 1) !== currentMatchLevel) return;
-    VOCAB[key].items.forEach(item => allItems.push(item));
-  });
+  // Level 1/2: a genuine tag query via scanVocabByTag (see comment there) -
+  // every item tagged 'L1'/'L2' anywhere, not "every item stored in a
+  // category whose own level happens to be 1/2". This is what makes a
+  // word tagged forward (e.g. ['L1','L3',...]) show up in both levels'
+  // random pools with no extra work, the moment forward-tagging is used.
+  //
+  // Andrew/Trip: still a per-category level match, deliberately not a tag
+  // query - unlike L1/L2, Andrew and Trip were never given a universal
+  // per-item tier tag (every L1/L2 word got 'L1'/'L2' in the August 2026
+  // tagging pass; Andrew/Trip tier has only ever been a category-level
+  // property, same as it still is for categoryTierVisible everywhere
+  // else in the app). Making Trip/Andrew fully per-item is real, separate
+  // work (see FUTURE DIRECTION point 2 above VOCAB) - not done here.
+  let allItems;
+  if (currentMatchLevel === 1 || currentMatchLevel === 2) {
+    allItems = scanVocabByTag('L' + currentMatchLevel);
+  } else {
+    allItems = [];
+    Object.keys(VOCAB).forEach(key => {
+      if ((VOCAB[key].level || 1) !== currentMatchLevel) return;
+      VOCAB[key].items.forEach(item => allItems.push(item));
+    });
+  }
   startVocabReadingDeck(allItems, 'random-level-' + currentMatchLevel);
 }
 
@@ -9974,15 +10109,16 @@ function startVocabReadingDeck(items, groupKey) {
 // pool the drill itself draws its 20 from, rather than a second copy of
 // "every category" that could quietly drift out of sync with it.
 function getAllVocabPool() {
-  // Pull vocab items from every category regardless of level - but skip any
-  // tier that's currently switched off (Extra, Andrew mode), same guard
-  // used everywhere else that scans across levels (see categoryTierVisible).
-  const allItems = [];
-  Object.keys(VOCAB).forEach(key => {
-    if (!categoryTierVisible(VOCAB[key].level)) return;
-    VOCAB[key].items.forEach(item => allItems.push(item));
-  });
-  return allItems;
+  // Now routed through scanVocabByTag too (2026-08-27), same as
+  // startRandomMatch above - keeps exactly one implementation of "walk
+  // every category, respect categoryTierVisible" instead of two near-
+  // identical copies. The empty array `[]` as the query is deliberate:
+  // tagQueryMatches's AND check is `required.every(...)`, and .every() on
+  // an empty array is vacuously true, so every item with any tags at all
+  // matches - which is every item, since 100% of words carry at least one
+  // tag (see the full-coverage pass above VOCAB). No special "match
+  // everything" case needed in tagQueryMatches itself.
+  return scanVocabByTag([]);
 }
 
 function startRandomMatchEverything() {
