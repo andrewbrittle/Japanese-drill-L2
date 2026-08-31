@@ -1048,7 +1048,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.016</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.017</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3184,19 +3184,56 @@ const DATA = {
 //   STARTED, correctly, both explicitly waiting on real L3 content existing
 //   to design against.
 //
-// ACHIEVABLE BEFORE L3 STARTS, if wanted - both small, independent, no rush:
-//   (a) Flip Polite tourist phrases to tagQuery, same FLIP PILOT recipe as
-//       Airport/Street/Hotel:Appliances - check for includeItems cross-
-//       references into/out of it first (that check is what caught the
-//       にもつ/よやく regression on the Airport/Street flip), tag its
-//       source content, add tagQuery, verify item count and coverage
-//       unchanged.
-//   (b) Delete the six dead includeItems arrays listed above under Point 3 -
-//       pure cleanup, no behaviour change, verify by confirming
-//       resolveVocabCategory's output for those six keys is unreachable
-//       from any tile before removing.
-// Neither is a prerequisite for anything else, both left for whenever
-// there's an appetite for them rather than done reflexively here.
+// PRE-L3 PUNCH LIST CLEARED - SHIPPED (2026-08-31): Andrew asked for all
+// three items below done as soon as possible, specifically so L2 could be
+// considered complete and ready for L3 to start. All three landed the same
+// day they were flagged:
+//
+//   (a) Polite tourist phrases flipped to tagQuery - last of the four
+//       single-source untaught categories to get the FLIP PILOT treatment
+//       (Airport/Street/Hotel:Appliances were 2026-08-26/31). No
+//       includeItems in or out (checked), all 16 items already carried
+//       `tourist-phrases`, used nowhere else - bare tagQuery, zero new
+//       tagging needed, item count unchanged (16/16 verified).
+//
+//   (b) The six dead includeItems arrays deleted (vocab-trip-prep,
+//       vocab-food-drink, vocab-accommodation, vocab-money-shopping,
+//       vocab-directions-navigation, vocab-materials-shops) - each had been
+//       unreachable since its own tile retired, confirmed before removing
+//       by grepping every one of the six keys for any reference outside
+//       its own definition (none found). While doing this, also found and
+//       fixed six more stale "see includeItems above/below" comments left
+//       over from the earlier Airport/Street/よやく flips (2026-08-26/31)
+//       that were already pointing at nothing before today - not part of
+//       the original ask, fixed anyway since they were found in passing.
+//
+//   (c) Food & drink split into five - Andrew's call was separate cards,
+//       "for now". theme-food-drink-combined (218 items, by far the
+//       biggest pool in the app, mixing dish/drink nouns, adjectives, prep
+//       verbs, and full phrases as each other's multiple-choice
+//       distractors) became five tagQuery cards: Food (128, food-type),
+//       Drink (16, drink), Dining phrases (21, dining-phrase), Food
+//       descriptions (36, food-adjective), Preparation & cooking (17,
+//       preparation). Every one of the 218 items already carried exactly
+//       one of these five sub-tags (checked directly - the "53 untagged"
+//       count from the original flagging turned out to be an incomplete
+//       filter on my part, not a real gap; food-adjective and preparation
+//       were already there, just not checked for) - zero new tagging
+//       needed, a pure regrouping. Each query AND'd with `food-drink`
+//       deliberately (not left bare) to keep this a lossless split of the
+//       same 218 items rather than widening scope - food-type/drink are
+//       also dual-tagged on 9 taught vocab-food-drink-l2 words, which a
+//       bare query would have pulled in for free; noted but not done,
+//       since blending taught content in is a placement decision too
+//       (Collections vs. staying Untaught-only, like Getting around vs.
+//       the other combined cards), not just a tagging one.
+//
+// Verified: 1289 items unchanged throughout. Every one of the resulting 18
+// Untaught tiles (13 theme keys + 5 plain VOCAB categories) resolves to a
+// real, non-zero item count - checked directly against the live data, not
+// assumed. instructions.html rewritten to match (Food & drink's one bullet
+// replaced with the five new ones, Polite tourist phrases' entry unchanged
+// since its label didn't change). Syntax checked throughout.
 // =============================================================================
 
 const VOCAB = {
@@ -3986,24 +4023,28 @@ const VOCAB = {
   // pool) has no idea this flag exists and keeps including these words
   // exactly as before - nothing about the words changed, only whether this
   // specific category still gets its own tile in the list.
+  // DEAD includeItems REMOVED (2026-08-31) - this category retired as its
+  // own tile back on 2026-08-27 (standaloneCard:false below), so nothing
+  // has called resolveVocabCategory('vocab-trip-prep') for tile-selection
+  // purposes since then; its old includeItems array (きっぷ/kippu from
+  // Materials — Stations, のみもの/nomimono from Materials — Hotel:
+  // Appliances) had been unreachable ever since, just still sitting in the
+  // data. Both referenced words are still exactly where they always were
+  // and still fully drillable through their own real categories/tags -
+  // nothing about the words themselves changed, only this dead reference
+  // to them.
   'vocab-trip-prep': {
     level: 'untaught',
     hasReference: true,
     standaloneCard: false,
     label: 'Useful words for the trip',
     chars: 'すし きっぷ たすけて…',
-    // See resolveVocabCategory - references a single word actually stored in
-    // Materials rather than duplicating it here too.
-    includeItems: [
-      { cat: 'vocab-materials-stations', romaji: 'kippu' },
-      { cat: 'vocab-materials-hotel-appliances', romaji: 'nomimono' },
-    ],
     items: [
       {jp:'おおきい', romaji:'ookii', en:'big', tags:['trip','adjectives','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'やすい', romaji:'yasui', en:'cheap', tags:['trip','adjectives','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       // のみもの moved to vocab-materials-hotel-appliances (real-world
-      // evidenced copy, seen as a microwave preset button) - see
-      // includeItems above.
+      // evidenced copy, seen as a microwave preset button) - not
+      // duplicated here, drillable from its real home instead.
       {jp:'いりぐち', romaji:'iriguchi', en:'entrance', tags:['trip','stations','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'でぐち', romaji:'deguchi', en:'exit', tags:['trip','stations','untaught','curated'], altForm:'出口', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'たかい', romaji:'takai', en:'expensive', tags:['trip','adjectives','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4025,9 +4066,9 @@ const VOCAB = {
       {jp:'おみやげ', romaji:'omiyage', en:'souvenir', tags:['trip','shopping','untaught','curated'], altForm:'お土産', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'すし', romaji:'sushi', en:'sushi', tags:['trip','food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'てんぷら', romaji:'tenpura', en:'tempura', tags:['trip','food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
-      // きっぷ moved out - now referenced from Materials (see includeItems
-      // below) instead of stored here too, since it's the same word with
-      // its kanji form already folded in there.
+      // きっぷ moved out - the same word, kanji form already folded in, is
+      // stored (and drillable) under Materials — Stations instead, not
+      // duplicated here.
       {jp:'まち', romaji:'machi', en:'town', tags:['trip','places','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'のりかえ', romaji:'norikae', en:'transfer / change trains', tags:['trip','stations','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'うどん', romaji:'udon', en:'udon noodles', tags:['trip','food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4048,19 +4089,20 @@ const VOCAB = {
     level: 'untaught',
     hasReference: true,
     // standaloneCard: false (2026-08-31) - retired as its own tile now that
-    // theme-food-drink-combined fully subsumes it: all 36 items here carry
-    // `food-drink`, and all 4 includeItems cross-references (into the
-    // already-retired Materials — Restaurants categories) do too. Data
-    // stays exactly where it is, only the standalone tile goes away.
+    // theme-food/-drink/-dining-phrases/-food-descriptions/-food-preparation
+    // (the five-way split of what was theme-food-drink-combined, same day)
+    // fully subsume it between them: all 36 items here carry `food-drink`.
+    // Data stays exactly where it is, only the standalone tile goes away.
+    // Its old includeItems array (menyuu/okawari from Materials —
+    // Restaurants: Ordering & policy, shabushabu/sukiyaki from Materials —
+    // Restaurants: Food & menu) was removed the same day - dead the moment
+    // this retired, since nothing calls resolveVocabCategory on this key
+    // for tile-selection any more; all four words are still exactly where
+    // they always were and still fully drillable through their own real
+    // categories/tags.
     standaloneCard: false,
     label: 'Food and drink',
     chars: 'ぎょうざ さしみ からい…',
-    includeItems: [
-      { cat: 'vocab-materials-restaurants-ops', romaji: 'menyuu' },
-      { cat: 'vocab-materials-restaurants-ops', romaji: 'okawari' },
-      { cat: 'vocab-materials-restaurants-food', romaji: 'shabushabu' },
-      { cat: 'vocab-materials-restaurants-food', romaji: 'sukiyaki' },
-    ],
     items: [
       {jp:'ぎゅうにく', romaji:'gyuuniku', en:'beef', tags:['food-drink','untaught','curated','food-type'], altForm:'牛肉', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'おべんとう', romaji:'obentou', en:'bento (boxed lunch)', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4073,9 +4115,10 @@ const VOCAB = {
       {jp:'にほんしゅ', romaji:'nihonshu', en:'Japanese sake / rice wine', tags:['food-drink','untaught','curated','drink'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'かつどん', romaji:'katsudon', en:'katsudon (pork cutlet rice bowl)', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'ラム', romaji:'ramu', en:'lamb', tags:['food-drink','untaught','curated','food-type'], altForm:'らむ', source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
-      // メニュー moved out - referenced from Materials now (see includeItems
-      // below), which already had its own seenAs; its hiragana altForm
-      // (めにゅー) was copied across so that doesn't get lost.
+      // メニュー moved out - stored (and drillable) under Materials —
+      // Restaurants: Ordering & policy instead, which already had its own
+      // seenAs; its hiragana altForm (めにゅー) was copied across there so
+      // that doesn't get lost.
       {jp:'ミルク', romaji:'miruku', en:'milk', tags:['food-drink','untaught','curated','drink'], altForm:'みるく', source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'みそしる', romaji:'misoshiru', en:'miso soup', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'なべ', romaji:'nabe', en:'nabe / hot pot', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4090,8 +4133,9 @@ const VOCAB = {
       {jp:'さしみ', romaji:'sashimi', en:'sashimi / raw fish', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'たい', romaji:'tai', en:'sea bream', tags:['food-drink','untaught','curated','food-type'], altForm:'鯛', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'うに', romaji:'uni', en:'sea urchin', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
-      // おかわり/しゃぶしゃぶ/すきやき moved out - referenced from Materials
-      // now (see includeItems below), which had its own copies of all three.
+      // おかわり/しゃぶしゃぶ/すきやき moved out - stored (and drillable) under
+      // Materials — Restaurants instead, which already had its own copies
+      // of all three.
       {jp:'べつべつに', romaji:'betsubetsuni', en:'separately (splitting the bill)', tags:['food-drink','untaught','curated','dining-phrase'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'ていしょく', romaji:'teishoku', en:'set meal', tags:['food-drink','untaught','curated','food-type'], altForm:'定食', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'えび', romaji:'ebi', en:'shrimp / prawn', tags:['food-drink','untaught','curated','food-type'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4116,13 +4160,15 @@ const VOCAB = {
     // too (73 of 76 tagged accommodation, the other 3 - いか焼き, うまいもん,
     // ご当地 - already have a home under food-drink from the food split).
     // Data stays exactly where it is, only the standalone tile goes away.
-    // See "Accommodation" in THEMES for the replacement.
+    // See "Accommodation" in THEMES for the replacement. Its old
+    // includeItems array (furonto/front desk, from Materials — Hotel:
+    // Facilities) was removed 2026-08-31 - dead the moment this retired,
+    // since nothing calls resolveVocabCategory on this key for
+    // tile-selection any more; フロント is still exactly where it always
+    // was and still fully drillable through Accommodation above.
     standaloneCard: false,
     label: 'Accommodation',
     chars: 'ホテル よやく タオル…',
-    includeItems: [
-      { cat: 'vocab-materials-hotel-facilities', romaji: 'furonto' },
-    ],
     items: [
       {jp:'もうふ', romaji:'moufu', en:'blanket', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'チェックイン', romaji:'chekkuin', en:'check-in', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4133,7 +4179,7 @@ const VOCAB = {
       {jp:'ダブルルーム', romaji:'daburu ruumu', en:'double room', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'りょうきん', romaji:'ryoukin', en:'fee / charge', tags:['accommodation','untaught','curated'], altForm:'料金', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       // フロント moved to vocab-materials-hotel-facilities (real-world
-      // evidenced copy) - see includeItems below.
+      // evidenced copy) - stored (and drillable) there instead.
       {jp:'ホテル', romaji:'hoteru', en:'hotel', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'キーカード', romaji:'kii kaado', en:'key card', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'にもつ', romaji:'nimotsu', en:'luggage', tags:['accommodation','untaught','curated','airport'], altForm:'荷物', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4154,22 +4200,23 @@ const VOCAB = {
     // カード, "credit card", from Materials — Hotel: Appliances) didn't
     // carry `shopping` yet - tagged it directly rather than let it quietly
     // drop out of the shopping-themed view when this tile retires. Data
-    // stays exactly where it is, only the standalone tile goes away.
+    // stays exactly where it is, only the standalone tile goes away. The
+    // includeItems array itself was removed the same day - dead the moment
+    // this retired, since nothing calls resolveVocabCategory on this key
+    // for tile-selection any more; both おつり and クレジットカード are still
+    // exactly where they always were and still fully drillable through
+    // their own real categories/tags.
     standaloneCard: false,
     label: 'Money and shopping',
     chars: 'げんきん わりびき サイズ…',
-    includeItems: [
-      { cat: 'vocab-materials-shops', romaji: 'otsuri' },
-      { cat: 'vocab-materials-hotel-appliances', romaji: 'kurejitto kaado' },
-    ],
     items: [
       {jp:'げんきん', romaji:'genkin', en:'cash', tags:['shopping','untaught','curated'], altForm:'現金', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'げんきんのみ', romaji:'genkin nomi', en:'cash only', tags:['shopping','untaught','curated'], altForm:'現金のみ', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       // おつり moved to vocab-materials-shops (real-world evidenced copy)
-      // - see includeItems above.
+      // - stored (and drillable) there instead.
       {jp:'しょうひぜい', romaji:'shouhizei', en:'consumption tax', tags:['shopping','untaught','curated'], altForm:'消費税', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       // クレジットカード moved to vocab-materials-hotel-appliances (real-
-      // world evidenced copy) - see includeItems above.
+      // world evidenced copy) - stored (and drillable) there instead.
       {jp:'りょうがえ', romaji:'ryougae', en:'currency exchange', tags:['shopping','untaught','curated'], altForm:'両替', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'わりびき', romaji:'waribiki', en:'discount', tags:['shopping','untaught','curated'], altForm:'割引', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'カードは つかえますか', romaji:'kaado wa tsukaemasu ka', en:'do you accept cards?', tags:['shopping','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4197,14 +4244,14 @@ const VOCAB = {
     // (they're still fully covered by `stations` too, so nothing was ever
     // truly at risk of being lost, just of not showing up in this
     // specific view). Data stays exactly where it is, only the standalone
-    // tile goes away.
+    // tile goes away. The includeItems array itself was removed the same
+    // day - dead the moment this retired, since nothing calls
+    // resolveVocabCategory on this key for tile-selection any more; both
+    // words are still exactly where they always were and still fully
+    // drillable through Getting around/Stations & trains.
     standaloneCard: false,
     label: 'Directions and navigation',
     chars: 'ひだり みぎ まっすぐ…',
-    includeItems: [
-      { cat: 'vocab-materials-stations', romaji: 'hoomu' },
-      { cat: 'vocab-materials-stations', romaji: 'massugu' },
-    ],
     items: [
       {jp:'かど', romaji:'kado', en:'corner', tags:['directions','untaught','curated'], altForm:'角', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'とおい', romaji:'tooi', en:'far', tags:['directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4216,12 +4263,12 @@ const VOCAB = {
       {jp:'かたみちきっぷ', romaji:'katamichi kippu', en:'one-way ticket', tags:['stations','directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'おうだんほどう', romaji:'oudanhodou', en:'pedestrian crossing', tags:['directions','untaught','curated'], altForm:'横断歩道', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       // ホーム moved to vocab-materials-stations (real-world evidenced
-      // copy) - see includeItems above.
+      // copy) - stored (and drillable) there instead.
       {jp:'おうふくきっぷ', romaji:'oufuku kippu', en:'return ticket', tags:['stations','directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'みぎ', romaji:'migi', en:'right', tags:['directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'ろせんず', romaji:'rosenzu', en:'route map', altForm:'路線図', altIsStandard:true, tags:['stations','directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       // まっすぐ moved to vocab-materials-stations (real-world evidenced
-      // copy) - see includeItems above.
+      // copy) - stored (and drillable) there instead.
       {jp:'かいさつぐち', romaji:'kaisatsuguchi', en:'ticket gate', altForm:'改札口', altIsStandard:true, tags:['stations','directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'しんごう', romaji:'shingou', en:'traffic light', tags:['directions','untaught','curated'], altForm:'信号', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'えきは どこですか', romaji:'eki wa doko desu ka', en:'where is the station?', tags:['stations','directions','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4329,11 +4376,23 @@ const VOCAB = {
   // Only genuinely new phrases live here - restaurant/photo/small-talk lines
   // that Greetings, Money and shopping, Directions and navigation, and
   // Emergency and survival don't already cover.
+  // FLIP PILOT (2026-08-31) - last of the four single-source untaught
+  // categories to get this treatment (Airport/Street/Hotel:Appliances were
+  // 2026-08-26/31). No includeItems cross-references in or out (checked -
+  // nothing else in the file references vocab-tourist-phrases), and all 16
+  // items already carry `tourist-phrases`, used nowhere else in the app
+  // (checked), so the bare tag is safe with no AND scoping needed. Several
+  // of these also carry `food-drink`+`dining-phrase` (かんぱい, "do you have
+  // an English menu?", and others) and so also appear under the new Dining
+  // phrases card from the food-drink split above - intentional overlap,
+  // same as every other dual-tagged word in the app, one shared score
+  // either way.
   'vocab-tourist-phrases': {
     level: 'untaught',
     hasReference: true,
     label: 'Polite tourist phrases',
     chars: 'かんぱい おげんきですか…',
+    tagQuery: 'tourist-phrases',
     items: [
       {jp:'おさきに どうぞ', romaji:'osaki ni douzo', en:'after you', tags:['trip','tourist-phrases','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'べじたりあんの りょうりは ありますか', romaji:'bejitarian no ryouri wa arimasu ka', en:'any vegetarian dishes?', tags:['trip','tourist-phrases','food-drink','untaught','curated','dining-phrase'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4506,7 +4565,8 @@ const VOCAB = {
       {jp:'共同運航便', romaji:'kyoudou unkou-bin', en:'codeshare flight', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'共',reading:'kyou'},{char:'同',reading:'dou'},{char:'運',reading:'un'},{char:'航',reading:'kou'},{char:'便',reading:'bin'}]},
       {jp:'札幌', romaji:'Sapporo', en:'Sapporo (city)', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
       // 荷物 moved to vocab-accommodation (Trip-canonical copy, already
-      // has the kana/kanji altForm structure) - see includeItems below.
+      // has the kana/kanji altForm structure) - stored (and drillable)
+      // there instead.
       {jp:'キャスター', romaji:'kyasutaa', en:'caster / wheel', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10'},
       {jp:'〜付き', romaji:'~-tsuki', en:'equipped with / including (suffix)', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Contains a placeholder or symbol with no fixed reading of its own'},
       {jp:'バギー', romaji:'bagii', en:'buggy / stroller', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_020136832.jpg'}, dateAdded:'2026-08-10'},
@@ -4527,9 +4587,11 @@ const VOCAB = {
     level: 'untaught',
     hasReference: true,
     // standaloneCard: false (2026-08-31) - retired as its own tile now that
-    // theme-food-drink-combined fully subsumes it (all 141 items here carry
-    // `food-drink`, verified with zero gaps). Data stays exactly where it
-    // is, only the standalone tile goes away.
+    // theme-food/-drink/-dining-phrases/-food-descriptions/-food-preparation
+    // (the five-way split of what was theme-food-drink-combined, same day)
+    // fully subsume it between them (all 141 items here carry `food-drink`,
+    // verified with zero gaps). Data stays exactly where it is, only the
+    // standalone tile goes away.
     standaloneCard: false,
     label: 'Materials — Restaurants: Food & menu',
     chars: '最強 油そば 秘伝…',
@@ -4691,10 +4753,12 @@ const VOCAB = {
     level: 'untaught',
     hasReference: true,
     // standaloneCard: false (2026-08-31) - retired as its own tile now that
-    // theme-food-drink-combined and the new theme-service-ops between them
-    // fully subsume it: all 73 items here carry `food-drink` or
-    // `service-ops` (verified with zero gaps). Data stays exactly where it
-    // is, only the standalone tile goes away.
+    // theme-service-ops and the five-way food-drink split (theme-food/
+    // -drink/-dining-phrases/-food-descriptions/-food-preparation, split
+    // from theme-food-drink-combined the same day) fully subsume it between
+    // them: all 73 items here carry `food-drink` or `service-ops` (verified
+    // with zero gaps). Data stays exactly where it is, only the standalone
+    // tile goes away.
     standaloneCard: false,
     label: 'Materials — Restaurants: Ordering & policy',
     chars: '税込 メニュー キンキン…',
@@ -4788,14 +4852,15 @@ const VOCAB = {
     // subsume it: all 70 items here carry `shopping` or `signage` (the
     // final 12 - parking/pets/crows/notices - were tagged `signage` this
     // same day to close the gap). Data stays exactly where it is, only the
-    // standalone tile goes away.
+    // standalone tile goes away. Its old includeItems array (しょうひぜい
+    // from Money and shopping, ちゅうい from Signage and warnings) was
+    // removed the same day - dead the moment this retired, since nothing
+    // calls resolveVocabCategory on this key for tile-selection any more;
+    // both words are still exactly where they always were and still fully
+    // drillable through Shopping/Signage & warnings.
     standaloneCard: false,
     label: 'Materials — Shops & everyday purchases',
     chars: '生活家電 テレビ オーディオ…',
-    includeItems: [
-      { cat: 'vocab-money-shopping', romaji: 'shouhizei' },
-      { cat: 'vocab-signage-warnings', romaji: 'chuui' },
-    ],
     items: [
       {jp:'生活家電', romaji:'seikatsu kaden', en:'household appliances', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'生',reading:'sei'},{char:'活',reading:'katsu'},{char:'家',reading:'ka'},{char:'電',reading:'den'}]},
       {jp:'テレビ', romaji:'terebi', en:'TV', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
@@ -4851,8 +4916,8 @@ const VOCAB = {
       {jp:'オリジナルチキン', romaji:'orijinaru chikin', en:'original chicken (KFC signature product)', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お買上', romaji:'okaiage', en:'purchase (polite)', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
       {jp:'合計', romaji:'goukei', en:'total', tags:['shopping','shops','untaught','encountered','service-ops'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'合',reading:'gou'},{char:'計',reading:'kei'}]},
-      // 消費税 moved to vocab-money-shopping (Trip-canonical copy) - see
-      // includeItems below.
+      // 消費税 moved to vocab-money-shopping (Trip-canonical copy) - stored
+      // (and drillable) there instead.
       {jp:'対象', romaji:'taishou', en:'applicable / subject to', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'対',reading:'tai'},{char:'象',reading:'shou'}]},
       {jp:'登録番号', romaji:'touroku bangou', en:'registration number', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'登',reading:'tou'},{char:'録',reading:'roku'},{char:'番',reading:'ban'},{char:'号',reading:'gou'}]},
       {jp:'注文番号', romaji:'chuumon bangou', en:'order number', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'注',reading:'chuu'},{char:'文',reading:'mon'},{char:'番',reading:'ban'},{char:'号',reading:'gou'}]},
@@ -4872,8 +4937,8 @@ const VOCAB = {
       // copies).
       {jp:'補助犬', romaji:'hojoken', en:'service / assistance dog', tags:['signage','shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'補',reading:'ho'},{char:'助',reading:'jo'},{char:'犬',reading:'ken'}]},
       {jp:'カラス', romaji:'karasu', en:'crow', tags:['shops','untaught','encountered','signage'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
-      // 注意 moved to vocab-signage-warnings (Trip-canonical copy) - see
-      // includeItems below.
+      // 注意 moved to vocab-signage-warnings (Trip-canonical copy) - stored
+      // (and drillable) there instead.
       {jp:'商品', romaji:'shouhin', en:'product / merchandise', tags:['shopping','shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'商',reading:'shou'},{char:'品',reading:'hin'}]},
       {jp:'可能性', romaji:'kanousei', en:'possibility', tags:['shops','untaught','encountered','signage'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'可',reading:'ka'},{char:'能',reading:'nou'},{char:'性',reading:'sei'}]},
       {jp:'ご協力', romaji:'go-kyouryoku', en:'cooperation', tags:['signage','shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'協',reading:'kyou'},{char:'力',reading:'ryoku'}]},
@@ -5254,7 +5319,8 @@ const VOCAB = {
       {jp:'駅長', romaji:'ekichou', en:'station master', tags:['street','untaught','encountered'], source:{location:'Otaru Station', date:'2026-08-10', file:'PXL_20260810_024845118.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'駅',reading:'eki'},{char:'長',reading:'chou'}]},
       {jp:'歯科', romaji:'shika', en:'dentistry / dental clinic', tags:['street','untaught','encountered'], source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'歯',reading:'shi'},{char:'科',reading:'ka'}]},
       // 予約 moved to vocab-accommodation (Trip-canonical copy; its seenAs
-      // washing-machine note was copied across) - see includeItems below.
+      // washing-machine note was copied across) - stored (and drillable)
+      // there instead.
       {jp:'受付', romaji:'uketsuke', en:'reception / accepting', tags:['street','untaught','encountered'], source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'受',reading:'uke'},{char:'付',reading:'tsuke'}]},
       {jp:'小児', romaji:'shouni', en:'pediatric / small child', tags:['street','untaught','encountered'], source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'小',reading:'shou'},{char:'児',reading:'ni'}]},
       {jp:'矯正', romaji:'kyousei', en:'orthodontics / correction', tags:['street','untaught','encountered'], source:{location:'Otaru', date:'2026-08-10', file:'PXL_20260810_025430730.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'矯',reading:'kyou'},{char:'正',reading:'sei'}]},
@@ -5466,17 +5532,56 @@ const THEMES = {
     chars: 'ホーム きっぷ かいさつ…',
     tagQuery: 'stations',
   },
-  // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
-  // combined above. Source categories vocab-materials-restaurants-food
-  // (141/141 items carry `food-drink`) and vocab-materials-restaurants-ops
-  // (73/73 carry `food-drink` or the new `service-ops`) are both retired as
-  // standalone tiles (standaloneCard:false, see VOCAB); vocab-food-drink
-  // (Trip) was already tagged wholesale. Nothing deleted - every item still
-  // physically lives in its original category.
-  'theme-food-drink-combined': {
-    label: 'Food & drink',
-    chars: 'おまかせ とりあえず メニュー…',
-    tagQuery: 'food-drink',
+  // SPLIT INTO FIVE (2026-08-31) - this single combined card (built earlier
+  // the same day, see the superseded comment this replaced) was 218 items
+  // by the time it was retired - the single biggest pool in the app by a
+  // wide margin, and flagged the same day in the FUTURE DIRECTION log as
+  // the "distractor pool too broad" problem that already got Calendar &
+  // time retired outright: not just size, but mixing genuinely different
+  // parts of speech in one multiple-choice pool (dish/drink nouns,
+  // adjectives like からい/あまい, prep verbs like 焼く/煮る, and full dining
+  // phrases like かんぱい, all as each other's distractors). Andrew asked
+  // for separate cards; the five sub-tags below already existed and already
+  // sorted every one of the 218 items with zero gaps (checked directly, not
+  // assumed) - splitting needed zero new tagging, just five tagQuery cards
+  // instead of one. Each query is AND'd with `food-drink` deliberately, not
+  // left bare, to keep this a pure split of the same 218 items rather than
+  // widening scope - food-type and drink happen to already be dual-tagged
+  // on a handful of taught vocab-food-drink-l2 words too (りんご/パン/たまご/
+  // くだもの/シリアル/トースト, おさけ/ビール/ワイン - 9 words, clearly tagged on
+  // purpose for cross-tier reuse, same pattern as Core grammar/Question
+  // words), which a bare tagQuery would have pulled in as a free bonus -
+  // noted here rather than done, since blending taught content in changes
+  // more than just the split (these five all currently live under the
+  // Untaught tab only, same as the card they replace; a taught+untaught
+  // blend would arguably belong in Collections instead, like Getting around
+  // does - a placement decision, not just a tagging one, left for later).
+  // Nothing deleted: every item still physically lives in its original
+  // category, only the standalone Food & drink tile is gone.
+  'theme-food': {
+    label: 'Food',
+    chars: 'たべもの ラーメン すし…',
+    tagQuery: ['food-drink', 'food-type'],
+  },
+  'theme-drink': {
+    label: 'Drink',
+    chars: 'おちゃ さけ ウーロンちゃ…',
+    tagQuery: ['food-drink', 'drink'],
+  },
+  'theme-dining-phrases': {
+    label: 'Dining phrases',
+    chars: 'かんぱい おかいけい おねがいします…',
+    tagQuery: ['food-drink', 'dining-phrase'],
+  },
+  'theme-food-descriptions': {
+    label: 'Food descriptions',
+    chars: 'おいしい からい あまい…',
+    tagQuery: ['food-drink', 'food-adjective'],
+  },
+  'theme-food-preparation': {
+    label: 'Preparation & cooking',
+    chars: '炙り 発酵 熟成…',
+    tagQuery: ['food-drink', 'preparation'],
   },
   // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
   // combined above. Source category vocab-materials-shops is retired as a
@@ -9402,7 +9507,9 @@ function buildMatchCategoryList() {
     // set rather than "promoted theme cards first, plain categories after",
     // a split that made sense while the promoted cards were new and needed
     // emphasis but has no reason to persist now that every tile renders
-    // identically via buildCategoryTile. Combines the nine theme keys below
+    // identically via buildCategoryTile. Combines the thirteen theme keys
+    // below (nine original promoted cards, plus the single Food & drink
+    // card split into five the same day - see theme-food's own comment)
     // with whatever plain VOCAB categories still have a standalone tile at
     // this level (the three FLIP PILOT conversions - Airport, Hotel:
     // Appliances, Street - plus Weather and Tourist phrases, now that both
@@ -9411,7 +9518,8 @@ function buildMatchCategoryList() {
     // Object.keys(VOCAB).forEach loop below skips 'untaught' entirely now
     // so these five don't render a second time.
     const untaughtThemeKeys = ['theme-stations-combined', 'theme-accommodation-combined',
-      'theme-emergency-combined', 'theme-food-drink-combined', 'theme-shopping-combined',
+      'theme-emergency-combined', 'theme-food', 'theme-drink', 'theme-dining-phrases',
+      'theme-food-descriptions', 'theme-food-preparation', 'theme-shopping-combined',
       'theme-signage-combined', 'theme-service-ops', 'theme-entertainment-combined',
       'theme-profile-words'];
     const untaughtVocabKeys = Object.keys(VOCAB).filter(key =>
