@@ -472,6 +472,17 @@
     cursor: pointer; transition: border-color 0.15s; user-select: none;
     font-size: 13px; font-weight: 600; color: var(--accent);
     margin-bottom: -0.25rem; text-decoration: none;
+    /* No line-height was ever set here, so a label short enough to stay on
+       one line (true for most of these cards) looked fine on the browser
+       default alone - but a longer one that wraps on a narrow phone (the
+       Grammar notes hub's "Object-taking verbs" label, flagged on a Pixel
+       10 Pro XL) had its two lines sitting right on top of each other,
+       crushed rather than just wrapped. 1.35 matches the value .opt (the
+       multiple-choice answer cards) already uses for the same reason -
+       gives wrapped text room to breathe without changing this card's
+       height at all when the label fits on one line, which is still most
+       of them. */
+    line-height: 1.35;
     /* Some of these labels embed real kana/kanji directly (e.g. the tense
        card's いきます/きます/かえります, or the new だれも/どこも/なにも card) -
        missing font-family here is the exact same bug class as .level-pill
@@ -714,6 +725,20 @@
 
   /* Level filter pills on Match screen */
   .level-filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* #vocab-level-filter-row specifically (Collections/Level 1/Level 2/
+     Untaught) - wrapping was fine while every label was short, but
+     "Untaught" is twice the width of the "Trip" pill it replaced, and on a
+     narrow phone (flagged on a Pixel 10 Pro XL) that was enough to tip the
+     last pill onto its own second line by itself, looking broken rather
+     than like a deliberate second row. Scrolls horizontally instead - same
+     fix .nav-pills already uses for the same class of problem - so the row
+     always stays one line and no pill's own text ever wraps either
+     (white-space: nowrap on .level-pill above). Every other row still
+     using the shared .level-filter-row class (hiragana/katakana/numbers/
+     counter pills) is untouched - those can have many more pills and
+     wrapping is still the right behaviour there. */
+  #vocab-level-filter-row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  #vocab-level-filter-row::-webkit-scrollbar { display: none; }
   /* Each Numbers/Times/Counters section is a single flex child of
      .screen.visible (which only gives direct children a 1rem gap) - without
      their own flex+gap, the group-cards inside a section would sit flush
@@ -788,6 +813,7 @@
     background: transparent; color: var(--text-muted);
     font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;
     font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
+    white-space: nowrap;
   }
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
@@ -1005,7 +1031,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.014</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.015</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -3098,6 +3124,62 @@ const DATA = {
 // Shopping/Accommodation and whatever else gets tagged before this starts) -
 // and deferred until L3 exists, so classmates using the app between L2 and
 // L3 aren't disrupted by an L1/L2 merge landing before they're ready for it.
+//
+// STATUS CHECK - HOW FLIPPED ARE WE (2026-08-31): Andrew asked directly,
+// after the Trip/Andrew merge above shipped. Audited each point against the
+// actual code rather than assumed, since several turned out to already be
+// further along than this comment block gives them credit for - fixing one
+// thing for its own reason quietly finished another.
+//
+//   Point 1 (level per-item, not per-category) - MOSTLY DONE, not fully.
+//   Every L1/L2 category (24 of them) already resolves its own tile via
+//   tagQuery, not raw `.items` - turns out this had already happened in
+//   earlier work, not something the merge above did. Untaught's random-drill
+//   pool is now genuinely tag-based too (scanVocabByTag('untaught')). Still
+//   category-level, not item-level: categoryTierVisible(cat.level) gates a
+//   whole source category at once inside the tagQuery/theme-pool branches -
+//   correct today only because the data is 100% clean (verified), not
+//   because the mechanism itself checks per item. Screen navigation (which
+//   tab a category's tile lands on) is still a category `.level` compare
+//   too. "Bring forward" (level updates in place on genuine re-teaching)
+//   doesn't exist yet - still correctly waiting on real L3 content.
+//
+//   Point 2 (Trip/Andrew merge) - DONE, see the entry directly above this
+//   one.
+//
+//   Point 3 (pure display, includeItems unnecessary) - MOSTLY DONE, two
+//   loose ends. 28 of 43 VOCAB categories are pure tagQuery now (all L1/L2
+//   plus Weather/Airport/Street/Hotel:Appliances from the FLIP PILOT
+//   passes). Not yet flipped: Polite tourist phrases - the one remaining
+//   live, standalone-tile category still reading `.items` directly, same
+//   shape Airport/Street/Hotel:Appliances were in before their FLIP PILOT
+//   conversion (2026-08-26/31) - same recipe would apply. `includeItems` is
+//   still real, working code too: at least one live category still uses it
+//   to reference words stored in Money & shopping and Materials - Shops.
+//   Six retired categories (vocab-trip-prep, vocab-food-drink, vocab-
+//   accommodation, vocab-money-shopping, vocab-directions-navigation,
+//   vocab-materials-shops) still declare their own includeItems arrays, but
+//   those are dead now - nothing calls their own tile any more since they
+//   retired, so those six arrays are safe to delete whenever it's worth the
+//   diff, purely cosmetic.
+//
+//   Points 4 and 5 (bring-forward, split data into its own file) - NOT
+//   STARTED, correctly, both explicitly waiting on real L3 content existing
+//   to design against.
+//
+// ACHIEVABLE BEFORE L3 STARTS, if wanted - both small, independent, no rush:
+//   (a) Flip Polite tourist phrases to tagQuery, same FLIP PILOT recipe as
+//       Airport/Street/Hotel:Appliances - check for includeItems cross-
+//       references into/out of it first (that check is what caught the
+//       にもつ/よやく regression on the Airport/Street flip), tag its
+//       source content, add tagQuery, verify item count and coverage
+//       unchanged.
+//   (b) Delete the six dead includeItems arrays listed above under Point 3 -
+//       pure cleanup, no behaviour change, verify by confirming
+//       resolveVocabCategory's output for those six keys is unreachable
+//       from any tile before removing.
+// Neither is a prerequisite for anything else, both left for whenever
+// there's an appetite for them rather than done reflexively here.
 // =============================================================================
 
 const VOCAB = {
