@@ -1048,7 +1048,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.017</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.018</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1463,7 +1463,7 @@
     <!-- Search + Andrew's personal staging tier, sharing one row. Search is
          available to everyone regardless of which level tab is open (see
          submitVocabSearch - it scans whatever's currently visible via
-         categoryTierVisible, not just the active tab), so this row itself is
+         itemTierVisible, not just the active tab), so this row itself is
          permanent now, unlike before Search existed when it only held the
          Andrew pill and was hidden entirely off Andrew mode. The pill still
          gets individually hidden by applyShowAndrewModeVisibility - Search's
@@ -1576,10 +1576,10 @@
       </div>
       <!-- First tag-driven Collection - see theme-question-words in THEMES
            and getThemePool's tagQuery branch. Always visible since part of
-           its pool is ordinary L2 content; the Andrew-tier portion
-           appears/disappears from the pool on its own via
-           categoryTierVisible, no card-level hiding needed - the pattern
-           Getting around below was fixed to match on 2026-08-31. -->
+           its pool is ordinary L2 content; the Untaught-tier portion
+           appears/disappears from the pool on its own via itemTierVisible,
+           no card-level hiding needed - the pattern Getting around below
+           was fixed to match on 2026-08-31. -->
       <div class="group-card" data-theme-key="theme-question-words" onclick="showVocabTileSelection('theme-question-words')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Question words</div>
@@ -1597,7 +1597,7 @@
            dependency - only `directions` was Trip-tier (now Untaught-tier,
            since Trip and Andrew merged the same day), and getThemePool's
            tagQuery branch already drops Untaught-tier items from the pool
-           on its own via categoryTierVisible the moment Untaught is off,
+           on its own via itemTierVisible the moment Untaught is off,
            the exact same mechanism theme-question-words below already
            relies on for its own Untaught-tier slice. Hiding the whole card
            was needlessly also hiding the L2 words for anyone with Untaught
@@ -2834,9 +2834,10 @@ const DATA = {
 // stranded, flagged rather than pretended otherwise.
 //
 // One genuine behavioural difference worth flagging, not silently
-// absorbed: includeItems never checked categoryTierVisible, so にもつ/よやく
+// absorbed: includeItems never checked the tier-visibility gate (then
+// categoryTierVisible, since renamed to itemTierVisible), so にもつ/よやく
 // always appeared in Airport/Street regardless of the Trip vocab toggle's
-// state. A tagQuery scan does respect categoryTierVisible (see
+// state. A tagQuery scan does respect it (see
 // scanVocabByTag/resolveVocabCategory), so post-flip, both words only
 // appear in Airport/Street when Trip vocab is also switched on. Whether
 // that's a regression or actually the more consistent behaviour (every
@@ -2967,8 +2968,9 @@ const DATA = {
 // removed Survival vocab card), but only its `directions` slice is
 // actually Trip-tier - `transport` and `places-to-go` are ordinary taught
 // Level 2 content. getThemePool already drops Trip-tier items from a
-// tagQuery pool on its own via categoryTierVisible (the exact mechanism
-// theme-question-words relies on for its Andrew-tier slice) - so hiding
+// tagQuery pool on its own via the tier-visibility gate (then
+// categoryTierVisible, since renamed to itemTierVisible - the exact
+// mechanism theme-question-words relies on for its Andrew-tier slice) - so hiding
 // the whole card was needlessly hiding L2 words too, for anyone who had
 // Trip vocab switched off. Fixed by removing the card-level show/hide
 // entirely; it's unconditionally visible now, same as Question words.
@@ -3040,18 +3042,18 @@ const DATA = {
 // - scanVocabByTag('untaught') - the same shape L1/L2 already use, instead
 // of the old raw per-category `.level` walk (that walk still exists, but
 // only as Andrew's fallback, since Andrew has no per-item tier tag of its
-// own yet - there's nothing at level:'andrew' to tag). categoryTierVisible
-// still takes a category's `level` though, not an item - `level` on a
-// VOCAB category is still doing real work, just a narrower job than before:
-// routing ("which screen does this category's own tile belong on"), not
-// gating. Gating and pooling read the item's own 'untaught' tag directly
-// wherever it matters (scanVocabByTag, and by extension getThemePool's
-// tagQuery branch, since a tag query only ever returns items that already
-// self-report as untaught). The two never disagree today because the data
-// is 100% clean (verified: 843 untaught-tagged items exist, all and only
-// inside untaught-level categories, zero elsewhere) - going category-level
-// vs item-level would only diverge for a word that needed to live in two
-// tiers genuinely at once, which nothing currently does.
+// own yet - there's nothing at level:'andrew' to tag). At the time this
+// shipped, categoryTierVisible still took a category's `level`, not an
+// item - `level` on a VOCAB category was still doing real work, just a
+// narrower job than before: routing ("which screen does this category's
+// own tile belong on"), not gating. That gap closed later the same day -
+// see the PER-ITEM, NOT PER-CATEGORY entry further down, which converted
+// categoryTierVisible itself (renamed itemTierVisible) to check the item's
+// own tag directly too, everywhere it's called. The two approaches never
+// disagreed even before that (verified: 843 untaught-tagged items exist,
+// all and only inside untaught-level categories, zero elsewhere) - going
+// category-level vs item-level only diverges for a word that needs to live
+// in two tiers genuinely at once, which nothing currently does.
 //
 // Also moved as part of this: the two external notes links (sentence
 // structure, Japanese vs English) out of Andrew mode and into the Level 2
@@ -3148,18 +3150,21 @@ const DATA = {
 // further along than this comment block gives them credit for - fixing one
 // thing for its own reason quietly finished another.
 //
-//   Point 1 (level per-item, not per-category) - MOSTLY DONE, not fully.
-//   Every L1/L2 category (24 of them) already resolves its own tile via
-//   tagQuery, not raw `.items` - turns out this had already happened in
-//   earlier work, not something the merge above did. Untaught's random-drill
-//   pool is now genuinely tag-based too (scanVocabByTag('untaught')). Still
-//   category-level, not item-level: categoryTierVisible(cat.level) gates a
-//   whole source category at once inside the tagQuery/theme-pool branches -
-//   correct today only because the data is 100% clean (verified), not
-//   because the mechanism itself checks per item. Screen navigation (which
-//   tab a category's tile lands on) is still a category `.level` compare
-//   too. "Bring forward" (level updates in place on genuine re-teaching)
-//   doesn't exist yet - still correctly waiting on real L3 content.
+//   Point 1 (level per-item, not per-category) - MOSTLY DONE at the time
+//   this was written, since fully closed the same day - see the PER-ITEM,
+//   NOT PER-CATEGORY entry further down. Every L1/L2 category (24 of them)
+//   already resolves its own tile via tagQuery, not raw `.items` - turns
+//   out this had already happened in earlier work, not something the merge
+//   above did. Untaught's random-drill pool is now genuinely tag-based too
+//   (scanVocabByTag('untaught')). Screen navigation (which tab a category's
+//   tile lands on) is still a category `.level` compare, by design - see
+//   the PER-ITEM entry for why that's a routing concern, not a gating one,
+//   and was deliberately left alone. "Bring forward" (level updates in
+//   place on genuine re-teaching) doesn't exist and, per a later
+//   conversation with Andrew the same day, doesn't need to: forward-tagging
+//   a word (e.g. tags:['L1','L3']) already makes it show up in both
+//   levels' tag-query pools with zero extra mechanism, so there was never
+//   really a gap here to close.
 //
 //   Point 2 (Trip/Andrew merge) - DONE, see the entry directly above this
 //   one.
@@ -3234,6 +3239,50 @@ const DATA = {
 // assumed. instructions.html rewritten to match (Food & drink's one bullet
 // replaced with the five new ones, Polite tourist phrases' entry unchanged
 // since its label didn't change). Syntax checked throughout.
+//
+// PER-ITEM, NOT PER-CATEGORY - SHIPPED (2026-08-31): closes the gating half
+// of THE FLIP point 1, the same day it was flagged as the one remaining
+// piece of point 1. Andrew's framing: genuine drilling by item tags rather
+// than the category a word happens to sit in should be doable, and it was.
+// categoryTierVisible(cat.level) - a per-category pre-filter called from
+// four places (getThemePool's buildCategoryItems, resolveVocabCategory's
+// tagQuery branch, submitVocabSearch, scanVocabByTag) - is now
+// itemTierVisible(item), checking the item's own tag directly instead.
+// Straightforward because the data was already 100% clean going in (every
+// untaught item already carries 'untaught', verified before this shipped,
+// same fact the earlier tag-vs-category discussion relied on) - this was a
+// pure mechanism swap, not a data-fixing exercise. Zero behaviour change
+// today, by construction: since category membership and item tags already
+// agreed on every single item, moving the check from one to the other
+// can't change what any scan returns - the only thing this buys is
+// correctness going forward, for the day a word needs to live in two tiers
+// at once (currently: nothing does).
+//
+// Also settles the "bring forward" half of point 1, in a follow-up
+// conversation the same day: Andrew pointed out that a word simply getting
+// tagged with both levels (e.g. tags:['L1','L3']) already makes it show up
+// correctly in both levels' random-drill pools via the existing tag-query
+// mechanism (scanVocabByTag/getThemePool), with zero extra machinery
+// needed. There was never a real gap here - "level moves forward" was
+// solving a problem forward-tagging already solves more simply. Point 4
+// (bring-forward) stays flagged as not started, but the concern it existed
+// to address turns out to already be covered.
+//
+// Screen navigation (buildMatchCategoryList/setMatchLevel comparing
+// `(v.level || 1)` against currentMatchLevel) is deliberately untouched -
+// that's "which tab does this category's own tile live under", a routing
+// question a category needs exactly one answer to, not a gating question
+// that makes sense per item. Point 1's original text bundled routing and
+// gating together as one "level becomes per-item" ask; in practice they
+// turned out to be two different concerns, and only the gating one
+// actually needed to change.
+//
+// Verified: every one of the 18 Untaught tiles from the entry above still
+// resolves to the exact same item count as before this change (checked
+// directly, not assumed) - confirming the swap really is behaviour-neutral
+// today. Search, Collections, Random - Everything, and every Untaught
+// category tile all route through one of the four converted call sites,
+// so nothing was left on the old per-category check. Syntax checked.
 // =============================================================================
 
 const VOCAB = {
@@ -5466,7 +5515,7 @@ const THEMES = {
   // vocabulary was switched on (applyShowTripVocabVisibility), even though
   // only its `directions` slice is actually Untaught-tier - `transport` and
   // `places-to-go` are ordinary taught Level 2 content. getThemePool's
-  // categoryTierVisible check already drops the directions slice from the
+  // itemTierVisible check already drops the directions slice from the
   // pool on its own when Untaught is off, the same mechanism theme-
   // question-words relies on for its Untaught-tier slice - so hiding the
   // whole card was needlessly hiding the L2 words too. `level: 'untaught'`
@@ -5503,9 +5552,9 @@ const THEMES = {
   // way) plus the 13 new ones in Reference - Question words. No level set
   // here deliberately, unlike the Trip-only Collections above: this card
   // always shows, and the pool itself grows or shrinks depending on the
-  // Untaught toggle (the 13 reference words live in an Untaught-tier
-  // category, so categoryTierVisible drops them from the pool the moment
-  // Untaught is off, same as it would drop them from their own category -
+  // Untaught toggle (the 13 reference words carry the 'untaught' tag, so
+  // itemTierVisible drops them from the pool the moment Untaught is off,
+  // same as it would drop them from their own category -
   // nothing extra to wire on the card itself for that to work).
   'theme-question-words': {
     label: 'Question words',
@@ -5703,8 +5752,8 @@ const THEMES = {
   },
 };
 
-// Every source category above is Level 2 or Trip - categoryTierVisible
-// below is the single gate that applies to any tier a source category
+// Every source category above is Level 2 or Trip - itemTierVisible
+// below is the single gate that applies to any tier an item's tags
 // might carry, so adding a new tier later needs no change here.
 //
 // For noSort themes, items come back in the same flat original order as
@@ -5757,21 +5806,22 @@ function getThemePool(themeKey) {
   function buildCategoryItems(catKey) {
     const cat = VOCAB[catKey];
     if (!cat) return [];
-    if (!categoryTierVisible(cat.level)) return [];
-    return cat.items.map(item => Object.assign({ level: cat.level || 1, groupKey: catKey }, item));
+    return cat.items
+      .filter(itemTierVisible)
+      .map(item => Object.assign({ level: cat.level || 1, groupKey: catKey }, item));
   }
 
   // Tag-query themes - membership isn't a hand-picked list of whole
   // categories (like sources/groups below), it's "every item anywhere that
   // carries this tag", found by scanning every category once. Still respects
-  // categoryTierVisible per source category, same as buildCategoryItems
-  // above - a tagged item living in an Andrew-only category still
-  // disappears from a tag pool the moment Andrew mode is switched off, same
-  // as it would from its own category. This is deliberately the same
-  // membership concept as sources/groups (a named, curated pool of words to
-  // drill) just resolved a different way - a word doesn't need to be
-  // duplicated or manually added to a category list to show up here, it just
-  // needs the tag, wherever it happens to actually live.
+  // itemTierVisible per item, same as buildCategoryItems above - a tagged
+  // untaught item still disappears from a tag pool the moment Untaught is
+  // switched off, same as it would from its own category. This is
+  // deliberately the same membership concept as sources/groups (a named,
+  // curated pool of words to drill) just resolved a different way - a word
+  // doesn't need to be duplicated or manually added to a category list to
+  // show up here, it just needs the tag, wherever it happens to actually
+  // live.
   if (theme.tagQuery) {
     const items = [];
     Object.keys(VOCAB).forEach(catKey => {
@@ -5900,9 +5950,8 @@ function resolveVocabCategory(key) {
       const items = [];
       Object.keys(VOCAB).forEach(srcKey => {
         const srcCat = VOCAB[srcKey];
-        if (!categoryTierVisible(srcCat.level)) return;
         (srcCat.items || []).forEach(item => {
-          if (tagQueryMatches(item.tags, cat.tagQuery)) items.push(item);
+          if (itemTierVisible(item) && tagQueryMatches(item.tags, cat.tagQuery)) items.push(item);
         });
       });
       if (cat.ordinalOrder) return Object.assign({}, cat, { items });
@@ -5974,7 +6023,7 @@ function resolveVocabCategory(key) {
 }
 
 // Search across whatever's currently visible (L1/L2 always, Trip/Andrew if
-// switched on - see categoryTierVisible) - matches against en and romaji
+// switched on - see itemTierVisible) - matches against en and romaji
 // only, deliberately not seenAs: that's incidental sentence context, not
 // vocab that was actually taught or added on purpose, and searching it
 // would surface words by way of unrelated background text. Enter/submit
@@ -6018,8 +6067,8 @@ function submitVocabSearch() {
   const results = [];
   Object.keys(VOCAB).forEach(catKey => {
     const cat = VOCAB[catKey];
-    if (!categoryTierVisible(cat.level)) return;
     cat.items.forEach(item => {
+      if (!itemTierVisible(item)) return;
       const itemWords = vocabSearchWords(item.en).concat(vocabSearchWords(item.romaji));
       const matches = queryWords.every(qw => itemWords.some(iw => iw.startsWith(qw)));
       if (matches) {
@@ -7683,21 +7732,38 @@ function saveSettings() {
   }
 }
 
-// Single source of truth for "is this category's tier currently visible" -
-// used anywhere that scans across every category regardless of level
-// (Random - Everything, theme pools), so Untaught and Andrew-mode content
+// Single source of truth for "is this item's tier currently visible" - used
+// anywhere that scans across every category regardless of level (Random -
+// Everything, theme pools, search), so Untaught and Andrew-mode content
 // stay gated the same way everywhere rather than each call site
 // re-deriving its own version of this check (and risking one of them
 // forgetting a tier).
 //
-// 'andrew' is dormant as of 2026-08-31 - no VOCAB category currently uses
-// it (everything that used to be level:'andrew' or level:'trip' merged
-// into level:'untaught' below), but the branch stays wired up and ready:
-// Andrew mode is a reusable empty staging tier for whatever L3 content
-// comes next, not a retired concept.
-function categoryTierVisible(level) {
-  if (level === 'andrew') return appSettings.showAndrewMode;
-  if (level === 'untaught') return appSettings.showUntaught;
+// PER-ITEM, NOT PER-CATEGORY - SHIPPED (2026-08-31): this used to be
+// categoryTierVisible(level), called once per source category to decide
+// whether to skip its `items` entirely. That was always a stand-in for
+// what the words themselves already say about themselves: every untaught
+// item already carries the 'untaught' tag (100% coverage, verified before
+// this shipped), so checking the item's own tag directly is both more
+// accurate and one step closer to THE FLIP point 1 above VOCAB ("level
+// stops being a category-level property and becomes a per-item one").
+// Andrew raised this directly after the Trip/Andrew merge shipped -
+// wanted genuine per-item gating rather than a per-category shortcut that
+// only worked because the data happened to be clean. The "bring forward"
+// half of point 1 (level updating in place when a word's re-taught) turned
+// out not to be a real blocker either, in the same conversation - a word
+// simply gets tagged with both levels (e.g. ['L1','L3']) and the existing
+// tag-query mechanism already finds it in both without any extra work, so
+// there was never a need for level to literally move.
+//
+// 'andrew' is dormant as of 2026-08-31 - no item currently carries that
+// tag (checked: 0/1289), since Andrew mode has no content to gate yet -
+// but the branch stays wired up and ready for whenever L3 content lands
+// here and gets tagged the same way untaught content already is.
+function itemTierVisible(item) {
+  const tags = item.tags || [];
+  if (tags.includes('untaught')) return appSettings.showUntaught;
+  if (tags.includes('andrew')) return appSettings.showAndrewMode;
   return true;
 }
 
@@ -7715,9 +7781,8 @@ function scanVocabByTag(query) {
   const items = [];
   Object.keys(VOCAB).forEach(catKey => {
     const cat = VOCAB[catKey];
-    if (!categoryTierVisible(cat.level)) return;
     (cat.items || []).forEach(item => {
-      if (tagQueryMatches(item.tags, query)) items.push(item);
+      if (itemTierVisible(item) && tagQueryMatches(item.tags, query)) items.push(item);
     });
   });
   return items;
@@ -7811,8 +7876,9 @@ function toggleShowAndrewMode() {
 // stopped earning its keep - merged into this one tier instead. Every word
 // that lives here carries the 'untaught' item tag, which is what
 // scanVocabByTag('untaught') in startRandomMatch reads directly, and what
-// categoryTierVisible('untaught') below gates for every other scan. Same
-// hide-entirely, off-by-default pattern as the rest of the gated tiers.
+// itemTierVisible below gates for every other scan by checking the same
+// tag on each item. Same hide-entirely, off-by-default pattern as the
+// rest of the gated tiers.
 function applyShowUntaughtVisibility() {
   const on = appSettings.showUntaught;
   const untaughtPill = document.getElementById('level-pill-untaught');
@@ -11643,7 +11709,7 @@ function startVocabReadingDeck(items, groupKey) {
 function getAllVocabPool() {
   // Now routed through scanVocabByTag too (2026-08-27), same as
   // startRandomMatch above - keeps exactly one implementation of "walk
-  // every category, respect categoryTierVisible" instead of two near-
+  // every category, respect itemTierVisible" instead of two near-
   // identical copies. The empty array `[]` as the query is deliberate:
   // tagQueryMatches's AND check is `required.every(...)`, and .every() on
   // an empty array is vacuously true, so every item with any tags at all
