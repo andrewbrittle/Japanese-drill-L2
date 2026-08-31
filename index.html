@@ -30,6 +30,23 @@
     src: url('fonts/BizUDPGothic-Regular.ttf') format('truetype');
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Andrew flagged the Collections/Level 1/Level 2/Untaught pill text
+     looking slightly bigger than before, right after the pill row switched
+     from wrapping onto a second line to scrolling horizontally in one line
+     (v260831.015). No font-size anywhere in that row actually changed -
+     this is Android Chrome's automatic "font boosting" (aka text
+     autosizer): a heuristic that inflates rendered text size in a block it
+     judges too narrow for its column, and a nowrap+overflow-x row reads
+     differently to that heuristic than a wrapping one did, which is
+     exactly the kind of layout-triggered, no-CSS-change side effect this
+     symptom points to. Every font-size in this app is already deliberately
+     chosen throughout - there's no reason for the browser to be silently
+     adjusting any of them - so disabled globally here rather than patched
+     just on this one row, since the same heuristic could just as easily
+     surface somewhere else next (the Grammar notes cards' new line-height
+     change is another recent candidate). Standard fix, no visual effect on
+     desktop or on text sizes that were never being boosted anyway. */
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 
   :root {
     --bg: #0f0f0f;
@@ -1031,7 +1048,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.015</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.016</div>
   </div>
 
   <!-- Katakana settings screen -->
