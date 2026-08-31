@@ -481,6 +481,16 @@
     font-family: 'BIZ UDPGothic', -apple-system, sans-serif;
   }
   .vocab-ref-card:hover { border-color: var(--accent); }
+  /* Reference links folded into a tile-selection screen (2026-08-31, see
+     CATEGORY_REFERENCE_LINKS) sit directly above the centre-justified "tap
+     a word to select it for drilling" line - a left-justified card with a
+     barely-there default border reads as unbalanced against that centred
+     text below it. Gold border always on here (not just :hover) rather
+     than changing alignment or anything else - the full-width highlight is
+     what restores the balance, scoped to this one container so every other
+     .vocab-ref-card (Grammar notes hub, the two notes links, etc.) keeps
+     its normal subtle-until-hovered look. */
+  #vocab-tile-selection-ref-links .vocab-ref-card { border-color: var(--accent); }
   .vocab-ref-arrow { color: var(--text-muted); }
   #vocab-ref-list { display: flex; flex-direction: column; gap: 0.6rem; }
   #vocab-ref-list.tight-list { gap: 0.4rem; }
@@ -730,10 +740,10 @@
      .number-tool-output's own jp/rd pair, just repeated with a gap above. */
   .money-output-secondary { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
   /* Search + Andrew mode's shared row - set apart from the main level row
-     above so both read as distinct from the regular Collections/L1/L2/Trip
-     lineup. The row itself is always visible now (Search is for everyone);
-     the Andrew pill inside it still hides/shows via inline style, same as
-     level-pill-trip does in the row above. */
+     above so both read as distinct from the regular Collections/L1/L2/
+     Untaught lineup. The row itself is always visible now (Search is for
+     everyone); the Andrew pill inside it still hides/shows via inline
+     style, same as level-pill-untaught does in the row above. */
   .level-filter-row.andrew-row { margin-top: 8px; }
   /* Pill-shaped search field - same 99px radius/border language as
      .level-pill, but a text input + submit icon instead of a button. flex:1
@@ -781,7 +791,7 @@
   }
   .level-pill.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .level-pill:disabled { opacity: 0.35; cursor: default; }
-  /* Ties the Level 1/2/Trip pill text to the same blue/orange/purple used
+  /* Ties the Level 1/2/Untaught pill text to the same blue/orange/purple used
      for theme-tile borders (LEVEL_BORDER_COLORS in the script) - but only
      while Collections itself is the one being viewed (setMatchLevel toggles
      "showing-theme-colours" on the row), since the colour only means anything
@@ -790,7 +800,7 @@
      wins once a pill is the one currently selected. */
   #vocab-level-filter-row.showing-theme-colours #level-pill-1:not(.active) { color: #4d88e5; border-color: rgba(77,136,229,0.4); }
   #vocab-level-filter-row.showing-theme-colours #level-pill-2:not(.active) { color: #e88a4d; border-color: rgba(232,138,77,0.4); }
-  #vocab-level-filter-row.showing-theme-colours #level-pill-trip:not(.active) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
+  #vocab-level-filter-row.showing-theme-colours #level-pill-untaught:not(.active) { color: #9b59d0; border-color: rgba(155,89,208,0.4); }
 
   /* "Specific time" lookup tool, under Reading times on the Vocab page */
   .time-tool-row {
@@ -962,18 +972,18 @@
       <div class="toggle" id="offline-toggle"></div>
     </div>
 
-    <div class="group-card" id="show-trip-vocab-toggle-card" onclick="toggleShowTripVocab()" style="cursor:pointer;">
+    <div class="group-card" id="show-untaught-toggle-card" onclick="toggleShowUntaught()" style="cursor:pointer;">
       <div class="group-info">
-        <div class="group-name">Trip vocabulary</div>
-        <div class="group-count">Words specific to travelling to Japan (food, money, directions, emergencies, tourist phrases) rather than course content — adds a "Trip" pill on its own row under Vocab. Off by default so it doesn't clutter things for anyone not travelling</div>
+        <div class="group-name">Untaught vocabulary</div>
+        <div class="group-count">Everything outside the taught Level 1/2 course — trip words (food, money, directions, emergencies, tourist phrases) plus real words and phrases pulled from photos taken in Japan (signs, menus, receipts, announcements) — rather than course content. Adds an "Untaught" pill on its own row under Vocab, and unlocks two extra grammar-notes pages on the Level 2 tab. Off by default so it doesn't clutter things for anyone just doing the course</div>
       </div>
-      <div class="toggle" id="show-trip-vocab-toggle"></div>
+      <div class="toggle" id="show-untaught-toggle"></div>
     </div>
 
     <div class="group-card dimmed" id="show-andrew-mode-toggle-card" onclick="toggleShowAndrewMode()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Activate Andrew mode</div>
-        <div class="group-count">Personal staging area for whatever's being tried out next, before it's decided whether it becomes core or its own gated tier (like Trip vocabulary above) — currently empty, adds an "Andrew" pill on its own row under Vocab when there's something to show</div>
+        <div class="group-count">Personal staging area for whatever's being tried out next, before it's decided whether it becomes core or its own gated tier (like Untaught vocabulary above, where Andrew's last batch of content — "Materials" — ended up) — currently empty, adds an "Andrew" pill on its own row under Vocab when there's something to show</div>
       </div>
       <div class="toggle" id="show-andrew-mode-toggle"></div>
     </div>
@@ -995,7 +1005,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.003</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.014</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1114,6 +1124,16 @@
   <!-- Vocab tile-selection reference screen (flat categories: colours, trip-prep) -->
   <div class="screen" id="screen-vocab-tile-selection">
     <div class="settings-title" id="vocab-tile-selection-title">Reference</div>
+    <!-- Populated by showVocabTileSelection from CATEGORY_REFERENCE_LINKS
+         (2026-08-31) - 0 or more reference-screen links for whichever
+         category is showing, right below the heading and above the "tap a
+         word" instruction. Used to be separate cards sitting above the
+         category tile in the list screen instead - folded in here so the
+         reference always travels with its category wherever the category's
+         tile ends up, rather than needing to be kept in sync with its
+         position in the list by hand. Empty (no children) for categories
+         with no reference screen, which collapses to no visible gap. -->
+    <div id="vocab-tile-selection-ref-links"></div>
     <div class="settings-sub">Tap a word to select it for drilling.</div>
 
     <div class="tile-select-actions-row">
@@ -1388,12 +1408,13 @@
       <button class="level-pill active" id="level-pill-theme" onclick="setMatchLevel('theme')">Collections</button>
       <button class="level-pill" id="level-pill-1" onclick="setMatchLevel(1)">Level 1</button>
       <button class="level-pill" id="level-pill-2" onclick="setMatchLevel(2)">Level 2</button>
-      <!-- Trip vocabulary - words specific to travelling to Japan, useful to
-           anyone, not just Andrew. In line with the others (unlike Andrew
-           below) since it's a real, named tier rather than a scratchpad -
-           hidden via display:none until switched on (see
-           applyShowTripVocabVisibility). -->
-      <button class="level-pill" id="level-pill-trip" onclick="setMatchLevel('trip')" style="display:none;">Trip</button>
+      <!-- Untaught vocabulary - everything not covered in the taught course
+           (Trip vocabulary and Andrew's old "Materials" content merged into
+           this single tier 2026-08-31 - see applyShowUntaughtVisibility).
+           Useful to anyone, not just Andrew. In line with the others
+           (unlike Andrew below) since it's a real, named tier rather than a
+           scratchpad - hidden via display:none until switched on. -->
+      <button class="level-pill" id="level-pill-untaught" onclick="setMatchLevel('untaught')" style="display:none;">Untaught</button>
     </div>
 
     <!-- Search + Andrew's personal staging tier, sharing one row. Search is
@@ -1416,8 +1437,10 @@
         </button>
       </div>
       <!-- Own row, hidden by default so nobody else ever sees it unless they
-           switch "Andrew mode" on themselves. Currently empty - that's the
-           expected steady state. -->
+           switch "Andrew mode" on themselves. Currently empty - its last
+           content (Materials) moved into Untaught above on 2026-08-31 -
+           that's the expected steady state between experiments, ready for
+           whatever L3 content lands here next. -->
       <button class="level-pill" id="level-pill-andrew" onclick="setMatchLevel('andrew')" style="display:none;">Andrew</button>
     </div>
     <div class="vocab-search-message" id="vocab-search-message" style="display:none;"></div>
@@ -1509,10 +1532,11 @@
         <div class="cat-swatch"></div>
       </div>
       <!-- First tag-driven Collection - see theme-question-words in THEMES
-           and getThemePool's tagQuery branch. Always visible (unlike the two
-           Trip-gated cards below) since part of its pool is ordinary L2
-           content; the Andrew-tier portion appears/disappears from the pool
-           on its own via categoryTierVisible, no card-level hiding needed. -->
+           and getThemePool's tagQuery branch. Always visible since part of
+           its pool is ordinary L2 content; the Andrew-tier portion
+           appears/disappears from the pool on its own via
+           categoryTierVisible, no card-level hiding needed - the pattern
+           Getting around below was fixed to match on 2026-08-31. -->
       <div class="group-card" data-theme-key="theme-question-words" onclick="showVocabTileSelection('theme-question-words')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Question words</div>
@@ -1521,11 +1545,22 @@
         </div>
         <div class="cat-swatch"></div>
       </div>
-      <!-- Getting around and Survival vocab (below) only show up when Trip
-           vocabulary is on - see applyShowTripVocabVisibility. Gated because
-           part of each one's pool is genuinely Trip-tier content (travel
-           vocab, not course material) that not everyone wants surfaced. -->
-      <div class="group-card" data-theme-key="theme-getting-around" id="theme-getting-around-card" onclick="showVocabTileSelection('theme-getting-around')" style="cursor:pointer; display:none;">
+      <!-- BUG FIX (2026-08-31) - this card used to be hidden entirely
+           unless Trip vocabulary was switched on (id="theme-getting-
+           around-card", toggled in applyShowTripVocabVisibility), on the
+           reasoning that "part of its pool is Trip-tier content". That
+           reasoning was wrong: 2 of its 3 source tags (transport, places-
+           to-go) are ordinary taught Level 2 content with zero Trip
+           dependency - only `directions` was Trip-tier (now Untaught-tier,
+           since Trip and Andrew merged the same day), and getThemePool's
+           tagQuery branch already drops Untaught-tier items from the pool
+           on its own via categoryTierVisible the moment Untaught is off,
+           the exact same mechanism theme-question-words below already
+           relies on for its own Untaught-tier slice. Hiding the whole card
+           was needlessly also hiding the L2 words for anyone with Untaught
+           off. Now always visible, same pattern as Question words - no
+           card-level hiding needed, the id and JS toggle are gone. -->
+      <div class="group-card" data-theme-key="theme-getting-around" onclick="showVocabTileSelection('theme-getting-around')" style="cursor:pointer;">
         <div class="group-info">
           <div class="group-name">Getting around</div>
           <div class="group-chars">でんしゃ ひだり きっぷ…</div>
@@ -2553,6 +2588,453 @@ const DATA = {
 // (service-ops 66, encountered/curated 682/161, kanjiReading 390/124),
 // 1289 items total, syntax checked.
 //
+// FIRST TWO CATEGORY RETIREMENTS - SHIPPED (2026-08-31): Stations & trains
+// and Accommodation are the first "TEST: ... combined" cards promoted to
+// real, permanent ones, and the first two old standalone categories
+// actually retired - the concrete start of point 2/3 below (Trip/Andrew
+// membership as a per-item tag, categories as pure display), not a new
+// decision. Andrew's framing: "nothing is lost, every word is still
+// drillable" - true and checked, not assumed. Materials — Stations & trains
+// (89/89 items already carried `stations`) and Trip's own Accommodation
+// (14/14 carried `accommodation`, and Materials — Hotel: Facilities' 76 are
+// covered too - 73 via `accommodation`, the other 3 already homed under
+// food-drink from the split above) both got `standaloneCard: false` - data
+// untouched, only the standalone tile is gone. `theme-stations-combined`
+// and `theme-accommodation-combined` lost their "(combined test)" labels
+// and "TEST:" card prefixes, and moved to their own section in Andrew
+// mode's list, above the divider for the four combined pools still marked
+// TEST (food-drink, shopping, emergency, signage) - a visible signal for
+// which categories are real vs still provisional, not just a comment.
+//
+// STILL BLOCKED FROM RETIRING (see the SERVICE-OPS and FOOD-DRINK
+// SUB-SPLIT entries above for the numbers): Food & drink's "Ordering &
+// policy" half needs a service-ops drilling screen built before Materials —
+// Restaurants: Ordering & policy can retire (51 of its 73 items have no
+// screen showing them right now, only the tag). Shopping needs 12
+// Materials-shops items (駐車場, 道民, 固く, 長時間, 勉強, 給電, こちら,
+// 捨てる, ペット, ご同伴, カラス, 可能性 - parking/pets/crows/notices) sorted
+// into `signage` or elsewhere before Materials-shops is fully covered.
+// Emergency and Signage aren't "retire a whole category" cases at all -
+// both are stitched from fragments of several categories, not one
+// dominant source, so there's no single old category waiting to retire
+// behind either of them.
+//
+// Naming note from the same conversation, worth keeping: `untaught` is the
+// gate (whether this content shows at all, given course progress);
+// `encountered`/`curated` are the descriptive tags on the content's nature
+// (2026-08-31 provenance entry above); "Materials" was a category-list
+// label that doesn't get renamed once this lands, it dissolves - once every
+// category is named by what it's about (Stations & trains, Food & drink,
+// same as everything else already is), there's no umbrella brand left
+// needing a word. Andrew's own long-term framing, to keep in view: one set
+// of tag-driven drilling categories inside Andrew mode that already
+// includes what used to be Trip content, Trip retired as a toggle/concept
+// entirely once nothing needs it any more, and the result folded into the
+// untaught toggle. Not a new decision - this is what the 2026-08-27 reorg
+// entry and THE FLIP below already describe; today's retirements are that
+// plan actually starting to happen rather than just being written down.
+//
+// FOUR MORE RETIREMENTS + CARDS RESTYLED - SHIPPED (2026-08-31): the four
+// remaining "TEST: ... combined" cards all graduated the same day as
+// Stations & trains and Accommodation, closing out this round of Materials
+// retirements. Emergency & survival needed zero further data work - it was
+// already 100% covered by `emergency` and already had standaloneCard:false
+// set back on 2026-08-27, so promoting it was just a label/card change.
+// Food & drink and Shopping were promoted once their last coverage gaps
+// closed: `theme-service-ops` is a brand-new drilling screen (66 items) so
+// the 51 service-ops words carved out of Materials — Restaurants: Ordering
+// & policy have somewhere to live, and the last 12 Materials-shops items
+// (駐車場, 道民, 固く, 長時間, 勉強, 給電, こちら, 捨てる, ペット, ご同伴,
+// カラス, 可能性 - parking/pets/crows/notices) got tagged `signage`. That
+// same 12-item fix also completed Signage & warnings' coverage, so it
+// promoted alongside the other three as a same-day consequence rather than
+// needing separate work. Retired as standalone tiles (standaloneCard:false):
+// Materials — Restaurants: Food & menu (141/141 covered), Materials —
+// Restaurants: Ordering & policy (73/73 covered by food-drink+service-ops),
+// Materials — Shops & everyday purchases (70/70 covered by
+// shopping+signage). vocab-signage-warnings (11/11) was already covered and
+// retired the same way. Corrected a stale comment on
+// theme-accommodation-combined while in the area: it had claimed Materials
+// — Hotel: Facilities was already standaloneCard:false, which was never
+// actually true - fixed the comment to say so plainly rather than leaving
+// wrong data in place, but did NOT silently retire that category too since
+// it wasn't part of today's scope; flagged as a ready-when-wanted follow-up
+// instead.
+//
+// Card styling also changed, per Andrew's explicit instruction: all seven
+// promoted categories (the five above plus the two from earlier today) now
+// render with buildCategoryTile() - the same ".match-card-select"
+// white-text, word-count, confidence-swatch style every real Materials
+// category has always used - instead of the gold ".vocab-ref-card" link
+// style the TEST cards wore. buildCategoryTile() is the inline
+// card-building code from the old Object.keys(VOCAB).forEach, extracted
+// into a standalone function precisely so it could be reused for THEMES
+// keys too - resolveVocabCategory/getCategoryAverageScore already worked
+// generically for a theme key (no new plumbing needed, see resolveVocabCategory's
+// THEME_CACHE branch), so the extraction was the only real work. They're
+// also rendered first now, above even the Appliances reference card, so
+// they're the first thing Andrew mode shows - the old gold "TEST:" section
+// and its per-card comments are gone entirely, not just relabelled.
+//
+// Verified: 1289 items total unchanged, taught/untaught 446/843, service-ops
+// 66, encountered/curated 682/161, kanjiReading 390/124, food sub-tags
+// (food-type 134, drink 19, preparation 17, food-adjective 36, dining-phrase
+// 21, 227 total) all unchanged from their last-shipped counts. 8 categories
+// now carry standaloneCard:false in total (trip-prep, accommodation,
+// emergency-survival, signage-warnings, materials-stations,
+// materials-restaurants-food, materials-restaurants-ops, materials-shops).
+// Syntax checked.
+//
+// HOTEL: FACILITIES RETIRED - SHIPPED (2026-08-31): closes out the stale-
+// comment flag from the entry just above. Materials — Hotel: Facilities &
+// stay (vocab-materials-hotel-facilities) got standaloneCard:false - all 76
+// of its items were already covered (73 via `accommodation`, the other 3 -
+// いか焼き, うまいもん, ご当地 - via `food-drink`), so this was purely
+// catching up the code to what the data already supported, no new tagging
+// needed. theme-accommodation-combined's comment corrected to describe both
+// retirements as done rather than one done/one flagged. Also discussed with
+// Andrew: Collections (the dedicated tab, `#match-theme-view`, hand-written
+// HTML cards) and today's promoted Andrew-mode cards both resolve through
+// the same THEMES/tagQuery mechanism - the only differences are UI wiring
+// (static hand-authored cards with a separate swatch-refresh pass, vs
+// buildCategoryTile() generating the whole card fresh each render) and
+// visibility scope (Collections is its own tab, visible to everyone;
+// today's promoted cards are Andrew-mode only). Agreed direction: aligning
+// the two - most likely moving Andrew's promoted cards onto the same
+// static-card pattern Collections uses, or vice versa - is a sensible next
+// unification, not started tonight.
+//
+// Verified: 1289 items total unchanged, taught/untaught 446/843, all prior
+// tag counts unchanged. 9 categories now carry standaloneCard:false in
+// total (trip-prep, accommodation, emergency-survival, signage-warnings,
+// materials-stations, materials-restaurants-food, materials-restaurants-ops,
+// materials-shops, materials-hotel-facilities). Syntax checked.
+//
+// ENTERTAINMENT SPLIT + QUESTION WORDS RETIRED - SHIPPED (2026-08-31): a
+// follow-on the same day, after checking which of the four remaining
+// single-source Materials categories (Airport, Street, Entertainment,
+// Hotel: Appliances) were actually clean to convert. Airport (18/18) and
+// Street (21/21) turned out wholesale-tagged already; Entertainment wasn't
+// (68 items, only 39 tagged `entertainment`) - the other 29 were a mixed
+// bag: 10 already properly tagged `emergency` (a heatstroke-warning block
+// from 2026-08-27, already drillable via theme-emergency-combined, so
+// nothing to do there), and 19 genuinely homeless. Of those 19: 14 turned
+// out to be a self-introduction/profile-card set (name, date of birth,
+// height, weight, hobby, special skill, strong point, charm point,
+// favourite food/word/colour, important thing, debut, company) all
+// photographed together at the Sapporo TV Tower gift shop - almost
+// certainly a mascot or character profile board, not travel vocabulary at
+// all. Tagged `profile-words`, new theme-profile-words screen built for
+// them. The remaining 5 were genuine strays with no natural cluster of
+// their own: 鉄道駅 got the existing `stations` tag, 停止線/開発局 (both
+// roadside signage from Muroran) got the existing `street` tag, and
+// 市役所/名称 got `places` - the loosest fit of the batch, flagged as such
+// rather than pretended otherwise (名称 in particular is a bare label word
+// with no thematic home at all, folded in here because two words don't
+// justify their own tag).
+//
+// With every item covered, Materials - Entertainment retired
+// (standaloneCard:false) and theme-entertainment-combined promoted to a
+// real Andrew-mode card - a genuine two-source combine, not a solo flip,
+// since vocab-tourist-phrases already had 2 items independently tagged
+// `entertainment` (41 total, not 39).
+//
+// Reference - Question words also retired the same day, but differently
+// from everything else so far: not because a new Andrew card replaced it,
+// but because Collections' own "Question words" card (theme-question-
+// words, live since 2026-08-27) already pulls in all 13 of its items
+// alongside the 4 taught L2 duplicates. This is the case Andrew flagged
+// directly: wherever a set overlaps with taught vocab, Collections and
+// Andrew's own list are going to show the same content through two
+// different doors, and the fix there isn't a new Andrew card, it's
+// pointing at the Collections card that already exists. No card added to
+// Andrew's promoted list for this one - Collections is genuinely the place
+// for it now.
+//
+// Airport, Street, and Hotel: Appliances remain as they are - all three
+// are wholesale-tagged single-source categories with nothing to combine
+// into, so unlike everything above they're candidates for the lighter
+// FLIP PILOT-style in-place conversion (tagQuery on the VOCAB entry
+// itself, same tile, nothing promoted or retired) rather than the promote-
+// and-retire pattern used throughout this session - not done tonight.
+//
+// Verified: 1289 items total unchanged. entertainment 41 (39 in Materials
+// - Entertainment + 2 in vocab-tourist-phrases, both pre-existing),
+// profile-words 14 (new), stations 100 (+1), street 23 (+2), places 20
+// (+2), emergency 36 unchanged in total but its per-category breakdown now
+// includes materials-entertainment:10 as expected. 11 categories now carry
+// standaloneCard:false in total (the 9 above plus materials-entertainment
+// and reference-question-words). Syntax checked. (Also caught and fixed a
+// self-inflicted bug while tagging: a first-draft script inserted the new
+// tags outside the tags:[] array entirely, corrupting 19 lines - caught by
+// the coverage-verification script immediately after running it, before
+// any further edits were built on top, and fixed with a second pass before
+// moving on.)
+//
+// AIRPORT/STREET/HOTEL:APPLIANCES FLIPPED - SHIPPED (2026-08-31): the three
+// remaining single-source Materials categories, converted the FLIP PILOT
+// way (tagQuery on the VOCAB entry itself, see vocab-weather from
+// 2026-08-26) rather than promote-and-retire - there's nothing to combine
+// them with, so each keeps its own tile in its own spot, just sourced by a
+// tag scan now instead of reading `items` directly. Hotel: Appliances was
+// a pure zero-risk conversion (113/113 already tagged `appliances`, no
+// includeItems to worry about). Airport and Street each had one word
+// wired in from vocab-accommodation via includeItems (にもつ/luggage,
+// よやく/reservation) - a mechanism that doesn't survive a tagQuery flip,
+// since resolveVocabCategory's tagQuery branch returns before ever
+// checking includeItems, so leaving both in place would have silently
+// dropped both words. Fixed by tagging にもつ `airport` and よやく `street`
+// directly instead, so they show up in the scan exactly as they used to.
+// にもつ is a clean fit; よやく is honestly a looser one - "reservation"
+// isn't really street/neighbourhood vocabulary, it was only ever wired
+// into this list for practical reasons - kept anyway rather than left
+// stranded, flagged rather than pretended otherwise.
+//
+// One genuine behavioural difference worth flagging, not silently
+// absorbed: includeItems never checked categoryTierVisible, so にもつ/よやく
+// always appeared in Airport/Street regardless of the Trip vocab toggle's
+// state. A tagQuery scan does respect categoryTierVisible (see
+// scanVocabByTag/resolveVocabCategory), so post-flip, both words only
+// appear in Airport/Street when Trip vocab is also switched on. Whether
+// that's a regression or actually the more consistent behaviour (every
+// other Trip-tier word already obeys that toggle) depends on how the two
+// toggles actually get used day to day - not resolved here, just flagged
+// for whoever notices にもつ or よやく missing from those two lists with
+// Trip vocab off.
+//
+// Verified: 1289 items total unchanged. airport 19 (18 in Materials -
+// Airport + にもつ), street 24 (21 in Materials - Street + 2 from today's
+// Entertainment split + よやく), appliances 113 unchanged. 11 categories
+// still carry standaloneCard:false (none of today's three retire - they
+// keep their tiles). Syntax checked.
+//
+// With this, every Materials category with a real merge partner has been
+// promoted, and every genuinely single-source one has been flipped. What's
+// left under Andrew, apart from reference-only cards (the Appliances
+// reference view and the two notes links), is nothing else needing this
+// kind of conversion - the tag-driven, single-flat-store model from THE
+// FLIP below is now the live mechanism for essentially all of it.
+//
+// TAG CLEANUP + ALPHABETICAL ORDER - SHIPPED (2026-08-31): a same-day
+// follow-up after Andrew questioned two of the tag choices from the
+// Airport/Street flip above. よやく ("reservation") had been tagged
+// `street` to preserve its old includeItems link into Materials - Street -
+// but Andrew pointed out it fits Hotel/Accommodation better, and he was
+// right: よやく already carries `accommodation` natively (it lives in
+// vocab-accommodation) and Accommodation is a genuinely better home, so the
+// `street` tag was dropped rather than kept as a compromise. にもつ
+// ("luggage") stayed dual-tagged `airport` + `accommodation` - unlike
+// よやく, luggage is genuinely relevant to both (you deal with it at
+// check-in as much as at a hotel), so that one wasn't a loose fit needing
+// correction.
+//
+// Also alphabetized Andrew mode's whole category list, per Andrew's
+// request that it "tidy things up" - previously the nine promoted theme
+// cards rendered first as a fixed block, then Airport/Hotel: Appliances/
+// Street rendered separately via the generic VOCAB forEach, a split that
+// only existed because the theme cards needed visual emphasis while they
+// were new. Now that every tile renders identically via buildCategoryTile,
+// that split served no purpose - combined both sources into one array,
+// sorted by label, and skip the three plain VOCAB categories in the
+// generic forEach so they don't render twice. Dropped the "Materials — "
+// prefix from Airport/Hotel: Appliances/Street's labels as part of this -
+// otherwise all three would have sorted together under "M" instead of
+// interleaving properly (Airport under A, Hotel under H, Street under S).
+// This is also the last piece of "Materials" branding disappearing from
+// visible labels, matching the naming note from the 2026-08-31 retirement
+// entry above: the word dissolves once nothing needs an umbrella term any
+// more, this was simply the last place it was still showing.
+//
+// Verified: 1289 items unchanged, street back to 23 (21 + 2 from the
+// entertainment split, よやく's tag removed), airport still 19 (18 + にもつ,
+// unchanged). Alphabetized order checked by evaluating the real VOCAB/
+// THEMES objects, not just reasoned about: Accommodation, Airport &
+// flights, Emergency & survival, Entertainment, Food & drink, Hotel:
+// Appliances & machines, Profile & self-introduction words, Service & shop
+// operations, Shopping, Signage & warnings, Stations & trains, Street &
+// neighbourhood. Syntax checked.
+//
+// REFERENCE SCREENS FOLDED INTO SELECTION SCREENS - SHIPPED (2026-08-31):
+// Andrew's proposal, from the same conversation that flagged the Collections/
+// Andrew overlap earlier today: instead of a standalone reference card
+// hand-placed above a category's tile in the list, show the reference link
+// on that category's own tile-selection screen instead - heading, then the
+// reference link(s), then "tap a word to select it for drilling", then the
+// grid, exactly as he described it. Applies to five reference screens that
+// were previously separate cards: Time vocabulary's two (day/week/month/
+// year, minute endings), Days of the month, Days of the week (in order),
+// Animals' zodiac clock (all Level 2), and Appliances reference (Andrew).
+//
+// Mechanism: a new CATEGORY_REFERENCE_LINKS map (category key -> array of
+// {label, fn}) read by showVocabTileSelection, which now populates a
+// #vocab-tile-selection-ref-links container between the heading and the
+// "tap a word" line every time it opens a category - empty and invisible
+// for categories with no reference screen, one or more `.vocab-ref-card`
+// links otherwise. The five reference functions' internal
+// vocabRefBackTarget (also showVocabReference, the generic one used for
+// Days of the week) changed from 'match-settings' to 'vocab-tile-selection'
+// so Back returns to the selection screen they were opened from rather than
+// jumping past it to the top-level list - the exact same back-target
+// pattern hiragana/katakana's own reference screens already used, not a
+// new idea for this codebase, just applied to five more screens.
+//
+// The old standalone cards are gone: the four inline `if (key === ...)`
+// blocks inside the Object.keys(VOCAB).forEach loop, and the separate
+// Appliances reference card that used to sit above that loop in Andrew
+// mode. Nothing about the reference screens themselves changed - same
+// titles, same content, same showScreen('vocab-reference') target - only
+// where the link to reach them lives.
+//
+// Why this is better, not just different: a reference card's position in
+// the old list had to be kept in sync by hand with wherever its category
+// ended up - a problem that would only have gotten worse now that Andrew
+// mode's list is alphabetized by label rather than fixed. Tying the
+// reference to the category's own selection screen instead means it just
+// always travels with its category, wherever that category's tile happens
+// to sit in whichever list. Andrew's own framing: "wherever we put those
+// selection screens we know the relevant reference screens will go with
+// them" - exactly the property this delivers.
+//
+// Verified: 1289 items unchanged (this was a pure UI change, no VOCAB data
+// touched), 11 categories still carry standaloneCard:false, all six
+// vocabRefBackTarget updates present, no leftover references to the five
+// removed inline card variables anywhere in the file. Syntax checked.
+//
+// LABEL TWEAK - SHIPPED (2026-08-31): 'Hotel: Appliances & machines' ->
+// 'Hotel appliances & machines' (colon dropped, lowercase "appliances"),
+// per Andrew. Still sorts to the same spot alphabetically (checked against
+// the live VOCAB/THEMES data, not just reasoned about).
+//
+// REFERENCE LINK STYLING FIX - SHIPPED (2026-08-31): Andrew flagged that
+// the folded-in reference link (left-justified, barely-there default
+// .vocab-ref-card border) sat awkwardly above the centred "tap a word to
+// select it for drilling" line - unbalanced page. Fix: gold border on that
+// row always, not just on :hover, scoped to
+// #vocab-tile-selection-ref-links .vocab-ref-card only so every other
+// .vocab-ref-card in the app (Grammar notes hub, the two notes links, any
+// future reference card) keeps its normal look. No layout or alignment
+// change - the full-width highlight alone restores the visual balance,
+// per Andrew's own read of the fix.
+//
+// GETTING AROUND GATING BUG FIXED + THREE MORE TRIP RETIREMENTS - SHIPPED
+// (2026-08-31): Andrew asked what was left in Trip before the whole section
+// could retire, and specifically wanted the Getting around bug fixed first,
+// ahead of any more retirements. Bug: theme-getting-around's whole card
+// used to hide unless Trip vocab was switched on (same pattern as the
+// removed Survival vocab card), but only its `directions` slice is
+// actually Trip-tier - `transport` and `places-to-go` are ordinary taught
+// Level 2 content. getThemePool already drops Trip-tier items from a
+// tagQuery pool on its own via categoryTierVisible (the exact mechanism
+// theme-question-words relies on for its Andrew-tier slice) - so hiding
+// the whole card was needlessly hiding L2 words too, for anyone who had
+// Trip vocab switched off. Fixed by removing the card-level show/hide
+// entirely; it's unconditionally visible now, same as Question words.
+//
+// With that fixed, retired the three Trip categories that were fully
+// covered elsewhere: Food and drink (36/36 items via `food-drink`,
+// already the promoted Food & drink card), Money and shopping (16/16 via
+// `shopping`, already the promoted Shopping card), Directions and
+// navigation (20/20 via `directions`, already Getting around above).
+// Each had an includeItems cross-reference or two pulling in a word from
+// elsewhere that hadn't been checked against the relevant tag yet - found
+// and fixed three real gaps rather than just trusting the category's own
+// items were the whole story: クレジットカード ("credit card", lived in
+// Materials — Hotel: Appliances, tagged `appliances` only) got `shopping`
+// added; ホーム ("platform") and まっすぐ ("straight", both from Materials
+// — Stations, tagged `stations` only) got `directions` added. None of the
+// three were ever at real risk of being lost - all three already had a
+// home via their existing tag - but without the fix they'd have quietly
+// dropped out of the specific Shopping/Getting-around views rather than
+// showing up where they belonged.
+//
+// Weather (9 items) and Tourist phrases (16 items) are deliberately left
+// as their own standalone Trip-tier tiles "for now" (Andrew's words) -
+// both are single-source with no merge partner and no Collections card of
+// their own yet (weather already got the lighter FLIP PILOT tagQuery
+// conversion back on 2026-08-26; tourist-phrases hasn't). With this, every
+// other Trip category is either retired or was never really Trip-only
+// content to begin with (theme-getting-around's L2 slice) - Weather and
+// Tourist phrases are the only two things standing between here and Trip
+// actually going away as a section, and that's staying a deliberate,
+// visible choice rather than something either flipped or force-merged
+// today.
+//
+// Verified: 1289 items unchanged, 14 categories now carry
+// standaloneCard:false in total (the 11 from earlier today plus these
+// three). No dangling references to the removed theme-getting-around-card
+// id anywhere in the file. Syntax checked.
+//
+// TRIP + ANDREW MERGED INTO "UNTAUGHT" - SHIPPED (2026-08-31): this is
+// point (1) from the 2026-08-28 DECIDED entry above, and item 2 of THE FLIP
+// list below - the piece both entries flagged as having "real near-term
+// payoff" and being worth doing ahead of a full item-level rewrite of
+// `level`. Landed the same day as the Getting Around fix and the three Trip
+// retirements above, closing out the whole reorg thread that started
+// 2026-08-27.
+//
+// What changed: every VOCAB category that was `level: 'andrew'` or `level:
+// 'trip'` (19 categories, 843 items - Weather and Tourist phrases included,
+// the two that stayed standalone-only above) is now `level: 'untaught'`.
+// Trip vocabulary and Andrew mode - two toggles, two pills, two settings
+// cards - collapsed into one: showUntaught (settings), level-pill-untaught,
+// show-untaught-toggle-card. showTripVocab is gone outright. showAndrewMode
+// survives as its own toggle/pill/card, reset to false for every user as
+// part of the migration, and genuinely empty now - no VOCAB category uses
+// level:'andrew' any more - ready to be the staging tier for L3 content
+// later, exactly the role it was always meant to play (see its own
+// settings-card description and the 2026-08-28 DECIDED entry above).
+// Existing users migrate once, on load: showUntaught defaults to null
+// (distinct from false, so this can only fire once) and resolves to
+// showAndrewMode||showTripVocab the first time their saved settings are
+// read, mirroring the showCustomContent precedent this file already had.
+//
+// Andrew asked directly whether the whole mechanism could work by tag
+// rather than by category - it can, and does, exactly as far as it's
+// useful to: every one of the 843 items already carries the 'untaught'
+// item tag (100% coverage, verified again here before this shipped - see
+// the 2026-08-28 TAUGHT/UNTAUGHT STATUS TAG entry for when that tag was
+// added), so startRandomMatch's Untaught branch is now a genuine tag query
+// - scanVocabByTag('untaught') - the same shape L1/L2 already use, instead
+// of the old raw per-category `.level` walk (that walk still exists, but
+// only as Andrew's fallback, since Andrew has no per-item tier tag of its
+// own yet - there's nothing at level:'andrew' to tag). categoryTierVisible
+// still takes a category's `level` though, not an item - `level` on a
+// VOCAB category is still doing real work, just a narrower job than before:
+// routing ("which screen does this category's own tile belong on"), not
+// gating. Gating and pooling read the item's own 'untaught' tag directly
+// wherever it matters (scanVocabByTag, and by extension getThemePool's
+// tagQuery branch, since a tag query only ever returns items that already
+// self-report as untaught). The two never disagree today because the data
+// is 100% clean (verified: 843 untaught-tagged items exist, all and only
+// inside untaught-level categories, zero elsewhere) - going category-level
+// vs item-level would only diverge for a word that needed to live in two
+// tiers genuinely at once, which nothing currently does.
+//
+// Also moved as part of this: the two external notes links (sentence
+// structure, Japanese vs English) out of Andrew mode and into the Level 2
+// Grammar notes hub, gated by showUntaught rather than by which tab is
+// open - a deliberate reversal of the 2026-08-31 decision to keep them
+// Andrew-only (see showGrammarNotesHub's own comment). Andrew's reasoning:
+// that decision was made back when most of this tagging/merging mechanism
+// wasn't in place and the old Andrew/Trip staging split was still doing
+// real work; now that every word is properly curated or encountered and
+// gated by one toggle, there's no reason left to keep them out of the
+// Level 2 view. Settings screen and instructions.html both rewritten to
+// match - no remaining mention of "Trip vocabulary" as a live toggle
+// anywhere in either file, checked directly rather than assumed.
+//
+// Verified: 1289 items unchanged; 20 `level:` fields updated (19 VOCAB
+// categories plus theme-getting-around's decorative one); zero categories
+// left at level:'andrew' or level:'trip'; 843/843 untaught items still
+// carry the 'untaught' tag; zero remaining functional references to
+// showTripVocab/toggleShowTripVocab/applyShowTripVocabVisibility/
+// level-pill-trip/show-trip-vocab-toggle-card anywhere in index.html
+// (historical comments describing the old mechanism are the only survivors,
+// and read correctly as past tense). Settings migration simulated end to
+// end for six cases (new user, previously off, Trip-only, Andrew-only,
+// both on, already-migrated) - all resolve exactly as designed, idempotent
+// on repeat runs. Syntax checked.
+//
 // THE FLIP: every drilling screen gets created the same way, and buckets stop
 // mattering. Concretely, that means:
 //
@@ -3406,7 +3888,7 @@ const VOCAB = {
   // exactly as before - nothing about the words changed, only whether this
   // specific category still gets its own tile in the list.
   'vocab-trip-prep': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
     standaloneCard: false,
     label: 'Useful words for the trip',
@@ -3453,8 +3935,9 @@ const VOCAB = {
     ],
   },
   // First category built in what was originally the Andrew-mode staging
-  // tier - now graduated to level:'trip' (see showTripVocab), gated but
-  // open to anyone travelling, not just Andrew. A few entries carry
+  // tier - graduated to level:'trip', and now merged with the rest of
+  // Andrew/Trip into level:'untaught' (see showUntaught), gated but open
+  // to anyone, not just Andrew. A few entries carry
   // altForm+altIsStandard where the
   // hiragana form genuinely collides with another word (さけ is also
   // "sake/alcohol" in vocab-trip-prep, たい is also "Thailand" in
@@ -3463,8 +3946,14 @@ const VOCAB = {
   // exists (鮪, 海老 etc.) - those characters are obscure enough that real
   // menus almost always show them in kana/katakana instead.
   'vocab-food-drink': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-food-drink-combined fully subsumes it: all 36 items here carry
+    // `food-drink`, and all 4 includeItems cross-references (into the
+    // already-retired Materials — Restaurants categories) do too. Data
+    // stays exactly where it is, only the standalone tile goes away.
+    standaloneCard: false,
     label: 'Food and drink',
     chars: 'ぎょうざ さしみ からい…',
     includeItems: [
@@ -3520,8 +4009,16 @@ const VOCAB = {
     ],
   },
   'vocab-accommodation': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-accommodation-combined fully subsumes it: all 14 items here
+    // carry `accommodation`, and Materials - Hotel: Facilities is covered
+    // too (73 of 76 tagged accommodation, the other 3 - いか焼き, うまいもん,
+    // ご当地 - already have a home under food-drink from the food split).
+    // Data stays exactly where it is, only the standalone tile goes away.
+    // See "Accommodation" in THEMES for the replacement.
+    standaloneCard: false,
     label: 'Accommodation',
     chars: 'ホテル よやく タオル…',
     includeItems: [
@@ -3540,7 +4037,7 @@ const VOCAB = {
       // evidenced copy) - see includeItems below.
       {jp:'ホテル', romaji:'hoteru', en:'hotel', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'キーカード', romaji:'kii kaado', en:'key card', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
-      {jp:'にもつ', romaji:'nimotsu', en:'luggage', tags:['accommodation','untaught','curated'], altForm:'荷物', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
+      {jp:'にもつ', romaji:'nimotsu', en:'luggage', tags:['accommodation','untaught','curated','airport'], altForm:'荷物', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'まくら', romaji:'makura', en:'pillow', tags:['accommodation','untaught','curated'], altForm:'枕', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'よやく', romaji:'yoyaku', en:'reservation', tags:['accommodation','untaught','curated'], altForm:'予約', altIsStandard:true, seenAs:'予約 also labels the delayed-start timer button on a washing machine (Tokyu Stay Kyoto) - same underlying idea, "set this to happen later," not a separate word', source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'へやの ばんごう', romaji:'heya no bangou', en:'room number', tags:['accommodation','untaught','curated'], source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -3550,8 +4047,16 @@ const VOCAB = {
     ],
   },
   'vocab-money-shopping': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-shopping-combined fully subsumes it: all 16 items here carry
+    // `shopping`. Of its 2 includeItems cross-references, one (クレジット
+    // カード, "credit card", from Materials — Hotel: Appliances) didn't
+    // carry `shopping` yet - tagged it directly rather than let it quietly
+    // drop out of the shopping-themed view when this tile retires. Data
+    // stays exactly where it is, only the standalone tile goes away.
+    standaloneCard: false,
     label: 'Money and shopping',
     chars: 'げんきん わりびき サイズ…',
     includeItems: [
@@ -3582,8 +4087,19 @@ const VOCAB = {
     ],
   },
   'vocab-directions-navigation': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-getting-around fully subsumes it: all 20 items here carry
+    // `directions`. Of its 2 includeItems cross-references (ホーム/platform
+    // and まっすぐ/straight, both from Materials — Stations), neither
+    // carried `directions` yet - tagged both directly rather than let them
+    // quietly drop out of Getting around's pool when this tile retires
+    // (they're still fully covered by `stations` too, so nothing was ever
+    // truly at risk of being lost, just of not showing up in this
+    // specific view). Data stays exactly where it is, only the standalone
+    // tile goes away.
+    standaloneCard: false,
     label: 'Directions and navigation',
     chars: 'ひだり みぎ まっすぐ…',
     includeItems: [
@@ -3624,7 +4140,7 @@ const VOCAB = {
   // nothing here is only findable through this specific category. `items`
   // untouched, still the physical home for these words.
   'vocab-emergency-survival': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
     standaloneCard: false,
     label: 'Emergency and survival',
@@ -3663,7 +4179,7 @@ const VOCAB = {
   // tiles would've gained a purple border they've never had) if reused
   // as-is from getThemePool's version of this same query logic.
   'vocab-weather': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
     label: 'Weather',
     chars: 'あめ ゆき あつい…',
@@ -3681,8 +4197,15 @@ const VOCAB = {
     ],
   },
   'vocab-signage-warnings': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-signage-combined fully subsumes it: all 11 items here carry
+    // `signage` (wholesale-tagged), and Materials-shops' 16 signage-flavoured
+    // items (4 originally + 12 sorted out of the "neither shopping nor
+    // signage" leftover pile the same day) are covered too. Data stays
+    // exactly where it is, only the standalone tile goes away.
+    standaloneCard: false,
     label: 'Signage and warnings',
     chars: 'きんえん おす ちゅうい…',
     items: [
@@ -3708,7 +4231,7 @@ const VOCAB = {
   // that Greetings, Money and shopping, Directions and navigation, and
   // Emergency and survival don't already cover.
   'vocab-tourist-phrases': {
-    level: 'trip',
+    level: 'untaught',
     hasReference: true,
     label: 'Polite tourist phrases',
     chars: 'かんぱい おげんきですか…',
@@ -3745,8 +4268,16 @@ const VOCAB = {
   // background that can only help memory, not something to gate behind
   // getting the question right.
   'vocab-materials-stations': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-stations-combined fully subsumes it (all 89 items here carry
+    // the `stations` tag, verified in code before retiring, zero gaps) and
+    // adds the station-specific words from Directions and navigation and
+    // trip-prep on top. Data stays exactly where it is - every tag scan and
+    // includeItems reference still finds it - only the standalone tile
+    // goes away. See "Stations & trains" in THEMES for the replacement.
+    standaloneCard: false,
     label: 'Materials — Stations & trains',
     chars: 'インターホン 駅事務室 連絡用…',
     items: [
@@ -3762,7 +4293,7 @@ const VOCAB = {
       {jp:'改札', romaji:'kaisatsu', en:'ticket gate', tags:['stations','untaught','encountered'], source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'改',reading:'kai'},{char:'札',reading:'satsu'}]},
       {jp:'お廻り下さい', romaji:'o-mawari kudasai', en:'please go around / detour', tags:['stations','untaught','encountered'], altForm:'お回りください (more common modern spelling)', seenAs:'車いすをご利用のお客様は西口改札へお廻り下さい。- full notice: wheelchair users please go around to the west exit gate', source:{location:'Kojiya Station (Keikyu)', date:'2026-08-08', file:'PXL_20260807_233755061.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'廻',reading:'mawa'},{char:'下',reading:'kuda'}]},
       {jp:'〜階ホームです', romaji:'~-kai hoomu desu', en:'(this) is the ~ floor platform', tags:['stations','untaught','encountered'], seenAs:'ここは3階ホームです - as shown on the sign: this is the 3rd floor platform', source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Contains a placeholder or symbol with no fixed reading of its own'},
-      {jp:'ホーム', romaji:'hoomu', en:'platform (train)', tags:['stations','untaught','encountered'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'ホーム', romaji:'hoomu', en:'platform (train)', tags:['stations','untaught','encountered','directions'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10'},
       {jp:'方面', romaji:'houmen', en:'bound for / direction', tags:['stations','untaught','encountered'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'方',reading:'hou'},{char:'面',reading:'men'}]},
       {jp:'〜方面への列車', romaji:'~ houmen e no ressha', en:'train bound for ~', tags:['stations','untaught','encountered'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Contains a placeholder or symbol with no fixed reading of its own'},
       {jp:'列車', romaji:'ressha', en:'train', tags:['stations','untaught','encountered'], source:{location:'Keikyu Kamata Station', date:'2026-08-08', file:'PXL_20260808_081130279.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Follows a regular sound-doubling rule not built yet - not irregular, just not modelled'},
@@ -3794,7 +4325,7 @@ const VOCAB = {
       {jp:'感動', romaji:'kandou', en:'deeply moved / inspiration', tags:['stations','untaught','encountered'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'感',reading:'kan'},{char:'動',reading:'dou'}]},
       {jp:'届ける', romaji:'todokeru', en:'to deliver', tags:['stations','untaught','encountered'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'届',reading:'todo'}]},
       {jp:'まじめ', romaji:'majime', en:'serious / sincere / diligent', tags:['stations','untaught','encountered'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'まっすぐ', romaji:'massugu', en:'straight / straightforward', tags:['stations','untaught','encountered'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'まっすぐ', romaji:'massugu', en:'straight / straightforward', tags:['stations','untaught','encountered','directions'], source:{location:'Akihabara Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_110228284.jpg'}, dateAdded:'2026-08-10'},
       {jp:'自由席', romaji:'jiyuuseki', en:'non-reserved seat', tags:['stations','untaught','encountered'], source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'自',reading:'ji'},{char:'由',reading:'yuu'},{char:'席',reading:'seki'}]},
       {jp:'乗車口', romaji:'jousha-guchi', en:'boarding entrance', tags:['stations','untaught','encountered'], source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'乗',reading:'jou'},{char:'車',reading:'sha'},{char:'口',reading:'guchi'}]},
       {jp:'号車', romaji:'gousha', en:'train car number', tags:['stations','untaught','encountered'], source:{location:'Sapporo Station', date:'2026-08-10', file:'PXL_20260810_013928238.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'号',reading:'gou'},{char:'車',reading:'sha'}]},
@@ -3851,13 +4382,25 @@ const VOCAB = {
     ],
   },
   'vocab-materials-airport': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
-    label: 'Materials — Airport & flights',
+    // tagQuery (2026-08-31) - FLIP PILOT style, same reasoning as Hotel:
+    // Appliances above: nothing to combine with, so this keeps its own
+    // tile, just tag-scan-sourced now. All 18 items already carried
+    // `airport` wholesale. This replaces the old includeItems reference to
+    // にもつ (vocab-accommodation, "luggage") - that mechanism doesn't
+    // survive a tagQuery flip (resolveVocabCategory's tagQuery branch
+    // returns before ever checking includeItems, so leaving both in place
+    // would have silently dropped にもつ from this tile). Tagged にもつ
+    // `airport` directly instead, kept alongside its native `accommodation`
+    // tag rather than replaced by it - unlike よやく on vocab-materials-
+    // street (see that comment), luggage genuinely is dual-relevant: it
+    // matters at check-in/security as much as at a hotel, so both tags
+    // earn their place here rather than one being a compromise for the
+    // other.
+    tagQuery: 'airport',
+    label: 'Airport & flights',
     chars: '先発 定刻 共同運航便…',
-    includeItems: [
-      { cat: 'vocab-accommodation', romaji: 'nimotsu' },
-    ],
     items: [
       {jp:'先発', romaji:'senpatsu', en:'departing first / first (flight)', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'先',reading:'sen'}, {char:'発',reading:'patsu'}]},
       {jp:'定刻', romaji:'teikoku', en:'on schedule / on time', tags:['airport','untaught','encountered'], source:{location:'Haneda Airport', date:'2026-08-09', file:'PXL_20260809_015726482.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'定',reading:'tei'},{char:'刻',reading:'koku'}]},
@@ -3882,8 +4425,13 @@ const VOCAB = {
     ],
   },
   'vocab-materials-restaurants-food': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-food-drink-combined fully subsumes it (all 141 items here carry
+    // `food-drink`, verified with zero gaps). Data stays exactly where it
+    // is, only the standalone tile goes away.
+    standaloneCard: false,
     label: 'Materials — Restaurants: Food & menu',
     chars: '最強 油そば 秘伝…',
     items: [
@@ -4041,8 +4589,14 @@ const VOCAB = {
     ],
   },
   'vocab-materials-restaurants-ops': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-food-drink-combined and the new theme-service-ops between them
+    // fully subsume it: all 73 items here carry `food-drink` or
+    // `service-ops` (verified with zero gaps). Data stays exactly where it
+    // is, only the standalone tile goes away.
+    standaloneCard: false,
     label: 'Materials — Restaurants: Ordering & policy',
     chars: '税込 メニュー キンキン…',
     items: [
@@ -4128,8 +4682,15 @@ const VOCAB = {
     ],
   },
   'vocab-materials-shops': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-shopping-combined and theme-signage-combined between them fully
+    // subsume it: all 70 items here carry `shopping` or `signage` (the
+    // final 12 - parking/pets/crows/notices - were tagged `signage` this
+    // same day to close the gap). Data stays exactly where it is, only the
+    // standalone tile goes away.
+    standaloneCard: false,
     label: 'Materials — Shops & everyday purchases',
     chars: '生活家電 テレビ オーディオ…',
     includeItems: [
@@ -4149,7 +4710,7 @@ const VOCAB = {
       // materials dedup rule).
       {jp:'修理受付', romaji:'shuuri uketsuke', en:'repair reception desk', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'修',reading:'shuu'},{char:'理',reading:'ri'},{char:'受',reading:'uke'},{char:'付',reading:'tsuke'}]},
       {jp:'お客様案内窓口', romaji:'okyakusama annai madoguchi', en:'customer information counter', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'One of this word\'s kanji doesn\'t have a recorded reading yet'},
-      {jp:'駐車場', romaji:'chuushajou', en:'parking lot', tags:['shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'駐',reading:'chuu'},{char:'車',reading:'sha'},{char:'場',reading:'jou'}]},
+      {jp:'駐車場', romaji:'chuushajou', en:'parking lot', tags:['shops','untaught','encountered','signage'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'駐',reading:'chuu'},{char:'車',reading:'sha'},{char:'場',reading:'jou'}]},
       {jp:'現在フロア', romaji:'genzai furoa', en:'current floor ("you are here")', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'One of this word\'s kanji doesn\'t have a recorded reading yet'},
       {jp:'ダイソー', romaji:'Daisou', en:'Daiso (100-yen shop brand)', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
       {jp:'リラクゼーション', romaji:'rirakuzeeshon', en:'relaxation', tags:['shopping','shops','untaught','encountered'], source:{location:'Akihabara (Yodobashi Akiba)', date:'2026-08-08', file:'PXL_20260808_040406586.jpg'}, dateAdded:'2026-08-10'},
@@ -4172,7 +4733,7 @@ const VOCAB = {
       {jp:'おつり', romaji:'otsuri', en:'change (money)', tags:['shopping','shops','untaught','encountered'], altForm:'お釣り (kanji form)', source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10'},
       {jp:'返却', romaji:'henkyaku', en:'return (an item)', tags:['shopping','shops','untaught','encountered'], source:{location:'Shinagawa Station (JR platform)', date:'2026-08-08', file:'PXL_20260808_082750191.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'返',reading:'hen'},{char:'却',reading:'kyaku'}]},
       {jp:'まいばすけっと', romaji:'maibasuketto', en:'"My Basket" (discount supermarket chain)', tags:['shopping','shops','untaught','encountered'], seenAs:'brand name written entirely in hiragana - good reading practice', source:{location:'Kanda', date:'2026-08-08', file:'PXL_20260808_085728020.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'道民', romaji:'doumin', en:'Hokkaido resident', tags:['shops','untaught','encountered'], seenAs:'prefecture-resident pattern, cf. 都民 = Tokyo resident', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'道',reading:'dou'},{char:'民',reading:'min'}]},
+      {jp:'道民', romaji:'doumin', en:'Hokkaido resident', tags:['shops','untaught','encountered','signage'], seenAs:'prefecture-resident pattern, cf. 都民 = Tokyo resident', source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'道',reading:'dou'},{char:'民',reading:'min'}]},
       {jp:'ポイント', romaji:'pointo', en:'points (loyalty points)', tags:['shopping','shops','untaught','encountered','service-ops'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10'},
       {jp:'使えます', romaji:'tsukaemasu', en:'can be used', tags:['shopping','shops','untaught','encountered'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'使',reading:'tsuka'}]},
       {jp:'取扱店舗', romaji:'toriatsukai tenpo', en:'participating stores', tags:['shopping','shops','untaught','encountered'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'取',reading:'tori'},{char:'扱',reading:'atsukai'},{char:'店',reading:'ten'},{char:'舗',reading:'po'}]},
@@ -4183,11 +4744,11 @@ const VOCAB = {
       {jp:'増量中', romaji:'zouryouchuu', en:'quantity increased (limited time)', tags:['shopping','shops','untaught','encountered'], source:{location:'Sapporo', date:'2026-08-09', file:'PXL_20260809_061147225.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'増',reading:'zou'},{char:'量',reading:'ryou'},{char:'中',reading:'chuu'}]},
       {jp:'持込品', romaji:'mochikomihin', en:'items brought in (from outside)', tags:['signage','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
       {jp:'飲食', romaji:'inshoku', en:'eating and drinking / food & beverage', tags:['food-drink','shops','untaught','encountered','food-type'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'飲',reading:'in'},{char:'食',reading:'shoku'}]},
-      {jp:'固く', romaji:'kataku', en:'strictly / firmly', tags:['shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'固',reading:'kata'}]},
+      {jp:'固く', romaji:'kataku', en:'strictly / firmly', tags:['shops','untaught','encountered','signage'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'固',reading:'kata'}]},
       {jp:'お断り', romaji:'okotowari', en:'to refuse / decline', tags:['signage','shops','untaught','encountered'], seenAs:'勉強等の長時間のご利用はお断り致します - long-term use for studying etc. is not permitted (seat-squatting notice)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'断',reading:'kotowa'}]},
-      {jp:'長時間', romaji:'choujikan', en:'long time / extended period', tags:['shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'長',reading:'chou'},{char:'時',reading:'ji'},{char:'間',reading:'kan'}]},
-      {jp:'勉強', romaji:'benkyou', en:'studying', tags:['shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'勉',reading:'ben'},{char:'強',reading:'kyou'}]},
-      {jp:'給電', romaji:'kyuuden', en:'power supply', tags:['shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'給',reading:'kyuu'},{char:'電',reading:'den'}]},
+      {jp:'長時間', romaji:'choujikan', en:'long time / extended period', tags:['shops','untaught','encountered','signage'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'長',reading:'chou'},{char:'時',reading:'ji'},{char:'間',reading:'kan'}]},
+      {jp:'勉強', romaji:'benkyou', en:'studying', tags:['shops','untaught','encountered','signage'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'勉',reading:'ben'},{char:'強',reading:'kyou'}]},
+      {jp:'給電', romaji:'kyuuden', en:'power supply', tags:['shops','untaught','encountered','signage'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_111435576.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'給',reading:'kyuu'},{char:'電',reading:'den'}]},
       {jp:'オリジナルチキン', romaji:'orijinaru chikin', en:'original chicken (KFC signature product)', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お買上', romaji:'okaiage', en:'purchase (polite)', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
       {jp:'合計', romaji:'goukei', en:'total', tags:['shopping','shops','untaught','encountered','service-ops'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'合',reading:'gou'},{char:'計',reading:'kei'}]},
@@ -4199,23 +4760,23 @@ const VOCAB = {
       {jp:'領収証', romaji:'ryoushuushou', en:'receipt / proof of payment', tags:['shopping','shops','untaught','encountered','service-ops'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112215107.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'領',reading:'ryou'},{char:'収',reading:'shuu'},{char:'証',reading:'shou'}]},
       {jp:'トレー', romaji:'toree', en:'tray', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       {jp:'バスケット', romaji:'basuketto', en:'basket', tags:['shopping','shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'こちら', romaji:'kochira', en:'here / this way', tags:['shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'こちら', romaji:'kochira', en:'here / this way', tags:['shops','untaught','encountered','signage'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10'},
       {jp:'お返しください', romaji:'okaeshi kudasai', en:'please return (an item)', tags:['shopping','shops','untaught','encountered'], seenAs:'トレーとバスケットは、こちらへお返しください。- please return trays and baskets here (sign)', source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
-      {jp:'捨てる', romaji:'suteru', en:'to throw away / discard', tags:['shops','untaught','encountered'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'捨',reading:'su'}]},
+      {jp:'捨てる', romaji:'suteru', en:'to throw away / discard', tags:['shops','untaught','encountered','signage'], source:{location:'Apia Sapporo (KFC)', date:'2026-08-09', file:'PXL_20260809_112853677.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'捨',reading:'su'}]},
       // 営業時間 removed - duplicate of the Materials — Restaurants: Ops
       // entry (earlier date, dedup rule for two Materials copies).
       {jp:'夏季無休', romaji:'kaki mukyuu', en:'open all summer, no holidays', tags:['shopping','places','shops','untaught','encountered','service-ops'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'夏',reading:'ka'},{char:'季',reading:'ki'},{char:'無',reading:'mu'},{char:'休',reading:'kyuu'}]},
-      {jp:'ペット', romaji:'petto', en:'pet', tags:['shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
-      {jp:'ご同伴', romaji:'go-douhan', en:'accompanying / bringing along', tags:['shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReadingBlocked: 'One of this word\'s kanji doesn\'t have a recorded reading yet'},
+      {jp:'ペット', romaji:'petto', en:'pet', tags:['shops','untaught','encountered','signage'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'ご同伴', romaji:'go-douhan', en:'accompanying / bringing along', tags:['shops','untaught','encountered','signage'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReadingBlocked: 'One of this word\'s kanji doesn\'t have a recorded reading yet'},
       // ご遠慮ください removed - duplicate of the Materials — Hotel:
       // Facilities entry (earlier date, dedup rule for two Materials
       // copies).
       {jp:'補助犬', romaji:'hojoken', en:'service / assistance dog', tags:['signage','shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'補',reading:'ho'},{char:'助',reading:'jo'},{char:'犬',reading:'ken'}]},
-      {jp:'カラス', romaji:'karasu', en:'crow', tags:['shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'カラス', romaji:'karasu', en:'crow', tags:['shops','untaught','encountered','signage'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11'},
       // 注意 moved to vocab-signage-warnings (Trip-canonical copy) - see
       // includeItems below.
       {jp:'商品', romaji:'shouhin', en:'product / merchandise', tags:['shopping','shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'商',reading:'shou'},{char:'品',reading:'hin'}]},
-      {jp:'可能性', romaji:'kanousei', en:'possibility', tags:['shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'可',reading:'ka'},{char:'能',reading:'nou'},{char:'性',reading:'sei'}]},
+      {jp:'可能性', romaji:'kanousei', en:'possibility', tags:['shops','untaught','encountered','signage'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'可',reading:'ka'},{char:'能',reading:'nou'},{char:'性',reading:'sei'}]},
       {jp:'ご協力', romaji:'go-kyouryoku', en:'cooperation', tags:['signage','shops','untaught','encountered'], source:{location:'Hokkaido (roadside melon stand)', date:'2026-08-11', file:'PXL_20260810_232600071.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'協',reading:'kyou'},{char:'力',reading:'ryoku'}]},
       {jp:'朝もぎ', romaji:'asa-mogi', en:'morning-picked', tags:['shopping','shops','untaught','encountered'], source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'朝',reading:'asa'}]},
       {jp:'ゆでたて', romaji:'yudetate', en:'freshly boiled', tags:['shopping','shops','untaught','encountered'], source:{location:'Hokkaido (roadside corn stand)', date:'2026-08-11', file:'PXL_20260811_011059135.jpg'}, dateAdded:'2026-08-11'},
@@ -4223,8 +4784,18 @@ const VOCAB = {
     ],
   },
   'vocab-materials-entertainment': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-entertainment-combined fully subsumes it: 68 items total, 39
+    // carry `entertainment` directly, 10 already carried `emergency` (a
+    // heatstroke-warning block, already drillable via theme-emergency-
+    // combined), and the other 19 (a self-introduction/profile-card set
+    // plus a handful of civic/street odds and ends) got split into
+    // `profile-words`/`stations`/`street`/`places` the same day - see the
+    // THEMES entries for the full breakdown. Every item has somewhere to
+    // be drilled from; nothing lost.
+    standaloneCard: false,
     label: 'Materials — Entertainment & sightseeing',
     chars: 'パチンコ 全台 計数機…',
     items: [
@@ -4240,7 +4811,7 @@ const VOCAB = {
       {jp:'スロット', romaji:'surotto', en:'slot machine', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Akihabara', date:'2026-08-08', file:'PXL_20260808_092729915.jpg'}, dateAdded:'2026-08-10'},
       {jp:'夏まつり', romaji:'natsu matsuri', en:'summer festival', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'夏',reading:'natsu'}]},
       {jp:'協賛', romaji:'kyousan', en:'sponsorship', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'協',reading:'kyou'},{char:'賛',reading:'san'}]},
-      {jp:'企業', romaji:'kigyou', en:'company / enterprise', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'企',reading:'ki'},{char:'業',reading:'gyou'}]},
+      {jp:'企業', romaji:'kigyou', en:'company / enterprise', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'企',reading:'ki'},{char:'業',reading:'gyou'}]},
       {jp:'応援', romaji:'ouen', en:'to support / cheer for', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'応',reading:'ou'},{char:'援',reading:'en'}]},
       {jp:'実行委員会', romaji:'jikkou iinkai', en:'executive / organizing committee', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo (Odori Park)', date:'2026-08-09', file:'PXL_20260809_060005712.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Follows a regular sound-doubling rule not built yet - not irregular, just not modelled'},
       {jp:'エントランス', romaji:'entoransu', en:'entrance', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}, dateAdded:'2026-08-10'},
@@ -4249,19 +4820,19 @@ const VOCAB = {
       {jp:'入場券', romaji:'nyuujouken', en:'admission ticket', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'入',reading:'nyuu'},{char:'場',reading:'jou'},{char:'券',reading:'ken'}]},
       {jp:'売場', romaji:'uriba', en:'sales counter', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'売',reading:'uri'},{char:'場',reading:'ba'}]},
       {jp:'業務優先', romaji:'gyoumu yuusen', en:'staff duties take priority', tags:['entertainment','materials-entertainment','untaught','encountered','service-ops'], source:{location:'Sapporo TV Tower', date:'2026-08-09', file:'PXL_20260809_082903458.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'業',reading:'gyou'},{char:'務',reading:'mu'},{char:'優',reading:'yuu'},{char:'先',reading:'sen'}]},
-      {jp:'名前', romaji:'namae', en:'name', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
-      {jp:'生年月日', romaji:'seinengappi', en:'date of birth', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
-      {jp:'身長', romaji:'shinchou', en:'height', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'身',reading:'shin'},{char:'長',reading:'chou'}]},
-      {jp:'体重', romaji:'taijuu', en:'weight', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'体',reading:'tai'},{char:'重',reading:'juu'}]},
-      {jp:'趣味', romaji:'shumi', en:'hobby', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'趣',reading:'shu'},{char:'味',reading:'mi'}]},
-      {jp:'特技', romaji:'tokugi', en:'special skill', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'特',reading:'toku'},{char:'技',reading:'gi'}]},
-      {jp:'長所', romaji:'chousho', en:'strong point / merit', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'長',reading:'chou'},{char:'所',reading:'sho'}]},
-      {jp:'チャームポイント', romaji:'chaamu pointo', en:'charm point (appealing feature)', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
-      {jp:'好きな食べ物', romaji:'suki na tabemono', en:'favorite food', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
-      {jp:'好きな言葉', romaji:'suki na kotoba', en:'favorite word / motto', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
-      {jp:'好きな色', romaji:'suki na iro', en:'favorite color', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
-      {jp:'大切なもの', romaji:'taisetsu na mono', en:'important thing(s)', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'大',reading:'tai'}, {char:'切',reading:'setsu'}]},
-      {jp:'デビュー', romaji:'debyuu', en:'debut', tags:['materials-entertainment','untaught','encountered'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'名前', romaji:'namae', en:'name', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
+      {jp:'生年月日', romaji:'seinengappi', en:'date of birth', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'Irregular reading - doesn\'t break into standard sounds, worth memorising as a whole word'},
+      {jp:'身長', romaji:'shinchou', en:'height', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'身',reading:'shin'},{char:'長',reading:'chou'}]},
+      {jp:'体重', romaji:'taijuu', en:'weight', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'体',reading:'tai'},{char:'重',reading:'juu'}]},
+      {jp:'趣味', romaji:'shumi', en:'hobby', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'趣',reading:'shu'},{char:'味',reading:'mi'}]},
+      {jp:'特技', romaji:'tokugi', en:'special skill', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'特',reading:'toku'},{char:'技',reading:'gi'}]},
+      {jp:'長所', romaji:'chousho', en:'strong point / merit', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'長',reading:'chou'},{char:'所',reading:'sho'}]},
+      {jp:'チャームポイント', romaji:'chaamu pointo', en:'charm point (appealing feature)', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
+      {jp:'好きな食べ物', romaji:'suki na tabemono', en:'favorite food', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
+      {jp:'好きな言葉', romaji:'suki na kotoba', en:'favorite word / motto', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
+      {jp:'好きな色', romaji:'suki na iro', en:'favorite color', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReadingBlocked: 'This word\'s structure is more complex than this tool currently handles'},
+      {jp:'大切なもの', romaji:'taisetsu na mono', en:'important thing(s)', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'大',reading:'tai'}, {char:'切',reading:'setsu'}]},
+      {jp:'デビュー', romaji:'debyuu', en:'debut', tags:['materials-entertainment','untaught','encountered','profile-words'], source:{location:'Sapporo TV Tower (gift shop)', date:'2026-08-09', file:'PXL_20260809_084052739.jpg'}, dateAdded:'2026-08-10'},
       // 地獄谷 (jigokudani) - the place name itself is deliberately left out
       // here, same call as the lake/volcano names skipped earlier: real, but
       // only useful locally, not generalizable vocabulary. 温泉 (the actual
@@ -4271,8 +4842,8 @@ const VOCAB = {
       {jp:'名勝地', romaji:'meishouchi', en:'scenic spot', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'名',reading:'mei'},{char:'勝',reading:'shou'},{char:'地',reading:'chi'}]},
       {jp:'景観', romaji:'keikan', en:'scenery / view', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'景',reading:'kei'},{char:'観',reading:'kan'}]},
       {jp:'国立公園', romaji:'kokuritsu kouen', en:'national park', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Noboribetsu Onsen (Oyunuma quiz trail)', date:'2026-08-12', file:'PXL_20260812_004218905.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'国',reading:'koku'},{char:'立',reading:'ritsu'},{char:'公',reading:'kou'},{char:'園',reading:'en'}]},
-      {jp:'停止線', romaji:'teishisen', en:'stop line (road marking)', tags:['materials-entertainment','untaught','encountered'], source:{location:'Muroran (roadside, seen from bus)', date:'2026-08-12', file:'PXL_20260812_013049380.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'停',reading:'tei'},{char:'止',reading:'shi'},{char:'線',reading:'sen'}]},
-      {jp:'開発局', romaji:'kaihatsukyoku', en:'development bureau (road authority)', tags:['materials-entertainment','untaught','encountered'], source:{location:'Muroran (roadside, seen from bus)', date:'2026-08-12', file:'PXL_20260812_013049380.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'開',reading:'kai'}, {char:'発',reading:'hatsu'}, {char:'局',reading:'kyoku'}]},
+      {jp:'停止線', romaji:'teishisen', en:'stop line (road marking)', tags:['materials-entertainment','untaught','encountered','street'], source:{location:'Muroran (roadside, seen from bus)', date:'2026-08-12', file:'PXL_20260812_013049380.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'停',reading:'tei'},{char:'止',reading:'shi'},{char:'線',reading:'sen'}]},
+      {jp:'開発局', romaji:'kaihatsukyoku', en:'development bureau (road authority)', tags:['materials-entertainment','untaught','encountered','street'], source:{location:'Muroran (roadside, seen from bus)', date:'2026-08-12', file:'PXL_20260812_013049380.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'開',reading:'kai'}, {char:'発',reading:'hatsu'}, {char:'局',reading:'kyoku'}]},
       {jp:'動物', romaji:'doubutsu', en:'animal', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'動',reading:'dou'},{char:'物',reading:'butsu'}]},
       {jp:'シカ', romaji:'shika', en:'deer', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15'},
       {jp:'住んでいます', romaji:'sundeimasu', en:'lives / inhabits (polite)', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Mt. Usu (Toyako), Hokkaido', date:'2026-08-12', file:'PXL_20260812_042805070.jpg'}, dateAdded:'2026-08-15', kanjiReading: [{char:'住',reading:'su'}]},
@@ -4297,8 +4868,8 @@ const VOCAB = {
       // 公園 from this photo was skipped - it's just the kanji form of the
       // existing こうえん (Level 1), folded in as that entry's altForm
       // instead of duplicated here.
-      {jp:'市役所', romaji:'shiyakusho', en:'city hall', tags:['materials-entertainment','untaught','encountered'], source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17', kanjiReading: [{char:'市',reading:'shi'},{char:'役',reading:'yaku'},{char:'所',reading:'sho'}]},
-      {jp:'鉄道駅', romaji:'tetsudou eki', en:'railway station', tags:['materials-entertainment','untaught','encountered'], source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17', kanjiReading: [{char:'鉄',reading:'tetsu'},{char:'道',reading:'dou'},{char:'駅',reading:'eki'}]},
+      {jp:'市役所', romaji:'shiyakusho', en:'city hall', tags:['materials-entertainment','untaught','encountered','places'], source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17', kanjiReading: [{char:'市',reading:'shi'},{char:'役',reading:'yaku'},{char:'所',reading:'sho'}]},
+      {jp:'鉄道駅', romaji:'tetsudou eki', en:'railway station', tags:['materials-entertainment','untaught','encountered','stations'], source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17', kanjiReading: [{char:'鉄',reading:'tetsu'},{char:'道',reading:'dou'},{char:'駅',reading:'eki'}]},
       {jp:'史跡', romaji:'shiseki', en:'historical site', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17', kanjiReading: [{char:'史',reading:'shi'},{char:'跡',reading:'seki'}]},
       {jp:'ようこそ', romaji:'youkoso', en:'welcome', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Tondabayashi, Osaka Prefecture', date:'2026-08-17', file:'PXL_20260817_024719225.jpg'}, dateAdded:'2026-08-17'},
       {jp:'庭園', romaji:'teien', en:'garden', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21', kanjiReading: [{char:'庭',reading:'tei'},{char:'園',reading:'en'}]},
@@ -4306,15 +4877,28 @@ const VOCAB = {
       {jp:'別邸', romaji:'bettei', en:'villa / secondary residence', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21', kanjiReadingBlocked: 'Follows a regular sound-doubling rule not built yet - not irregular, just not modelled'},
       {jp:'避難', romaji:'hinan', en:'evacuation / taking refuge', tags:['emergency','materials-entertainment','untaught','encountered'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21', kanjiReading: [{char:'避',reading:'hi'},{char:'難',reading:'nan'}]},
       {jp:'埋葬', romaji:'maisou', en:'burial / interment', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21', kanjiReading: [{char:'埋',reading:'mai'},{char:'葬',reading:'sou'}]},
-      {jp:'名称', romaji:'meishou', en:'name / designation', tags:['materials-entertainment','untaught','encountered'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21', kanjiReading: [{char:'名',reading:'mei'},{char:'称',reading:'shou'}]},
+      {jp:'名称', romaji:'meishou', en:'name / designation', tags:['materials-entertainment','untaught','encountered','places'], source:{location:'Shukkeien Garden, Hiroshima', date:'2026-08-19', file:'PXL_20260819_025835737.jpg'}, dateAdded:'2026-08-21', kanjiReading: [{char:'名',reading:'mei'},{char:'称',reading:'shou'}]},
       {jp:'トンビ', romaji:'tonbi', en:'black kite (bird of prey)', tags:['entertainment','materials-entertainment','untaught','encountered'], source:{location:'Kyoto Station area', date:'2026-08-20', file:'PXL_20260820_050611881.jpg'}, dateAdded:'2026-08-21'},
       {jp:'狙っています', romaji:'neratteimasu', en:'is aiming / targeting', tags:['entertainment','materials-entertainment','untaught','encountered'], seenAs:'トンビにご注意下さい。食べ物を狙っています。- please be careful of black kites, they\'re after your food', source:{location:'Kyoto Station area', date:'2026-08-20', file:'PXL_20260820_050611881.jpg'}, dateAdded:'2026-08-21', kanjiReading: [{char:'狙',reading:'nera'}]},
     ],
   },
   'vocab-materials-hotel-appliances': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
-    label: 'Materials — Hotel: Appliances & machines',
+    // tagQuery (2026-08-31) - FLIP PILOT style (see vocab-weather, the
+    // first category converted this way on 2026-08-26), not a promote-and-
+    // retire: this category has nothing to combine with (no Trip
+    // counterpart, no strays elsewhere carrying `appliances`), so unlike
+    // everything promoted earlier today it keeps its own tile in this exact
+    // spot, just sourced by tag scan instead of reading `items` directly.
+    // All 113 items already carried `appliances` wholesale, so this is a
+    // zero-visible-change conversion - verified byte-identical to the
+    // pre-flip tile. showApplianceDeviceReference() still reads
+    // VOCAB['vocab-materials-hotel-appliances'].items directly and is
+    // unaffected - tagQuery never mutates or removes the physical items
+    // array, it only changes how the tile's own display list is built.
+    tagQuery: 'appliances',
+    label: 'Hotel appliances & machines',
     chars: '冷房 設定温度 運転…',
     items: [
       {jp:'冷房', romaji:'reibou', en:'air conditioning / cooling mode', tags:['appliances','untaught','encountered'], devices:['ac'], source:{location:'JR Inn Sapporo (hotel room)', date:'2026-08-10', file:'PXL_20260809_234205137.jpg'}, dateAdded:'2026-08-10', kanjiReading: [{char:'冷',reading:'rei'},{char:'房',reading:'bou'}]},
@@ -4333,7 +4917,7 @@ const VOCAB = {
       {jp:'キャッシュレス', romaji:'kyasshuresu', en:'cashless', tags:['appliances','untaught','encountered'], devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
       {jp:'決済', romaji:'kessai', en:'payment / settlement', tags:['appliances','untaught','encountered','service-ops'], devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11', kanjiReadingBlocked: 'Follows a regular sound-doubling rule not built yet - not irregular, just not modelled'},
       {jp:'各種', romaji:'kakushu', en:'various types / each kind', tags:['appliances','untaught','encountered'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'各',reading:'kaku'},{char:'種',reading:'shu'}]},
-      {jp:'クレジットカード', romaji:'kurejitto kaado', en:'credit card', tags:['appliances','untaught','encountered'], devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
+      {jp:'クレジットカード', romaji:'kurejitto kaado', en:'credit card', tags:['appliances','untaught','encountered','shopping'], devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11'},
       {jp:'コード決済', romaji:'koodo kessai', en:'QR code payment', tags:['appliances','untaught','encountered','service-ops'], devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054148652.jpg'}, dateAdded:'2026-08-11', kanjiReadingBlocked: 'Follows a regular sound-doubling rule not built yet - not irregular, just not modelled'},
       {jp:'洗濯', romaji:'sentaku', en:'laundry / washing', tags:['appliances','untaught','encountered'], devices:['laundry'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'洗',reading:'sen'},{char:'濯',reading:'taku'}]},
       {jp:'順序', romaji:'junjo', en:'order / procedure', tags:['appliances','untaught','encountered'], source:{location:'JR Inn Sapporo (Kita 2-jo)', date:'2026-08-11', file:'PXL_20260811_054435165.jpg'}, dateAdded:'2026-08-11', kanjiReading: [{char:'順',reading:'jun'},{char:'序',reading:'jo'}]},
@@ -4445,8 +5029,18 @@ const VOCAB = {
     ],
   },
   'vocab-materials-hotel-facilities': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile now that
+    // theme-accommodation-combined fully subsumes it: all 76 items here
+    // carry `accommodation` or `food-drink` (73 accommodation, the other 3 -
+    // いか焼き, うまいもん, ご当地 - a hotel-lobby local-food advert, homed
+    // under food-drink instead), verified with zero gaps. This was flagged
+    // as ready-but-not-done on 2026-08-31 (a stale comment on
+    // theme-accommodation-combined had wrongly claimed it was already
+    // retired); doing the actual retirement now closes that out. Data stays
+    // exactly where it is, only the standalone tile goes away.
+    standaloneCard: false,
     label: 'Materials — Hotel: Facilities & stay',
     chars: '朝食 混雑 提供…',
     items: [
@@ -4531,13 +5125,22 @@ const VOCAB = {
     ],
   },
   'vocab-materials-street': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
-    label: 'Materials — Street & neighbourhood',
+    // tagQuery (2026-08-31) - FLIP PILOT style, same reasoning as Hotel:
+    // Appliances/Airport above. All 21 items already carried `street`
+    // wholesale. The old includeItems reference to よやく (vocab-
+    // accommodation, "reservation") is NOT replicated here - a first pass
+    // tagged よやく `street` directly to preserve it, but that was the
+    // wrong fix: よやく already carries `accommodation` natively (it lives
+    // in vocab-accommodation) and Accommodation is a genuinely better home
+    // for it than Street ever was, so the `street` tag was dropped again
+    // the same day rather than kept as a compromise. Nothing lost - よやく
+    // is still drillable, just from Accommodation only, which is where it
+    // belongs.
+    tagQuery: 'street',
+    label: 'Street & neighbourhood',
     chars: '詩人 漂泊 想い出…',
-    includeItems: [
-      { cat: 'vocab-accommodation', romaji: 'yoyaku' },
-    ],
     // Doesn't fit stations/shops/restaurants/entertainment/airport/hotel -
     // this is for signage and notices you run into incidentally while just
     // wandering a town on foot (historical plaques, shopfronts, community
@@ -4588,8 +5191,20 @@ const VOCAB = {
   // words, but reaction/set phrases rather than question words themselves,
   // and not part of this tag.
   'vocab-reference-question-words': {
-    level: 'andrew',
+    level: 'untaught',
     hasReference: true,
+    // standaloneCard: false (2026-08-31) - retired as its own tile, but
+    // unlike every other retirement today, NOT because a new Andrew-mode
+    // card was built to replace it. Collections' "Question words" card
+    // (theme-question-words, tagQuery:'question-word') has pulled every
+    // one of these 13 items in since 2026-08-27, alongside the 4 already-
+    // taught L2 duplicates - so an Andrew-only tile showing the exact same
+    // 13 words was pure duplication of something Collections already did,
+    // not a case of Trip/Andrew content needing a new home. This is the
+    // case Andrew was describing: wherever a set overlaps with taught
+    // vocab, the Collections/Andrew overlap is expected, and the fix is to
+    // point at the one that already exists rather than duplicate it.
+    standaloneCard: false,
     label: 'Reference — Question words',
     chars: 'なに どこ いつ…',
     items: [
@@ -4682,17 +5297,22 @@ const THEMES = {
     chars: 'きます あたらしい ここ…',
     tagQuery: { any: ['verbs-l2', 'adjectives-l2', 'question-location'] },
   },
-  // level here isn't read by getThemePool - visibility for this one is
-  // wired directly on its card (theme-getting-around-card) in
-  // applyShowTripVocabVisibility, same as every other static theme card.
-  // Kept as a field anyway so it reads the same way VOCAB categories do, and
-  // is ready to use if the theme list ever becomes level-filtered generically.
-  // Converted from groups to a tagQuery OR (2026-08-27) - divider still
-  // separates Transport/Places to go/Directions. Directions' own tag came
-  // from the full-coverage baseline pass and is exclusive to that
-  // category, so no new tagging needed here either.
+  // BUG FIX (2026-08-31) - this card used to be hidden entirely unless Trip
+  // vocabulary was switched on (applyShowTripVocabVisibility), even though
+  // only its `directions` slice is actually Untaught-tier - `transport` and
+  // `places-to-go` are ordinary taught Level 2 content. getThemePool's
+  // categoryTierVisible check already drops the directions slice from the
+  // pool on its own when Untaught is off, the same mechanism theme-
+  // question-words relies on for its Untaught-tier slice - so hiding the
+  // whole card was needlessly hiding the L2 words too. `level: 'untaught'`
+  // below is not read by getThemePool (kept as a field only so this reads
+  // the same way VOCAB categories do); the card is unconditionally visible
+  // now, same as Question words. Converted from groups to a tagQuery OR
+  // (2026-08-27) - divider still separates Transport/Places to go/
+  // Directions. Directions' own tag came from the full-coverage baseline
+  // pass and is exclusive to that category, so no new tagging needed here.
   'theme-getting-around': {
-    level: 'trip',
+    level: 'untaught',
     label: 'Getting around',
     chars: 'でんしゃ ひだり きっぷ…',
     tagQuery: { any: ['transport', 'places-to-go', 'directions'] },
@@ -4718,130 +5338,164 @@ const THEMES = {
   // way) plus the 13 new ones in Reference - Question words. No level set
   // here deliberately, unlike the Trip-only Collections above: this card
   // always shows, and the pool itself grows or shrinks depending on the
-  // Andrew mode toggle (the 13 reference words live in an Andrew-tier
+  // Untaught toggle (the 13 reference words live in an Untaught-tier
   // category, so categoryTierVisible drops them from the pool the moment
-  // Andrew mode is off, same as it would drop them from their own category -
+  // Untaught is off, same as it would drop them from their own category -
   // nothing extra to wire on the card itself for that to work).
   'theme-question-words': {
     label: 'Question words',
     chars: 'なに どこ いつ…',
     tagQuery: 'question-word',
   },
-  // TEST ONLY - first real proving ground for merging Trip and Andrew via
-  // tags instead of two separate gated tiers (see the "Andrew and Trip
-  // merge into one pill" discussion). Deliberately not given a static
-  // Collections card like theme-question-words above - it's appended
-  // programmatically at the bottom of the Andrew mode list instead (see
-  // buildMatchCategoryList), below the two notes links, purely so Andrew can
-  // look at the shape of a combined category without disturbing the real
-  // Trip/Materials-Stations categories classmates and Andrew both already
-  // use day to day. Pulls from vocab-materials-stations (tagged wholesale -
-  // the whole category is genuinely stations/trains content by definition of
-  // being photographed there) plus the handful of station-specific words in
-  // Directions and navigation (ICカード, かたみちきっぷ, おうふくきっぷ,
-  // ろせんず, かいさつぐち, and the two "where is/which platform" phrases -
-  // the general direction words in that category were deliberately left
-  // untagged). If this turns out to feel right, the eventual real version
-  // would replace Materials — Stations & trains and the relevant slice of
-  // Directions and navigation outright rather than living alongside them;
-  // for now nothing is removed or retired, this is purely additive.
+  // PROMOTED FROM TEST (2026-08-31) - this was the first proving ground for
+  // merging Trip and Andrew via tags instead of two separate gated tiers; it
+  // felt right, so it's now the real, standard version rather than living
+  // alongside the categories it was tested against. Materials — Stations &
+  // trains (vocab-materials-stations, standaloneCard:false now) is fully
+  // subsumed - all 89 of its items carry `stations`, verified with zero
+  // gaps before retiring it as its own tile. Also pulls in the
+  // station-specific words in Directions and navigation (ICカード,
+  // かたみちきっぷ, おうふくきっぷ, ろせんず, かいさつぐち, the two "where
+  // is/which platform" phrases) and three from trip-prep (いりぐち, でぐち,
+  // のりかえ) - words that had no natural home under the old category model
+  // without duplication. Nothing deleted: every item still physically lives
+  // in its original category, only the standalone tiles for Materials —
+  // Stations & trains went away (data + tag scans + includeItems all
+  // unaffected by that).
   'theme-stations-combined': {
-    label: 'Stations & trains (combined test)',
+    label: 'Stations & trains',
     chars: 'ホーム きっぷ かいさつ…',
     tagQuery: 'stations',
   },
-  // TEST ONLY - second proving ground for the same Trip+Andrew tag merge,
-  // same reasoning as theme-stations-combined above. Also appended
-  // programmatically (see buildMatchCategoryList), not given a static
-  // Collections card. Pulls from vocab-food-drink (Trip, tagged wholesale)
-  // plus vocab-materials-restaurants-food and vocab-materials-restaurants-ops
-  // (Andrew, both tagged wholesale - both categories are food/drink content
-  // by definition of where they were photographed). Nothing removed or
-  // retired; purely additive, same as Stations.
+  // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
+  // combined above. Source categories vocab-materials-restaurants-food
+  // (141/141 items carry `food-drink`) and vocab-materials-restaurants-ops
+  // (73/73 carry `food-drink` or the new `service-ops`) are both retired as
+  // standalone tiles (standaloneCard:false, see VOCAB); vocab-food-drink
+  // (Trip) was already tagged wholesale. Nothing deleted - every item still
+  // physically lives in its original category.
   'theme-food-drink-combined': {
-    label: 'Food & drink (combined test)',
+    label: 'Food & drink',
     chars: 'おまかせ とりあえず メニュー…',
     tagQuery: 'food-drink',
   },
-  // TEST ONLY - third proving ground for the same Trip+Andrew tag merge,
-  // same reasoning as theme-stations-combined above. Also appended
-  // programmatically (see buildMatchCategoryList), not given a static
-  // Collections card. Pulls from vocab-money-shopping (Trip, tagged
-  // wholesale - all 16 items are genuinely shopping/transaction vocabulary)
-  // plus a hand-picked 52 of the 70 items in vocab-materials-shops (Andrew) -
-  // that category is a mixed bag like Directions and navigation was, so the
-  // 18 left untagged are general facility/policy/animal-notice words that
-  // just happened to be photographed at a shop (parking lot, pet policy,
-  // crows, studying-in-seat notices, and so on), not shopping content
-  // itself. Nothing removed or retired; purely additive, same as the other
-  // two tests.
+  // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
+  // combined above. Source category vocab-materials-shops is retired as a
+  // standalone tile (standaloneCard:false, see VOCAB) now that all 70 of
+  // its items carry `shopping` or `signage` (the last 12 - parking lot,
+  // pets, crows, studying-in-seat, and other facility/policy notices - were
+  // tagged `signage` on 2026-08-31 to close the gap); vocab-money-shopping
+  // (Trip) was already tagged wholesale. Nothing deleted.
   'theme-shopping-combined': {
-    label: 'Shopping (combined test)',
+    label: 'Shopping',
     chars: 'ねだん わりびき レシート…',
     tagQuery: 'shopping',
   },
-  // TEST ONLY - fourth proving ground for the same Trip+Andrew tag merge,
-  // same reasoning as theme-stations-combined above. Also appended
-  // programmatically (see buildMatchCategoryList), not given a static
-  // Collections card. Pulls from vocab-accommodation (Trip, tagged
-  // wholesale) plus a hand-picked 73 of the 76 items in vocab-materials-
-  // hotel-facilities (Andrew) - the 3 left untagged (いか焼き, うまいもん,
-  // ご当地) are a hotel-lobby local-food advert, topically food rather than
-  // accommodation despite being photographed in the hotel. This is also the
-  // pairing that motivated the whole tag approach: にもつ and よやく are
+  // NEW (2026-08-31) - the drilling screen for the service-ops tag carved
+  // out of the old "Ordering & policy" grouping the same day: generic
+  // shop/restaurant/business-operations vocabulary (tax, payment, staff,
+  // coupons, waste disposal) that shouldn't be siloed by which kind of
+  // premises it was photographed at. 66 items, pulled from across
+  // vocab-materials-restaurants-ops (51) and scattered single items in
+  // stations/airport/shops/entertainment/hotel-appliances/hotel-
+  // facilities/street (15) - see the SERVICE-OPS entry in FUTURE DIRECTION
+  // for the full breakdown.
+  'theme-service-ops': {
+    label: 'Service & shop operations',
+    chars: '税込 営業時間 係員…',
+    tagQuery: 'service-ops',
+  },
+  // NEW (2026-08-31) - drilling screen for the `profile-words` tag split out
+  // of Materials - Entertainment the same day: 14 words that turned out to
+  // be a self-introduction/profile-card set (name, date of birth, height,
+  // weight, hobby, special skill, strong point, charm point, favourite
+  // food/word/colour, important thing, debut, company) rather than genuine
+  // entertainment vocabulary - all 14 photographed together at the Sapporo
+  // TV Tower gift shop (likely a mascot/character profile board), plus
+  // 企業 from nearby Odori Park the same day that reads as the same set's
+  // "company/agency" field. Splitting these out is what let Materials -
+  // Entertainment retire cleanly (see theme-entertainment-combined below) -
+  // without this tag those 14 words would have been stranded with no
+  // drilling screen once Entertainment's own tile stopped showing anything
+  // not tagged `entertainment`. Label/tag name are both provisional - "self
+  // -introduction" fits the content but "profile-words" was chosen to stay
+  // neutral about whether this is a person introducing themselves or a
+  // character/mascot profile card, since the true context isn't certain.
+  'theme-profile-words': {
+    label: 'Profile & self-introduction words',
+    chars: '名前 趣味 デビュー…',
+    tagQuery: 'profile-words',
+  },
+  // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
+  // combined above: felt right, now the real version. Both vocab-
+  // accommodation (14/14 items carry `accommodation`) and vocab-materials-
+  // hotel-facilities (76/76 - 73 via `accommodation`, the other 3 - いか焼き,
+  // うまいもん, ご当地, a hotel-lobby local-food advert - via `food-drink`)
+  // are retired as standalone tiles (standaloneCard:false). The latter was
+  // briefly a case of a comment claiming a retirement that hadn't actually
+  // happened yet (an earlier draft of this comment said so; caught and
+  // corrected the same day, then the retirement itself done as a same-day
+  // follow-up rather than left dangling). This is also the pairing that
+  // motivated the whole tag approach: にもつ and よやく are
   // Trip-canonical words that physically live in vocab-accommodation but
   // get pulled into vocab-materials-airport and vocab-materials-street via
   // includeItems - under the old category model they'd have no natural home
   // under "Accommodation" at all without that wiring. Tagging vocab-
   // accommodation wholesale picks them both up automatically, no extra
-  // includeItems bookkeeping needed. Nothing removed or retired; purely
-  // additive, same as the other three tests.
+  // includeItems bookkeeping needed - still true and unaffected by today's
+  // retirement, since includeItems and tag scans both read from the
+  // category data directly, not from whether it has a standalone tile.
   'theme-accommodation-combined': {
-    label: 'Accommodation (combined test)',
+    label: 'Accommodation',
     chars: 'ホテル よやく タオル…',
     tagQuery: 'accommodation',
   },
-  // TEST ONLY - fifth proving ground for the same Trip+Andrew tag merge,
-  // same reasoning as theme-stations-combined above. Also appended
-  // programmatically (see buildMatchCategoryList), not given a static
-  // Collections card. Pulls from vocab-emergency-survival (Trip, tagged
-  // wholesale - all 16 items are genuinely emergency/safety vocabulary)
-  // plus 7 items scattered across four different Andrew categories: 事故防止
-  // in Materials - Stations, 避難 in Materials - Street, 警告 and 感電 in
-  // Materials - Hotel: Appliances & machines, and 避難経路/消火器/非常時 in
-  // Materials - Hotel: Facilities. Unlike the first four pairings, this is
-  // the first case where a word carries two topic tags at once - the three
-  // Hotel: Facilities items already carry tags:['accommodation'] and now
-  // also carry 'emergency', proving a word can belong to more than one
-  // combined pool simultaneously without duplication (it shows up correctly
-  // in both theme-accommodation-combined and this one). Nothing removed or
-  // retired; purely additive, same as the other four tests.
+  // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
+  // combined above, and needed no further data work to get here: vocab-
+  // emergency-survival already had standaloneCard:false set from
+  // 2026-08-27 (before this session), and all 16 of its items plus the 7
+  // scattered across four Andrew categories (事故防止 in Materials -
+  // Stations, 避難 in Materials - Street, 警告/感電 in Materials - Hotel:
+  // Appliances, 避難経路/消火器/非常時 in Materials - Hotel: Facilities)
+  // already carried `emergency`. A word can carry more than one topic tag
+  // at once - the three Hotel: Facilities items also carry `accommodation`
+  // and show up correctly in both combined pools. Nothing deleted.
   'theme-emergency-combined': {
-    label: 'Emergency & survival (combined test)',
+    label: 'Emergency & survival',
     chars: 'じしん けが たいふう…',
     tagQuery: 'emergency',
   },
-  // TEST ONLY - sixth proving ground for the same Trip+Andrew tag merge,
-  // same reasoning as theme-stations-combined above. Also appended
-  // programmatically (see buildMatchCategoryList), not given a static
-  // Collections card. Pulls from vocab-signage-warnings (Trip, tagged
-  // wholesale) plus 5 items scattered across Materials - Stations
-  // (かけ込み禁止, itself also tags:['stations']) and Materials - Shops
-  // (お断り, 持込品, 補助犬, ご協力). Materials - Entertainment and Materials
-  // - Airport were tagged in the same pass as this ('entertainment' and
-  // 'airport' respectively) but don't get combined test cards - neither has
-  // a Trip-side counterpart category to merge with, so they're standalone
-  // topic tags for now (future-proofing per the FUTURE DIRECTION note above
-  // VOCAB, not something new to drill tonight). Materials - Entertainment
-  // also turned out to contain a 9-item heatstroke-warning block
-  // (miscategorised by source photo location, not actually entertainment
-  // content) - those got 'emergency' instead, growing that pool rather than
-  // this one. Nothing removed or retired; purely additive, same as the
-  // other five tests.
+  // PROMOTED FROM TEST (2026-08-31) - same reasoning as theme-stations-
+  // combined above. Source category vocab-signage-warnings is retired as a
+  // standalone tile (standaloneCard:false, see VOCAB) - all 11 of its items
+  // carry `signage` wholesale. Also pulls in 5 items scattered across
+  // Materials - Stations (かけ込み禁止) and Materials - Shops (お断り,
+  // 持込品, 補助犬, ご協力), plus the 12 Materials-shops items sorted into
+  // `signage` on 2026-08-31 (駐車場, 道民, 固く, 長時間, 勉強, 給電, こちら,
+  // 捨てる, ペット, ご同伴, カラス, 可能性) that closed out
+  // vocab-materials-shops's coverage gap. Nothing deleted.
   'theme-signage-combined': {
-    label: 'Signage & warnings (combined test)',
+    label: 'Signage & warnings',
     chars: 'きんえん おす ちゅうい…',
     tagQuery: 'signage',
+  },
+  // NEW / PROMOTED (2026-08-31) - Materials - Entertainment retires as a
+  // standalone tile now that the words that didn't fit `entertainment` have
+  // somewhere else to go: 39 items keep `entertainment`, 10 already carried
+  // `emergency` (a 9-item heatstroke-warning block plus 避難, tagged back on
+  // 2026-08-27 and already drillable via theme-emergency-combined), and the
+  // remaining 19 split into `profile-words` (14, see THEMES entry above),
+  // `stations` (鉄道駅), `street` (停止線, 開発局 - roadside signage from
+  // Muroran), and `places` (市役所, 名称 - the loosest fit of the lot; 名称
+  // in particular is a standalone label word with no natural home, folded
+  // in here rather than left stranded). Unlike the six categories promoted
+  // earlier today, this one is a genuine two-source combine, not a solo
+  // flip - vocab-tourist-phrases already had 2 items tagged `entertainment`
+  // from before this split, so this pool is 41 items, not 39.
+  'theme-entertainment-combined': {
+    label: 'Entertainment',
+    chars: 'パチンコ 全台 計数機…',
+    tagQuery: 'entertainment',
   },
 };
 
@@ -5601,11 +6255,58 @@ function toggleVocabTileReversedMode() {
   if (meaningCard) meaningCard.classList.toggle('disabled', !!vocabTileReversedMode[categoryKey]);
 }
 
+// Maps a category key to the reference screen(s) that belong with it -
+// REFERENCE SCREENS FOLDED IN (2026-08-31). Used to be five separate
+// ".vocab-ref-card" links hand-placed in buildMatchCategoryList, positioned
+// just above their category's own tile in the list - correct, but fragile:
+// the reference card's position had to be kept in sync by hand with wherever
+// its category ended up in the list (a problem the same day's alphabetical-
+// order change would have made worse, since a category's list position now
+// depends on its label rather than being fixed). Andrew's proposal: instead
+// of tying the reference to a position in the list, tie it to the category
+// itself and show it on that category's own tile-selection screen - "tap a
+// word to select it for drilling" screen, reference link included. Applies
+// equally to L2 (four of these five) and Andrew (one) since both route
+// through this same function. Each function here still sets its own
+// vocabRefBackTarget internally (now 'vocab-tile-selection' instead of
+// 'match-settings' - see each function's own definition) so Back returns to
+// the selection screen it was opened from, not the top-level category list -
+// same precedent already used for hiragana/katakana's own reference screens.
+const CATEGORY_REFERENCE_LINKS = {
+  'vocab-time-l2': [
+    { label: 'Day / week / month / year — reference', fn: showTimeUnitsReference },
+    { label: 'Minute endings (1–10) — reference', fn: showMinuteReference },
+  ],
+  'vocab-days-of-month-l2': [
+    { label: 'Days of the month (1st–31st) — reference', fn: showDaysOfMonthReference },
+  ],
+  'vocab-days-l2': [
+    { label: 'Days of the week (in order) — reference', fn: () => showVocabReference('vocab-days-l2') },
+  ],
+  'vocab-animals-l2': [
+    { label: '12 zodiac animals & the clock — reference', fn: showZodiacClockReference },
+  ],
+  'vocab-materials-hotel-appliances': [
+    { label: 'Appliances reference', fn: showApplianceDeviceReference },
+  ],
+};
+
 function showVocabTileSelection(categoryKey) {
   vocabTileCategory = categoryKey;
   if (!vocabTileSelected[categoryKey]) vocabTileSelected[categoryKey] = new Set();
   const cat = resolveVocabCategory(categoryKey);
   document.getElementById('vocab-tile-selection-title').textContent = cat.label;
+  const refLinks = document.getElementById('vocab-tile-selection-ref-links');
+  if (refLinks) {
+    refLinks.innerHTML = '';
+    (CATEGORY_REFERENCE_LINKS[categoryKey] || []).forEach(({ label, fn }) => {
+      const card = document.createElement('div');
+      card.className = 'vocab-ref-card';
+      card.innerHTML = `<span>${label}</span><span class="vocab-ref-arrow">→</span>`;
+      card.onclick = fn;
+      refLinks.appendChild(card);
+    });
+  }
   buildVocabTileGrid(categoryKey);
   refreshKanaScoreShading('vocab-tile-grid');
   updateSelectAllVocabTilesLabel();
@@ -6723,7 +7424,7 @@ const SETTINGS_KEY = 'jpDrillSettings';
 // than a fetch that can fail or behave differently offline. 215 was
 // approximately the mid-market GBP/JPY rate as of build time (July 2026);
 // it'll drift, which is exactly why it's an editable field, not a constant.
-let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showTripVocab: false, gbpJpyRate: 215 };
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showUntaught: null, gbpJpyRate: 215 };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
@@ -6741,8 +7442,30 @@ try {
       savedSettings.showKanji = savedSettings.showCustomContent;
       savedSettings.showExtra = savedSettings.showCustomContent;
     }
+
+    // One-time migration (2026-08-31): Trip and Andrew mode merged into a
+    // single "Untaught" tier - every word that used to live behind either
+    // toggle already carries the 'untaught' item tag (100% coverage,
+    // verified directly against VOCAB before this shipped), so gating now
+    // happens by tag, not by category level. showUntaught defaults to null
+    // so this migration can tell "never set" apart from "explicitly off":
+    // if savedSettings doesn't have it yet, resolve it once from whichever
+    // of the two old toggles was on (either one being on meant this content
+    // was visible), then never touch it again. showAndrewMode itself resets
+    // to false for everyone as part of this - "Andrew mode" survives as its
+    // own toggle/pill, but empty, staged and ready for L3 content later (see
+    // that toggle's own settings-card description). showTripVocab is
+    // dropped entirely; if a returning user's saved JSON still has it, it's
+    // just an inert leftover key that's never read again, same as
+    // showCustomContent above.
+    const migratingToUntaught = !('showUntaught' in savedSettings);
+    if (migratingToUntaught) {
+      savedSettings.showUntaught = !!(savedSettings.showAndrewMode || savedSettings.showTripVocab);
+      savedSettings.showAndrewMode = false;
+    }
+
     Object.assign(appSettings, savedSettings);
-    if (migratingFromCustomContent) saveSettings();
+    if (migratingFromCustomContent || migratingToUntaught) saveSettings();
   }
 } catch (e) {
   // localStorage unavailable or corrupt — fall back to defaults silently
@@ -6758,12 +7481,19 @@ function saveSettings() {
 
 // Single source of truth for "is this category's tier currently visible" -
 // used anywhere that scans across every category regardless of level
-// (Random - Everything, theme pools), so Extra and Andrew-mode content stay
-// gated the same way everywhere rather than each call site re-deriving its
-// own version of this check (and risking one of them forgetting a tier).
+// (Random - Everything, theme pools), so Untaught and Andrew-mode content
+// stay gated the same way everywhere rather than each call site
+// re-deriving its own version of this check (and risking one of them
+// forgetting a tier).
+//
+// 'andrew' is dormant as of 2026-08-31 - no VOCAB category currently uses
+// it (everything that used to be level:'andrew' or level:'trip' merged
+// into level:'untaught' below), but the branch stays wired up and ready:
+// Andrew mode is a reusable empty staging tier for whatever L3 content
+// comes next, not a retired concept.
 function categoryTierVisible(level) {
   if (level === 'andrew') return appSettings.showAndrewMode;
-  if (level === 'trip') return appSettings.showTripVocab;
+  if (level === 'untaught') return appSettings.showUntaught;
   return true;
 }
 
@@ -6841,13 +7571,15 @@ function toggleHintPenalty() {
 // needed it).
 // Andrew's personal staging tier - a rotating scratchpad, not a fixed content
 // bucket. Whatever lands here is being tried out before it's decided whether
-// it graduates to core (always-on) or to a named gated tier (like Trip
-// vocabulary below). Once something graduates, this tier empties out again
-// ready for the next thing - it's currently empty, which is the expected
-// steady state between experiments, not a bug. Lives on its own row (not
-// squeezed into the level-pill row) so it's visually distinct - shared now
-// with the search pill, which is why only the pill itself (not the row) gets
-// hidden here: the row stays up since Search is for everyone.
+// it graduates to core (always-on) or to a named gated tier (like Untaught
+// below, which is exactly where Andrew's last batch of content - "Materials"
+// - ended up on 2026-08-31, together with what used to be Trip vocabulary).
+// Once something graduates, this tier empties out again ready for the next
+// thing - it's currently empty, which is the expected steady state between
+// experiments, not a bug. Lives on its own row (not squeezed into the
+// level-pill row) so it's visually distinct - shared now with the search
+// pill, which is why only the pill itself (not the row) gets hidden here:
+// the row stays up since Search is for everyone.
 function applyShowAndrewModeVisibility() {
   const on = appSettings.showAndrewMode;
   const andrewPill = document.getElementById('level-pill-andrew');
@@ -6863,30 +7595,33 @@ function toggleShowAndrewMode() {
   applyShowAndrewModeVisibility();
 }
 
-// Trip vocabulary - words specific to travelling to Japan (food, money,
-// directions, emergencies, tourist phrases, etc.) rather than course
-// content. Split out from Andrew mode so "genuinely personal, still being
-// tried out" and "finished, but only relevant if you're travelling" aren't
-// muddled together - anyone might want this, not just Andrew. Same
+// Untaught vocabulary - everything not covered in the taught Level 1/2
+// course: words specific to travelling to Japan (food, money, directions,
+// emergencies, tourist phrases), plus real words and phrases pulled from
+// photos taken on the trip itself (signs, menus, receipts, announcements).
+// Until 2026-08-31 this was two separate tiers - "Trip vocabulary" and
+// "Andrew mode" - split by where the content came from (curated ahead of
+// time vs encountered and photographed). That distinction is already
+// captured per-word by the curated/encountered tags (see LEVEL_BORDER_COLORS
+// and itemColorKey), so keeping two toggles doing the same visibility job
+// stopped earning its keep - merged into this one tier instead. Every word
+// that lives here carries the 'untaught' item tag, which is what
+// scanVocabByTag('untaught') in startRandomMatch reads directly, and what
+// categoryTierVisible('untaught') below gates for every other scan. Same
 // hide-entirely, off-by-default pattern as the rest of the gated tiers.
-function applyShowTripVocabVisibility() {
-  const on = appSettings.showTripVocab;
-  const tripPill = document.getElementById('level-pill-trip');
-  if (tripPill) tripPill.style.display = on ? '' : 'none';
-  if (!on && currentMatchLevel === 'trip') setMatchLevel('theme');
-  const card = document.getElementById('show-trip-vocab-toggle-card');
+function applyShowUntaughtVisibility() {
+  const on = appSettings.showUntaught;
+  const untaughtPill = document.getElementById('level-pill-untaught');
+  if (untaughtPill) untaughtPill.style.display = on ? '' : 'none';
+  if (!on && currentMatchLevel === 'untaught') setMatchLevel('theme');
+  const card = document.getElementById('show-untaught-toggle-card');
   if (card) card.classList.toggle('selected', on);
-  // Collections that lean on Trip-tier source categories - see the two
-  // cards' own comments in the Themes list.
-  const gettingAroundCard = document.getElementById('theme-getting-around-card');
-  if (gettingAroundCard) gettingAroundCard.style.display = on ? 'flex' : 'none';
-  // Survival vocab card removed 2026-08-27 - no longer anything to wire up.
 }
 
-function toggleShowTripVocab() {
-  appSettings.showTripVocab = !appSettings.showTripVocab;
+function toggleShowUntaught() {
+  appSettings.showUntaught = !appSettings.showUntaught;
   saveSettings();
-  applyShowTripVocabVisibility();
+  applyShowUntaughtVisibility();
 }
 
 function applyWorkOfflineUI() {
@@ -6932,7 +7667,7 @@ function applyAllSettingsUI() {
   applyHintPenaltyUI();
   applyWorkOfflineUI();
   applyShowAndrewModeVisibility();
-  applyShowTripVocabVisibility();
+  applyShowUntaughtVisibility();
 }
 
 function showSettingsScreen() {
@@ -8443,33 +9178,71 @@ function updateNumberTimeSwatches() {
 
 function setMatchLevel(level) {
   if (level === 'andrew' && !appSettings.showAndrewMode) return; // backstop - pill is also hidden via CSS
-  if (level === 'trip' && !appSettings.showTripVocab) return; // backstop - pill is also hidden via CSS
+  if (level === 'untaught' && !appSettings.showUntaught) return; // backstop - pill is also hidden via CSS
   currentMatchLevel = level;
   document.getElementById('level-pill-1').classList.toggle('active', level === 1);
   document.getElementById('level-pill-2').classList.toggle('active', level === 2);
   document.getElementById('level-pill-theme').classList.toggle('active', level === 'theme');
   const andrewPill = document.getElementById('level-pill-andrew');
   if (andrewPill) andrewPill.classList.toggle('active', level === 'andrew');
-  const tripPill = document.getElementById('level-pill-trip');
-  if (tripPill) tripPill.classList.toggle('active', level === 'trip');
+  const untaughtPill = document.getElementById('level-pill-untaught');
+  if (untaughtPill) untaughtPill.classList.toggle('active', level === 'untaught');
   document.getElementById('vocab-level-filter-row').classList.toggle('showing-theme-colours', level === 'theme');
-  // Andrew mode and Trip vocabulary both deliberately reuse the same generic
-  // Level 1/2 list view (match-vocab-view + buildMatchCategoryList) rather
-  // than getting their own dedicated view like Collections has - so a new
-  // category just needs level:'andrew' or level:'trip' in VOCAB and shows up
-  // automatically, no hand-built card needed.
-  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2 || level === 'andrew' || level === 'trip') ? 'flex' : 'none';
+  // Andrew mode and Untaught vocabulary both deliberately reuse the same
+  // generic Level 1/2 list view (match-vocab-view + buildMatchCategoryList)
+  // rather than getting their own dedicated view like Collections has - so
+  // a new category just needs level:'andrew' or level:'untaught' in VOCAB
+  // and shows up automatically, no hand-built card needed.
+  document.getElementById('match-vocab-view').style.display = (level === 1 || level === 2 || level === 'andrew' || level === 'untaught') ? 'flex' : 'none';
   document.getElementById('match-theme-view').style.display = level === 'theme' ? 'flex' : 'none';
   if (level === 'theme') refreshThemeCategorySwatches();
   if (level === 'theme') return;
   document.getElementById('random-match-count').textContent = level === 'andrew'
     ? '20 random words per round, from Andrew mode categories'
-    : level === 'trip'
-    ? '20 random words per round, from Trip vocabulary categories'
+    : level === 'untaught'
+    ? '20 random words per round, from Untaught vocabulary'
     : `20 random words per round, from all Level ${level} categories`;
   document.getElementById('match-start-btn').disabled = true;
   document.getElementById('random-match-card').classList.remove('selected');
   buildMatchCategoryList();
+}
+
+// Builds one real, permanent category tile - the ".match-card-select"
+// white-text style Materials cards have always used (group name, chars,
+// word count, confidence swatch), as opposed to the plain gold-link
+// ".vocab-ref-card" style used for reference/notes/TEST links. Shared by
+// both real VOCAB categories and promoted THEMES keys (2026-08-31) - this
+// used to be inline inside the Object.keys(VOCAB).forEach below, only ever
+// called for VOCAB keys; extracted so promoted theme cards (Stations,
+// Accommodation, Emergency, Food & drink, Shopping, Signage, Service &
+// shop ops) render identically instead of keeping their old gold-link
+// TEST styling. resolveVocabCategory/getCategoryAverageScore already work
+// generically for a THEMES key (see resolveVocabCategory's THEME_CACHE
+// branch), so this needed zero special-casing beyond checking THEMES[key]
+// to decide the label/chars source and the click handler.
+function buildCategoryTile(key) {
+  const isTheme = !!THEMES[key];
+  const v = isTheme ? THEMES[key] : VOCAB[key];
+  const card = document.createElement('div');
+  card.className = 'match-card-select';
+  card.dataset.key = key;
+  const confCls = categoryConfidenceClass(getCategoryAverageScore(key));
+  // resolveVocabCategory here too (not raw v.items) - so a category using
+  // includeItems, or a theme pooling several categories, shows an accurate
+  // total count.
+  const resolvedCount = resolveVocabCategory(key).items.length;
+  const countText = v.note ? `${v.note} — ${resolvedCount} words` : `${resolvedCount} words`;
+  card.innerHTML = `<div class="group-info"><div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${countText}</div></div><div class="cat-swatch${confCls ? ' ' + confCls : ''}"></div>`;
+  // Every THEMES key routes through showVocabTileSelection (resolved via
+  // getThemePool, always hasReference:true in the THEME_CACHE wrapper) -
+  // raw THEMES entries don't carry their own hasReference flag, so check
+  // isTheme first rather than reading v.hasReference for them.
+  if (isTheme || v.hasReference) {
+    card.onclick = () => showVocabTileSelection(key);
+  } else {
+    card.onclick = () => startVocabReadingDeck(v.items, key);
+  }
+  return card;
 }
 
 function buildMatchCategoryList() {
@@ -8493,165 +9266,92 @@ function buildMatchCategoryList() {
     container.appendChild(grammarHubCard);
     container.appendChild(document.createElement('div')).className = 'section-divider';
   }
-  // Appliances reference - sits at the top of Andrew mode's Materials list
-  // (same placement pattern as the Grammar notes hub above, for Level 2) so
-  // it's reachable in one tap rather than buried inside the Hotel: Appliances
-  // category's own reference view. See showApplianceDeviceReference() for
-  // why this is a filtered read of that one category rather than a category
-  // of its own.
-  if (currentMatchLevel === 'andrew') {
-    const applianceRefCard = document.createElement('div');
-    applianceRefCard.className = 'vocab-ref-card';
-    applianceRefCard.innerHTML = `<span>Materials — Appliances reference</span><span class="vocab-ref-arrow">→</span>`;
-    applianceRefCard.onclick = () => showApplianceDeviceReference();
-    container.appendChild(applianceRefCard);
+  // PROMOTED FROM TEST (2026-08-31) - the tag-driven combined categories,
+  // now the standard way Andrew mode's Materials/Trip content is drilled
+  // (see the FUTURE DIRECTION entry dated 2026-08-31 for the full
+  // reasoning and per-category coverage numbers). Originally rendered above
+  // the separate Appliances reference card per Andrew's explicit
+  // instruction that these should sit at the top of the list; that
+  // reference card was later folded into its own category's selection
+  // screen instead (see CATEGORY_REFERENCE_LINKS below), so this is now
+  // simply the top of the list, full stop. All nine pull from
+  // resolveVocabCategory's THEMES branch:
+  //  - Stations & trains / Accommodation: promoted earlier the same day.
+  //  - Emergency & survival: needed no further data work at all - already
+  //    100% tag-covered and already standaloneCard:false from 2026-08-27.
+  //  - Food & drink / Shopping: promoted once their last coverage gaps
+  //    (service-ops screen, 12 leftover shop items) closed today.
+  //  - Signage & warnings: a same-day consequence of the Shopping fix -
+  //    those same 12 items also completed Signage's coverage.
+  //  - Service & shop operations: brand new screen for the service-ops
+  //    tag carved out of "Ordering & policy" earlier today.
+  //  - Entertainment: promoted once the 19 non-entertainment items in its
+  //    source category were split out (see theme-profile-words below and
+  //    the FUTURE DIRECTION entry). A genuine two-source combine (also
+  //    picks up 2 tourist-phrases items), not a solo flip.
+  //  - Profile & self-introduction words: brand new screen for the 14
+  //    words that split out of Entertainment the same way.
+  // (Materials — Hotel: Facilities & stay and Reference — Question words
+  // were also retired today, but neither gets a card here: the former
+  // folds into Accommodation above, and the latter is fully covered by
+  // Collections' own "Question words" card already - no new Andrew card
+  // needed, see the standaloneCard comment on vocab-reference-question-
+  // words for why that's the more instructive example of the two.)
+  if (currentMatchLevel === 'untaught') {
+    // ALPHABETICAL ORDER (2026-08-31, extended same day when Trip and
+    // Andrew merged into this one Untaught tier) - reads as one alphabetized
+    // set rather than "promoted theme cards first, plain categories after",
+    // a split that made sense while the promoted cards were new and needed
+    // emphasis but has no reason to persist now that every tile renders
+    // identically via buildCategoryTile. Combines the nine theme keys below
+    // with whatever plain VOCAB categories still have a standalone tile at
+    // this level (the three FLIP PILOT conversions - Airport, Hotel:
+    // Appliances, Street - plus Weather and Tourist phrases, now that both
+    // carry level:'untaught' too instead of the retired level:'trip'), sorts
+    // by label, then hands off to buildCategoryTile exactly as before. The
+    // Object.keys(VOCAB).forEach loop below skips 'untaught' entirely now
+    // so these five don't render a second time.
+    const untaughtThemeKeys = ['theme-stations-combined', 'theme-accommodation-combined',
+      'theme-emergency-combined', 'theme-food-drink-combined', 'theme-shopping-combined',
+      'theme-signage-combined', 'theme-service-ops', 'theme-entertainment-combined',
+      'theme-profile-words'];
+    const untaughtVocabKeys = Object.keys(VOCAB).filter(key =>
+      (VOCAB[key].level || 1) === 'untaught' && VOCAB[key].standaloneCard !== false);
+    untaughtThemeKeys.concat(untaughtVocabKeys)
+      .map(key => ({ key, label: (THEMES[key] || VOCAB[key]).label }))
+      .sort((a, b) => a.label.localeCompare(b.label))
+      .forEach(({ key }) => container.appendChild(buildCategoryTile(key)));
     container.appendChild(document.createElement('div')).className = 'section-divider';
   }
+  // Appliances reference card removed from here (2026-08-31) - folded into
+  // Hotel: Appliances & machines' own tile-selection screen instead, along
+  // with the other four reference cards below (see CATEGORY_REFERENCE_LINKS
+  // and showVocabTileSelection). See the FUTURE DIRECTION entry for the
+  // full reasoning.
   Object.keys(VOCAB).forEach(key => {
     const v = VOCAB[key];
     if ((v.level || 1) !== currentMatchLevel) return;
+    // Untaught's own VOCAB categories (Airport, Hotel: Appliances, Street,
+    // Weather, Tourist phrases) are rendered above already, alphabetized
+    // together with the promoted theme cards (2026-08-31) - skip them here
+    // so they don't render a second time. Every other level (1, 2) still
+    // goes through this loop as before.
+    if (currentMatchLevel === 'untaught') return;
     // standaloneCard: false (2026-08-27, see vocab-trip-prep/vocab-
     // emergency-survival above) - default is true (every category gets its
     // own tile), explicitly false here. The category still exists as pure
     // storage so every tag scan keeps finding its words, it just no longer
     // gets its own tile in this list.
     if (v.standaloneCard === false) return;
-    if (key === 'vocab-time-l2') {
-      const timeUnitRefCard = document.createElement('div');
-      timeUnitRefCard.className = 'vocab-ref-card';
-      timeUnitRefCard.innerHTML = `<span>Day / week / month / year — reference</span><span class="vocab-ref-arrow">→</span>`;
-      timeUnitRefCard.onclick = (e) => { e.stopPropagation(); showTimeUnitsReference(); };
-      container.appendChild(timeUnitRefCard);
-
-      const minRefCard = document.createElement('div');
-      minRefCard.className = 'vocab-ref-card';
-      minRefCard.innerHTML = `<span>Minute endings (1–10) — reference</span><span class="vocab-ref-arrow">→</span>`;
-      minRefCard.onclick = (e) => { e.stopPropagation(); showMinuteReference(); };
-      container.appendChild(minRefCard);
-    }
-    // Sits above the drillable category itself now (moved from above Time
-    // vocabulary, where it lived before vocab-days-of-month-l2 existed) -
-    // matches how every other reference card sits directly above its own
-    // category (Days of the week's order-reference, Animals' zodiac clock).
-    if (key === 'vocab-days-of-month-l2') {
-      const daysMonthRefCard = document.createElement('div');
-      daysMonthRefCard.className = 'vocab-ref-card';
-      daysMonthRefCard.innerHTML = `<span>Days of the month (1st–31st) — reference</span><span class="vocab-ref-arrow">→</span>`;
-      daysMonthRefCard.onclick = (e) => { e.stopPropagation(); showDaysOfMonthReference(); };
-      container.appendChild(daysMonthRefCard);
-    }
-    if (key === 'vocab-days-l2') {
-      const daysRefCard = document.createElement('div');
-      daysRefCard.className = 'vocab-ref-card';
-      daysRefCard.innerHTML = `<span>Days of the week (in order) — reference</span><span class="vocab-ref-arrow">→</span>`;
-      daysRefCard.onclick = (e) => { e.stopPropagation(); showVocabReference(key); };
-      container.appendChild(daysRefCard);
-    }
-    if (key === 'vocab-animals-l2') {
-      const zodiacRefCard = document.createElement('div');
-      zodiacRefCard.className = 'vocab-ref-card';
-      zodiacRefCard.innerHTML = `<span>12 zodiac animals & the clock — reference</span><span class="vocab-ref-arrow">→</span>`;
-      zodiacRefCard.onclick = (e) => { e.stopPropagation(); showZodiacClockReference(); };
-      container.appendChild(zodiacRefCard);
-    }
-    const card = document.createElement('div');
-    card.className = 'match-card-select';
-    card.dataset.key = key;
-    const confCls = categoryConfidenceClass(getCategoryAverageScore(key));
-    // resolveVocabCategory here too (not raw v.items) - so a category using
-    // includeItems shows an accurate count including the referenced word.
-    const resolvedCount = resolveVocabCategory(key).items.length;
-    const countText = v.note ? `${v.note} — ${resolvedCount} words` : `${resolvedCount} words`;
-    card.innerHTML = `<div class="group-info"><div class="group-name">${v.label}</div><div class="group-chars">${v.chars}</div><div class="group-count">${countText}</div></div><div class="cat-swatch${confCls ? ' ' + confCls : ''}"></div>`;
-    if (v.hasReference) {
-      card.onclick = () => showVocabTileSelection(key);
-    } else {
-      card.onclick = () => startVocabReadingDeck(v.items, key);
-    }
-    container.appendChild(card);
+    // The four reference cards that used to render here (Time vocabulary's
+    // two, Days of the month, Days of the week, Animals' zodiac clock) are
+    // gone (2026-08-31) - folded into their own category's tile-selection
+    // screen instead, see CATEGORY_REFERENCE_LINKS above
+    // showVocabTileSelection. Nothing lost: each is still one tap away, now
+    // from inside its own category rather than floating above it in this
+    // list.
+    container.appendChild(buildCategoryTile(key));
   });
-  // Andrew mode currently has no VOCAB categories of its own (level:'andrew'
-  // is unused right now), so the forEach above never fires for it - these
-  // two links are appended unconditionally instead, the moment this level is
-  // selected. Kept Andrew-only rather than folded into the Level 2 Grammar
-  // notes hub (they briefly lived there) - Andrew asked for them to stay
-  // exactly where they were, visible only in Andrew mode, not exposed to
-  // everyone via Level 2. They point at standalone HTML notes living
-  // alongside index.html (kept as separate documents, not part of the app's
-  // own reference-screen system, since Andrew publishes them separately on
-  // GitHub too) - opened in a new tab so drilling progress/state in the app
-  // itself isn't lost.
-  if (currentMatchLevel === 'andrew') {
-    const sentenceNoteCard = document.createElement('a');
-    sentenceNoteCard.className = 'vocab-ref-card';
-    sentenceNoteCard.href = './sentence-structure-notes.html';
-    sentenceNoteCard.target = '_blank';
-    sentenceNoteCard.rel = 'noopener';
-    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
-    container.appendChild(sentenceNoteCard);
-
-    const jpEnNoteCard = document.createElement('a');
-    jpEnNoteCard.className = 'vocab-ref-card';
-    jpEnNoteCard.href = './japanese-vs-english-notes.html';
-    jpEnNoteCard.target = '_blank';
-    jpEnNoteCard.rel = 'noopener';
-    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
-    container.appendChild(jpEnNoteCard);
-
-    // TEST ONLY - see theme-stations-combined in THEMES for the full
-    // reasoning. Appended here rather than given a permanent Collections
-    // card so it only ever shows up in Andrew mode, alongside the two notes
-    // links above, and can be removed just as easily once it's served its
-    // purpose. Uses the exact same resolveVocabCategory/getThemePool path
-    // as every real Collection - this is a placement choice, not a
-    // different mechanism.
-    container.appendChild(document.createElement('div')).className = 'section-divider';
-    const stationsTestCard = document.createElement('div');
-    stationsTestCard.className = 'vocab-ref-card';
-    stationsTestCard.innerHTML = `<span>TEST: Stations & trains, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
-    stationsTestCard.onclick = () => showVocabTileSelection('theme-stations-combined');
-    container.appendChild(stationsTestCard);
-
-    // TEST ONLY - second combined-tag test, same reasoning as the Stations
-    // card above (see theme-food-drink-combined in THEMES).
-    const foodDrinkTestCard = document.createElement('div');
-    foodDrinkTestCard.className = 'vocab-ref-card';
-    foodDrinkTestCard.innerHTML = `<span>TEST: Food & drink, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
-    foodDrinkTestCard.onclick = () => showVocabTileSelection('theme-food-drink-combined');
-    container.appendChild(foodDrinkTestCard);
-
-    // TEST ONLY - third combined-tag test, same reasoning as the Stations
-    // card above (see theme-shopping-combined in THEMES).
-    const shoppingTestCard = document.createElement('div');
-    shoppingTestCard.className = 'vocab-ref-card';
-    shoppingTestCard.innerHTML = `<span>TEST: Shopping, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
-    shoppingTestCard.onclick = () => showVocabTileSelection('theme-shopping-combined');
-    container.appendChild(shoppingTestCard);
-
-    // TEST ONLY - fourth combined-tag test, same reasoning as the Stations
-    // card above (see theme-accommodation-combined in THEMES).
-    const accommodationTestCard = document.createElement('div');
-    accommodationTestCard.className = 'vocab-ref-card';
-    accommodationTestCard.innerHTML = `<span>TEST: Accommodation, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
-    accommodationTestCard.onclick = () => showVocabTileSelection('theme-accommodation-combined');
-    container.appendChild(accommodationTestCard);
-
-    // TEST ONLY - fifth combined-tag test, same reasoning as the Stations
-    // card above (see theme-emergency-combined in THEMES).
-    const emergencyTestCard = document.createElement('div');
-    emergencyTestCard.className = 'vocab-ref-card';
-    emergencyTestCard.innerHTML = `<span>TEST: Emergency & survival, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
-    emergencyTestCard.onclick = () => showVocabTileSelection('theme-emergency-combined');
-    container.appendChild(emergencyTestCard);
-
-    // TEST ONLY - sixth combined-tag test, same reasoning as the Stations
-    // card above (see theme-signage-combined in THEMES).
-    const signageTestCard = document.createElement('div');
-    signageTestCard.className = 'vocab-ref-card';
-    signageTestCard.innerHTML = `<span>TEST: Signage & warnings, Trip + Andrew combined</span><span class="vocab-ref-arrow">→</span>`;
-    signageTestCard.onclick = () => showVocabTileSelection('theme-signage-combined');
-    container.appendChild(signageTestCard);
-  }
 }
 
 function selectRandomMatchCard(card) {
@@ -8688,7 +9388,10 @@ const TIME_UNIT_TABLE = [
 ];
 
 function showTimeUnitsReference() {
-  vocabRefBackTarget = 'match-settings';
+  // vocab-tile-selection (2026-08-31, was match-settings) - this reference
+  // now opens from inside Time vocabulary's own selection screen (see
+  // CATEGORY_REFERENCE_LINKS), so Back should return there, not the list.
+  vocabRefBackTarget = 'vocab-tile-selection';
   document.getElementById('vocab-ref-title').textContent = 'Day / week / month / year';
   const list = document.getElementById('vocab-ref-list');
   list.className = '';
@@ -9434,7 +10137,10 @@ function startCounterQuizChallenge(selectedKeys) {
 /* ---------- end Random counter challenge ---------- */
 
 function showMinuteReference() {
-  vocabRefBackTarget = 'match-settings';
+  // vocab-tile-selection (2026-08-31, was match-settings) - same reasoning
+  // as showTimeUnitsReference above; also opens from Time vocabulary's own
+  // selection screen now.
+  vocabRefBackTarget = 'vocab-tile-selection';
   document.getElementById('vocab-ref-title').textContent = 'Minute endings (1–10)';
   const list = document.getElementById('vocab-ref-list');
   list.className = 'tight-list';
@@ -9503,7 +10209,10 @@ const DAYS_OF_MONTH = [
 ];
 
 function showDaysOfMonthReference() {
-  vocabRefBackTarget = 'match-settings';
+  // vocab-tile-selection (2026-08-31, was match-settings) - opens from
+  // Days of the month's own selection screen now (see
+  // CATEGORY_REFERENCE_LINKS), so Back should land there, not the list.
+  vocabRefBackTarget = 'vocab-tile-selection';
   document.getElementById('vocab-ref-title').textContent = 'Days of the month (1st–31st)';
   const list = document.getElementById('vocab-ref-list');
   list.className = 'tight-list';
@@ -9557,7 +10266,10 @@ const ZODIAC_HOURS = [
 ];
 
 function showZodiacClockReference() {
-  vocabRefBackTarget = 'match-settings';
+  // vocab-tile-selection (2026-08-31, was match-settings) - opens from
+  // Animals' own selection screen now (see CATEGORY_REFERENCE_LINKS), so
+  // Back should land there, not the list.
+  vocabRefBackTarget = 'vocab-tile-selection';
   document.getElementById('vocab-ref-title').textContent = '12 zodiac animals & the clock';
   const list = document.getElementById('vocab-ref-list');
   list.className = 'tight-list';
@@ -9621,10 +10333,36 @@ function showGrammarNotesHub() {
     list.appendChild(card);
   });
   // The two external notes docs (sentence structure, Japanese vs English)
-  // are deliberately NOT included here - they stay Andrew-only, appended
-  // directly in buildMatchCategoryList exactly as before. This hub only
-  // ever shows on the Level 2 tab, and Andrew wanted those two kept out of
-  // Level 2's view rather than exposed to everyone.
+  // used to be Andrew-only, appended directly in buildMatchCategoryList
+  // rather than living here - Andrew originally wanted them kept out of
+  // Level 2's view since most of this tagging/merging mechanism wasn't in
+  // place yet and the old Andrew/Trip staging split was still active. That
+  // reasoning no longer applies now that every word is properly curated or
+  // encountered and gated by the single Untaught toggle, so as of
+  // 2026-08-31 they moved here instead, gated by showUntaught rather than
+  // by which tab you're on - visible on Level 2 (where this hub lives) the
+  // moment Untaught vocabulary is switched on, gone again the moment it's
+  // off. They point at standalone HTML notes living alongside index.html
+  // (kept as separate documents, not part of the app's own reference-screen
+  // system, since Andrew publishes them separately on GitHub too) - opened
+  // in a new tab so drilling progress/state in the app itself isn't lost.
+  if (appSettings.showUntaught) {
+    const sentenceNoteCard = document.createElement('a');
+    sentenceNoteCard.className = 'vocab-ref-card';
+    sentenceNoteCard.href = './sentence-structure-notes.html';
+    sentenceNoteCard.target = '_blank';
+    sentenceNoteCard.rel = 'noopener';
+    sentenceNoteCard.innerHTML = `<span>Notes: Japanese sentence structure</span><span class="vocab-ref-arrow">→</span>`;
+    list.appendChild(sentenceNoteCard);
+
+    const jpEnNoteCard = document.createElement('a');
+    jpEnNoteCard.className = 'vocab-ref-card';
+    jpEnNoteCard.href = './japanese-vs-english-notes.html';
+    jpEnNoteCard.target = '_blank';
+    jpEnNoteCard.rel = 'noopener';
+    jpEnNoteCard.innerHTML = `<span>Notes: Japanese vs English structure</span><span class="vocab-ref-arrow">→</span>`;
+    list.appendChild(jpEnNoteCard);
+  }
   showScreen('vocab-reference');
 }
 
@@ -10445,7 +11183,12 @@ function shuffleObjectSentenceExample() {
 }
 
 function showVocabReference(categoryKey) {
-  vocabRefBackTarget = 'match-settings';
+  // vocab-tile-selection (2026-08-31, was match-settings) - this generic
+  // function's only caller right now (Days of the week, via
+  // CATEGORY_REFERENCE_LINKS) opens it from that category's own selection
+  // screen, so Back should land there, not the list. Revisit if this
+  // function ever gains a second caller from a different context.
+  vocabRefBackTarget = 'vocab-tile-selection';
   const v = VOCAB[categoryKey];
   document.getElementById('vocab-ref-title').textContent = v.label;
   const list = document.getElementById('vocab-ref-list');
@@ -10505,7 +11248,10 @@ const APPLIANCE_DEVICE_ORDER = ['ac', 'tv-remote', 'laundry', 'microwave', 'door
 // now; revisit if a future category of "not on a panel but still worth a
 // reference" word shows up.
 function showApplianceDeviceReference() {
-  vocabRefBackTarget = 'match-settings';
+  // vocab-tile-selection (2026-08-31, was match-settings) - opens from
+  // Hotel: Appliances & machines' own selection screen now (see
+  // CATEGORY_REFERENCE_LINKS), so Back should land there, not the list.
+  vocabRefBackTarget = 'vocab-tile-selection';
   document.getElementById('vocab-ref-title').textContent = 'Appliances reference';
   const list = document.getElementById('vocab-ref-list');
   list.className = 'tight-list';
@@ -10615,22 +11361,28 @@ function tryResumeMatch() {
 }
 
 function startRandomMatch() {
-  // Level 1/2: a genuine tag query via scanVocabByTag (see comment there) -
-  // every item tagged 'L1'/'L2' anywhere, not "every item stored in a
-  // category whose own level happens to be 1/2". This is what makes a
-  // word tagged forward (e.g. ['L1','L3',...]) show up in both levels'
-  // random pools with no extra work, the moment forward-tagging is used.
+  // Level 1/2/Untaught: a genuine tag query via scanVocabByTag (see comment
+  // there) - every item tagged 'L1'/'L2'/'untaught' anywhere, not "every
+  // item stored in a category whose own level happens to match". This is
+  // what makes a word tagged forward (e.g. ['L1','L3',...]) show up in
+  // multiple levels' random pools with no extra work, the moment
+  // forward-tagging is used. Untaught joined this pattern 2026-08-31 when
+  // Andrew/Trip merged into a single tier - every word that used to need
+  // the old per-category level walk below already carries the 'untaught'
+  // item tag (100% coverage, verified before this shipped), so it no
+  // longer needs its own special case.
   //
-  // Andrew/Trip: still a per-category level match, deliberately not a tag
-  // query - unlike L1/L2, Andrew and Trip were never given a universal
-  // per-item tier tag (every L1/L2 word got 'L1'/'L2' in the August 2026
-  // tagging pass; Andrew/Trip tier has only ever been a category-level
-  // property, same as it still is for categoryTierVisible everywhere
-  // else in the app). Making Trip/Andrew fully per-item is real, separate
-  // work (see FUTURE DIRECTION point 2 above VOCAB) - not done here.
+  // Andrew: still a per-category level match, deliberately not a tag
+  // query - Andrew mode has never had a universal per-item tier tag of its
+  // own (there's currently nothing at level:'andrew' to tag - it's an
+  // empty staging tier), so this raw walk stays as the fallback for
+  // whatever L3 content lands here next, until that content gets a proper
+  // tag of its own the way Untaught just did.
   let allItems;
   if (currentMatchLevel === 1 || currentMatchLevel === 2) {
     allItems = scanVocabByTag('L' + currentMatchLevel);
+  } else if (currentMatchLevel === 'untaught') {
+    allItems = scanVocabByTag('untaught');
   } else {
     allItems = [];
     Object.keys(VOCAB).forEach(key => {

@@ -84,8 +84,8 @@
   </p>
   <p class="intro">
     What you see here is that development to date. It's changing all the time and
-    new bits are being added, but in theory you can turn off all of the "Andrew
-    mode" stuff and focus just on what you need to.
+    new bits are being added, but in theory you can turn off all of the "Untaught"
+    stuff and focus just on what's being taught in class.
   </p>
 
   <h2>Settings</h2>
@@ -106,12 +106,12 @@
     <div class="setting-desc">Caches the application so it doesn't need to be online to work. It's a very small app so this doesn't really get in the way. It's a Progressive Web App, which means it's just a webpage that tries to pretend it's not in a browser.</div>
   </div>
   <div class="setting">
-    <div class="setting-name">Trip vocabulary</div>
-    <div class="setting-desc">This has been added as various piles of words that might be useful for me to know for my trip. This entire section will only appear if you turn it on — otherwise the whole app will act as if none of this exists.</div>
+    <div class="setting-name">Untaught vocabulary</div>
+    <div class="setting-desc">Everything outside the taught Level 1/2 course lives behind this one switch — trip words (food, money, directions, emergencies, tourist phrases) plus real words and phrases pulled from photos I've actually taken in Japan (signs, menus, receipts, announcements). This used to be two separate switches — "Trip vocabulary" and "Andrew mode" — split by where the content came from. That split didn't actually mean anything useful any more (every word already says whether it's curated or encountered, right there on the drill card), so they merged into this one toggle. This entire section will only appear if you turn it on — otherwise the whole app will act as if none of this exists.</div>
   </div>
   <div class="setting">
     <div class="setting-name">Activate Andrew mode</div>
-    <div class="setting-desc">Whatever mad scheme I'm working on will be visible by turning this on. Currently holds "Materials" — vocab pulled from photos I've actually taken on the trip (signs, menus, receipts, and so on), plus a couple of linguistic notes pages. More will turn up here as the trip goes on. It's turned off by default.</div>
+    <div class="setting-desc">Whatever mad scheme I'm working on next will be visible by turning this on. Its last occupant — "Materials", the photo-sourced vocab — graduated into Untaught vocabulary above, so this is currently empty. That's expected, not a bug: it's a standing staging area for whatever comes next (an intensive N5 course is the most likely next tenant), not a fixed content bucket. It's turned off by default.</div>
   </div>
 
   <h3>Keyboard</h3>
@@ -179,10 +179,10 @@
   <p>This has a few options.</p>
 
   <h3>Search</h3>
-  <p>There's a search pill next to the level tabs (it takes the full width unless Andrew mode is switched on, in which case the Andrew pill moves to its right). Type at least two characters and press enter — it only searches when you submit, not as you type. It matches the start of any word in the English meaning or the romaji, so partial words still work ("cred" finds "credit card") but coincidental letter runs in the middle of a word don't ("up" won't match inside "supermarket" just because the letters happen to sit next to each other). It only searches real taught or added vocabulary, never the extra background sentences shown as context on some Materials cards. Results respect whatever you've currently got switched on — Trip and Andrew words only turn up if those are on — and take you to the normal selection screen to drill whichever ones you pick, colour-coded by which level they're from.</p>
+  <p>There's a search pill next to the level tabs (it takes the full width unless Andrew mode is switched on, in which case the Andrew pill moves to its right). Type at least two characters and press enter — it only searches when you submit, not as you type. It matches the start of any word in the English meaning or the romaji, so partial words still work ("cred" finds "credit card") but coincidental letter runs in the middle of a word don't ("up" won't match inside "supermarket" just because the letters happen to sit next to each other). It only searches real taught or added vocabulary, never the extra background sentences shown as context on some Untaught cards. Results respect whatever you've currently got switched on — Untaught and Andrew words only turn up if those are on — and take you to the normal selection screen to drill whichever ones you pick, colour-coded by which level they're from.</p>
 
   <h3>Collections</h3>
-  <p>The normal reading challenges work on individual categories in one level of the course. Collections can go across levels and can also include words from any additional categories that you've got turned on. This pulls together combinations like "All vocabulary" and "All kanji" (if you have it turned on) as well as more specific collections of categories like "Transport and UK Places", "Around the world" (countries and cities), "Days and times" (vocab associated with both groups), and so on.</p>
+  <p>The normal reading challenges work on individual categories in one level of the course. Collections can go across levels and can also include words from any additional categories that you've got turned on. This pulls together combinations like "All vocabulary" and "All kanji" (if you have it turned on) as well as more specific collections of categories like "Transport and UK Places", "Around the world" (countries and cities), and so on.</p>
   <p>Note that the size of the collection will depend on whether you're just using vocab from the lesson or including other categories too.</p>
   <p><strong>All vocabulary</strong> — picks 20 random words from across all categories that are visible to you. Works the same way as everything else.</p>
   <p><strong>All kanji</strong> — picks 20 random words from across all kanji categories, if you have kanji turned on. Works the same way as everything else.</p>
@@ -190,12 +190,12 @@
   <ul>
     <li>Transport and UK Places</li>
     <li>Around the world</li>
-    <li>Calendar &amp; time — Days of the week, Months, Days of the month, and Time vocabulary, kept in their taught order rather than alphabetized (they're ordinal sequences, so sorting them would just scramble them)</li>
     <li>Everyday items, clothing &amp; general vocab</li>
     <li>Core grammar words — Verbs, Adjectives, and Question &amp; location words: the "functional" categories that build a sentence, rather than themed nouns</li>
-    <li>Question words — every word tagged as a question word, wherever it actually lives, rather than a fixed list of categories. Right now that's a handful already taught in Question &amp; location words plus a set pulled from an Instagram reference graphic (only in Andrew mode). Nothing's duplicated — a word that's taught in the lessons and also tagged here is still just one word with one score, it just shows up in both places. If Andrew mode is off, this collection quietly shrinks to only the taught ones rather than disappearing outright.</li>
+    <li>Getting around — Transport, Places to go, and Directions, brought together. Transport and Places to go are ordinary taught Level 2 words, always here; Directions is Untaught, so that slice only appears once Untaught vocabulary is switched on — the card itself never disappears, it just has fewer words in it</li>
+    <li>Question words — every word tagged as a question word, wherever it actually lives, rather than a fixed list of categories. Right now that's a handful already taught in Question &amp; location words plus a set pulled from an outside reference source (only in Untaught vocabulary). Nothing's duplicated — a word that's taught in the lessons and also tagged here is still just one word with one score, it just shows up in both places. If Untaught vocabulary is off, this collection quietly shrinks to only the taught ones rather than disappearing outright.</li>
   </ul>
-  <p>And if you have Trip vocabulary turned on too you'll also see "Getting around" and "Survival vocab".</p>
+  <p>And if you have Untaught vocabulary turned on you'll also see a further set of collections gathering together everything encountered on the trip so far — see "Untaught vocabulary" below.</p>
   <p><strong>Highlight the meaning instead of sound</strong> — sounds complicated but it just changes the emphasis on the four answer cards. By default you could look at the kana and think "that starts with 'mi'" and guess the word from there by looking at the four romaji alternatives and choosing the one where the it starts with 'mi'. Highlighting the meaning, in English, means you can read and recognise the word but to get it right you need to know the meaning as well – it starts with "mi", but what does it mean? The romaji is still there down below and slightly less visible so it doesn't actually stop you doing it the easy way, but it's a mild deterrent.</p>
   <p><strong>Reverse the drill direction</strong> — shows the English word as the big word and four kana words as the options.</p>
 
@@ -245,41 +245,32 @@
     <li>Sentence order (を + object) — the same tap-to-cycle, shuffle-a-new-example format, but for the genuinely different pattern that を introduces: topic/time/location-of-action/object/verb, with each object-taking verb paired only with objects that actually make sense with it (no "drink a photograph")</li>
     <li>Verb tense &amp; affirmative/negative — two cards, one for the original nine verbs and one for the newer object-taking set, each switchable with pills at the top (sorted alphabetically by meaning) and each verb showing its たい ("want to") form alongside the plain ます-form, since たい conjugates differently (like an adjective, not a verb)</li>
   </ul>
+  <p>Two more links appear at the bottom of this list, but only once Untaught vocabulary is switched on: standalone notes pages on Japanese sentence structure, and Japanese vs English structure. They used to live only in Andrew mode; they moved here once every word had a clear taught/untaught status of its own and there was no longer a good reason to keep them tucked away from anyone doing the course.</p>
 
-  <h3>Trip</h3>
-  <p>Only appears if you've got it switched on. These all work in the same way.</p>
+  <h3>Untaught vocabulary</h3>
+  <p>Only appears if you've got it switched on. Everything outside the taught Level 1/2 course — trip vocabulary and real words and phrases pulled from photos taken in Japan itself (signs, menus, receipts, announcements), now brought together into one tier rather than the two separate ones ("Trip vocabulary" and "Andrew mode") this used to be split across. Cards work the same way as Level 1/2: tap a category, pick which words to drill (or select them all), then go. The list is alphabetical, currently:</p>
   <ul>
-    <li>Useful words for the trip</li>
-    <li>Food and drink</li>
     <li>Accommodation</li>
-    <li>Money and shopping</li>
-    <li>Directions and navigation</li>
-    <li>Emergency and survival</li>
-    <li>Weather</li>
-    <li>Signage and warnings</li>
+    <li>Airport & flights</li>
+    <li>Emergency & survival</li>
+    <li>Entertainment</li>
+    <li>Food & drink</li>
+    <li>Hotel appliances & machines — has its own reference page grouping words by which device they were actually seen on: air conditioning, TV remote, laundry (the washing machine's own panel plus things like detergent bottle labels), microwave, door lock/key card, toilet/bidet. Lookup-only, not drillable on its own — the words themselves are still scored through the main Hotel appliances category, this is just a filtered, grouped view over that same list. Words that aren't literally on a panel/button/dispenser (payment logistics, warning text, and so on) aren't tagged, so they don't show up here</li>
     <li>Polite tourist phrases</li>
+    <li>Profile & self-introduction words — pulled from a self-introduction/idol-profile card rather than a menu or a sign, split out separately since it's a genuinely different kind of vocabulary</li>
+    <li>Service & shop operations</li>
+    <li>Shopping</li>
+    <li>Signage & warnings</li>
+    <li>Stations & trains</li>
+    <li>Street & neighbourhood — signage and notices run into incidentally while wandering a town on foot (historical plaques, shopfronts, community noticeboards), as opposed to the other categories here which are mostly places gone to on purpose</li>
+    <li>Weather</li>
   </ul>
-  <p>Others will be added here.</p>
-  <p>If you have Trip turned on, trip vocabulary will feed into the collections and into the "random words" tests. If it's turned off you'll never see it.</p>
+  <p>These are genuinely two different kinds of word, sitting together under one toggle: some were curated ahead of time as generally useful for the trip, others were properly encountered and photographed on the trip itself. Each card shows which a given word is. Where a word was seen as part of a longer sentence or sign, that context shows on the drill card itself (and again after answering) since it's just background that might help it stick, not something to test on — and for words with photo evidence, roughly where and when it was photographed. Quite a few of these words only exist as kanji, with no kana form recorded — rather than leaving them undrillable, the app has a per-character reading breakdown for the ones that have been worked out, and an honest explanation on the ones that genuinely don't have a clean one yet (irregular readings, sound changes the matching script doesn't model, and so on).</p>
+  <p>If you have Untaught turned on, this vocabulary will feed into the Collections above, into search, and into the "random words" tests. If it's turned off you'll never see it, in any of those places.</p>
   <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
 
   <h3>Andrew mode</h3>
-  <p>Only appears if you've got it switched on. Whatever bits and pieces I'm testing at the moment. Most things here will eventually move to a proper home in the app, but can still be turned off if you want just the lessons.</p>
-  <ul>
-    <li>Materials — Appliances reference — a lookup-only page (not drillable on its own) grouping words from the Appliances & machines category below by which device they were actually seen on: air conditioning, TV remote, laundry (the washing machine's own panel plus things like detergent bottle labels), microwave, door lock/key card, toilet/bidet. The idea is "my remote has a button that looks like this" recognition rather than a fresh set of things to test on — the words themselves stay in Appliances & machines, this is just a filtered, grouped view over that same list, so nothing's duplicated or scored separately. Words that aren't literally on a panel/button/dispenser (payment logistics, warning text, and so on) aren't tagged, so they don't show up here.</li>
-    <li>Materials — Stations & trains</li>
-    <li>Materials — Airport & flights</li>
-    <li>Materials — Restaurants: Food & menu</li>
-    <li>Materials — Restaurants: Ordering & policy</li>
-    <li>Materials — Shops & everyday purchases</li>
-    <li>Materials — Entertainment & sightseeing</li>
-    <li>Materials — Hotel: Appliances & machines</li>
-    <li>Materials — Hotel: Facilities & stay</li>
-    <li>Materials — Street & neighbourhood — signage and notices run into incidentally while wandering a town on foot (historical plaques, shopfronts, community noticeboards), as opposed to the other Materials buckets which are all places gone to on purpose</li>
-    <li>Reference — Question words — not from the trip or a lesson, pulled from an outside reference source (an Instagram graphic) instead. Also feeds into the "Question words" Collection above alongside the matching lesson words, with no duplication either way</li>
-  </ul>
-  <p>These are real words and phrases pulled from photos I've taken on the trip itself — signs, menus, receipts, announcements — rather than textbook vocabulary. Where a word was seen as part of a longer sentence or sign, that context shows on the drill card itself (and again after answering) since it's just background that might help it stick, not something to test on. Each word also notes roughly where and when it was photographed. Cards work the same way as Level 1/2/Trip: tap a category, pick which words to drill (or select them all), then go.</p>
-  <p>Also two standalone notes pages, linked separately: Japanese sentence structure, and Japanese vs English structure.</p>
+  <p>Only appears if you've got it switched on. Whatever mad scheme I'm testing at the moment, kept separate from Untaught vocabulary above since it's a genuinely different kind of thing — a workbench, not a finished tier. Its last occupant, "Materials" (the photo-sourced vocab), graduated into Untaught vocabulary, so it's currently empty. That's the expected steady state between experiments, not a bug — whatever lands here next is being tried out before it's decided whether it becomes core, or its own gated tier the way Untaught vocabulary did.</p>
 
   <div class="footer">
     <a class="back-link" href="./index.html">← Back to the app</a>
