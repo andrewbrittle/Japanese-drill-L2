@@ -754,8 +754,18 @@
      using the shared .level-filter-row class (hiragana/katakana/numbers/
      counter pills) is untouched - those can have many more pills and
      wrapping is still the right behaviour there. */
-  #vocab-level-filter-row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  #vocab-level-filter-row { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 6px; }
   #vocab-level-filter-row::-webkit-scrollbar { display: none; }
+  /* Slightly tighter than the shared .level-pill padding (18px sides) -
+     four pills (Collections/Level 1/Level 2/Untaught) were just barely
+     wider than the row on a narrow phone (Pixel 10 Pro XL), enough to
+     read as a rendering mistake rather than an intentional scroll. This
+     plus the row's own tighter 6px gap above reclaims enough width to
+     fit all four without the scroll ever engaging on that size screen.
+     Scoped to this row only - every other .level-filter-row (hiragana/
+     katakana/numbers/counters) keeps the default padding, since those
+     wrap onto multiple lines instead and don't have this problem. */
+  #vocab-level-filter-row .level-pill { padding: 6px 14px; }
   /* Each Numbers/Times/Counters section is a single flex child of
      .screen.visible (which only gives direct children a 1rem gap) - without
      their own flex+gap, the group-cards inside a section would sit flush
@@ -775,7 +785,6 @@
     font-family: inherit;
   }
   .money-rate-input:focus { outline: none; border-color: var(--accent); }
-  .money-rate-hint { font-size: 12px; color: var(--text-muted); margin-top: 0.35rem; text-align: center; }
   .money-dir-pills { justify-content: center; margin-top: 0.5rem; }
   /* Second output block within a card (the "with 10% off" line under the
      full-price line on the shopping-cost card) - same sizing standard as
@@ -1048,7 +1057,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260831.018</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.020</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -6882,7 +6891,10 @@ function getAllKanjiFlat() {
 
 function buildRandomKanjiPool() {
   const allKanji = getAllKanjiFlat();
-  const pool = shuffle(allKanji).slice(0, 20);
+  // See the WEIGHTED RANDOM SELECTION entry above kanaScoreClass - same
+  // weighted draw as buildVocabReadingDeck, keyed the kanji way (char+answer,
+  // matching getScoreKey/getItemsAverageScoreKanji).
+  const pool = weightedSampleWithoutReplacement(allKanji, 20, item => selectionWeight(kanaScores[item.char + '|' + item.answer]));
   return pool.map(item => Object.assign({}, item, { options: buildKanjiOptionsFromPool(item, allKanji) }));
 }
 
@@ -8179,6 +8191,53 @@ function confidenceBand(score) {
 
 const CONFIDENCE_BANDS = ['neg3', 'neg2', 'neg1', 'neutral', 'pos1', 'pos2', 'pos3', 'pos4'];
 const SCORE_CLASSES = CONFIDENCE_BANDS.map(b => 'score-' + b);
+
+// WEIGHTED RANDOM SELECTION - SHIPPED (2026-09-01): the random-20 drills
+// (buildVocabReadingDeck, buildRandomKanjiPool) used to draw a plain uniform
+// shuffle().slice(0, 20) - a word missed five times in a row had exactly the
+// same odds of coming up next round as one answered correctly twenty times
+// straight. The per-item confidence score below already existed (it's the
+// same number driving every score-* swatch in the app) but nothing fed it
+// back into what actually gets drilled. This closes that loop: item weight
+// is a function of its own confidence score, so weaker and never-seen items
+// come up more often, without making a well-known word literally impossible
+// to see again. Deliberately NOT applied to the "genuine random N" tile
+// disguise (toggleRandomVocabTiles) - that one's whole point is an honest,
+// unbiased surprise pick, not a study aid, so it keeps its plain shuffle.
+// Time-based decay (a word learned solid a month ago is more due for review
+// than one learned solid yesterday) is a deliberate next step, not this one -
+// there's no last-seen timestamp per item yet to build it on.
+//
+// weightFn maps a score to a weight = 2^(-score): half the weight for every
+// whole point higher (more confident), double for every whole point lower.
+// Never-drilled items are treated as the worst score on the scale (-2, the
+// same floor a losing streak reaches) rather than as neutral, so brand-new
+// words get surfaced promptly instead of waiting behind ones already being
+// actively practiced. Across the full -2..+2 range that's a 16:1 spread
+// between the neediest and the most confident item - enough to meaningfully
+// bias the deck without ever fully retiring a strong item from review.
+function selectionWeight(score) {
+  const s = (score === undefined || score === null) ? -2 : score;
+  return Math.pow(2, -s);
+}
+
+// Efraimidis-Spirakis A-ES algorithm: each item gets a key = random()^(1/w),
+// and the N largest keys win. This is a genuine weighted draw, not a biased
+// shuffle-then-slice - an item with double another's weight really is about
+// twice as likely to be picked, at any weight ratio, not just at the
+// extremes. Falls back to a plain shuffle when the whole pool already fits
+// in n (weighting a full-pool draw would change nothing but the order).
+// Final shuffle of the winners means the deck's own item order doesn't leak
+// which ones were weighted heaviest.
+function weightedSampleWithoutReplacement(items, n, weightFn) {
+  if (items.length <= n) return shuffle([...items]);
+  const keyed = items.map(item => {
+    const w = Math.max(weightFn(item), 0.0001);
+    return { item, key: Math.pow(Math.random(), 1 / w) };
+  });
+  keyed.sort((a, b) => b.key - a.key);
+  return shuffle(keyed.slice(0, n).map(k => k.item));
+}
 
 function kanaScoreClass(key) {
   if (!(key in kanaScores)) return ''; // never drilled — no shading at all
@@ -11667,7 +11726,10 @@ function startRandomMatch() {
 }
 
 function buildVocabReadingDeck(items, groupKey) {
-  const pool = shuffle([...items]).slice(0, 20);
+  // See the WEIGHTED RANDOM SELECTION entry above kanaScoreClass - weaker
+  // and never-drilled items come up more often than well-known ones, rather
+  // than every item in the pool having identical odds.
+  const pool = weightedSampleWithoutReplacement([...items], 20, item => selectionWeight(kanaScores[item.jp + '|' + item.en]));
   return pool.map(item => {
     const correct = item.romaji;
     const distractorItems = pickDistractorItems(items, item, 3);
