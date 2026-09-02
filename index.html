@@ -1057,7 +1057,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.021</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.023</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -1967,6 +1967,24 @@ const DATA = {
     {char:'天気',answer:'weather',disp:'kanji'},
     {char:'気',answer:'spirit / feeling',disp:'kanji'},
     {char:'天',answer:'heavens / sky',disp:'kanji'},
+    // SEASONS (2026-09-01) - moved here from kanji-general at Andrew's call:
+    // this section already blends nature/weather/body (雨/晴れ/曇り/暑い/
+    // 寒い/雪/天気 above are weather kanji sitting in "Nature" too), so
+    // seasons read as the same family, not a general-vocab leftover. All
+    // four checked individually on jlptsensei.com: 春/夏/秋/冬 are
+    // consistently N4 kanji despite はる/なつ/あき/ふゆ being basic N5
+    // vocabulary - same "word is easy, character is a notch harder" split
+    // as the N4 colours in kanji-general, so altForm carries the kana as
+    // the "also written" note, same convention. Added alongside matching
+    // vocab-weather entries the same day (see SEASONS comment there) -
+    // unlike the existing weather kanji just above, which test the bare
+    // character with no altForm at all, these keep the kana note since
+    // that's the convention this specific addition was built under; not
+    // worth relitigating the older items to match.
+    {char:'春',answer:'spring',disp:'kanji',altForm:'はる'},
+    {char:'夏',answer:'summer',disp:'kanji',altForm:'なつ'},
+    {char:'秋',answer:'autumn',disp:'kanji',altForm:'あき'},
+    {char:'冬',answer:'winter',disp:'kanji',altForm:'ふゆ'},
   ],
   'kanji-places': [
     {char:'駅',answer:'station',disp:'survival'},
@@ -4412,8 +4430,8 @@ const VOCAB = {
   'vocab-weather': {
     level: 'untaught',
     hasReference: true,
-    label: 'Weather',
-    chars: 'あめ ゆき あつい…',
+    label: 'Weather and seasons',
+    chars: 'あめ ゆき はる…',
     tagQuery: 'weather',
     items: [
       {jp:'くもり', romaji:'kumori', en:'cloudy', tags:['weather','untaught','curated'], altForm:'曇り', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
@@ -4425,6 +4443,22 @@ const VOCAB = {
       {jp:'はれ', romaji:'hare', en:'sunny / clear', tags:['weather','untaught','curated'], altForm:'晴れ', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'きおん', romaji:'kion', en:'temperature', tags:['weather','untaught','curated'], altForm:'気温', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
       {jp:'かぜ', romaji:'kaze', en:'wind', tags:['weather','untaught','curated'], altForm:'風', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-08-01'},
+      // SEASONS (2026-09-01) - folded into Weather rather than getting their
+      // own card: 4 words felt too thin on their own, and "weather and
+      // seasons" is a standard, natural pairing (same thematic unit most
+      // Japanese courses group them into). Extra `seasons` tag alongside
+      // `weather` so they stay individually queryable later if that's ever
+      // useful, but tagQuery: 'weather' above already picks them up as-is -
+      // no query change needed, this is purely additive. altForm/
+      // altIsStandard follow the same convention as every other word in
+      // this category (kana tested, kanji revealed as "Normally shown as"
+      // after answering) - matches the kanji-general colours entries'
+      // finding that all four season kanji are N4 (word itself is N5), same
+      // jlptsensei.com verification approach, see that comment for detail.
+      {jp:'はる', romaji:'haru', en:'spring', tags:['weather','seasons','untaught','curated'], altForm:'春', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-09-01'},
+      {jp:'なつ', romaji:'natsu', en:'summer', tags:['weather','seasons','untaught','curated'], altForm:'夏', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-09-01'},
+      {jp:'あき', romaji:'aki', en:'autumn', tags:['weather','seasons','untaught','curated'], altForm:'秋', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-09-01'},
+      {jp:'ふゆ', romaji:'fuyu', en:'winter', tags:['weather','seasons','untaught','curated'], altForm:'冬', altIsStandard:true, source: {location: 'Curated - added as a useful word (no specific sighting logged)'}, dateAdded:'2026-09-01'},
     ],
   },
   'vocab-signage-warnings': {
