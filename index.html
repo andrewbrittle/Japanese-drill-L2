@@ -1000,7 +1000,7 @@
 
     <div style="text-align:center; margin-top:0.9rem; margin-bottom:0.4rem; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
       <a href="./instructions.html" target="_blank" style="display:inline-block; font-size:13px; font-weight:600; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); border-radius:99px; padding:8px 18px;">How this app works →</a>
-      <a href="./changelog.html" target="_blank" style="display:inline-block; font-size:13px; font-weight:600; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); border-radius:99px; padding:8px 18px;">What's new →</a>
+      <a href="./changelog.html" target="_blank" id="whats-new-link" style="display:inline-block; font-size:13px; font-weight:600; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); border-radius:99px; padding:8px 18px; background:transparent;">What's new →</a>
     </div>
 
     <div class="group-card" id="theme-toggle-card" onclick="toggleTheme()" style="cursor:pointer;">
@@ -1076,7 +1076,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.027</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.028</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -8083,13 +8083,24 @@ function applyAllSettingsUI() {
 
 function showSettingsScreen() {
   // Opening Settings at all is what clears the what's-new flag - reading
-  // the changelog itself is optional (see the "What's new →" link inside
-  // this screen), the cog going green is just meant to say "there's
-  // something to notice", not "you owe us a read receipt".
-  if (appSettings.lastSeenChangelog !== LATEST_CHANGELOG_ENTRY) {
+  // the changelog itself is optional, the cog going green is just meant to
+  // say "there's something to notice", not "you owe us a read receipt".
+  // hadUpdate is captured BEFORE clearing, since the clear below would
+  // otherwise make every check afterwards say "already seen" - it's what
+  // lets the "What's new" link itself light up green for this one visit
+  // (see below), so there's still something on screen pointing at it once
+  // the cog itself has already reverted to normal.
+  const hadUpdate = appSettings.lastSeenChangelog !== LATEST_CHANGELOG_ENTRY;
+  if (hadUpdate) {
     appSettings.lastSeenChangelog = LATEST_CHANGELOG_ENTRY;
     saveSettings();
     applySettingsButtonUpdateFlag();
+  }
+  const whatsNewLink = document.getElementById('whats-new-link');
+  if (whatsNewLink) {
+    whatsNewLink.style.color = hadUpdate ? 'var(--green)' : 'var(--text-muted)';
+    whatsNewLink.style.borderColor = hadUpdate ? 'var(--green)' : 'var(--border)';
+    whatsNewLink.style.background = hadUpdate ? 'var(--green-dim)' : 'transparent';
   }
   showScreen('settings');
 }
