@@ -1016,6 +1016,14 @@
       <div class="toggle" id="hint-penalty-toggle"></div>
     </div>
 
+    <div class="group-card" id="decay-colours-toggle-card" onclick="toggleDecayAffectsColours()" style="cursor:pointer;">
+      <div class="group-info">
+        <div class="group-name">Fade confidence colours over time</div>
+        <div class="group-count">Confidence scores now quietly fade back toward neutral the longer a word goes unpractised — never past neutral, and never for words you've actually got wrong. This always affects which words come up more often in random drills; this setting only controls whether it also affects the colours shown on tiles and cards. Off by default, so colours only ever change when you're actually tested</div>
+      </div>
+      <div class="toggle" id="decay-colours-toggle"></div>
+    </div>
+
     <div class="group-card" id="offline-toggle-card" onclick="toggleWorkOffline()" style="cursor:pointer;">
       <div class="group-info">
         <div class="group-name">Work offline</div>
@@ -1057,7 +1065,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.023</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.025</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -6744,7 +6752,7 @@ function buildVocabTileGrid(categoryKey) {
     if (categoryKey === 'vocab-colours') {
       tile.style.borderWidth = '3px';
       if (!isSelected) {
-        const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
+        const borderColor = colourBorderStyle(item.en, displayScore(kanaScores[scoreKey]));
         if (borderColor) tile.style.borderColor = borderColor;
       }
     } else if (item.level !== undefined) {
@@ -6771,7 +6779,7 @@ function buildVocabTileGrid(categoryKey) {
 function applyRestingTileBorder(categoryKey, item, tileEl) {
   if (categoryKey === 'vocab-colours') {
     const scoreKey = item.jp + '|' + item.en;
-    const borderColor = colourBorderStyle(item.en, kanaScores[scoreKey]);
+    const borderColor = colourBorderStyle(item.en, displayScore(kanaScores[scoreKey]));
     if (borderColor) tileEl.style.borderColor = borderColor;
   } else if (item.level !== undefined) {
     tileEl.style.borderColor = LEVEL_BORDER_COLORS[itemColorKey(item)] || '';
@@ -6952,10 +6960,11 @@ function getAllKanjiFlat() {
 
 function buildRandomKanjiPool() {
   const allKanji = getAllKanjiFlat();
-  // See the WEIGHTED RANDOM SELECTION entry above kanaScoreClass - same
-  // weighted draw as buildVocabReadingDeck, keyed the kanji way (char+answer,
-  // matching getScoreKey/getItemsAverageScoreKanji).
-  const pool = weightedSampleWithoutReplacement(allKanji, 20, item => selectionWeight(kanaScores[item.char + '|' + item.answer]));
+  // See the WEIGHTED RANDOM SELECTION and DECAY entries above kanaScoreClass -
+  // same weighted draw as buildVocabReadingDeck, keyed the kanji way
+  // (char+answer, matching getScoreKey/getItemsAverageScoreKanji), always
+  // reading the decayed score regardless of the colours setting.
+  const pool = weightedSampleWithoutReplacement(allKanji, 20, item => selectionWeight(decayedScore(kanaScores[item.char + '|' + item.answer])));
   return pool.map(item => Object.assign({}, item, { options: buildKanjiOptionsFromPool(item, allKanji) }));
 }
 
@@ -7750,7 +7759,7 @@ const SETTINGS_KEY = 'jpDrillSettings';
 // than a fetch that can fail or behave differently offline. 215 was
 // approximately the mid-market GBP/JPY rate as of build time (July 2026);
 // it'll drift, which is exactly why it's an editable field, not a constant.
-let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showUntaught: null, gbpJpyRate: 215 };
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showUntaught: null, gbpJpyRate: 215, decayAffectsColours: false };
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
@@ -7906,6 +7915,24 @@ function toggleHintPenalty() {
   applyHintPenaltyUI();
 }
 
+// See displayScore() / decayedScore() near confidenceBand below for what
+// this actually gates - decay itself always runs (it's what drill
+// selection reads), this only decides whether colours read the decayed
+// value or the raw last-measured one. No live re-render of colours already
+// on screen when toggled - same convention as every other display setting
+// here (showKanji, etc.): it takes effect next time that screen renders,
+// not retroactively on the one you're looking at.
+function applyDecayAffectsColoursUI() {
+  const card = document.getElementById('decay-colours-toggle-card');
+  if (card) card.classList.toggle('selected', appSettings.decayAffectsColours);
+}
+
+function toggleDecayAffectsColours() {
+  appSettings.decayAffectsColours = !appSettings.decayAffectsColours;
+  saveSettings();
+  applyDecayAffectsColoursUI();
+}
+
 // Hidden entirely (not just greyed out) until switched on, so nobody
 // stumbles onto them before deciding to try it. Off by default, matching
 // how this app treats other work still finding its shape (e.g. Kanji
@@ -8008,6 +8035,7 @@ function applyAllSettingsUI() {
   applyTheme();
   applyShowKanjiVisibility();
   applyHintPenaltyUI();
+  applyDecayAffectsColoursUI();
   applyWorkOfflineUI();
   applyShowAndrewModeVisibility();
   applyShowUntaughtVisibility();
@@ -8045,6 +8073,24 @@ const SCORE_KEY_RENAMES = [
 SCORE_KEY_RENAMES.forEach(([oldKey, newKey]) => {
   if (oldKey in kanaScores && !(newKey in kanaScores)) {
     kanaScores[newKey] = kanaScores[oldKey];
+  }
+});
+
+// One-off migration (2026-09-01): every entry used to be a bare number.
+// DECAY (see decayedScore() below) needs to know when a score was last
+// actually earned, not just what it was, so entries are now
+// {score, lastSeen} instead. lastSeen defaults to right now for anything
+// migrated here, deliberately - there's no way to know when an existing
+// score was really last touched, and defaulting to "now" means nobody's
+// colours or drill weighting shift the moment this ships; decay only ever
+// starts counting forward from here. Runs before recordKanaResult ever
+// writes a new-shape entry, so by the time anything reads kanaScores[key]
+// elsewhere in the app, every entry (old or new) is already in the new
+// shape - no scattered "is this the old or new shape" checks needed
+// anywhere else in the codebase.
+Object.keys(kanaScores).forEach((key) => {
+  if (typeof kanaScores[key] === 'number') {
+    kanaScores[key] = { score: kanaScores[key], lastSeen: Date.now() };
   }
 });
 
@@ -8205,13 +8251,19 @@ function recordKanaResult(q, correct) {
   // if the hint/speak button was used first - wrong answers always cost the
   // full amount regardless, since that part was never in question.
   const increment = (correct && appSettings.hintPenalty && hintUsedThisQuestion) ? correctIncrement / 2 : correctIncrement;
-  const cur = kanaScores[key] || 0;
+  const cur = kanaScores[key] ? kanaScores[key].score : 0;
   const next = correct ? Math.min(2, cur + increment) : Math.max(-2, cur - wrongIncrement);
   // Rounding to 1dp used to be safe when 0.1 was the smallest possible step,
   // but the hint-penalty's 0.05 half-step for numbers/time (and now the 0.25
   // hint-penalty half-step for kana/kanji/word items) would round straight
   // back up at that precision - 2dp preserves both correctly.
-  kanaScores[key] = Math.round(next * 100) / 100;
+  //
+  // lastSeen stamped fresh on every real answer (2026-09-01) - this is the
+  // "real evidence" DECAY (see decayedScore() below) measures staleness
+  // against. A genuine answer is the only thing that ever moves it, in
+  // either direction - decay itself never writes back to kanaScores, it
+  // only computes a derived value on read (see decayedScore/displayScore).
+  kanaScores[key] = { score: Math.round(next * 100) / 100, lastSeen: Date.now() };
   saveKanaScores();
 }
 
@@ -8266,8 +8318,9 @@ const SCORE_CLASSES = CONFIDENCE_BANDS.map(b => 'score-' + b);
 // disguise (toggleRandomVocabTiles) - that one's whole point is an honest,
 // unbiased surprise pick, not a study aid, so it keeps its plain shuffle.
 // Time-based decay (a word learned solid a month ago is more due for review
-// than one learned solid yesterday) is a deliberate next step, not this one -
-// there's no last-seen timestamp per item yet to build it on.
+// than one learned solid yesterday) was a deliberate next step, not this one,
+// at the time this shipped - see the DECAY entry below for where it landed
+// once kanaScores actually had a last-seen timestamp to build it on.
 //
 // weightFn maps a score to a weight = 2^(-score): half the weight for every
 // whole point higher (more confident), double for every whole point lower.
@@ -8300,9 +8353,77 @@ function weightedSampleWithoutReplacement(items, n, weightFn) {
   return shuffle(keyed.slice(0, n).map(k => k.item));
 }
 
+// DECAY - SHIPPED (2026-09-01): closes the gap the WEIGHTED RANDOM
+// SELECTION entry above flagged as a deliberate next step, not that one -
+// "a word learned solid a month ago is more due for review than one learned
+// solid yesterday" now actually happens. kanaScores[key] is never
+// overwritten by decay itself - it stays {score, lastSeen}, the raw truth
+// as of the last real answer (see recordKanaResult). This computes a
+// derived "as of right now" value on top of that, which selection weight
+// always reads, and which colour display reads only when
+// appSettings.decayAffectsColours is on (see displayScore() below and its
+// call sites - kanaScoreClass, the numbers/times/counters consistency
+// swatches, the two Colours category tile-border sites, and the
+// items-average functions feeding category swatches).
+//
+// Asymmetric by design, worked through with Andrew before building this:
+//   - Positive scores decay toward zero, exponentially, halving every
+//     DECAY_HALF_LIFE_DAYS. Tuned once actually felt out (2026-09-01): the
+//     real lever isn't the half-life itself but how long a maxed-out word
+//     (score 2) takes to visibly drop its FIRST shade band, since the 8
+//     bands are discrete and the score moves continuously underneath them -
+//     that's ~19% of one half-life (2 needs to fall below 1.75 to leave the
+//     top band, and 2 * 2^(-0.1926) = 1.75). The first half-life tried (21
+//     days) meant a visible fade after only ~4 days of neglect, which felt
+//     like active pressure rather than a gentle nudge; 10 days felt like
+//     the right amount of slack, which is what 50 gives. Landed at the
+//     upper end of the range that math suggested (a rough "words needed per
+//     day to keep the whole pool fresh" sanity check put the reasonable
+//     range around 40-65 days for the current ~1293-word pool) rather than
+//     the middle, deliberately - L3 only adds more words to maintain, never
+//     fewer, so erring toward more slack now ages better than erring toward
+//     less. Easy to retune again once it's been lived with for longer.
+//     Decay represents fading CERTAINTY, not demonstrated
+//     failure, so it erodes toward neutral (0, "no current evidence either
+//     way") and never overshoots past it - the exponential form makes that
+//     automatic, it asymptotically approaches 0 and mathematically cannot
+//     cross it.
+//   - Negative scores never decay. A negative score is evidence of actual
+//     measured struggle, not just staleness - there's no fading certainty
+//     for time to erode, since the certainty here is "this was gotten
+//     wrong", which doesn't become less true by not being asked again.
+//     Only a real new answer moves it, in either direction.
+//   - Standard SRS models (SM-2, FSRS) don't have this problem to solve -
+//     they track a single unipolar "retrievability" (0 to 1), which is the
+//     direct equivalent of the positive-decay case here, and floors at 0
+//     the same way. There's no established precedent for the negative side
+//     because those models have no negative state at all; this app's
+//     bipolar score (tracking demonstrated difficulty as a distinct signal
+//     from staleness) is the reason the question exists here in the first
+//     place, not something borrowed from elsewhere.
+const DECAY_HALF_LIFE_DAYS = 50;
+function decayedScore(entry) {
+  if (!entry) return entry; // never drilled - nothing to decay, caller's own "no entry" handling is unaffected
+  if (entry.score <= 0 || !entry.lastSeen) return entry.score;
+  const daysSince = (Date.now() - entry.lastSeen) / 86400000;
+  if (daysSince <= 0) return entry.score;
+  return entry.score * Math.pow(2, -daysSince / DECAY_HALF_LIFE_DAYS);
+}
+
+// Picks which version of a stored entry's score to actually show, per the
+// decayAffectsColours setting - decayedScore() when it's on, the raw
+// last-measured value when it's off. Drill-selection weight always calls
+// decayedScore() directly instead of this (see buildVocabReadingDeck/
+// buildRandomKanjiPool) - what gets drilled more and what colour gets shown
+// are two separate questions, and only the second one is a matter of taste.
+function displayScore(entry) {
+  if (!entry) return entry;
+  return appSettings.decayAffectsColours ? decayedScore(entry) : entry.score;
+}
+
 function kanaScoreClass(key) {
   if (!(key in kanaScores)) return ''; // never drilled — no shading at all
-  const band = confidenceBand(kanaScores[key]);
+  const band = confidenceBand(displayScore(kanaScores[key]));
   return band ? 'score-' + band : '';
 }
 
@@ -8334,7 +8455,7 @@ function getItemsAverageScore(items) {
   let total = 0, count = 0;
   items.forEach(item => {
     const key = item.jp + '|' + item.en;
-    if (key in kanaScores) { total += kanaScores[key]; count++; }
+    if (key in kanaScores) { total += displayScore(kanaScores[key]); count++; }
   });
   return count ? total / count : null;
 }
@@ -8353,7 +8474,7 @@ function getItemsAverageScoreKanji(items) {
   let total = 0, count = 0;
   items.forEach(item => {
     const key = item.char + '|' + item.answer;
-    if (key in kanaScores) { total += kanaScores[key]; count++; }
+    if (key in kanaScores) { total += displayScore(kanaScores[key]); count++; }
   });
   return count ? total / count : null;
 }
@@ -9551,17 +9672,17 @@ function updateNumberTimeSwatches() {
   const counterSwatch = document.getElementById('counters-score-swatch');
   if (numSwatch) {
     numSwatch.classList.remove(...SCORE_CLASSES);
-    const cls = continuousScoreClass(kanaScores['numbers-consistency']);
+    const cls = continuousScoreClass(displayScore(kanaScores['numbers-consistency']));
     if (cls) numSwatch.classList.add(cls);
   }
   if (timeSwatch) {
     timeSwatch.classList.remove(...SCORE_CLASSES);
-    const cls = continuousScoreClass(kanaScores['times-consistency']);
+    const cls = continuousScoreClass(displayScore(kanaScores['times-consistency']));
     if (cls) timeSwatch.classList.add(cls);
   }
   if (counterSwatch) {
     counterSwatch.classList.remove(...SCORE_CLASSES);
-    const cls = continuousScoreClass(kanaScores['counters-consistency']);
+    const cls = continuousScoreClass(displayScore(kanaScores['counters-consistency']));
     if (cls) counterSwatch.classList.add(cls);
   }
 }
@@ -11787,10 +11908,11 @@ function startRandomMatch() {
 }
 
 function buildVocabReadingDeck(items, groupKey) {
-  // See the WEIGHTED RANDOM SELECTION entry above kanaScoreClass - weaker
-  // and never-drilled items come up more often than well-known ones, rather
-  // than every item in the pool having identical odds.
-  const pool = weightedSampleWithoutReplacement([...items], 20, item => selectionWeight(kanaScores[item.jp + '|' + item.en]));
+  // See the WEIGHTED RANDOM SELECTION and DECAY entries above kanaScoreClass -
+  // weaker, never-drilled, and stale items come up more often than
+  // well-known, recently-practiced ones, rather than every item in the pool
+  // having identical odds.
+  const pool = weightedSampleWithoutReplacement([...items], 20, item => selectionWeight(decayedScore(kanaScores[item.jp + '|' + item.en])));
   return pool.map(item => {
     const correct = item.romaji;
     const distractorItems = pickDistractorItems(items, item, 3);
