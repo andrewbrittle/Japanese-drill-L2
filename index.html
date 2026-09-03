@@ -148,6 +148,16 @@
   }
   .settings-btn:hover { border-color: var(--border-hover); color: var(--text); }
   .settings-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+  /* WHAT'S NEW FLAG (2026-09-01) - green instead of the usual gold .active
+     colour, deliberately reusing the same green already used for a correct
+     answer elsewhere, so it reads as "something to notice", not an error
+     state or a second "active screen" indicator. Cleared (see
+     showSettingsScreen()) the moment Settings is actually opened - reading
+     the changelog itself is optional, just noticing the cog and tapping it
+     is enough to clear it. Mutually exclusive with .active in practice:
+     the flag clears in the same click that makes the screen active, so
+     the two are never both painting the cog at once. */
+  .settings-btn.has-update { background: var(--green-dim); border-color: var(--green); color: var(--green); }
 
   .nav-pills { display: flex; gap: 6px; overflow-x: auto; flex-shrink: 0; scrollbar-width: none; }
   .nav-pills::-webkit-scrollbar { display: none; }
@@ -988,8 +998,9 @@
     <div class="settings-title">Settings</div>
     <div class="settings-sub">All data and settings are stored on this device and never go anywhere else.</div>
 
-    <div style="text-align:center; margin-top:0.9rem; margin-bottom:0.4rem;">
+    <div style="text-align:center; margin-top:0.9rem; margin-bottom:0.4rem; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
       <a href="./instructions.html" target="_blank" style="display:inline-block; font-size:13px; font-weight:600; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); border-radius:99px; padding:8px 18px;">How this app works →</a>
+      <a href="./changelog.html" target="_blank" style="display:inline-block; font-size:13px; font-weight:600; color:var(--text-muted); text-decoration:none; border:1px solid var(--border); border-radius:99px; padding:8px 18px;">What's new →</a>
     </div>
 
     <div class="group-card" id="theme-toggle-card" onclick="toggleTheme()" style="cursor:pointer;">
@@ -1065,7 +1076,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.026</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.027</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -7759,7 +7770,29 @@ const SETTINGS_KEY = 'jpDrillSettings';
 // than a fetch that can fail or behave differently offline. 215 was
 // approximately the mid-market GBP/JPY rate as of build time (July 2026);
 // it'll drift, which is exactly why it's an editable field, not a constant.
-let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showUntaught: null, gbpJpyRate: 215, decayAffectsColours: false };
+let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty: false, workOffline: false, showAndrewMode: false, showUntaught: null, gbpJpyRate: 215, decayAffectsColours: false, lastSeenChangelog: null };
+
+// WHAT'S NEW FLAG (2026-09-01) - HOW TO ADD AN ENTRY, so this stays
+// consistent across sessions and not just something Andrew has to remember
+// to ask for correctly each time:
+//   1. Add a new dated <div class="entry"> block at the TOP of
+//      changelog.html (most recent first), written the way the two
+//      existing entries there are - plain language, what changed and why
+//      someone would care, not an internal diff. Curated, not automatic -
+//      routine fixes/tidying don't get their own line, only things
+//      actually worth telling classmates about.
+//   2. Bump LATEST_CHANGELOG_ENTRY below to match that entry's date (or
+//      some other value that changes - the only requirement is that it's
+//      different from whatever it was before). This is the ONLY thing that
+//      triggers the green settings-cog flag (.settings-btn.has-update) -
+//      it deliberately does NOT track the version stamp in the footer,
+//      which bumps on every small edit, far more often than there's
+//      anything worth announcing.
+// That's it - two edits, always together. Anyone whose stored
+// lastSeenChangelog doesn't match this value sees the flag until they open
+// Settings, which clears it (see showSettingsScreen()) - reading the
+// changelog itself is optional, opening Settings is what counts as "noticed".
+const LATEST_CHANGELOG_ENTRY = '2026-09-01';
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
@@ -7933,6 +7966,12 @@ function toggleDecayAffectsColours() {
   applyDecayAffectsColoursUI();
 }
 
+// See LATEST_CHANGELOG_ENTRY above appSettings for the full explanation.
+function applySettingsButtonUpdateFlag() {
+  const btn = document.getElementById('settings-btn');
+  if (btn) btn.classList.toggle('has-update', appSettings.lastSeenChangelog !== LATEST_CHANGELOG_ENTRY);
+}
+
 // Hidden entirely (not just greyed out) until switched on, so nobody
 // stumbles onto them before deciding to try it. Off by default, matching
 // how this app treats other work still finding its shape (e.g. Kanji
@@ -8039,9 +8078,19 @@ function applyAllSettingsUI() {
   applyWorkOfflineUI();
   applyShowAndrewModeVisibility();
   applyShowUntaughtVisibility();
+  applySettingsButtonUpdateFlag();
 }
 
 function showSettingsScreen() {
+  // Opening Settings at all is what clears the what's-new flag - reading
+  // the changelog itself is optional (see the "What's new →" link inside
+  // this screen), the cog going green is just meant to say "there's
+  // something to notice", not "you owe us a read receipt".
+  if (appSettings.lastSeenChangelog !== LATEST_CHANGELOG_ENTRY) {
+    appSettings.lastSeenChangelog = LATEST_CHANGELOG_ENTRY;
+    saveSettings();
+    applySettingsButtonUpdateFlag();
+  }
   showScreen('settings');
 }
 

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>What's new — Japanese Drill</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --text: #f8f6f2;
+    --text-muted: rgba(248,246,242,0.66);
+    --text-dim: rgba(248,246,242,0.42);
+    --accent: #e8c97a;
+    --accent-dim: rgba(232,201,122,0.12);
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f5f0;
+    --surface: #ffffff;
+    --surface2: #efece4;
+    --text: #1a1a1a;
+    --text-muted: rgba(26,26,26,0.66);
+    --text-dim: rgba(26,26,26,0.45);
+    --accent: #a9740f;
+    --accent-dim: rgba(169,116,15,0.12);
+    --border: rgba(0,0,0,0.10);
+    --border-hover: rgba(0,0,0,0.20);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.55;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 24px 20px 64px; }
+  .back-link {
+    display: inline-block; font-size: 13px; font-weight: 600; color: var(--text-muted);
+    text-decoration: none; border: 1px solid var(--border); border-radius: 99px;
+    padding: 6px 14px; margin-bottom: 20px;
+  }
+  .back-link:hover { border-color: var(--border-hover); color: var(--text); }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  h1 span { color: var(--accent); }
+  .intro { font-size: 14.5px; color: var(--text-muted); margin-bottom: 28px; }
+  .entry {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 14px;
+  }
+  .entry-date {
+    font-size: 12px; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 8px;
+  }
+  .entry ul { margin: 0; padding-left: 20px; }
+  .entry li { font-size: 14.5px; color: var(--text-muted); margin-bottom: 6px; }
+  .entry li:last-child { margin-bottom: 0; }
+  .footer { margin-top: 32px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="./index.html">← Back to the app</a>
+
+  <h1>What's <span>new</span></h1>
+  <p class="intro">
+    The most recent changes will be listed first. Not every small fix makes
+    the list — just the bits actually worth knowing about.
+  </p>
+
+  <div class="entry">
+    <div class="entry-date">1 September 2026</div>
+    <ul>
+      <li>Drilling now leans toward whichever words you're weaker on (or haven't seen yet), instead of every word having exactly the same odds of coming up — so the random tests should start feeling more useful over time rather than just repeating whatever you already know.</li>
+      <li>New setting: confidence colours can optionally fade back toward neutral the longer a word goes unpractised, so it's a nudge that a word might be worth revisiting rather than a permanent grade. Off by default — turn it on in Settings if you want it.</li>
+      <li>Weather now includes the four seasons (spring/summer/autumn/winter), and the Kanji section picked up the basic colour and season characters it was missing.</li>
+    </ul>
+  </div>
+
+  <div class="entry">
+    <div class="entry-date">31 August 2026</div>
+    <ul>
+      <li>Trip vocabulary and Andrew's old "Materials" content merged into one "Untaught" tier, with its own pill and toggle — same content as before, just one switch instead of two.</li>
+      <li>Food & drink split into five smaller cards (Food, Drink, Dining phrases, Food descriptions, Preparation & cooking) instead of one big 218-word pile, so multiple-choice options make more sense.</li>
+      <li>Fixed a couple of mobile layout niggles — the Untaught pill wrapping onto its own line, and cramped spacing on wrapped grammar labels.</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    <a class="back-link" href="./index.html">← Back to the app</a>
+  </div>
+</div>
+<script>
+  // Match whichever theme the app itself is currently set to, since this page
+  // shares localStorage with index.html on the same origin.
+  try {
+    const s = JSON.parse(localStorage.getItem('jpDrillSettings') || '{}');
+    if (s.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
+  } catch (e) {}
+</script>
+</body>
+</html>
