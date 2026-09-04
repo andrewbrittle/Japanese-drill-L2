@@ -1076,7 +1076,7 @@
     </div>
 
     <div style="text-align:center; font-size:12px; color:var(--accent); margin-top:0.75rem;">Any problems: Andrew 07973 835165</div>
-    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260901.028</div>
+    <div style="text-align:center; font-size:12px; font-weight:600; color:var(--text-dim); margin-top:0.75rem;">v260904.001</div>
   </div>
 
   <!-- Katakana settings screen -->
@@ -5696,15 +5696,29 @@ const THEMES = {
   // does - a placement decision, not just a tagging one, left for later).
   // Nothing deleted: every item still physically lives in its original
   // category, only the standalone Food & drink tile is gone.
+  //
+  // CONSOLIDATED (2026-09-03) - the "left for later" above is now done, on
+  // Andrew's go-ahead ("now the big changes have happened we can do this
+  // kind of consolidation"). theme-food and theme-drink only (the two that
+  // actually had taught overlap) had their `food-drink` AND-condition
+  // dropped - bare `food-type`/`drink` now, same as Core grammar/Question
+  // words already do for their own cross-tier tags. Verified directly: this
+  // pulls in exactly the 9 words named above (6 into Food, 3 into Drink)
+  // and nothing else - no other item anywhere carries food-type or drink
+  // without also carrying food-drink. Food goes 128→134, Drink 16→19; still
+  // Untaught-tab-only cards for now (a taught word appearing there reads
+  // fine - "this word you already know also shows up in the wild" - so no
+  // placement change needed after all). Dining phrases/descriptions/
+  // preparation are untouched: no taught words carry those three tags.
   'theme-food': {
     label: 'Food',
     chars: 'たべもの ラーメン すし…',
-    tagQuery: ['food-drink', 'food-type'],
+    tagQuery: 'food-type',
   },
   'theme-drink': {
     label: 'Drink',
     chars: 'おちゃ さけ ウーロンちゃ…',
-    tagQuery: ['food-drink', 'drink'],
+    tagQuery: 'drink',
   },
   'theme-dining-phrases': {
     label: 'Dining phrases',
@@ -7792,7 +7806,7 @@ let appSettings = { theme: 'dark', showKanji: true, showExtra: true, hintPenalty
 // lastSeenChangelog doesn't match this value sees the flag until they open
 // Settings, which clears it (see showSettingsScreen()) - reading the
 // changelog itself is optional, opening Settings is what counts as "noticed".
-const LATEST_CHANGELOG_ENTRY = '2026-09-01';
+const LATEST_CHANGELOG_ENTRY = '2026-09-04';
 try {
   const savedSettings = JSON.parse(localStorage.getItem(SETTINGS_KEY));
   if (savedSettings && typeof savedSettings === 'object') {
