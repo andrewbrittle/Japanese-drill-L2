@@ -1,0 +1,1889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bucharest &amp; Sofia — 26 Oct to 1 Nov</title>
+<script>
+  (function(){
+    var theme = null;
+    try { theme = localStorage.getItem('tripTheme'); } catch(e){}
+    if (!theme){
+      var m = location.search.match(/[?&]theme=(light|dark)/);
+      if (m) theme = m[1];
+    }
+    if (theme) document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  :root{
+    --bg:#14181C;
+    --surface:#1D242A;
+    --surface-hi:#262F37;
+    --line:#313B43;
+    --rust:#BE5F35;
+    --rust-dim:#5A3324;
+    --rust-text:#F0C4A8;
+    --rust-border:#4A2E22;
+    --gold:#D4A64C;
+    --gold-dim:#5C4A26;
+    --gold-text:#F0D999;
+    --gold-border:#4A3D22;
+    --text:#F3EEE3;
+    --text-dim:#A3AFB8;
+    --text-faint:#7C8A94;
+    --toggle-bg:#262F37;
+    --toggle-icon:#D4A64C;
+    --dropdown-border:#6B7A87;
+    --dropdown-shadow:0 12px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05);
+    --flight-bg:#132A20;
+    --flight-border:#3FA06B;
+    --flight-icon:#7FDDA5;
+    --hotel-bg:#241D14;
+    --hotel-border:#B08838;
+    --hotel-icon:#E4BE6F;
+    --status-blue:#5B9BD5;
+    --status-skip:#6E7A85;
+    --cat-rose:#D98BAE;
+    --cat-teal:#5FC2BC;
+    --cat-wood:#C99A6B;
+    --cat-sky:#7FB2DA;
+    --cat-lavender:#B79FD9;
+    color-scheme: dark;
+  }
+
+  html[data-theme="light"]{
+    --bg:#F6F1E6;
+    --surface:#FFFFFF;
+    --surface-hi:#F1EADC;
+    --line:#E3D9C6;
+    --rust:#A8501F;
+    --rust-dim:#F1DAC3;
+    --rust-text:#8C3E17;
+    --rust-border:#E3C6A8;
+    --gold:#A9791F;
+    --gold-dim:#F3E6BE;
+    --gold-text:#7A5813;
+    --gold-border:#E3CE8F;
+    --text:#241F18;
+    --text-dim:#5C5042;
+    --text-faint:#7A6F60;
+    --toggle-bg:#FFFFFF;
+    --toggle-icon:#A9791F;
+    --dropdown-border:#E3D9C6;
+    --dropdown-shadow:0 8px 24px rgba(0,0,0,.18);
+    --flight-bg:#E3F3EA;
+    --flight-border:#2F7D4F;
+    --flight-icon:#1F6E45;
+    --hotel-bg:#FBF2DF;
+    --hotel-border:#A9791F;
+    --hotel-icon:#7A5813;
+    --status-blue:#2F6EA8;
+    --status-skip:#6B7075;
+    --cat-rose:#A8447A;
+    --cat-teal:#227A73;
+    --cat-wood:#8A5A2E;
+    --cat-sky:#3E6E93;
+    --cat-lavender:#6B4FA0;
+    color-scheme: light;
+  }
+
+  body{ transition: background .25s ease, color .25s ease; }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .app{
+    max-width:460px;
+    margin:0 auto;
+    padding:28px 20px 60px;
+    position:relative;
+    min-height:100vh;
+  }
+
+  /* ---- Header ---- */
+  .eyebrow{
+    font-size:13.5px;
+    color:var(--text-dim);
+    letter-spacing:.02em;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-optical-sizing:auto;
+    font-weight:500;
+    font-size:32px;
+    line-height:1.12;
+    margin:0 0 4px;
+  }
+  h1 .and{
+    color:var(--text-faint);
+    font-style:italic;
+    font-weight:400;
+  }
+  .daterange{
+    color:var(--text-dim);
+    font-size:15.5px;
+    margin-bottom:26px;
+  }
+
+  /* ---- City timeline bar ---- */
+  .timeline{
+    display:flex;
+    height:40px;
+    border-radius:9px;
+    overflow:hidden;
+    margin-bottom:16px;
+  }
+  .timeline .seg{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 10px;
+    font-size:13px;
+    font-weight:600;
+    letter-spacing:.01em;
+  }
+  .timeline .buc{
+    flex:3;
+    background:var(--rust-dim);
+    color:var(--rust-text);
+    border-right:1px solid var(--bg);
+  }
+  .timeline .sof{
+    flex:3;
+    background:var(--gold-dim);
+    color:var(--gold-text);
+  }
+
+  .word-link{
+    display:inline-block;
+    padding:3px 9px;
+    border-radius:20px;
+    text-decoration:none;
+    border:1px solid currentColor;
+    color:inherit;
+    background:none;
+    appearance:none;
+    -webkit-appearance:none;
+    font-family:inherit;
+    font-size:9.5px;
+    font-weight:600;
+    letter-spacing:.03em;
+    text-transform:uppercase;
+    opacity:.85;
+    cursor:pointer;
+    transition:transform .15s ease, opacity .15s ease, background .15s ease, color .15s ease;
+  }
+  .word-link:active{ transform:scale(0.94); opacity:1; }
+  .word-link.selected{
+    background:var(--text);
+    color:var(--bg);
+    border-color:var(--text);
+    opacity:1;
+  }
+
+  /* ---- Words panel ---- */
+  .words-legend{
+    border-radius:12px;
+    padding:14px 16px;
+    margin-bottom:14px;
+    font-size:13px;
+    line-height:1.6;
+  }
+  .words-legend b{ font-family:'Fraunces', serif; font-weight:600; }
+  .words-legend .rules{ margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:4px 14px; }
+  .words-ro .words-legend{ background:var(--rust-dim); color:var(--rust-text); }
+  .words-bg .words-legend{ background:var(--gold-dim); color:var(--gold-text); }
+  .words-ro .block-label{ color:var(--rust); }
+  .words-bg .block-label{ color:var(--gold); }
+
+  .prow{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    padding:7px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .prow:last-child{ border-bottom:none; }
+  .prow .pen{ font-size:13.5px; color:var(--text-dim); flex-shrink:0; width:40%; padding-top:2px; }
+  .prow .pnative{ text-align:right; }
+  .prow .plat, .prow .pcyr{ font-family:'Fraunces', serif; font-size:16px; font-weight:500; }
+  .prow .ptranslit{ font-size:12.5px; color:var(--text); opacity:.75; font-style:italic; margin-top:2px; }
+  .words-ro .ptranslit b, .words-bg .ptranslit b{ font-style:normal; }
+  .words-ro .ptranslit b{ color:var(--rust); }
+  .words-bg .ptranslit b{ color:var(--gold); }
+
+  /* ---- Week grid (calendar) ---- */
+  .weeklabels{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+    font-size:11px;
+    font-weight:600;
+    color:var(--text-dim);
+    text-align:center;
+    margin-bottom:8px;
+  }
+  .week{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:6px;
+    margin-bottom:22px;
+  }
+  .week-divider{
+    height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold) 15%, var(--gold) 85%, transparent);
+    opacity:.6;
+    margin-bottom:22px;
+  }
+  .day{
+    aspect-ratio:1/1.18;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:10px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    padding:6px 2px;
+    transition:transform .15s ease, background .15s ease, border-color .15s ease;
+    position:relative;
+  }
+  .day:active{ transform:scale(0.94); }
+  .day:hover{ background:var(--surface-hi); }
+  .day .num{
+    font-family:'Fraunces', serif;
+    font-size:21px;
+    font-weight:600;
+    line-height:1;
+  }
+  .day .mon{
+    font-size:10px;
+    font-weight:600;
+    color:var(--text-dim);
+    margin-top:2px;
+    letter-spacing:.03em;
+  }
+  .day .dot{
+    width:5px;height:5px;border-radius:50%;
+    margin-top:5px;
+  }
+  .day.buc{ border-color:var(--rust-border); }
+  .day.buc .dot{ background:var(--rust); }
+  .day.sof{ border-color:var(--gold-border); }
+  .day.sof .dot{ background:var(--gold); }
+  .day.travel{
+    background:linear-gradient(135deg, var(--rust-dim), var(--gold-dim));
+  }
+  .day.travel .num{ color:#fff; }
+  .day.selected{
+    background:var(--text);
+    border-color:var(--text);
+  }
+  .day.selected .num,
+  .day.selected .mon{ color:var(--bg); }
+  .day.selected .dot{ background:var(--bg); }
+
+  .day.past:not(.selected){
+    opacity:.42;
+  }
+  .day.today{
+    outline:2px solid var(--flight-border);
+    outline-offset:2px;
+  }
+  .day.today .dot{ background:var(--flight-border); }
+  .day.today.selected .dot{ background:var(--bg); }
+
+  /* ---- Inline day panel ---- */
+  .panel{
+    animation:panelIn .25s ease;
+  }
+  @keyframes panelIn{
+    from{ opacity:0; transform:translateY(6px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+
+  .detail-date{
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-bottom:4px;
+  }
+  .detail-title{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    font-size:28px;
+    margin:0 0 22px;
+    line-height:1.15;
+  }
+
+  .badge{
+    display:inline-block;
+    font-size:12px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:20px;
+    margin-bottom:22px;
+    letter-spacing:.02em;
+  }
+  .badge.buc{ background:var(--rust-dim); color:var(--rust-text); }
+  .badge.sof{ background:var(--gold-dim); color:var(--gold-text); }
+
+  .block{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+    margin-bottom:14px;
+  }
+  .block-label{
+    font-size:11.5px;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:10px;
+  }
+  .block--flight{
+    background:var(--flight-bg);
+    border-color:var(--flight-border);
+  }
+  .block--flight .block-label{ color:var(--flight-icon); }
+  .block--hotel{
+    background:var(--hotel-bg);
+    border-color:var(--hotel-border);
+  }
+  .block--hotel .block-label{ color:var(--hotel-icon); }
+  .route{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:6px;
+  }
+  .route .pt{ text-align:center; }
+  .route .pt .code{
+    font-family:'Fraunces', serif;
+    font-size:22px;
+    font-weight:500;
+  }
+  .route .pt .time{
+    font-size:14px;
+    color:var(--text-dim);
+    margin-top:2px;
+  }
+  .route .pt .tz{
+    font-size:10.5px;
+    color:var(--text-faint);
+    margin-top:1px;
+    letter-spacing:.02em;
+  }
+  .route .mid{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:0 12px;
+    color:var(--text-faint);
+  }
+  .route .mid .line{
+    width:100%;
+    height:1px;
+    background:var(--line);
+    position:relative;
+    margin:4px 0;
+  }
+  .route .mid .line:after{
+    content:"✈";
+    position:absolute;
+    left:50%;top:50%;
+    transform:translate(-50%,-50%);
+    background:var(--flight-bg);
+    padding:0 6px;
+    font-size:13px;
+  }
+  .route .mid .dur{ font-size:12px; }
+  .meta-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    color:var(--text-dim);
+    padding-top:10px;
+    border-top:1px solid var(--line);
+    margin-top:10px;
+  }
+
+  .hotel-name{
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    font-weight:500;
+    margin-bottom:6px;
+  }
+  .addr{ font-size:14.5px; color:var(--text-dim); margin-bottom:10px; }
+  .hoursrow{
+    display:flex;
+    gap:20px;
+    font-size:14px;
+  }
+  .hoursrow div span{ display:block; color:var(--text-dim); font-size:11.5px; margin-bottom:2px;}
+
+  .tip{
+    font-size:14.5px;
+    line-height:1.55;
+    color:var(--text);
+  }
+  .tip strong{ color:var(--gold); font-weight:600; }
+  .tip + .tip{ margin-top:10px; padding-top:10px; border-top:1px solid var(--line); }
+
+  .maplink{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    width:15px;
+    height:15px;
+    margin-left:5px;
+    color:var(--text-faint);
+    vertical-align:middle;
+    opacity:.85;
+    transition:opacity .15s ease, color .15s ease, transform .15s ease;
+  }
+  .maplink svg{ width:100%; height:100%; fill:currentColor; }
+  .maplink:hover{ color:var(--gold); opacity:1; }
+  .maplink:active{ transform:scale(0.85); }
+
+  /* ---- City name → Wikipedia link ---- */
+  .citylink{ color:inherit; text-decoration:none; }
+  .citylink:hover{ text-decoration:underline; }
+
+  /* ---- Activity status marker ---- */
+  .plan .when{
+    width:52px;
+    flex-shrink:0;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding-top:1px;
+  }
+  .plan .when-label{
+    font-size:11px;
+    color:var(--text-dim);
+    text-align:center;
+    line-height:1.25;
+  }
+  .status-marker{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    border:1.5px solid;
+    transition:transform .15s ease;
+    user-select:none;
+    flex-shrink:0;
+  }
+  .status-marker:active{ transform:scale(0.85); }
+  .status-marker.state-default{ border-color:var(--status-blue); color:var(--status-blue); background:transparent; }
+  .status-marker.state-done{ border-color:var(--flight-border); background:var(--flight-border); color:#fff; }
+  .status-marker.state-skipped{ border-color:var(--status-skip); background:var(--status-skip); color:#fff; }
+
+  .block--activity{ border-left:3px solid var(--status-blue); }
+  .block--activity.status-default{ border-left-color:var(--status-blue); }
+  .block--activity.status-done{ border-left-color:var(--flight-border); }
+  .block--activity.status-skipped{ border-left-color:var(--status-skip); }
+  .block--activity.is-dimmed .what strong{ opacity:.65; }
+
+  .collapsible{
+    display:grid;
+    grid-template-rows:1fr;
+    transition:grid-template-rows .28s ease;
+  }
+  .collapsible-inner{
+    overflow:hidden;
+    min-height:0;
+  }
+  .block--activity.is-dimmed .collapsible{
+    grid-template-rows:0fr;
+  }
+
+  /* ---- Proverb cards ---- */
+  .proverb{
+    background:var(--surface);
+    border:1px solid var(--pc);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:12px;
+    opacity:.88;
+  }
+  .proverb.cat-rose{ --pc:var(--cat-rose); }
+  .proverb.cat-teal{ --pc:var(--cat-teal); }
+  .proverb.cat-wood{ --pc:var(--cat-wood); }
+  .proverb.cat-sky{ --pc:var(--cat-sky); }
+  .proverb.cat-lavender{ --pc:var(--cat-lavender); }
+  .proverb-cat{
+    font-size:9.5px;
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    color:var(--pc);
+    font-weight:600;
+    opacity:.85;
+    margin-bottom:7px;
+  }
+  .proverb-native{
+    font-family:'Fraunces', serif;
+    font-size:14.5px;
+    font-weight:500;
+    color:var(--text-dim);
+    margin-bottom:2px;
+  }
+  .proverb-phonetic{
+    font-size:11.5px;
+    font-style:italic;
+    font-weight:500;
+    color:var(--text-dim);
+    margin-bottom:7px;
+  }
+  .proverb-meaning{
+    font-size:12px;
+    color:var(--text-dim);
+    font-style:italic;
+    font-weight:500;
+    margin-bottom:7px;
+  }
+  .proverb-advice{
+    font-size:12.5px;
+    color:var(--text-dim);
+    line-height:1.5;
+    padding-top:7px;
+    border-top:1px solid var(--line);
+  }
+
+  /* ---- Alternatives (fixed, brief) ---- */
+  .alt-block .block-label{ color:var(--text-dim); }
+  .alt-item{
+    display:flex;
+    align-items:baseline;
+    flex-wrap:wrap;
+    column-gap:4px;
+    font-size:12.5px;
+    padding:6px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .alt-item:last-child{ border-bottom:none; }
+  .alt-name{ font-weight:600; }
+  .alt-note{ color:var(--text-dim); }
+
+  .open-day{
+    padding:30px 4px;
+    text-align:center;
+    color:var(--text-dim);
+    font-size:15px;
+    font-style:italic;
+    font-family:'Fraunces', serif;
+  }
+
+  .plan{
+    display:flex;
+    gap:14px;
+    padding:14px 0;
+  }
+  .plan:not(:last-child){ border-bottom:1px solid var(--line); }
+  .plan .what strong{
+    display:block;
+    font-size:15.5px;
+    font-weight:600;
+    margin-bottom:3px;
+  }
+  .plan .what p{
+    margin:0;
+    font-size:14px;
+    color:var(--text-dim);
+    line-height:1.5;
+  }
+  .plan .what .hours{
+    display:inline-block;
+    margin-top:6px;
+    font-size:12.5px;
+    color:var(--gold);
+    font-style:italic;
+  }
+
+  .navrow{
+    display:flex;
+    justify-content:space-between;
+    margin-top:26px;
+    padding-top:18px;
+    border-top:1px solid var(--line);
+  }
+  .navbtn{
+    background:none;
+    border:none;
+    color:var(--text-dim);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .navbtn.next{ text-align:right; align-items:flex-end; }
+  .navbtn span{ font-size:12px; color:var(--text-dim); }
+  .navbtn:active{ opacity:.6; }
+  .navbtn.hidden{ visibility:hidden; }
+
+  /* ---- Theme toggle ---- */
+  .theme-toggle{
+    position:fixed;
+    top:22px;
+    right:20px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:var(--toggle-bg);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:20;
+    transition:background .25s ease, border-color .25s ease, transform .15s ease;
+  }
+  .theme-toggle:active{ transform:scale(0.92); }
+  .theme-toggle svg{
+    width:18px;
+    height:18px;
+    stroke:var(--toggle-icon);
+    fill:none;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .theme-toggle .icon-sun{ display:none; }
+  html[data-theme="light"] .theme-toggle .icon-moon{ display:none; }
+  html[data-theme="light"] .theme-toggle .icon-sun{ display:block; }
+
+  /* ---- Currency converter toggle + dropdown ---- */
+  .money-toggle{
+    position:fixed;
+    top:22px;
+    right:68px;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:var(--toggle-bg);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index:20;
+    transition:background .25s ease, border-color .25s ease, transform .15s ease;
+  }
+  .money-toggle:active{ transform:scale(0.92); }
+  .money-toggle svg{
+    width:18px;
+    height:18px;
+    stroke:var(--toggle-icon);
+    fill:none;
+    stroke-width:2;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .fx-panel{
+    position:fixed;
+    top:66px;
+    right:20px;
+    width:250px;
+    background:var(--surface);
+    border:1px solid var(--dropdown-border);
+    border-radius:14px;
+    padding:16px;
+    z-index:21;
+    box-shadow:var(--dropdown-shadow);
+    display:none;
+  }
+  .fx-panel.open{ display:block; }
+  .fx-label{
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--text-faint);
+    margin-bottom:8px;
+  }
+  .fx-currency-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .fx-pill{
+    flex:1;
+    padding:6px 0;
+    text-align:center;
+    border-radius:20px;
+    border:1px solid var(--line);
+    background:none;
+    color:var(--text-dim);
+    font-family:inherit;
+    font-size:12.5px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .fx-pill.active{
+    background:var(--gold-dim);
+    border-color:var(--gold-border);
+    color:var(--gold-text);
+  }
+  .fx-rate-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13.5px;
+    color:var(--text-dim);
+    margin-bottom:14px;
+  }
+  .fx-rate-input{
+    width:64px;
+    padding:5px 8px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--surface-hi);
+    color:var(--text);
+    font-family:inherit;
+    font-size:13.5px;
+    font-weight:600;
+    text-align:center;
+  }
+  .fx-dir-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:12px;
+  }
+  .fx-amount-input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:10px;
+    border:1px solid var(--line);
+    background:var(--surface-hi);
+    color:var(--text);
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:8px;
+  }
+  .fx-result{
+    font-family:'Fraunces', serif;
+    font-size:20px;
+    font-weight:600;
+    color:var(--text-dim);
+    text-align:right;
+  }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+</button>
+
+<button class="money-toggle" id="moneyToggle" aria-label="Currency converter">
+  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 15.5c.5 1 1.5 1.5 2.5 1.5 1.5 0 2.5-.8 2.5-2s-1-1.7-2.5-2-2.5-.8-2.5-2 1-2 2.5-2c1 0 2 .5 2.5 1.5"/><path d="M12 6.5v1M12 16.5v1"/></svg>
+</button>
+
+<div class="fx-panel" id="fxPanel">
+  <div class="fx-label">Exchange rate</div>
+  <div class="fx-currency-row">
+    <button class="fx-pill" id="fxPillRON" onclick="setFxCurrency('RON')">RON</button>
+    <button class="fx-pill" id="fxPillEUR" onclick="setFxCurrency('EUR')">EUR</button>
+  </div>
+  <div class="fx-rate-row">
+    <span>£1 =</span>
+    <input type="number" step="0.01" class="fx-rate-input" id="fxRateInput" oninput="onFxRateInput()">
+    <span id="fxRateCur">RON</span>
+  </div>
+  <div class="fx-dir-row">
+    <button class="fx-pill" id="fxDirFrom" onclick="setFxDirection('from')">£ → <span class="fx-cur-short">RON</span></button>
+    <button class="fx-pill" id="fxDirTo" onclick="setFxDirection('to')"><span class="fx-cur-short">RON</span> → £</button>
+  </div>
+  <input type="number" class="fx-amount-input" id="fxAmountInput" placeholder="0" oninput="onFxAmountInput()">
+  <div class="fx-result" id="fxResult">→ 0.00</div>
+</div>
+
+<div class="app">
+  <div class="eyebrow">TRIP · 26 OCT – 1 NOV 2026</div>
+  <h1>Bucharest <span class="and">&amp;</span> Sofia</h1>
+  <div class="daterange">7 days · 2 cities · one flight between them</div>
+
+  <div class="timeline">
+    <div class="seg buc">
+      <a class="citylink" href="https://en.wikipedia.org/wiki/Bucharest" target="_blank" rel="noopener">BUCHAREST</a>
+      <button class="word-link" id="linkRomanian" type="button" onclick="selectWords('ro')">Words</button>
+    </div>
+    <div class="seg sof">
+      <a class="citylink" href="https://en.wikipedia.org/wiki/Sofia" target="_blank" rel="noopener">SOFIA</a>
+      <button class="word-link" id="linkBulgarian" type="button" onclick="selectWords('bg')">Words</button>
+    </div>
+  </div>
+
+  <div class="weeklabels">
+    <span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span><span>SUN</span>
+  </div>
+  <div class="week" id="week"></div>
+  <div class="week-divider"></div>
+
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+const PIN_SVG = '<svg viewBox="0 0 24 24"><path d="M12 21s-7-7.05-7-12a7 7 0 1 1 14 0c0 4.95-7 12-7 12z"/><circle cx="12" cy="9" r="2.3"/></svg>';
+function pin(query){
+  return `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener" aria-label="Open in Google Maps">${PIN_SVG}</a>`;
+}
+
+function activityCard(pid, when, titleHtml, bodyHtml, hoursText){
+  const status = getStatus(pid);
+  const dimClass = status !== 'default' ? ' is-dimmed' : '';
+  const glyphs = { default:'–', done:'✓', skipped:'✕' };
+  return `<div class="block block--activity status-${status}${dimClass}" data-pid="${pid}">
+        <div class="plan">
+          <div class="when">
+            <div class="status-marker state-${status}" onclick="toggleStatus('${pid}')">${glyphs[status]}</div>
+            <div class="when-label">${when}</div>
+          </div>
+          <div class="what">
+            <strong>${titleHtml}</strong>
+            <div class="collapsible"><div class="collapsible-inner">${bodyHtml}${hoursText ? `<span class="hours">${hoursText}</span>` : ''}</div></div>
+          </div>
+        </div>
+      </div>`;
+}
+
+const days = [
+  {
+    id:0, weekday:"Monday", date:"26 October", month:"OCT", num:26, city:"buc", travel:true,
+    title:"London → Bucharest",
+    header: `
+      <div class="detail-date">Monday, 26 October</div>
+      <div class="detail-title">London → Bucharest</div>
+      <span class="badge buc">ARRIVAL DAY · BUCHAREST</span>
+    `,
+    cards: () => [
+      `<div class="block block--flight">
+        <div class="block-label">Flight</div>
+        <div class="route">
+          <div class="pt"><div class="code">LHR</div><div class="time">09:50</div><div class="tz">GMT</div></div>
+          <div class="mid"><div class="line"></div><div class="dur">3h 15m · direct</div></div>
+          <div class="pt"><div class="code">OTP</div><div class="time">15:05</div><div class="tz">EET · UTC+2</div></div>
+        </div>
+        <div class="meta-row"><span>British Airways · BA874</span><span>Ref: YCLF6E</span></div>
+      </div>`,
+      `<div class="block block--hotel">
+        <div class="block-label">Stay</div>
+        <div class="hotel-name">Hotel Berthelot${pin("Hotel Berthelot Bucharest")}</div>
+        <div class="addr">Bulevardul Berthelot 9, Sector 1, Bucharest</div>
+        <div class="hoursrow">
+          <div><span>Check-in</span>from 14:00</div>
+          <div><span>Check-out</span>until 12:00</div>
+        </div>
+      </div>`,
+      `<div class="block">
+        <div class="block-label">Airport → hotel</div>
+        <div class="tip"><strong>Taxi/Bolt</strong> is simplest after landing — order via the kiosks in Arrivals or the app. ~80–100 RON, 30–40 min.</div>
+        <div class="tip"><strong>Bus 783</strong> runs from right outside Arrivals to the centre (Piața Unirii), ~4.5 RON.</div>
+      </div>`,
+      activityCard("d0a0", "Settle in", "Check in, freshen up", "<p>You'll land mid-afternoon and be at the hotel by ~16:30 — no need to rush straight out.</p>"),
+      activityCard("d0a1", "Evening", `Old Town (Lipscani)${pin("Lipscani Old Town Bucharest")}`, "<p>Ten minutes' walk from the hotel. Wander the cobbled streets, pop into Stavropoleos Monastery if it's still open, and pick a restaurant for dinner — easy first night, nothing to plan ahead.</p>")
+    ]
+  },
+  {
+    id:1, weekday:"Tuesday", date:"27 October", month:"OCT", num:27, city:"buc", travel:false,
+    title:"Bucharest",
+    header: `
+      <div class="detail-date">Tuesday, 27 October</div>
+      <div class="detail-title">In Bucharest</div>
+      <span class="badge buc">BUCHAREST</span>
+    `,
+    cards: () => [
+      activityCard("d1a0", "Morning", `Palace of the Parliament${pin("Palace of the Parliament Bucharest")}`, "<p>The must-see — second-largest administrative building in the world. Guided tours only; worth booking a slot in advance rather than turning up.</p>", "Open 9am–5pm daily · Adult ticket 85 RON (standard tour)"),
+      activityCard("d1a1", "Midday", `Calea Victoriei${pin("Calea Victoriei Bucharest")}`, "<p>Walk the grand boulevard from the Palace area up past the Romanian Athenaeum — good for lunch along the way.</p>"),
+      activityCard("d1a2", "Afternoon", `Herăstrău Park${pin("Herastrau Park Bucharest")} &amp; Village Museum${pin("Muzeul Satului Bucharest")}`, "<p>A short taxi or metro ride north. The open-air museum of traditional Romanian houses is a nice change of pace, and the park itself is pleasant for a stroll by the lake.</p>", "Museum open 9am–5pm daily (winter hours by late Oct) · Adult ticket ~40 RON, park itself is free"),
+      activityCard("d1a3", "Evening", `Option: concert at the Athenaeum${pin("Romanian Athenaeum Bucharest")}`, "<p>There's a concert at the Romanian Athenaeum on this evening at 7pm that could be worth it — since it lines up with the day you're already in the centre for the Palace of the Parliament and Calea Victoriei. Dinner could shift earlier or later around it.</p>"),
+      activityCard("d1a4", "Evening", "Dinner back in the centre", "<p>Head back towards Old Town or Calea Victoriei for dinner. Worth keeping an ear out too — Bucharest's smaller churches occasionally host organ or chamber recitals of an evening, a nice low-key alternative to a big concert hall if you spot a poster on the way past.</p>")
+    ]
+  },
+  {
+    id:2, weekday:"Wednesday", date:"28 October", month:"OCT", num:28, city:"buc", travel:false,
+    title:"Bucharest",
+    header: `
+      <div class="detail-date">Wednesday, 28 October</div>
+      <div class="detail-title">In Bucharest</div>
+      <span class="badge buc">BUCHAREST</span>
+    `,
+    cards: () => [
+      activityCard("d2a0", "Morning", `Romanian Athenaeum — visit the building${pin("Romanian Athenaeum Bucharest")}`, "<p>Best in the morning, when there's no rehearsal or concert restricting access. Self-guided entry to the foyer and the main hall, with its huge fresco of Romanian history circling the walls — worth it for the interior alone, no concert required.</p>", "Open ~9:30am–5:30pm, small entry fee (~10 RON); access may be limited if a rehearsal is on"),
+      activityCard("d2a1", "Midday", "Coffee in Old Town", `<p>Maybe a browse through Cărturești Carusel${pin("Carturesti Carusel Bucharest")}, the six-storey bookshop housed in a restored 19th-century building nearby.</p>`, "Cărturești Carusel open 10am–10pm Mon–Wed"),
+      activityCard("d2a2", "Afternoon", `Curtea Veche${pin("Curtea Veche Bucharest")} &amp; Manuc's Inn${pin("Hanul lui Manuc Bucharest")}`, "<p>Worth knowing before you go: the Old Princely Court ruins themselves have been closed to the public for restoration for some years, so it's an exterior stop — the courtyard and Vlad the Impaler bust are visible from the street. Manuc's Inn right next door is open as normal, with a lovely covered courtyard for coffee or a late lunch.</p>", "Manuc's Inn open 8am–midnight (till 2am Fri/Sat)"),
+      activityCard("d2a3", "Evening", "Look for a concert in a smaller venue", `<p>Rather than a big philharmonic night, Bucharest's churches often host organ or chamber recitals that are easy to stumble into — St. Joseph's Catholic Cathedral${pin("St Joseph Catholic Cathedral Bucharest")} is literally on the same street as Hotel Berthelot, and the Anglican Church of the Resurrection${pin("Anglican Church of the Resurrection Bucharest")} runs an occasional recital series too. These aren't usually on the big ticketing sites — check posters at the door or local listings once you're there.</p>`)
+    ]
+  },
+  {
+    id:3, weekday:"Thursday", date:"29 October", month:"OCT", num:29, city:"buc", travel:true,
+    title:"Bucharest → Sofia",
+    header: `
+      <div class="detail-date">Thursday, 29 October</div>
+      <div class="detail-title">Bucharest → Sofia</div>
+      <span class="badge buc">DEPARTURE DAY · BUCHAREST → SOFIA</span>
+    `,
+    cards: () => [
+      activityCard("d3a0", "Morning", "Check out by 12:00", "<p>Leave bags with the hotel if they'll hold them — no need to lug them round.</p>"),
+      activityCard("d3a1", "Late morning", "Anything you missed", "<p>A few hours free before heading to the airport — good for anything left on the list from Tue/Wed, or just a last coffee in Old Town.</p>"),
+      activityCard("d3a2", "~15:30", "Head to the airport", "<p>Allow time for the 20km transfer plus check-in for an 18:15 departure.</p>"),
+      `<div class="block block--flight">
+        <div class="block-label">Flight</div>
+        <div class="route">
+          <div class="pt"><div class="code">OTP</div><div class="time">18:15</div><div class="tz">EET · UTC+2</div></div>
+          <div class="mid"><div class="line"></div><div class="dur">1h 15m · direct</div></div>
+          <div class="pt"><div class="code">SOF</div><div class="time">19:30</div><div class="tz">EET · UTC+2</div></div>
+        </div>
+        <div class="meta-row"><span>Tarom · RO297</span><span></span></div>
+      </div>`,
+      `<div class="block block--hotel">
+        <div class="block-label">Stay</div>
+        <div class="hotel-name">Hotel Anel ★★★★★${pin("Hotel Anel Sofia")}</div>
+        <div class="addr">14 Todor Alexandrov Bul., Sofia 1303</div>
+        <div class="hoursrow">
+          <div><span>Check-in</span>from 14:00</div>
+          <div><span>Check-out</span>until 12:00</div>
+        </div>
+      </div>`,
+      `<div class="block">
+        <div class="block-label">Airport → hotel</div>
+        <div class="tip">Landing at 19:30, after a full day of travel — <strong>taxi or Bolt</strong> straight to the door is the easy call. Bulgaria's on the euro now (since Jan 2026), so it's official taxi (OK Supertrans) or Bolt, ~€5–8, 20–25 min.</div>
+        <div class="tip">Metro Line 1/2 also runs to Serdika until midnight (€0.80) if you'd rather save the walk from there is short.</div>
+      </div>`
+    ]
+  },
+  {
+    id:4, weekday:"Friday", date:"30 October", month:"OCT", num:30, city:"sof", travel:false,
+    title:"Sofia",
+    header: `
+      <div class="detail-date">Friday, 30 October</div>
+      <div class="detail-title">In Sofia</div>
+      <span class="badge sof">SOFIA</span>
+    `,
+    cards: () => [
+      activityCard("d4a0", "Morning", `Alexander Nevsky Cathedral${pin("Alexander Nevsky Cathedral Sofia")}`, "<p>Sofia's centrepiece — the gold-domed cathedral. Go early before the tour groups; the antique market along the square outside is worth a browse too.</p>", "Cathedral open 7am–7pm daily, free entry"),
+      activityCard("d4a1", "Midday", `Ancient Serdica ruins${pin("Ancient Serdica Sofia")}`, "<p>Roman remains sitting right in the modern city centre, near Serdika metro station — an easy, short stop on the way to lunch.</p>", "Open access during metro hours (~6am–11pm), free"),
+      activityCard("d4a2", "Afternoon", `Vitosha Boulevard${pin("Vitosha Boulevard Sofia")}`, "<p>The main pedestrian street for shops, cafés, and people-watching — a relaxed way to fill the afternoon.</p>"),
+      activityCard("d4a3", "Evening", "Dinner near Vitosha Boulevard", `<p>Plenty of options right along the street or just off it. Sofia's churches — Sveta Nedelya Cathedral${pin("Sveta Nedelya Cathedral Sofia")} or the small St. George Rotunda${pin("St George Rotunda Sofia")} among them — sometimes host organ or chamber recitals in the evening too; these tend to be advertised locally (posters at the door, programata.bg) rather than on the big ticketing sites, so worth a look once you're there.</p>`)
+    ]
+  },
+  {
+    id:5, weekday:"Saturday", date:"31 October", month:"OCT", num:31, city:"sof", travel:false,
+    title:"Sofia",
+    header: `
+      <div class="detail-date">Saturday, 31 October</div>
+      <div class="detail-title">In Sofia</div>
+      <span class="badge sof">SOFIA</span>
+    `,
+    cards: () => [
+      activityCard("d5a0", "Day trip", `Vitosha Mountain${pin("Vitosha Mountain Sofia")}`, "<p>Right on Sofia's doorstep — worth the whole day if the weather's clear. Bus/gondola up for hiking trails and views back over the city; a good change of pace from museums and streets. Lucky timing: outside ski season the Simeonovo–Aleko cable car and chairlifts only run on Saturdays and Sundays, and this trip lands on a Saturday.</p>", "Cable car/chairlifts run ~9am–4:30pm, weekends only outside ski season · Return ticket roughly €10–13 (worth confirming closer to the date)"),
+      activityCard("d5a1", "Evening", `Spa at Hotel Anel${pin("Hotel Anel Sofia")}`, "<p>Good timing after a day on the mountain — build in proper time to actually use it rather than rushing straight to dinner.</p>")
+    ]
+  },
+  {
+    id:6, weekday:"Sunday", date:"1 November", month:"NOV", num:1, city:"sof", travel:true,
+    title:"Sofia → London",
+    header: `
+      <div class="detail-date">Sunday, 1 November</div>
+      <div class="detail-title">Sofia → London</div>
+      <span class="badge sof">DEPARTURE DAY · HOME</span>
+    `,
+    cards: () => [
+      activityCard("d6a0", "Morning", "Check out by 12:00", "<p>Ask the hotel to hold bags for the day — the airport transfer is quick, so no rush to keep them with you.</p>"),
+      activityCard("d6a1", "Afternoon", "Anything you missed", `<p>A full afternoon free — good for whatever didn't fit earlier in the week, or just a last wander down Vitosha Boulevard${pin("Vitosha Boulevard Sofia")}.</p>`),
+      activityCard("d6a2", "~17:00", "Head to the airport", "<p>Plenty of margin for a 19:45 departure — metro from Serdika takes ~20 min.</p>"),
+      `<div class="block block--flight">
+        <div class="block-label">Flight</div>
+        <div class="route">
+          <div class="pt"><div class="code">SOF</div><div class="time">19:45</div><div class="tz">EET · UTC+2</div></div>
+          <div class="mid"><div class="line"></div><div class="dur">3h 25m · direct</div></div>
+          <div class="pt"><div class="code">LHR</div><div class="time">21:10</div><div class="tz">GMT</div></div>
+        </div>
+        <div class="meta-row"><span>British Airways · BA893</span><span>Ref: ZJV578</span></div>
+      </div>`,
+      `<div class="block">
+        <div class="block-label">Hotel → airport</div>
+        <div class="tip">Metro Line 1/2 from Serdika to the airport takes ~20 min, €0.80 — easy with the whole afternoon free. Taxi/Bolt is ~€5–8 if you'd rather not carry bags on the metro.</div>
+      </div>`
+    ]
+  }
+];
+
+// ---- Calming proverbs (Romanian / Bulgarian), colour-coded by category, chosen randomly per view ----
+const bulgarianProverbsRaw = [
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_bulgarian": "Всяко чудо за три дни",
+    "saying_phonetic": "Vsya-ko choo-do za tree dnee",
+    "meaning": "Every wonder lasts three days.",
+    "advice": "Dramatic events and intense worries feel massive right now, but they will fade into background noise very quickly."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_bulgarian": "Времето цери всичко",
+    "saying_phonetic": "Vre-me-to tse-ree vsee-chko",
+    "meaning": "Time cures everything.",
+    "advice": "Trust the natural passage of time. It acts as a quiet, steady balm for emotional wounds."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_bulgarian": "Бързата кучка слепи ги ражда",
+    "saying_phonetic": "Bur-za-ta koo-chka sle-pee gee razh-da",
+    "meaning": "The hasty bitch gives birth to blind puppies.",
+    "advice": "Speed without focus results in poor outcomes. Slow down and let life develop intentionally."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_bulgarian": "Всяко нещо с времето си",
+    "saying_phonetic": "Vsya-ko ne-shto s vre-me-to see",
+    "meaning": "Everything with its own time.",
+    "advice": "Do not try to force fruits to grow in winter. Trust that your personal timing is exactly where it needs to be."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_bulgarian": "Каквото било, било",
+    "saying_phonetic": "Kak-vo-to bee-lo, bee-lo",
+    "meaning": "What has been, has been.",
+    "advice": "Release your grip on the past. Accept it as unchangeable so you can reclaim your current energy."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_bulgarian": "Търпението е горчиво, но плодът му е сладък",
+    "saying_phonetic": "Tur-pe-nee-e-to e gor-chee-vo, no plo-dut moo e sla-duk",
+    "meaning": "Patience is bitter, but its fruit is sweet.",
+    "advice": "Enduring a difficult waiting period is stressful, but the peace at the end is completely worth it."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_bulgarian": "Ден по ден, до пладне",
+    "saying_phonetic": "Den po den, do plad-ne",
+    "meaning": "Day by day, until noon.",
+    "advice": "Break your massive life burdens down into tiny, digestible time increments. Just focus on getting through today."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_bulgarian": "Прекален светец и богу не е драг",
+    "saying_phonetic": "Pre-ka-len sve-tets ee bo-goo ne e drag",
+    "meaning": "Even God doesn't like an overly righteous saint.",
+    "advice": "Let go of the exhausting pressure of being flawless. Perfectionism strips away your inner peace."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_bulgarian": "Капка по капка — вир става",
+    "saying_phonetic": "Kap-ka po kap-ka — veer sta-va",
+    "meaning": "Drop by drop, a lake forms.",
+    "advice": "Do not panic over minimal progress. Your small daily habits accumulatively build a stable foundation."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_bulgarian": "Блага дума железни врати отваря",
+    "saying_phonetic": "Bla-ga doo-ma zhe-lez-nee vra-tee ot-va-rya",
+    "meaning": "A kind word opens iron gates.",
+    "advice": "Soft, peaceful, and empathetic communication dissolves major external resistance with minimal friction."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_bulgarian": "Сговорна дружина планина повдига",
+    "saying_phonetic": "Sgo-vor-na droo-zhee-na pla-nee-na pov-dee-ga",
+    "meaning": "A harmonious company can move a mountain.",
+    "advice": "You do not have to carry your burdens alone. Lean gently on your community."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_bulgarian": "Хубавите неща стават бавно",
+    "saying_phonetic": "Hoo-ba-vee-te ne-shhta sta-vat bav-no",
+    "meaning": "Good things happen slowly.",
+    "advice": "Sustainable healing, growth, and real inner balance cannot be rushed."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_bulgarian": "Всяко зло за добро",
+    "saying_phonetic": "Vsya-ko zlo za do-bro",
+    "meaning": "Every evil is for good.",
+    "advice": "This is the Bulgarian version of 'every cloud has a silver lining.' Trust that temporary pain can redirect you to safety."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_bulgarian": "След дъжд — качулка",
+    "saying_phonetic": "Sled duzhd — ka-choo-lka",
+    "meaning": "Bringing a hood after the rain has passed.",
+    "advice": "Do not waste emotional energy regretting things you didn't do. Focus strictly on what you can change right now."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_bulgarian": "Животът се мери не по годините, а по делата",
+    "saying_phonetic": "Zhee-vo-tut se me-ree ne po go-dee-nee-te, a po de-la-ta",
+    "meaning": "Life is measured not by years, but by deeds.",
+    "advice": "Find tranquility by focusing on simple, purposeful, and practical daily actions."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_bulgarian": "Навела се главица сабя не я сече",
+    "saying_phonetic": "Na-ve-la se gla-vee-tsa sa-bya ne ya se-che",
+    "meaning": "A bowed head doesn't get cut by the sword.",
+    "advice": "Choosing temporary humility and avoiding volatile arguments protects your mental energy."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_bulgarian": "Който пее, зло не мисли",
+    "saying_phonetic": "Koy-to pe-e, zlo ne mees-lee",
+    "meaning": "He who sings thinks no evil.",
+    "advice": "Use creative expression, music, and quiet joy as tools to drive away dark thoughts."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_bulgarian": "Вълкът козината си мени, но нрава — не",
+    "saying_phonetic": "Vul-kut ko-zee-na-ta see me-nee, no nra-va — ne",
+    "meaning": "The wolf changes his coat, but not his disposition.",
+    "advice": "Protect your space by accepting that some toxic people won't change. Move on quietly."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_bulgarian": "Който копае гроб другиму, сам пада в него",
+    "saying_phonetic": "Koy-to ko-pa-e grob droo-gee-moo, sam pa-da v ne-go",
+    "meaning": "He who digs a grave for another falls into it himself.",
+    "advice": "Let go of spite, grudges, and the desire for revenge. The universe balances itself out."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_bulgarian": "На лъжата краката са къси",
+    "saying_phonetic": "Na lu-zha-ta kra-ka-ta sa ku-see",
+    "meaning": "A lie has short legs.",
+    "advice": "Live honestly. Truth brings a quiet mind, while deceit requires constant stress."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_bulgarian": "По дрехите посрещат, по ума изпращат",
+    "saying_phonetic": "Po dre-hee-te po-sre-shhtat, po oo-ma eez-pra-shhtat",
+    "meaning": "They welcome you by your clothes, they see you off by your mind.",
+    "advice": "Do not overthink external appearances or surface judgements. Your internal values are what stay."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_bulgarian": "Мълчанието е злато",
+    "saying_phonetic": "Mul-cha-nee-e-to e zla-to",
+    "meaning": "Silence is golden.",
+    "advice": "Choose absolute stillness over stressful, empty arguments."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_bulgarian": "С какъвто се събереш, такъв ставаш",
+    "saying_phonetic": "S ka-kuv-to se su-be-resh, ta-kuv sta-vash",
+    "meaning": "You become who you gather with.",
+    "advice": "Quietly curate your inner circle to protect your personal energy levels."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_bulgarian": "Който рано рани, два заема",
+    "saying_phonetic": "Koy-to ra-no ra-nee, dva za-e-ma",
+    "meaning": "He who wakes up early catches two spots.",
+    "advice": "Creating a consistent, calm morning routine sets a peaceful rhythm for the entire day."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_bulgarian": "Три пъти мери, един път режи",
+    "saying_phonetic": "Tree pu-tee me-ree, e-deen put re-zhee",
+    "meaning": "Measure three times, cut once.",
+    "advice": "Pause, ground yourself, and take a deep breath before reacting to a sudden crisis."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_bulgarian": "Каквото си посял, такова ще пожънеш",
+    "saying_phonetic": "Kak-vo-to see po-syal, ta-ko-va shhte po-zhu-nesh",
+    "meaning": "Whatever you have sown, that is what you will reap.",
+    "advice": "Plant seeds of gentle self-care today to harvest a calm mind tomorrow."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_bulgarian": "Чиста съвест — мирна възглавница",
+    "saying_phonetic": "Chees-ta su-vest — meer-na vuz-glav-nee-tsa",
+    "meaning": "A clean conscience is a peaceful pillow.",
+    "advice": "Live with integrity so you can sleep tonight without anxious overthinking."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_bulgarian": "Далеч от очите, далеч от сърцето",
+    "saying_phonetic": "Da-lech ot o-chee-te, da-lech ot sur-tse-to",
+    "meaning": "Far from the eyes, far from the heart.",
+    "advice": "Intentionally distance yourself from toxic environments; out of sight naturally leads to peace of mind."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_bulgarian": "Здравето е най-голямото богатство",
+    "saying_phonetic": "Zdra-ve-to e nay-go-lya-mo-to bo-gat-stvo",
+    "meaning": "Health is the greatest wealth.",
+    "advice": "Prioritise your mental and physical well-being over material achievements."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_bulgarian": "Гладен сит не вярва",
+    "saying_phonetic": "Gla-den seet ne vyar-va",
+    "meaning": "The hungry doesn't believe the full.",
+    "advice": "Accept that not everyone will fully understand your specific internal pain. You don't need their validation."
+  }
+];
+const romanianProverbsRaw = [
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_romanian": "Răbdarea e ruptă din rai",
+    "saying_phonetic": "Rub-da-rya eh roop-tuh deen rye",
+    "meaning": "Patience is torn from heaven.",
+    "advice": "Patience is a heavenly virtue. Give situations time to unfold naturally instead of forcing them."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_romanian": "Toate la timpul lor",
+    "saying_phonetic": "Twah-teh lah teem-pool lohr",
+    "meaning": "Everything in its own time.",
+    "advice": "Trust the natural rhythm of life. Do not rush your progress or worry about tomorrow."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_romanian": "Ce e val, ca valul trece",
+    "saying_phonetic": "Cheh eh vahl, kah vah-lool treh-cheh",
+    "meaning": "What is a wave passes like a wave.",
+    "advice": "Emotional storms and tough times are temporary; they will wash over you and leave."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_romanian": "Apa trece, pietrele rămân",
+    "saying_phonetic": "Ah-pah treh-cheh, pyet-rehleuh ruh-murn",
+    "meaning": "The water passes, but the stones remain.",
+    "advice": "Difficult circumstances and fleeting drama will flow away, but your core strengths and values will endure."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_romanian": "Nu aduce anul ce aduce ceasul",
+    "saying_phonetic": "Noo ah-doo-cheh ah-nool cheh ah-doo-cheh chy-sool",
+    "meaning": "A year doesn't bring what an hour can bring.",
+    "advice": "Life can pivot toward peace and good fortune in a single moment. Never lose hope."
+  },
+  {
+    "category": "🌸 Acceptance, Patience & Timing",
+    "saying_romanian": "Ce o fi, o fi",
+    "saying_phonetic": "Cheh oh fee, oh fee",
+    "meaning": "What will be, will be.",
+    "advice": "A comforting embrace of fate. Relinquish control over the things you cannot change."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_romanian": "Nemulțumitului i se ia darul",
+    "saying_phonetic": "Neh-mool-tsoo-mee-too-looy ee seh yah dah-rool",
+    "meaning": "The ungrateful person loses the gift.",
+    "advice": "True peace is found in appreciation. Appreciate what you have before it is gone."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_romanian": "Nu vezi pădurea din cauza copacilor",
+    "saying_phonetic": "Noo vez' puh-doo-ryah deen kow-zah koh-pah-chee-lohr",
+    "meaning": "You can't see the forest because of the trees.",
+    "advice": "Step back from the small, overwhelming details to view the calm expanse of the bigger picture."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_romanian": "Lucrul bun se face încet",
+    "saying_phonetic": "Loo-krool boon seh fah-cheh een-chet",
+    "meaning": "Good work is done slowly.",
+    "advice": "True quality and personal healing require time. Slow down and embrace the process."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_romanian": "Graba strică treaba",
+    "saying_phonetic": "Grah-bah stree-kuh try-bah",
+    "meaning": "Haste ruins the job.",
+    "advice": "Anxiety and rushing only cause mistakes. Move with slow, deliberate, and calm intention."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_romanian": "Vorba dulce mult aduce",
+    "saying_phonetic": "Vohr-bah dool-cheh moolt ah-doo-cheh",
+    "meaning": "Sweet speech brings a lot.",
+    "advice": "Soft, gentle words solve conflicts much faster than anger or force."
+  },
+  {
+    "category": "🌿 Simplicity & Perspective",
+    "saying_romanian": "Unde-s mulți, puterea crește",
+    "saying_phonetic": "Oon-dehs moolts, poo-teh-ryah kresh-teh",
+    "meaning": "Where there are many, strength grows.",
+    "advice": "You do not have to carry your burdens alone. Lean gently on your community."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_romanian": "Ce nu te doboară te face mai puternic",
+    "saying_phonetic": "Cheh noo teh doh-bwah-ruh teh fah-cheh my poo-tehr-neek",
+    "meaning": "What doesn't defeat you makes you stronger.",
+    "advice": "Hardship is just a tool that refines your inner resilience."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_romanian": "Speranța moare ultima",
+    "saying_phonetic": "Speh-rahn-tsah mwah-reh ool-tee-mah",
+    "meaning": "Hope dies last.",
+    "advice": "Even in the absolute darkest moments, a tiny glimmer of quiet optimism remains."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_romanian": "După ploaie vine vreme bună",
+    "saying_phonetic": "Doo-puh plwah-yeh vee-neh vreh-meh boo-nuh",
+    "meaning": "After rain comes good weather.",
+    "advice": "No matter how severe the storm in your life is right now, clear skies are guaranteed to return."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_romanian": "Nevoia te învață",
+    "saying_phonetic": "Neh-vohy-ah teh een-vwa-tsuh",
+    "meaning": "Necessity teaches you.",
+    "advice": "Trust your ability to adapt. When tested, you will always find a quiet, resourceful way forward."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_romanian": "Nu mor caii când vor câinii",
+    "saying_phonetic": "Noo mohr kye-ee kurn vohr koo-ynee",
+    "meaning": "Horses don't die just because dogs wish it.",
+    "advice": "Do not let external criticisms or negative energy disturb your internal peace."
+  },
+  {
+    "category": "🪵 Inner Strength & Overcoming Hardship",
+    "saying_romanian": "Fă-te frate cu dracul până treci puntea",
+    "saying_phonetic": "Fuh-teh frah-teh koo drah-kool poon-uh trech poon-tyah",
+    "meaning": "Make yourself a brother to the devil until you cross the bridge.",
+    "advice": "Be flexible and pragmatic in tough situations to get through them safely without unnecessary friction."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_romanian": "Cine se scoală de dimineață, departe ajunge",
+    "saying_phonetic": "Chee-neh seh skwah-luh deh dee-mee-nyah-tsuh, deh-pahr-teh ah-joon-jeh",
+    "meaning": "He who wakes up early goes far.",
+    "advice": "Find peace in routine. Small, steady, calm morning steps lead to great progress."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_romanian": "Cine sapă groapa altuia, cade singur în ea",
+    "saying_phonetic": "Chee-neh sah-puh gwah-pah ahl-tooy-ah, kah-deh seen-goor een yah",
+    "meaning": "He who digs a pit for another falls into it himself.",
+    "advice": "Let go of grudges and revenge. The universe has a natural way of balancing justice."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_romanian": "Minciuna are picioare scurte",
+    "saying_phonetic": "Meen-choo-nah ah-reh pee-chywah-reh skoor-teh",
+    "meaning": "A lie has short legs.",
+    "advice": "Live honestly. Truth brings a quiet mind, while deceit requires exhausting maintenance."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_romanian": "Obiceiul e a doua natură",
+    "saying_phonetic": "Oh-bee-chey-ool eh ah dwah nah-too-ruh",
+    "meaning": "Habit is second nature.",
+    "advice": "Guard your daily routines. Gentle, peaceful habits eventually become your natural state of being."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_romanian": "Nu tot ce sclipește e aur",
+    "saying_phonetic": "Noo toht cheh sklee-pesh-teh eh ow-oor",
+    "meaning": "Not everything that glitters is gold.",
+    "advice": "Do not envy external appearances. Real value is quiet, simple, and internal."
+  },
+  {
+    "category": "🌊 Wisdom, Integrity & Actions",
+    "saying_romanian": "Tăcerea e de aur",
+    "saying_phonetic": "Tuh-cheh-ryah eh deh ow-oor",
+    "meaning": "Silence is golden.",
+    "advice": "Avoid unnecessary noise and arguments. True clarity is cultivated in absolute stillness."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_romanian": "Măsoară de zece ori și taie o singură dată",
+    "saying_phonetic": "Muh-swah-ruh deh zeh-cheh ohree shee tye oh seen-goo-ruh dah-tuh",
+    "meaning": "Measure ten times and cut once.",
+    "advice": "Take a deep breath and think carefully before reacting to stressful situations."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_romanian": "Cum îți așterni, așa dormi",
+    "saying_phonetic": "Koom eets ah-shtyehr-nee, ah-shah dohr-mee",
+    "meaning": "As you make your bed, so you will sleep.",
+    "advice": "Intentionally build a calm, clutter-free life to enjoy a peaceful mind."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_romanian": "Ochii care nu se văd se uită",
+    "saying_phonetic": "Oh-kee kah-reh noo seh vuhd seh ooy-tuh",
+    "meaning": "Eyes that don't see each other forget.",
+    "advice": "Distance naturally fades old pains, heartbreaks, and toxic connections over time."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_romanian": "Fuga e rușinoasă, dar e sănătoasă",
+    "saying_phonetic": "Foo-gah eh roo-shee-nwah-suh, dahr eh suh-nuh-twah-suh",
+    "meaning": "Running away is shameful, but it's healthy.",
+    "advice": "It is completely okay to walk away from toxic arguments or stressful environments to save your peace."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_romanian": "Banii n-aduc fericirea",
+    "saying_phonetic": "Bah-nee nah-dook feh-lee-chee-ryah",
+    "meaning": "Money doesn't bring happiness.",
+    "advice": "True peace and contentment cannot be bought; they are grown from within."
+  },
+  {
+    "category": "🏡 Moderation & Peace of Mind",
+    "saying_romanian": "Sătulul nu crede celui flămând",
+    "saying_phonetic": "Suh-too-lool noo kreh-deh cheh-looy fluh-murnd",
+    "meaning": "The well-fed does not believe the hungry.",
+    "advice": "Do not waste your energy trying to make everyone understand your personal struggles."
+  }
+];
+const bulgarianProverbs = bulgarianProverbsRaw.map(p => ({...p, saying: p.saying_bulgarian}));
+const romanianProverbs = romanianProverbsRaw.map(p => ({...p, saying: p.saying_romanian}));
+
+function categoryClass(category){
+  if (category.includes("Acceptance")) return "cat-rose";
+  if (category.includes("Simplicity")) return "cat-teal";
+  if (category.includes("Inner Strength")) return "cat-wood";
+  if (category.includes("Wisdom")) return "cat-sky";
+  if (category.includes("Moderation")) return "cat-lavender";
+  return "cat-rose";
+}
+
+function proverbCardHtml(p){
+  const cls = categoryClass(p.category);
+  return `<div class="proverb ${cls}">
+        <div class="proverb-cat">${p.category}</div>
+        <div class="proverb-native">${p.saying}</div>
+        <div class="proverb-phonetic">${p.saying_phonetic}</div>
+        <div class="proverb-meaning">"${p.meaning}"</div>
+        <div class="proverb-advice">${p.advice}</div>
+      </div>`;
+}
+
+function randomProverb(list){
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// ---- Fixed "in case of rain" alternatives, per day, brief with map pins ----
+const alternatives = {
+  0: [
+    {n:"Passage Macca-Villacrosse", q:"Passage Macca-Villacrosse Bucharest", note:"covered glass-roofed arcade, cafés"},
+    {n:"Romanian Peasant Museum", q:"Romanian Peasant Museum Bucharest", note:"well-regarded, indoor, central"},
+    {n:"National Museum of Art of Romania", q:"National Museum of Art of Romania Bucharest", note:"open late some evenings"}
+  ],
+  1: [
+    {n:"Romanian National History Museum", q:"National History Museum of Romania Bucharest", note:"just off Calea Victoriei"},
+    {n:"Cotroceni Palace tour", q:"Cotroceni Palace Bucharest", note:"guided tour, book ahead"},
+    {n:"CEC Palace", q:"CEC Palace Bucharest", note:"striking domed banking hall lobby"}
+  ],
+  2: [
+    {n:"Grigore Antipa Natural History Museum", q:"Grigore Antipa Museum Bucharest", note:"large indoor natural history collection"},
+    {n:"Odeon Theatre", q:"Odeon Theatre Bucharest", note:"check what's showing"},
+    {n:"Stavropoleos Monastery", q:"Stavropoleos Monastery Bucharest", note:"small, quick, mostly covered"}
+  ],
+  3: [
+    {n:"Cărturești Carusel", q:"Carturesti Carusel Bucharest", note:"bookshop, easy last stop"},
+    {n:"George Enescu National Museum", q:"George Enescu National Museum Bucharest", note:"small, ties in with the Athenaeum"},
+    {n:"Bucharest National Opera", q:"Bucharest National Opera", note:"check what's on, worth a look regardless"}
+  ],
+  4: [
+    {n:"Sofia History Museum", q:"Sofia History Museum", note:"in the old Central Mineral Baths building"},
+    {n:"Halite Central Market", q:"Halite Central Sofia Market", note:"covered market, food and browsing"},
+    {n:"Crypt Museum, Alexander Nevsky", q:"Crypt Museum Alexander Nevsky Sofia", note:"indoors, quick, icons collection"},
+    {n:"TSUM", q:"TSUM Sofia", note:"department store, easy shelter"}
+  ],
+  5: [
+    {n:"Sofia History Museum", q:"Sofia History Museum", note:"good backup if the mountain's out"},
+    {n:"Halite Central Market", q:"Halite Central Sofia Market", note:"covered market, food and browsing"},
+    {n:"National Palace of Culture (NDK)", q:"NDK Sofia", note:"indoor halls, check listings"},
+    {n:"Banya Bashi Mosque", q:"Banya Bashi Mosque Sofia", note:"quick look, central"}
+  ],
+  6: [
+    {n:"Halite Central Market", q:"Halite Central Sofia Market", note:"covered, easy last stop"},
+    {n:"Sofia History Museum", q:"Sofia History Museum", note:"if there's still time before the airport"},
+    {n:"TSUM", q:"TSUM Sofia", note:"department store, easy shelter"}
+  ]
+};
+
+function renderAlternatives(dayId){
+  const items = alternatives[dayId] || [];
+  if (!items.length) return "";
+  const rows = items.map(it => `<div class="alt-item"><span class="alt-name">${it.n}</span>${pin(it.q)}<span class="alt-note">&nbsp;— ${it.note}</span></div>`).join("");
+  return `<div class="block alt-block"><div class="block-label">If plans change (e.g. rain)</div>${rows}</div>`;
+}
+
+function renderDayContent(d){
+  const proverbSet = d.city === "buc" ? romanianProverbs : bulgarianProverbs;
+  const cards = d.cards();
+  const midProverb = proverbCardHtml(randomProverb(proverbSet));
+  const bottomProverb = proverbCardHtml(randomProverb(proverbSet));
+  const insertAt = cards.length > 1 ? 1 + Math.floor(Math.random() * (cards.length - 1)) : cards.length;
+  const withMid = [...cards.slice(0, insertAt), midProverb, ...cards.slice(insertAt)];
+  return d.header + withMid.join("") + bottomProverb + renderAlternatives(d.id);
+}
+
+const romanianCategories = [
+  {title:"Essentials", rows:[
+    ["Hello (formal)","Bună ziua"],
+    ["Hi (informal)","Salut"],
+    ["Good evening","Bună seara"],
+    ["Goodbye","La revedere"],
+    ["Please","Vă rog"],
+    ["Thank you","Mulțumesc"],
+    ["You're welcome","Cu plăcere"],
+    ["Yes / No","Da / Nu"],
+    ["Excuse me / Sorry","Scuzați-mă"],
+    ["Do you speak English?","Vorbiți engleza?"],
+    ["I don't understand","Nu înțeleg"]
+  ]},
+  {title:"Numbers", rows:[
+    ["1 / 2 / 3","unu / doi / trei"],
+    ["4 / 5 / 6","patru / cinci / șase"],
+    ["7 / 8 / 9","șapte / opt / nouă"],
+    ["10 / 20 / 100","zece / douăzeci / o sută"]
+  ]},
+  {title:"Directions", rows:[
+    ["Where is...?","Unde este...?"],
+    ["How do I get to...?","Cum ajung la...?"],
+    ["Left / Right","Stânga / Dreapta"],
+    ["Straight ahead","Drept înainte"],
+    ["Near / Far","Aproape / Departe"]
+  ]},
+  {title:"Hotel", rows:[
+    ["I have a reservation","Am o rezervare"],
+    ["Room / Key","Cameră / Cheie"],
+    ["Is breakfast included?","Micul dejun este inclus?"],
+    ["What time is check-out?","La ce oră eliberăm camera?"]
+  ]},
+  {title:"Transport", rows:[
+    ["Airport / Train station","Aeroport / Gara"],
+    ["Bus station / stop","Autogara / Stație"],
+    ["Ticket / One to...","Bilet / Un bilet până la..."],
+    ["Where can I buy a ticket?","De unde cumpăr un bilet?"]
+  ]},
+  {title:"Restaurant", rows:[
+    ["Table for two","O masă pentru doi"],
+    ["Menu / Water","Meniu / Apă"],
+    ["The bill, please","Nota de plată, vă rog"],
+    ["I'm vegetarian","Sunt vegetarian(ă)"],
+    ["Cheers!","Noroc!"]
+  ]},
+  {title:"Money & shopping", rows:[
+    ["How much is this?","Cât costă?"],
+    ["Too expensive","Prea scump"],
+    ["Can I pay by card?","Pot plăti cu cardul?"]
+  ]},
+  {title:"Emergency", rows:[
+    ["Help!","Ajutor!"],
+    ["I need a doctor","Am nevoie de un doctor"],
+    ["Call the police","Chemați poliția"],
+    ["Emergency number","112"]
+  ]}
+];
+
+const bulgarianCategories = [
+  {title:"Essentials", rows:[
+    ["Hello (formal)","Здравейте","<b>ZDRA</b>-vey-te"],
+    ["Hi (informal)","Здрасти","<b>ZDRAS</b>-ti"],
+    ["Good morning","Добро утро","do-<b>BRO OO</b>-tro"],
+    ["Good evening","Добър вечер","<b>DO</b>-bar <b>VE</b>-cher"],
+    ["Goodbye","Довиждане","do-<b>VIZH</b>-da-ne"],
+    ["Please","Моля","<b>MO</b>-lya"],
+    ["Thank you","Благодаря","bla-go-da-<b>RYA</b>"],
+    ["Yes / No","Да / Не","da / ne"],
+    ["Excuse me / Sorry","Извинете","iz-vi-<b>NE</b>-te"],
+    ["Do you speak English?","Говорите ли английски?","go-<b>VO</b>-ri-te li an-<b>GLIY</b>-ski"],
+    ["I don't understand","Не разбирам","ne raz-<b>BI</b>-ram"]
+  ]},
+  {title:"Numbers", rows:[
+    ["1 / 2 / 3","едно / две / три","ed-<b>NO</b> / dve / tri"],
+    ["4 / 5 / 6","четири / пет / шест","<b>CHE</b>-ti-ri / pet / shest"],
+    ["7 / 8 / 9","седем / осем / девет","<b>SE</b>-dem / <b>O</b>-sem / <b>DE</b>-vet"],
+    ["10 / 20 / 100","десет / двадесет / сто","<b>DE</b>-set / <b>DVA</b>-de-set / sto"]
+  ]},
+  {title:"Directions", rows:[
+    ["Where is...?","Къде е...?","ka-<b>DE</b> e..."],
+    ["Left / Right","Ляво / Дясно","<b>LYA</b>-vo / <b>DYAS</b>-no"],
+    ["Straight ahead","Направо","na-<b>PRA</b>-vo"],
+    ["Near / Far","Близо / Далеч","<b>BLI</b>-zo / da-<b>LECH</b>"]
+  ]},
+  {title:"Hotel", rows:[
+    ["Reservation","Резервация","re-zer-<b>VA</b>-tsi-ya"],
+    ["Room / Key","Стая / Ключ","<b>STA</b>-ya / klyuch"],
+    ["Is breakfast included?","Закуската включена ли е?","za-<b>KOOS</b>-ka-ta vklyu-<b>CHE</b>-na li e"],
+    ["What time is check-out?","В колко часа е напускането?","v <b>KOL</b>-ko cha-<b>SA</b> e na-<b>POOS</b>-ka-ne-to"]
+  ]},
+  {title:"Transport", rows:[
+    ["Airport / Train station","Летище / Гара","le-<b>TISH</b>-te / <b>GA</b>-ra"],
+    ["Bus station","Автогара","av-to-<b>GA</b>-ra"],
+    ["Ticket / One to...","Билет / Един билет до...","bi-<b>LET</b> / e-<b>DIN</b> bi-<b>LET</b> do..."],
+    ["Taxi","Такси","tak-<b>SI</b>"]
+  ]},
+  {title:"Restaurant", rows:[
+    ["Table for two","Маса за двама","<b>MA</b>-sa za <b>DVA</b>-ma"],
+    ["Menu / Water","Меню / Вода","me-<b>NYU</b> / vo-<b>DA</b>"],
+    ["The bill, please","Сметката, моля","<b>SMET</b>-ka-ta <b>MO</b>-lya"],
+    ["I'm vegetarian","Вегетарианец съм","ve-ge-ta-ri-<b>A</b>-nets sam"],
+    ["Cheers!","Наздраве!","naz-<b>DRA</b>-ve"]
+  ]},
+  {title:"Money & shopping", rows:[
+    ["How much is this?","Колко струва?","<b>KOL</b>-ko <b>STROO</b>-va"],
+    ["Too expensive","Твърде скъпо","<b>TVAR</b>-de <b>SKA</b>-po"],
+    ["Can I pay by card?","Мога ли да платя с карта?","<b>MO</b>-ga li da pla-<b>TYA</b> s <b>KAR</b>-ta"]
+  ]},
+  {title:"Emergency", rows:[
+    ["Help!","Помощ!","<b>PO</b>-mosht"],
+    ["I need a doctor","Трябва ми лекар","<b>TRYAB</b>-va mi <b>LE</b>-kar"],
+    ["Police","Полиция","po-<b>LI</b>-tsi-ya"],
+    ["Emergency number","112","same as UK/EU"]
+  ]}
+];
+
+const romanianLegend = `<b>How to read it</b> — Romanian is spelled the way it sounds, once you know five letters:
+  <div class="rules">
+    <span><b>ă</b> = "a" in "about"</span>
+    <span><b>â / î</b> = flat "uh"</span>
+    <span><b>ș</b> = "sh"</span>
+    <span><b>ț</b> = "ts"</span>
+    <span><b>ce/ci</b> = "che/chi"</span>
+    <span><b>ghe/ghi</b> = hard "ge/gi"</span>
+  </div>`;
+
+const bulgarianLegend = `<b>How to read it</b> — the transliteration is the important bit, since you can't sound out Cyrillic on sight. Stress is marked in CAPS.
+  <div class="rules">
+    <span><b>х</b> = "ch" (loch)</span>
+    <span><b>ъ</b> = flat "uh"</span>
+    <span><b>ж</b> = "zh" (measure)</span>
+    <span><b>ш</b> = "sh"</span>
+  </div>`;
+
+function renderRomanian(){
+  let html = `<div class="detail-date">PHRASEBOOK</div><div class="detail-title">Romanian</div><div class="words-ro">`;
+  html += `<div class="words-legend">${romanianLegend}</div>`;
+  romanianCategories.forEach(cat => {
+    html += `<div class="block"><div class="block-label">${cat.title}</div>`;
+    cat.rows.forEach(r => {
+      html += `<div class="prow"><div class="pen">${r[0]}</div><div class="pnative"><div class="plat">${r[1]}</div></div></div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderBulgarian(){
+  let html = `<div class="detail-date">PHRASEBOOK</div><div class="detail-title">Bulgarian</div><div class="words-bg">`;
+  html += `<div class="words-legend">${bulgarianLegend}</div>`;
+  bulgarianCategories.forEach(cat => {
+    html += `<div class="block"><div class="block-label">${cat.title}</div>`;
+    cat.rows.forEach(r => {
+      html += `<div class="prow"><div class="pen">${r[0]}</div><div class="pnative"><div class="pcyr">${r[1]}</div><div class="ptranslit">${r[2]}</div></div></div>`;
+    });
+    html += `</div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+const today = new Date();
+today.setHours(0,0,0,0);
+days.forEach(d => {
+  const monthIdx = d.month === 'OCT' ? 9 : 10;
+  d.dateObj = new Date(2026, monthIdx, d.num);
+  d.dateObj.setHours(0,0,0,0);
+});
+let todayIdx = days.findIndex(d => d.dateObj.getTime() === today.getTime());
+let defaultId = 0;
+if (todayIdx >= 0) defaultId = todayIdx;
+else if (today.getTime() > days[days.length - 1].dateObj.getTime()) defaultId = days.length - 1;
+
+const week = document.getElementById('week');
+const dayEls = [];
+days.forEach((d, i) => {
+  const el = document.createElement('div');
+  const isPast = d.dateObj.getTime() < today.getTime();
+  const isToday = i === todayIdx;
+  el.className = `day ${d.city}${d.travel ? ' travel' : ''}${isPast ? ' past' : ''}${isToday ? ' today' : ''}`;
+  el.innerHTML = `<div class="num">${d.num}</div><div class="mon">${d.month}</div><div class="dot"></div>`;
+  el.addEventListener('click', () => selectDay(d.id));
+  week.appendChild(el);
+  dayEls.push(el);
+});
+
+const panel = document.getElementById('panel');
+const linkRomanian = document.getElementById('linkRomanian');
+const linkBulgarian = document.getElementById('linkBulgarian');
+let selected = {type:'day', id:0};
+
+// ---- Activity status persistence (done / skipped / default) ----
+let statusStore = {};
+try { statusStore = JSON.parse(localStorage.getItem('tripActivityStatus') || '{}'); } catch(e){ statusStore = {}; }
+function getStatus(pid){ return statusStore[pid] || 'default'; }
+function saveStatusStore(){ try { localStorage.setItem('tripActivityStatus', JSON.stringify(statusStore)); } catch(e){} }
+function toggleStatus(pid){
+  const order = ['default','done','skipped'];
+  const next = order[(order.indexOf(getStatus(pid)) + 1) % order.length];
+  statusStore[pid] = next;
+  saveStatusStore();
+  const glyphs = { default:'–', done:'✓', skipped:'✕' };
+  const cardEl = document.querySelector(`[data-pid="${pid}"]`);
+  if (!cardEl) return;
+  cardEl.classList.remove('status-default', 'status-done', 'status-skipped');
+  cardEl.classList.add(`status-${next}`);
+  cardEl.classList.toggle('is-dimmed', next !== 'default');
+  const marker = cardEl.querySelector('.status-marker');
+  marker.className = `status-marker state-${next}`;
+  marker.textContent = glyphs[next];
+}
+
+function updateSelection(){
+  dayEls.forEach((el, i) => el.classList.toggle('selected', selected.type === 'day' && selected.id === i));
+  linkRomanian.classList.toggle('selected', selected.type === 'words' && selected.id === 'ro');
+  linkBulgarian.classList.toggle('selected', selected.type === 'words' && selected.id === 'bg');
+}
+
+function selectDay(id){
+  selected = {type:'day', id};
+  updateSelection();
+
+  const d = days[id];
+  const prev = days[id-1];
+  const next = days[id+1];
+  panel.innerHTML = `
+    ${renderDayContent(d)}
+    <div class="navrow">
+      <button class="navbtn ${prev ? '' : 'hidden'}" onclick="selectDay(${id-1})"><span>← Previous</span>${prev ? prev.weekday : ''}</button>
+      <button class="navbtn next ${next ? '' : 'hidden'}" onclick="selectDay(${id+1})"><span>Next →</span>${next ? next.weekday : ''}</button>
+    </div>
+  `;
+}
+
+function selectWords(lang){
+  selected = {type:'words', id:lang};
+  updateSelection();
+  panel.innerHTML = lang === 'ro' ? renderRomanian() : renderBulgarian();
+}
+
+selectDay(defaultId);
+
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+  const next = isLight ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('tripTheme', next); } catch(e){}
+});
+
+// ---- Currency converter ----
+let fxRates = { RON: 6.12, EUR: 1.15 };
+try {
+  const saved = JSON.parse(localStorage.getItem('tripFxRates') || '{}');
+  fxRates = { ...fxRates, ...saved };
+} catch(e){}
+
+let fxCurrency = 'RON';
+let fxDirection = 'to'; // 'from' = £ -> local, 'to' = local -> £
+try {
+  const savedDir = localStorage.getItem('tripFxDirection');
+  if (savedDir === 'from' || savedDir === 'to') fxDirection = savedDir;
+} catch(e){}
+
+const fxPanel = document.getElementById('fxPanel');
+const fxPillRON = document.getElementById('fxPillRON');
+const fxPillEUR = document.getElementById('fxPillEUR');
+const fxRateInput = document.getElementById('fxRateInput');
+const fxRateCur = document.getElementById('fxRateCur');
+const fxDirFrom = document.getElementById('fxDirFrom');
+const fxDirTo = document.getElementById('fxDirTo');
+const fxAmountInput = document.getElementById('fxAmountInput');
+const fxResult = document.getElementById('fxResult');
+
+function saveFxRates(){
+  try { localStorage.setItem('tripFxRates', JSON.stringify(fxRates)); } catch(e){}
+}
+
+function fxRefreshUI(){
+  fxPillRON.classList.toggle('active', fxCurrency === 'RON');
+  fxPillEUR.classList.toggle('active', fxCurrency === 'EUR');
+  fxRateInput.value = fxRates[fxCurrency];
+  fxRateCur.textContent = fxCurrency;
+  document.querySelectorAll('.fx-cur-short').forEach(el => el.textContent = fxCurrency);
+  fxDirFrom.classList.toggle('active', fxDirection === 'from');
+  fxDirTo.classList.toggle('active', fxDirection === 'to');
+  fxAmountInput.placeholder = fxDirection === 'from' ? '£0' : `${fxCurrency} 0`;
+  fxRecalc();
+}
+
+function fxRecalc(){
+  const amount = parseFloat(fxAmountInput.value) || 0;
+  const rate = fxRates[fxCurrency] || 0;
+  if (fxDirection === 'from'){
+    fxResult.textContent = `→ ${(amount * rate).toFixed(2)} ${fxCurrency}`;
+  } else {
+    fxResult.textContent = `→ £${(rate ? amount / rate : 0).toFixed(2)}`;
+  }
+}
+
+function setFxCurrency(cur){
+  fxCurrency = cur;
+  fxRefreshUI();
+}
+function setFxDirection(dir){
+  fxDirection = dir;
+  try { localStorage.setItem('tripFxDirection', dir); } catch(e){}
+  fxRefreshUI();
+}
+function onFxRateInput(){
+  const val = parseFloat(fxRateInput.value);
+  if (!isNaN(val) && val > 0){
+    fxRates[fxCurrency] = val;
+    saveFxRates();
+  }
+  fxRecalc();
+}
+function onFxAmountInput(){
+  fxRecalc();
+}
+
+const moneyToggle = document.getElementById('moneyToggle');
+moneyToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const opening = !fxPanel.classList.contains('open');
+  fxPanel.classList.toggle('open');
+  if (opening){
+    // Currency matches whichever day is currently open, if any; direction keeps whatever was last used
+    if (selected.type === 'day'){
+      fxCurrency = days[selected.id].city === 'sof' ? 'EUR' : 'RON';
+    }
+    fxRefreshUI();
+  }
+});
+document.addEventListener('click', (e) => {
+  if (fxPanel.classList.contains('open') && !fxPanel.contains(e.target) && e.target !== moneyToggle){
+    fxPanel.classList.remove('open');
+  }
+});
+</script>
+
+</body>
+</html>

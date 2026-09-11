@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Japan, Four Cities</title>
+<script>
+  (function(){
+    var theme = null;
+    try { theme = localStorage.getItem('tripTheme'); } catch(e){}
+    if (!theme){
+      var m = location.search.match(/[?&]theme=(light|dark)/);
+      if (m) theme = m[1];
+    }
+    if (theme) document.documentElement.setAttribute('data-theme', theme);
+  })();
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#14181C;
+    --surface:#1D242A;
+    --surface-hi:#262F37;
+    --line:#313B43;
+    --text:#F3EEE3;
+    --text-dim:#A3AFB8;
+    --text-faint:#7C8A94;
+    --toggle-bg:#262F37;
+    --toggle-icon:#D4A64C;
+
+    --tok:#4A90C4; --tok-dim:#1B3247; --tok-text:#B7D9F0; --tok-border:#254257;
+    --kyo:#BE5F35; --kyo-dim:#5A3324; --kyo-text:#F0C4A8; --kyo-border:#4A2E22;
+    --tak:#5E9B5C; --tak-dim:#223A24; --tak-text:#BFE2BC; --tak-border:#2C4A2C;
+    --kan:#D4A64C; --kan-dim:#5C4A26; --kan-text:#F0D999; --kan-border:#4A3D22;
+
+    --transit-bg:#132A20; --transit-border:#3FA06B; --transit-icon:#7FDDA5;
+    --hotel-bg:#241D14; --hotel-border:#B08838; --hotel-icon:#E4BE6F;
+
+    --status-blue:#5B9BD5; --status-skip:#6E7A85;
+    --cat-rose:#D98BA5; --cat-teal:#4FB3A9; --cat-wood:#B98553; --cat-sky:#6FC3D9; --cat-lavender:#B79AE0;
+    --dropdown-border:#75818D; --dropdown-shadow:0 12px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05);
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#F6F1E6; --surface:#FFFFFF; --surface-hi:#F1EADC; --line:#E3D9C6;
+      --text:#241F18; --text-dim:#5C5042; --text-faint:#7A6F60;
+      --toggle-bg:#FFFFFF; --toggle-icon:#A9791F;
+
+      --tok:#255E8C; --tok-dim:#DCEAF5; --tok-text:#17456B; --tok-border:#BEDAEC;
+      --kyo:#A8501F; --kyo-dim:#F1DAC3; --kyo-text:#8C3E17; --kyo-border:#E3C6A8;
+      --tak:#3F6B3D; --tak-dim:#DEEEDC; --tak-text:#2C4A2A; --tak-border:#C3DFC0;
+      --kan:#A9791F; --kan-dim:#F3E6BE; --kan-text:#7A5813; --kan-border:#E3CE8F;
+
+      --transit-bg:#E3F3EA; --transit-border:#2F7D4F; --transit-icon:#1F6E45;
+      --hotel-bg:#FBF2DF; --hotel-border:#A9791F; --hotel-icon:#7A5813;
+
+      --status-blue:#2F6EA8; --status-skip:#6B7075;
+      --cat-rose:#B23E63; --cat-teal:#1E7F73; --cat-wood:#8A5A2E; --cat-sky:#2C7A94; --cat-lavender:#6A4FA0;
+      --dropdown-border:#E3D9C6; --dropdown-shadow:0 14px 34px rgba(0,0,0,.16);
+      color-scheme: light;
+    }
+  }
+  html[data-theme="light"]{
+    --bg:#F6F1E6; --surface:#FFFFFF; --surface-hi:#F1EADC; --line:#E3D9C6;
+    --text:#241F18; --text-dim:#5C5042; --text-faint:#7A6F60;
+    --toggle-bg:#FFFFFF; --toggle-icon:#A9791F;
+
+    --tok:#255E8C; --tok-dim:#DCEAF5; --tok-text:#17456B; --tok-border:#BEDAEC;
+    --kyo:#A8501F; --kyo-dim:#F1DAC3; --kyo-text:#8C3E17; --kyo-border:#E3C6A8;
+    --tak:#3F6B3D; --tak-dim:#DEEEDC; --tak-text:#2C4A2A; --tak-border:#C3DFC0;
+    --kan:#A9791F; --kan-dim:#F3E6BE; --kan-text:#7A5813; --kan-border:#E3CE8F;
+
+    --transit-bg:#E3F3EA; --transit-border:#2F7D4F; --transit-icon:#1F6E45;
+    --hotel-bg:#FBF2DF; --hotel-border:#A9791F; --hotel-icon:#7A5813;
+
+    --status-blue:#2F6EA8; --status-skip:#6B7075;
+    --cat-rose:#B23E63; --cat-teal:#1E7F73; --cat-wood:#8A5A2E; --cat-sky:#2C7A94; --cat-lavender:#6A4FA0;
+    --dropdown-border:#E3D9C6; --dropdown-shadow:0 14px 34px rgba(0,0,0,.16);
+    color-scheme: light;
+  }
+  html[data-theme="dark"]{
+    --bg:#14181C; --surface:#1D242A; --surface-hi:#262F37; --line:#313B43;
+    --text:#F3EEE3; --text-dim:#A3AFB8; --text-faint:#7C8A94;
+    --toggle-bg:#262F37; --toggle-icon:#D4A64C;
+
+    --tok:#4A90C4; --tok-dim:#1B3247; --tok-text:#B7D9F0; --tok-border:#254257;
+    --kyo:#BE5F35; --kyo-dim:#5A3324; --kyo-text:#F0C4A8; --kyo-border:#4A2E22;
+    --tak:#5E9B5C; --tak-dim:#223A24; --tak-text:#BFE2BC; --tak-border:#2C4A2C;
+    --kan:#D4A64C; --kan-dim:#5C4A26; --kan-text:#F0D999; --kan-border:#4A3D22;
+
+    --transit-bg:#132A20; --transit-border:#3FA06B; --transit-icon:#7FDDA5;
+    --hotel-bg:#241D14; --hotel-border:#B08838; --hotel-icon:#E4BE6F;
+
+    --status-blue:#5B9BD5; --status-skip:#6E7A85;
+    --cat-rose:#D98BA5; --cat-teal:#4FB3A9; --cat-wood:#B98553; --cat-sky:#6FC3D9; --cat-lavender:#B79AE0;
+    --dropdown-border:#75818D; --dropdown-shadow:0 12px 32px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.05);
+    color-scheme: dark;
+  }
+
+  body{ transition: background .25s ease, color .25s ease; }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  .app{ max-width:460px; margin:0 auto; padding:28px 20px 60px; position:relative; min-height:100vh; }
+
+  .eyebrow{ font-size:13.5px; color:var(--text-dim); letter-spacing:.02em; margin-bottom:6px; }
+  h1{ font-family:'Fraunces', serif; font-optical-sizing:auto; font-weight:500; font-size:32px; line-height:1.12; margin:0 0 4px; text-wrap:balance; }
+  .daterange{ color:var(--text-dim); font-size:15.5px; margin-bottom:18px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+
+  .word-link{
+    display:inline-block; padding:4px 11px; border-radius:20px; text-decoration:none;
+    border:1px solid var(--text-faint); color:var(--text-dim); background:none; appearance:none;
+    font-family:inherit; font-size:11px; font-weight:600; letter-spacing:.03em; text-transform:uppercase;
+    cursor:pointer; transition:transform .15s ease, opacity .15s ease, background .15s ease, color .15s ease;
+    flex-shrink:0;
+  }
+  .word-link:active{ transform:scale(0.94); }
+  .word-link.selected{ background:var(--text); color:var(--bg); border-color:var(--text); }
+
+  .timeline{ display:flex; height:38px; border-radius:9px; overflow:hidden; margin-bottom:16px; }
+  .timeline .seg{ display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:600; letter-spacing:.02em; border-right:1px solid var(--bg); }
+  .timeline .seg:last-child{ border-right:none; }
+  .timeline .seg.tok{ background:var(--tok-dim); color:var(--tok-text); }
+  .timeline .seg.kyo{ background:var(--kyo-dim); color:var(--kyo-text); }
+  .timeline .seg.tak{ background:var(--tak-dim); color:var(--tak-text); }
+  .timeline .seg.kan{ background:var(--kan-dim); color:var(--kan-text); }
+  .citylink{ color:inherit; text-decoration:none; }
+  .citylink:hover{ text-decoration:underline; }
+
+  .weekgrid{ display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px; }
+  .day{
+    flex:0 0 calc((100% - 42px)/8);
+    aspect-ratio:1/1.12; background:var(--surface); border:1px solid var(--line); border-radius:9px;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; cursor:pointer;
+    padding:4px 2px; transition:transform .15s ease, background .15s ease, border-color .15s ease; position:relative;
+  }
+  .day:active{ transform:scale(0.94); }
+  .day:hover{ background:var(--surface-hi); }
+  .day .num{ font-family:'Fraunces', serif; font-size:17px; font-weight:600; line-height:1; }
+  .day .mon{ font-size:8.5px; font-weight:600; color:var(--text-dim); margin-top:2px; letter-spacing:.03em; }
+  .day .dot{ width:5px;height:5px;border-radius:50%; margin-top:4px; }
+  .day.tok{ border-color:var(--tok-border); } .day.tok .dot{ background:var(--tok); }
+  .day.kyo{ border-color:var(--kyo-border); } .day.kyo .dot{ background:var(--kyo); }
+  .day.tak{ border-color:var(--tak-border); } .day.tak .dot{ background:var(--tak); }
+  .day.kan{ border-color:var(--kan-border); } .day.kan .dot{ background:var(--kan); }
+  .day.trip{ border-style:dashed; }
+  .day.travel{ background:linear-gradient(135deg, var(--surface-hi), var(--surface)); }
+  .day.travel .num{ text-decoration:underline; text-decoration-color:var(--text-faint); text-decoration-style:dotted; text-underline-offset:3px; }
+  .day.selected{ background:var(--text); border-color:var(--text); border-style:solid; }
+  .day.selected .num, .day.selected .mon{ color:var(--bg); }
+  .day.selected .dot{ background:var(--bg); }
+  .day.past:not(.selected){ opacity:.42; }
+  .day.today{ outline:2px solid var(--transit-border); outline-offset:2px; }
+  .day.today .dot{ background:var(--transit-border); }
+  .day.today.selected .dot{ background:var(--bg); }
+
+  .weekgrid-note{ font-size:11.5px; color:var(--text-faint); margin:-6px 0 18px; display:flex; gap:14px; flex-wrap:wrap; }
+  .weekgrid-note span{ display:inline-flex; align-items:center; gap:5px; }
+  .weekgrid-note i{ width:7px;height:7px;border-radius:50%; display:inline-block; }
+  .week-divider{ height:1px; background:linear-gradient(90deg, transparent, var(--kan) 15%, var(--kan) 85%, transparent); opacity:.55; margin-bottom:22px; }
+
+  .panel{ animation:panelIn .25s ease; }
+  @keyframes panelIn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:translateY(0); } }
+
+  .detail-date{ font-size:13.5px; color:var(--text-dim); margin-bottom:4px; }
+  .detail-title{ font-family:'Fraunces', serif; font-weight:500; font-size:27px; margin:0 0 18px; line-height:1.15; text-wrap:balance; }
+
+  .badge{ display:inline-block; font-size:12px; font-weight:600; padding:4px 10px; border-radius:20px; margin-bottom:18px; letter-spacing:.02em; }
+  .badge.tok{ background:var(--tok-dim); color:var(--tok-text); }
+  .badge.kyo{ background:var(--kyo-dim); color:var(--kyo-text); }
+  .badge.tak{ background:var(--tak-dim); color:var(--tak-text); }
+  .badge.kan{ background:var(--kan-dim); color:var(--kan-text); }
+
+  .block{ background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:15px 17px; margin-bottom:12px; }
+  .block-label{ font-size:11.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px; }
+  .block--transit{ background:var(--transit-bg); border-color:var(--transit-border); }
+  .block--transit .block-label{ color:var(--transit-icon); }
+  .block--hotel{ background:var(--hotel-bg); border-color:var(--hotel-border); }
+  .block--hotel .block-label{ color:var(--hotel-icon); }
+
+  .leg{ margin-bottom:10px; }
+  .leg:last-child{ margin-bottom:0; }
+  .route{ display:flex; align-items:center; justify-content:space-between; }
+  .route .pt{ text-align:center; }
+  .route .pt .code{ font-family:'Fraunces', serif; font-size:19px; font-weight:500; }
+  .route .pt .time{ font-size:13.5px; color:var(--text-dim); margin-top:2px; }
+  .route .mid{ flex:1; display:flex; flex-direction:column; align-items:center; padding:0 10px; color:var(--text-faint); }
+  .route .mid .line{ width:100%; height:1px; background:var(--line); position:relative; margin:4px 0; }
+  .route .mid .line:after{ content:"🚅"; position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); background:var(--transit-bg); padding:0 6px; font-size:13px; }
+  .route .mid .dur{ font-size:11.5px; }
+  .change{ font-size:11.5px; color:var(--text-faint); text-align:center; padding:6px 0; font-style:italic; }
+  .meta-row{ display:flex; justify-content:space-between; font-size:13.5px; color:var(--text-dim); padding-top:9px; border-top:1px solid var(--line); margin-top:9px; }
+
+  .hotel-name{ font-family:'Fraunces', serif; font-size:19px; font-weight:500; margin-bottom:6px; }
+  .addr{ font-size:14px; color:var(--text-dim); margin-bottom:10px; }
+  .hoursrow{ display:flex; gap:20px; font-size:13.5px; }
+  .hoursrow div span{ display:block; color:var(--text-dim); font-size:11px; margin-bottom:2px;}
+
+  .tip{ font-size:14px; line-height:1.55; color:var(--text); }
+  .tip strong{ color:var(--kan); font-weight:600; }
+  .tip + .tip{ margin-top:9px; padding-top:9px; border-top:1px solid var(--line); }
+
+  .maplink{ display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; margin-left:5px; color:var(--text-faint); vertical-align:middle; opacity:.85; transition:opacity .15s ease, color .15s ease, transform .15s ease; }
+  .maplink svg{ width:100%; height:100%; fill:currentColor; }
+  .maplink:hover{ color:var(--kan); opacity:1; }
+  .maplink:active{ transform:scale(0.85); }
+
+  .plan{ display:flex; gap:13px; }
+  .plan .when{ width:52px; flex-shrink:0; display:flex; flex-direction:column; align-items:center; gap:6px; padding-top:1px; }
+  .plan .when-label{ font-size:11px; color:var(--text-dim); text-align:center; line-height:1.25; }
+  .plan .what strong{ display:block; font-size:15px; font-weight:600; margin-bottom:3px; }
+  .plan .what p{ margin:0; font-size:13.5px; color:var(--text-dim); line-height:1.5; }
+  .plan .what .alt{ display:block; margin-top:5px; font-size:12.5px; color:var(--text-faint); font-style:italic; }
+  .plan .what .hours{ display:inline-block; margin-top:6px; font-size:12px; color:var(--kan); font-style:italic; }
+  .plan .what .cash{ display:inline-block; margin-top:6px; margin-left:10px; font-size:12px; color:var(--text-faint); font-style:italic; }
+
+  .section-label{ font-size:11.5px; color:var(--text-dim); text-transform:uppercase; letter-spacing:.06em; margin:20px 0 8px; }
+  .section-label:first-child{ margin-top:0; }
+
+  .block--activity{ border-left:3px solid var(--status-blue); }
+  .block--activity.status-default{ border-left-color:var(--status-blue); }
+  .block--activity.status-done{ border-left-color:var(--transit-border); }
+  .block--activity.status-skipped{ border-left-color:var(--status-skip); }
+  .block--activity.is-dimmed .what strong{ opacity:.65; }
+
+  .collapsible{
+    display:grid;
+    grid-template-rows:1fr;
+    transition:grid-template-rows .28s ease;
+  }
+  .collapsible-inner{
+    overflow:hidden;
+    min-height:0;
+  }
+  .block--activity.is-dimmed .collapsible{
+    grid-template-rows:0fr;
+  }
+
+  .status-marker{
+    width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:12px; font-weight:700; cursor:pointer;
+    border:1.5px solid; user-select:none; flex-shrink:0;
+    transition:transform .15s ease;
+  }
+  .status-marker:active{ transform:scale(0.85); }
+  .status-marker.state-default{ border-color:var(--status-blue); color:var(--status-blue); background:transparent; }
+  .status-marker.state-done{ border-color:var(--transit-border); background:var(--transit-border); color:#fff; }
+  .status-marker.state-skipped{ border-color:var(--status-skip); background:var(--status-skip); color:#fff; }
+
+  .proverb{
+    background:var(--surface);
+    border:1px solid var(--pc);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:12px;
+    opacity:.88;
+  }
+  .proverb.cat-rose{ --pc:var(--cat-rose); }
+  .proverb.cat-teal{ --pc:var(--cat-teal); }
+  .proverb.cat-wood{ --pc:var(--cat-wood); }
+  .proverb.cat-sky{ --pc:var(--cat-sky); }
+  .proverb.cat-lavender{ --pc:var(--cat-lavender); }
+  .proverb-cat{ font-size:9.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--pc); font-weight:600; opacity:.85; margin-bottom:7px; }
+  .proverb-native{ font-family:'Fraunces', serif; font-size:14.5px; font-weight:500; color:var(--text-dim); margin-bottom:2px; }
+  .proverb-phonetic{ font-size:11.5px; font-style:italic; font-weight:500; color:var(--text-dim); margin-bottom:7px; }
+  .proverb-meaning{ font-size:12px; color:var(--text-dim); font-style:italic; font-weight:500; margin-bottom:7px; }
+  .proverb-advice{ font-size:12.5px; color:var(--text-dim); line-height:1.5; padding-top:7px; border-top:1px solid var(--line); }
+
+  .navrow{ display:flex; justify-content:space-between; margin-top:24px; padding-top:16px; border-top:1px solid var(--line); }
+  .navbtn{ background:none; border:none; color:var(--text-dim); font-family:'IBM Plex Sans', sans-serif; font-size:14px; cursor:pointer; display:flex; flex-direction:column; gap:2px; }
+  .navbtn.next{ text-align:right; align-items:flex-end; }
+  .navbtn span{ font-size:11.5px; color:var(--text-dim); }
+  .navbtn:active{ opacity:.6; }
+  .navbtn.hidden{ visibility:hidden; }
+
+  .words-legend{ border-radius:12px; padding:14px 16px; margin-bottom:14px; font-size:13px; line-height:1.6; background:var(--surface-hi); color:var(--text); }
+  .words-legend b{ font-family:'Fraunces', serif; font-weight:600; color:var(--kan); }
+  .words-legend .rules{ margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:4px 14px; }
+  .prow{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding:7px 0; border-bottom:1px solid var(--line); }
+  .prow:last-child{ border-bottom:none; }
+  .prow .pen{ font-size:13px; color:var(--text-dim); flex-shrink:0; width:42%; padding-top:2px; }
+  .prow .pnative{ text-align:right; }
+  .prow .pjp{ font-family:'Fraunces', serif; font-size:16px; font-weight:500; }
+  .prow .proma{ font-size:12px; color:var(--text-dim); font-style:italic; margin-top:2px; }
+
+  .theme-toggle{ position:fixed; top:22px; right:20px; width:38px; height:38px; border-radius:50%; background:var(--toggle-bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:20; transition:background .25s ease, border-color .25s ease, transform .15s ease; }
+  .theme-toggle:active{ transform:scale(0.92); }
+  .theme-toggle svg{ width:18px; height:18px; stroke:var(--toggle-icon); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .theme-toggle .icon-sun{ display:none; }
+  html[data-theme="light"] .theme-toggle .icon-moon{ display:none; }
+  html[data-theme="light"] .theme-toggle .icon-sun{ display:block; }
+  @media (prefers-color-scheme: light){
+    html:not([data-theme="dark"]) .theme-toggle .icon-moon{ display:none; }
+    html:not([data-theme="dark"]) .theme-toggle .icon-sun{ display:block; }
+  }
+
+  .money-toggle{
+    position:fixed; top:22px; right:68px; width:38px; height:38px; border-radius:50%;
+    background:var(--toggle-bg); border:1px solid var(--line); display:flex; align-items:center; justify-content:center;
+    cursor:pointer; z-index:20; font-family:'Fraunces', serif; font-weight:600; font-size:16px; color:var(--toggle-icon);
+    transition:background .2s ease, border-color .2s ease, color .2s ease, transform .15s ease;
+  }
+  .money-toggle:active{ transform:scale(0.92); }
+  .money-toggle.selected{ background:var(--kan); color:var(--bg); border-color:var(--kan); }
+
+  .money-panel{
+    position:fixed; top:68px; right:20px; width:min(320px, calc(100vw - 40px)); max-height:calc(100vh - 90px);
+    overflow-y:auto; background:var(--surface); border:1px solid var(--dropdown-border); border-radius:14px; padding:16px;
+    z-index:25; box-shadow:var(--dropdown-shadow); animation:panelIn .2s ease;
+  }
+  .money-panel[hidden]{ display:none; }
+  .money-sub{ font-size:11px; color:var(--text-faint); margin:-6px 0 12px; line-height:1.4; }
+  .money-section + .money-section{ margin-top:18px; padding-top:16px; border-top:1px solid var(--line); }
+
+  .rate-row{ display:flex; align-items:center; justify-content:center; gap:8px; font-family:'Fraunces', serif; font-size:18px; font-weight:600; }
+  .rate-input{ width:76px; text-align:center; font-family:inherit; font-size:18px; font-weight:700; color:var(--text); background:var(--surface-hi); border:1px solid var(--line); border-radius:8px; padding:6px 4px; }
+  .rate-input:focus{ outline:none; border-color:var(--kan); }
+
+  .dir-toggle{ display:flex; gap:8px; margin-bottom:12px; justify-content:center; }
+  .dir-pill{ padding:6px 14px; border-radius:20px; border:1px solid var(--text-faint); background:none; color:var(--text-dim); font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer; transition:background .15s ease, color .15s ease, border-color .15s ease; }
+  .dir-pill.selected{ background:var(--kan); color:var(--bg); border-color:var(--kan); }
+
+  .amount-input{ display:block; width:100%; box-sizing:border-box; font-family:'Fraunces', serif; font-size:24px; font-weight:600; color:var(--text); background:var(--surface-hi); border:1px solid var(--line); border-radius:10px; padding:11px 13px; margin-bottom:12px; }
+  .amount-input:focus{ outline:none; border-color:var(--kan); }
+
+  .money-result{ background:var(--surface-hi); border-radius:10px; padding:14px; text-align:center; }
+  .result-main{ font-family:'Fraunces', serif; font-size:22px; font-weight:600; }
+  .result-sub{ font-size:12px; color:var(--text-dim); margin-top:2px; }
+  .result-divider{ height:1px; background:var(--line); margin:12px 0; }
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+</button>
+
+<button class="money-toggle" id="moneyToggle" type="button" aria-label="Currency converter">¥</button>
+<div class="money-panel" id="moneyPanel" hidden>
+  <div class="money-section">
+    <div class="block-label">Exchange rate</div>
+    <div class="money-sub">Approximate — edit to match what you're actually getting</div>
+    <div class="rate-row">
+      <span>£1 =</span>
+      <input type="number" id="rateInput" class="rate-input" inputmode="decimal" step="0.5">
+      <span>¥</span>
+    </div>
+  </div>
+  <div class="money-section">
+    <div class="block-label">Currency converter</div>
+    <div class="money-sub">Convert between yen and pounds, and see the tax-free price in one go</div>
+    <div class="dir-toggle">
+      <button type="button" class="dir-pill" id="dirYen2Gbp" data-dir="yen2gbp">¥ → £</button>
+      <button type="button" class="dir-pill" id="dirGbp2Yen" data-dir="gbp2yen">£ → ¥</button>
+    </div>
+    <input type="number" id="amountInput" class="amount-input" inputmode="decimal">
+    <div class="money-result">
+      <div class="result-main" id="resultMain"></div>
+      <div class="result-sub" id="resultSub"></div>
+      <div class="result-divider"></div>
+      <div class="result-main" id="taxFreeMain"></div>
+      <div class="result-sub" id="taxFreeSub"></div>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+  <div class="eyebrow">TRIP · 30 SEP – 14 OCT 2026</div>
+  <h1>Tokyo, Kyoto, Takayama <span style="color:var(--text-faint); font-style:italic; font-weight:400;">&amp;</span> Kanazawa</h1>
+  <div class="daterange">
+    <span>15 days · 4 cities · trains between them</span>
+    <button class="word-link" id="linkWords" type="button" onclick="selectWords()">日本語 Words</button>
+  </div>
+
+  <div class="timeline" id="timeline"></div>
+
+  <div class="weekgrid" id="week"></div>
+  <div class="weekgrid-note">
+    <span><i style="background:var(--tok)"></i>Tokyo</span>
+    <span><i style="background:var(--kyo)"></i>Kyoto</span>
+    <span><i style="background:var(--tak)"></i>Takayama</span>
+    <span><i style="background:var(--kan)"></i>Kanazawa</span>
+    <span>dashed = day trip</span>
+  </div>
+  <div class="week-divider"></div>
+
+  <div class="panel" id="panel"></div>
+</div>
+
+<script>
+const PIN_SVG = '<svg viewBox="0 0 24 24"><path d="M12 21s-7-7.05-7-12a7 7 0 1 1 14 0c0 4.95-7 12-7 12z"/><circle cx="12" cy="9" r="2.3"/></svg>';
+function pin(query){
+  return `<a class="maplink" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}" target="_blank" rel="noopener" aria-label="Open in Google Maps">${PIN_SVG}</a>`;
+}
+
+// ---- shared block renderers ----
+function hotelBlock(name, mapQuery, addr, checkin, checkout, note){
+  return `
+    <div class="block block--hotel">
+      <div class="block-label">Stay</div>
+      <div class="hotel-name">${name}${mapQuery ? pin(mapQuery) : ''}</div>
+      ${addr ? `<div class="addr">${addr}</div>` : ''}
+      ${checkin || checkout ? `<div class="hoursrow">
+        <div><span>Check-in</span>${checkin || '—'}</div>
+        <div><span>Check-out</span>${checkout || '—'}</div>
+      </div>` : ''}
+      ${note ? `<div class="addr" style="margin-top:8px;margin-bottom:0;">${note}</div>` : ''}
+    </div>`;
+}
+
+function transitBlock(label, legs){
+  const legsHtml = legs.map((leg, i) => `
+    ${i > 0 ? `<div class="change">Change at ${leg.changeAt || leg.from.code} — ${leg.changeGap || ''}</div>` : ''}
+    <div class="leg">
+      <div class="route">
+        <div class="pt"><div class="code">${leg.from.code}</div><div class="time">${leg.from.time}</div></div>
+        <div class="mid"><div class="line"></div><div class="dur">${leg.dur}</div></div>
+        <div class="pt"><div class="code">${leg.to.code}</div><div class="time">${leg.to.time}</div></div>
+      </div>
+      <div class="meta-row"><span>${leg.train}</span><span>${leg.note || ''}</span></div>
+    </div>
+  `).join('');
+  return `<div class="block block--transit"><div class="block-label">${label}</div>${legsHtml}</div>`;
+}
+
+function tipBlock(label, tips){
+  return `<div class="block"><div class="block-label">${label}</div>${tips.map(t=>`<div class="tip">${t}</div>`).join('')}</div>`;
+}
+
+// ---- activity status: default (blue) / done (green) / skipped (grey), persisted ----
+let statusStore = {};
+try { statusStore = JSON.parse(localStorage.getItem('tripActivityStatus') || '{}'); } catch(e){ statusStore = {}; }
+function getStatus(pid){ return statusStore[pid] || 'default'; }
+function saveStatusStore(){ try { localStorage.setItem('tripActivityStatus', JSON.stringify(statusStore)); } catch(e){} }
+
+function activityCard(pid, when, titleHtml, bodyText, opts){
+  opts = opts || {};
+  const status = getStatus(pid);
+  const dimClass = status !== 'default' ? ' is-dimmed' : '';
+  const glyphs = { default:'–', done:'✓', skipped:'✕' };
+  return `<div class="block block--activity status-${status}${dimClass}" data-pid="${pid}">
+      <div class="plan">
+        <div class="when">
+          <div class="status-marker state-${status}" onclick="toggleStatus('${pid}')">${glyphs[status]}</div>
+          ${when ? `<div class="when-label">${when}</div>` : ''}
+        </div>
+        <div class="what">
+          <strong>${titleHtml}</strong>
+          <div class="collapsible"><div class="collapsible-inner">
+            ${bodyText ? `<p>${bodyText}</p>` : ''}
+            ${opts.alt ? `<span class="alt">Alternatively: ${opts.alt}</span>` : ''}
+            ${opts.hours ? `<span class="hours">${opts.hours}</span>` : ''}
+            ${opts.cash ? `<span class="cash">💴 ${opts.cash}</span>` : ''}
+          </div></div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function toggleStatus(pid){
+  const order = ['default','done','skipped'];
+  const next = order[(order.indexOf(getStatus(pid)) + 1) % order.length];
+  statusStore[pid] = next;
+  saveStatusStore();
+  const glyphs = { default:'–', done:'✓', skipped:'✕' };
+  const cardEl = document.querySelector(`[data-pid="${pid}"]`);
+  if (!cardEl) return;
+  cardEl.classList.remove('status-default', 'status-done', 'status-skipped');
+  cardEl.classList.add(`status-${next}`);
+  cardEl.classList.toggle('is-dimmed', next !== 'default');
+  const marker = cardEl.querySelector('.status-marker');
+  marker.className = `status-marker state-${next}`;
+  marker.textContent = glyphs[next];
+}
+
+// ---- calming proverb cards: randomised per view, not persisted ----
+function categoryClass(category){
+  if (category.includes("Acceptance")) return "cat-rose";
+  if (category.includes("Nature") || category.includes("Impermanence")) return "cat-teal";
+  if (category.includes("Mindset") || category.includes("Inner Stillness")) return "cat-wood";
+  if (category.includes("Resilience") || category.includes("Subtle Strength")) return "cat-sky";
+  if (category.includes("Harmony") || category.includes("Balance")) return "cat-lavender";
+  return "cat-rose";
+}
+
+function proverbCardHtml(p){
+  const cls = categoryClass(p.category);
+  return `<div class="proverb ${cls}">
+        <div class="proverb-cat">${p.category}</div>
+        <div class="proverb-native">${p.saying}</div>
+        <div class="proverb-phonetic">${p.saying_phonetic}</div>
+        <div class="proverb-meaning">"${p.meaning}"</div>
+        <div class="proverb-advice">${p.advice}</div>
+      </div>`;
+}
+
+function randomProverb(){ return calmingSayings[Math.floor(Math.random() * calmingSayings.length)]; }
+
+// ---- day content assembly: fixed blocks + card sections, with two proverb cards spliced in ----
+function renderDayWithProverbs(headerHtml, sections){
+  const flat = [];
+  const cardPositions = [];
+  sections.forEach(sec => {
+    if (sec.fixed !== undefined){ flat.push(sec.fixed); return; }
+    flat.push(`<div class="section-label">${sec.label}</div>`);
+    sec.cards.forEach(c => { cardPositions.push(flat.length); flat.push(c); });
+  });
+  const result = flat.slice();
+  if (cardPositions.length > 1){
+    const insertPos = cardPositions[1 + Math.floor(Math.random() * (cardPositions.length - 1))];
+    result.splice(insertPos, 0, proverbCardHtml(randomProverb()));
+  }
+  result.push(proverbCardHtml(randomProverb()));
+  return headerHtml + result.join('');
+}
+
+// ---- trip data ----
+const CITY_NAMES = { tok:"Tokyo", kyo:"Kyoto", tak:"Takayama", kan:"Kanazawa" };
+const CITY_WIKI = {
+  tok:"https://en.wikipedia.org/wiki/Tokyo",
+  kyo:"https://en.wikipedia.org/wiki/Kyoto",
+  tak:"https://en.wikipedia.org/wiki/Takayama,_Gifu",
+  kan:"https://en.wikipedia.org/wiki/Kanazawa"
+};
+
+const calmingSayingsRaw = [
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Shikata ga nai", "saying_kanji_kana": "仕方がない", "meaning": "It cannot be helped.", "advice": "Focus your energy on what you can change, not what you cannot." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Nana korobi ya oki", "saying_kanji_kana": "七転び八起き", "meaning": "Fall seven times, stand up eight.", "advice": "True peace comes from knowing you can always rebuild." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Sarumono wa ozu, kitarmono wa kobamazu", "saying_kanji_kana": "去る者は追わず、来る者は拒まず", "meaning": "Do not chase those who leave, do not reject those who arrive.", "advice": "Flow with life's social currents without resistance." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Meido no miyage", "saying_kanji_kana": "冥土の土産", "meaning": "A souvenir from life.", "advice": "View your current struggles as just another interesting story for the future." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Akirame wa kanjin", "saying_kanji_kana": "諦めは肝心", "meaning": "Acceptance is vital.", "advice": "Giving up on the unchangeable brings immediate peace." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Omoitatta ga kikitsujitsu", "saying_kanji_kana": "思い立ったが吉日", "meaning": "The day you decide to do it is your lucky day.", "advice": "Don't stress about the past or the perfect timing." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Mizu ni nagasu", "saying_kanji_kana": "水に流す", "meaning": "Let it flow in the water.", "advice": "Forgive, forget, and let past grievances wash away." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Asahi wa nishi kara noboranai", "saying_kanji_kana": "朝日は西から昇らない", "meaning": "The morning sun does not rise in the west.", "advice": "Accept the natural, unchangeable laws of reality." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Kouka fukutsure", "saying_kanji_kana": "巧遅は拙速に如かず", "meaning": "Better to be slow and deliberate than fast and sloppy.", "advice": "Remind yourself to breathe and slow down." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Un wo ten ni makaceru", "saying_kanji_kana": "運を天に任せる", "meaning": "Leave your fate to heaven.", "advice": "Do your best, then let go of the outcome entirely." },
+  { "category": "🌸 Acceptance & Letting Go", "saying_romaji": "Shouganai", "saying_kanji_kana": "しょうがない", "meaning": "There is no use crying over it.", "advice": "Accept the current reality as it is to reclaim your peace." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Mono no aware", "saying_kanji_kana": "物の哀れ", "meaning": "The beautiful pathos of things.", "advice": "Finding deep peace in the fleeting nature of life and beauty." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Kachou fugetsu", "saying_kanji_kana": "花鳥風月", "meaning": "Flower, bird, wind, moon.", "advice": "Experience the peace of the universe by immersing yourself in nature." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Ukiyo", "saying_kanji_kana": "浮世", "meaning": "The floating world.", "advice": "Live detached from life's anxieties, drifting calmly through its changes." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Sanka suimei", "saying_kanji_kana": "山華水明", "meaning": "Purple mountains, clear streams.", "advice": "A reminder of the pristine, untouched quiet of the natural world." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Seifu meigetsu", "saying_kanji_kana": "清風明月", "meaning": "Pure wind and a bright moon.", "advice": "True peace requires zero wealth or material possessions." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Shiki oriori", "saying_kanji_kana": "四季折々", "meaning": "Season by season.", "advice": "Trust that your current emotional winter will naturally shift into spring." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Taika bansei", "saying_kanji_kana": "大器晩成", "meaning": "Great talents mature late.", "advice": "Do not rush your growth; nature never rushes, yet everything gets done." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Chiri mo tsumoreba yama to naru", "saying_kanji_kana": "ちりもつもればやまとなる", "meaning": "Even dust, when piled up, becomes a mountain.", "advice": "Calmly make small daily progress." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Kachou fugetsu ni asobu", "saying_kanji_kana": "花鳥風月に遊ぶ", "meaning": "Play with the flowers, birds, wind, and moon.", "advice": "Find tranquility by becoming a spectator of nature." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Keichou fubi", "saying_kanji_kana": "桂長風微", "meaning": "The cassia tree grows tall while the wind blows gently.", "advice": "Trust that peaceful environments nurture deep growth." },
+  { "category": "🌿 Nature & Impermanence (Mono no Aware)", "saying_romaji": "Mizu wa hounen ni shitagau", "saying_kanji_kana": "水は方円に随う", "meaning": "Water shapes itself to any container.", "advice": "Be like water and adapt effortlessly to your surroundings." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Wabi-sabi", "saying_kanji_kana": "侘寂", "meaning": "Perfect imperfection.", "advice": "Finding perfect peace in imperfection, incompletion, and the simple things." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Ichigo ichie", "saying_kanji_kana": "一期一会", "meaning": "One time, one meeting.", "advice": "Treasure this exact, unrepeatable moment without worrying about the next." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Heijoshin", "saying_kanji_kana": "平常心", "meaning": "Presence of mind.", "advice": "Maintain a calm, everyday spirit regardless of the chaos surrounding you." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Shinra bansho", "saying_kanji_kana": "森羅万象", "meaning": "All things in nature.", "advice": "Remember how small your current worry is in the grand scope of the universe." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Fudoshin", "saying_kanji_kana": "不動心", "meaning": "Immovable mind.", "advice": "Cultivate a heart that cannot be shaken by external storms." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Meikyo shisui", "saying_kanji_kana": "明鏡止水", "meaning": "Clear mirror, still water.", "advice": "A mind kept so calm and clear that it perfectly reflects reality." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Chisoku", "saying_kanji_kana": "知足", "meaning": "Know what is enough.", "advice": "True wealth and tranquility belong to those who are content with what they have." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Yutori", "saying_kanji_kana": "ゆとり", "meaning": "Living with spaciousness.", "advice": "Leaving breathing room in your schedule, mind, and life." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Shoujin ketsujou", "saying_kanji_kana": "精進潔斎", "meaning": "Purification of the mind and body.", "advice": "Intentionally clearing away mental clutter to restore your inner sanctuary." },
+  { "category": "🍵 Mindset & Inner Stillness", "saying_romaji": "Anjin ritsumei", "saying_kanji_kana": "安心立命", "meaning": "Finding absolute peace of mind through faith or philosophy.", "advice": "Live completely free from existential anxiety." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Yanagi ni yukioro nashi", "saying_kanji_kana": "柳に雪折れなし", "meaning": "The willow branches do not break under the snow.", "advice": "Yielding and being flexible is your greatest strength." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Ame hatte ji katamaru", "saying_kanji_kana": "あめふってじかたまる", "meaning": "After rain, the ground hardens.", "advice": "Adversity only serves to make your foundation more stable." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Gaman", "saying_kanji_kana": "我慢", "meaning": "Enduring the seemingly unbearable with patience and dignity.", "advice": "Keep your composure through internal discipline." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Jinsei bunkuji ma ga uma", "saying_kanji_kana": "人間の万事塞翁が馬", "meaning": "Life is like the horse of an old man at the frontier.", "advice": "Bad luck can be good luck in disguise, so stay even-tempered." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Shunba toufu", "saying_kanji_kana": "駿馬東風", "meaning": "Like the east wind blowing past a swift horse.", "advice": "Let criticisms and worries brush past you without leaving a scratch." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Naiteru mizu ni sakana sumu", "saying_kanji_kana": "泣いてる水に魚住む", "meaning": "Fish live even in weeping waters.", "advice": "Life can still thrive and be beautiful during sad times." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Taiki seijaku", "saying_kanji_kana": "大気静寂", "meaning": "Deep atmosphere, profound silence.", "advice": "Cultivate a quiet, vast presence that cannot be easily disturbed." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Ishin-denshin", "saying_kanji_kana": "以心伝心", "meaning": "Heart to heart communication.", "advice": "Quietly understanding others without the need for loud, exhausting words." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Toko no haru", "saying_kanji_kana": "常個の春", "meaning": "An eternal spring within.", "advice": "Cultivating a mindset so warm that it stays calm even during life's winters." },
+  { "category": "🪵 Resilience & Subtle Strength", "saying_romaji": "Fuuha wo shinogu", "saying_kanji_kana": "風波を凌ぐ", "meaning": "Weathering the wind and waves.", "advice": "Remind yourself that you have the quiet strength to ride out any temporary storm." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Wa", "saying_kanji_kana": "和", "meaning": "Harmony.", "advice": "Living in pursuit of harmony, balance, and peaceful coexistence with all things." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Juu noku gou wo seisu", "saying_kanji_kana": "柔よく剛を制す", "meaning": "Softness overcomes hardness.", "advice": "Gentleness is far more powerful than force." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "In-ou", "saying_kanji_kana": "陰応", "meaning": "The quiet harmony of yin and yang.", "advice": "Accepting that life requires a balance of rest and action, dark and light." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Ikigai", "saying_kanji_kana": "生き甲斐", "meaning": "A reason for being.", "advice": "Finding peace by focusing purely on what brings you quiet joy and purpose." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Shizun de mo mata ukabu", "saying_kanji_kana": "沈んでもまた浮かぶ", "meaning": "Even if you sink, you will float to the top again.", "advice": "Trust the natural buoyancy of your spirit." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Seiseitsuatsatsu", "saying_kanji_kana": "清々颯々", "meaning": "Pure, fresh, and rustling like the wind.", "advice": "The feeling of a mind cleared of clutter." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Onryo jihitsu", "saying_kanji_kana": "穏良慈筆", "meaning": "Gentle, kind, and compassionate.", "advice": "Treat your own mistakes with this exact mindset." },
+  { "category": "🌊 Harmony & Balance", "saying_romaji": "Yugen", "saying_kanji_kana": "幽玄", "meaning": "A profound, mysterious sense of the beauty of the universe.", "advice": "Leaves your daily anxieties feeling distant and small." }
+];
+const calmingSayings = calmingSayingsRaw.map(p => ({...p, saying: p.saying_kanji_kana, saying_phonetic: p.saying_romaji}));
+
+const days = [
+{ id:0, date:"30 September", weekday:"Wednesday", month:"SEP", num:30, city:"tok", travel:true,
+  title:"Home → Tokyo",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Wednesday, 30 September</div>
+    <div class="detail-title">Home → Tokyo</div>
+    <span class="badge tok">ARRIVAL DAY · TOKYO</span>
+  `, [
+    {fixed: hotelBlock("Tokyo hotel", null, null, "3:00pm", null, "Not named in the source plan yet. “Head back to hotel to officially check in, rest until undisclosed time.”")},
+    {label:"Morning", cards:[
+      activityCard("d0a0", "", "Arrive Haneda"+pin("Haneda Airport"), "Collect bags — immigration/customs, train to hotel and drop bags at hotel."),
+      activityCard("d0a1", "", "Tokyo National Museum"+pin("Tokyo National Museum"), "Huge collection covering samurai armor, ceramics, and Buddhist art.", {hours:"9:30–17:00 (Fri/Sat to 20:00) · closed Mon · ¥1,000 (~£5)"})
+    ]},
+    {label:"Early Afternoon", cards:[
+      activityCard("d0a2", "", "National Museum of Western Art"+pin("National Museum of Western Art Tokyo"), "Monet, Rodin, and other Western masters — Le Corbusier‑designed building.", {hours:"9:30–17:30 (Fri/Sat to 20:00) · closed Mon · ¥500 (~£2.50)"}),
+      activityCard("d0a3", "Lunch", "Ueno"+pin("Ueno Park Tokyo"), "Grab something in the park or Museum cafes."),
+      activityCard("d0a4", "", "Shitamachi Museum"+pin("Shitamachi Museum Tokyo"), "Small, atmospheric recreation of old Tokyo shopping street life.", {hours:"9:30–16:30, last entry 16:00 · closed Mon · ¥300 (~£1.50)", cash:"small museum — cash handy as backup"})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d0a5", "", "Asakusa & Sensō‑ji Temple"+pin("Sensoji Temple Asakusa Tokyo")+" (evening stroll)", "Easy, low‑key evening close to Ueno — Nakamise street for snacks, early night to fight jet lag.", {hours:"Main hall 6:30–17:00 in October · grounds open 24h · free", cash:"Nakamise stalls and fortune-slip (omikuji) boxes are cash/coin-based"})
+    ]}
+  ])
+},
+{ id:1, date:"1 October", weekday:"Thursday", month:"OCT", num:1, city:"tok", travel:false,
+  title:"Tokyo",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Thursday, 1 October</div>
+    <div class="detail-title">In Tokyo</div>
+    <span class="badge tok">TOKYO</span>
+  `, [
+    {label:"Morning", cards:[
+      activityCard("d1a0", "", "Tokyo Station"+pin("Tokyo Station Marunouchi")+" (Marunouchi façade)", "Historic red‑brick Marunouchi façade, restored to its 1914 look. Free to view any time."),
+      activityCard("d1a1", "", "Imperial Palace East Gardens"+pin("Imperial Palace East Gardens Tokyo"), "Peaceful gardens, free entry, right by the station.", {hours:"October: 9:00–16:30, last entry 16:00 · closed Mon & Fri · free"})
+    ]},
+    {label:"Early Afternoon", cards:[
+      activityCard("d1a2", "", "Zōjō‑ji Temple"+pin("Zojoji Temple Tokyo"), "Historic temple, main gate for the Tokugawa shoguns, right next to Tokyo Tower.", {hours:"Main hall ~6:00–17:30 · grounds free"}),
+      activityCard("d1a3", "", "Tokyo Tower"+pin("Tokyo Tower")+" (exterior/surroundings)", "Admiring it from the park and surroundings — nice spot for a picnic. Maybe go up if we feel like it.", {hours:"Main Deck 9:00–23:00, last entry 22:30 · ¥3,300 online / ¥3,500 on the day (~£16.50–£17.50) — free to admire from outside"})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d1a4", "", "Atago Jinja"+pin("Atago Jinja Tokyo"), "Small hilltop shrine famous for its steep ‘Success Stairs’.", {cash:"small shrine — cash for omamori/goshuin"}),
+      activityCard("d1a5", "", "Mori Art Museum"+pin("Mori Art Museum Roppongi Hills"), "Contemporary art with panoramic city views from Roppongi Hills. Head back to hotel and rest.", {hours:"10:00–22:00 daily, Tue to 17:00 · ~¥2,000–2,200 (~£10–£11)"})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d1a6", "", "Shinjuku night life"+pin("Shinjuku Tokyo"), "Gay bars: Eagle Tokyo Blue / Dragon Man / Kaiser.")
+    ]}
+  ])
+},
+{ id:2, date:"2 October", weekday:"Friday", month:"OCT", num:2, city:"tok", travel:false,
+  title:"Tokyo",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Friday, 2 October</div>
+    <div class="detail-title">In Tokyo</div>
+    <span class="badge tok">TOKYO</span>
+  `, [
+    {label:"Morning", cards:[
+      activityCard("d2a0", "", "Tokyo Metropolitan Government Building"+pin("Tokyo Metropolitan Government Building"), "Free observation decks, best visibility earlier in the day before haze builds.", {hours:"South deck 9:30–22:00, closed 1st/3rd Tue · North deck 9:30–17:30, closed 2nd/4th Mon · free"}),
+      activityCard("d2a1", "", "Meiji Shrine"+pin("Meiji Shrine Tokyo"), "Peaceful forested shrine, best visited before crowds.", {hours:"Gates follow sunrise/sunset — roughly 5:40–16:40 in October · grounds free · Inner Garden ¥500 (~£2.50)"})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d2a2", "", "Yoyogi Park"+pin("Yoyogi Park Tokyo"), "Wide green park right next to the shrine, good spot to stretch legs."),
+      activityCard("d2a3", "", "Harajuku — Takeshita Street"+pin("Takeshita Street Harajuku"), "Quirky shops, crepes, youth fashion."),
+      activityCard("d2a4", "", "Check energy/time levels — follow for the following options", "Nezu museum"+pin("Nezu Museum Tokyo")+" — Japanese & East Asian art museum with pre‑modern pieces in various media.", {alt:"Omotesandō & Cat Street"+pin("Omotesando Street Tokyo")+" — upscale, tree‑lined shopping street connecting to Shibuya (optional). Shibuya Crossing"+pin("Shibuya Crossing Tokyo")+" — up to 3,000 people crossing at once during peak hours (optional)."})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d2a5", "", "Shibuya & Shinjuku at night"+pin("Shibuya Tokyo"), "")
+    ]}
+  ])
+},
+{ id:3, date:"3 October", weekday:"Saturday", month:"OCT", num:3, city:"tok", travel:false,
+  title:"Tokyo",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Saturday, 3 October</div>
+    <div class="detail-title">In Tokyo</div>
+    <span class="badge tok">TOKYO</span>
+  `, [
+    {label:"Morning", cards:[
+      activityCard("d3a0", "", "Hie Shrine"+pin("Hie Shrine Tokyo"), "Historic shrine with a striking vermillion torii tunnel and city views.", {hours:"Grounds free, generally open daily"}),
+      activityCard("d3a1", "", "Toyokawa Inari Betsuin"+pin("Toyokawa Inari Betsuin Tokyo"), "A few minutes' walk from Hie Shrine, known for its fox statues.")
+    ]},
+    {label:"Midday", cards:[
+      activityCard("d3a2", "", "Edo‑Tokyo Museum"+pin("Edo-Tokyo Museum Ryogoku"), "Across town to Ryōgoku — immersive exhibits on old Edo and Tokyo's history. Reopened 31 March 2026 after its long renovation closure — confirmed open for this trip.", {hours:"9:30–17:30 (Sat to 19:30) · closed Mon · ¥800 (~£4)"})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d3a3", "", "Sumida Hokusai Museum"+pin("Sumida Hokusai Museum"), "Right by the Edo‑Tokyo Museum, dedicated to the ukiyo‑e master.", {hours:"9:30–17:30, last entry 17:00 · closed Mon · ¥400 (~£2)"})
+    ]},
+    {label:"Late afternoon", cards:[
+      activityCard("d3a4", "", "Tokyo Skytree"+pin("Tokyo Skytree"), "Short hop from Ryōgoku — great views, no need to go up if already done elsewhere.", {hours:"10:00–22:00, last admission 21:00 · Tembo Deck ¥1,800–2,300 (~£9–£11.50) depending on day/time"})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d3a5", "", "Boat to Odaiba"+pin("Odaiba Tokyo"), "Water bus from the pier near Asakusa, scenic ride along the Sumida River.", {hours:"~6 sailings/day (roughly 10:00, 11:00, 13:10, 14:10, 15:30, 16:10) — worth checking the exact times before heading to the pier · ¥2,000 one‑way (~£10)"})
+    ]}
+  ])
+},
+{ id:4, date:"4 October", weekday:"Sunday", month:"OCT", num:4, city:"kyo", travel:true,
+  title:"Tokyo → Kyoto",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Sunday, 4 October</div>
+    <div class="detail-title">Tokyo → Kyoto</div>
+    <span class="badge kyo">TRAVEL DAY · TOKYO → KYOTO</span>
+  `, [
+    {fixed: transitBlock("Train", [
+      { from:{code:"TOKYO", time:"10:12"}, to:{code:"KYOTO", time:"12:23"}, train:"Nazomi 23", dur:"2h 11m" }
+    ])},
+    {fixed: hotelBlock("Tokyu Stay Sanjo‑Karasuma", "Tokyu Stay Sanjo Karasuma Kyoto", null, "3:00pm", null)},
+    {label:"Rest of the day", cards:[
+      activityCard("d4a0", "", "Karasuma line to the hotel", "Drop bags at hotel and go for a wander before check‑in time, then back on the Karasuma line to Kyoto Station to visit the sights of:"),
+      activityCard("d4a1", "", "Higashi Hongan‑ji Temple"+pin("Higashi Honganji Temple Kyoto"), "", {hours:"5:50–17:30 (Mar–Oct) · free"}),
+      activityCard("d4a2", "", "Nishi Hongan‑ji Temple"+pin("Nishi Honganji Temple Kyoto"), "", {hours:"5:30–17:00 · free"}),
+      activityCard("d4a3", "", "Tō‑ji Temple"+pin("Toji Temple Kyoto"), "", {alt:"Shōsei‑en Garden"+pin("Shoseien Garden Kyoto"), hours:"Kondō/Kōdō 8:00–17:00, last entry 16:30 · ¥800 (~£3.85)", cash:"not confirmed to take card — worth carrying cash"}),
+      activityCard("d4a4", "", "Check‑in", "Rest."),
+      activityCard("d4a5", "Evening", "Dinner nearby hotel", "Afterwards maybe a late night walk around Sannenzaka"+pin("Sannenzaka Kyoto")+" and Ninenzaka"+pin("Ninenzaka Kyoto")+".")
+    ]}
+  ])
+},
+{ id:5, date:"5 October", weekday:"Monday", month:"OCT", num:5, city:"kyo", travel:false,
+  title:"Kyoto",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Monday, 5 October</div>
+    <div class="detail-title">In Kyoto</div>
+    <span class="badge kyo">KYOTO</span>
+  `, [
+    {label:"Morning — Philosopher's Path", cards:[
+      activityCard("d5a0", "", "Peaceful canal‑side walk (2 kilometres)"+pin("Philosophers Path Kyoto"), "Passing small and big temples."),
+      activityCard("d5a1", "", "Ginkaku‑ji (Silver Pavilion)"+pin("Ginkakuji Silver Pavilion Kyoto"), "The path's northern starting point, famous for its moss garden and sand cone.", {hours:"8:30–17:00 in October · ¥500 (~£2.40)"}),
+      activityCard("d5a2", "", "Hōnen‑in"+pin("Honen-in Temple Kyoto"), "Small, quiet temple just off the path, known for its thatched gate and mossy grounds.", {hours:"Grounds 6:00–16:00 · free (main hall only opens for special spring/autumn viewings — not in early October)"}),
+      activityCard("d5a3", "", "Otoyo Shrine"+pin("Otoyo Shrine Kyoto"), "A small Shinto shrine with unusual mouse, monkey, and owl statues guarding it."),
+      activityCard("d5a4", "", "Anraku‑ji"+pin("Anrakuji Temple Kyoto"), "Modest temple with a peaceful garden, sometimes closed to the public except in spring/autumn."),
+      activityCard("d5a5", "", "Reikan‑ji"+pin("Reikanji Temple Kyoto"), "Small nunnery temple, occasionally open seasonally."),
+      activityCard("d5a6", "", "Nyakuōji Shrine"+pin("Nyakuoji Shrine Kyoto"), "Another minor shrine along the route."),
+      activityCard("d5a7", "", "Eikan‑dō (Zenrin‑ji)"+pin("Eikando Zenrinji Kyoto"), "Just off the southern end, especially popular for its autumn maple colors. Its famous autumn light-up starts in November — after this visit, so daytime only.", {hours:"9:00–17:00, last entry 16:00 · ¥1,000 (~£4.80)"}),
+      activityCard("d5a8", "", "Nanzen‑ji"+pin("Nanzenji Temple Kyoto"), "The path's southern endpoint, a major Zen temple complex with an impressive aqueduct and gardens.", {hours:"Grounds free and open · Sanmon Gate & Hōjō 8:40–17:00 · subtemples ¥400–600 (~£1.90–£2.90) each"})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d5a9", "Lunch", "Somewhere nearby", ""),
+      activityCard("d5a10", "", "Kyoto City KYOCERA Museum of Art"+pin("Kyoto City KYOCERA Museum of Art"), "", {hours:"10:00–18:00, last entry 17:30 · closed Mon · ¥730 (~£3.50)"}),
+      activityCard("d5a11", "", "Heian‑jingū Shrine and Gardens"+pin("Heian Jingu Shrine Kyoto"), "", {hours:"Shrine 6:00–17:30 in October, free · Shin'en Garden 8:30–17:30, ¥600 (~£2.90)"}),
+      activityCard("d5a12", "", "Kiyomizu‑dera"+pin("Kiyomizu-dera Kyoto"), "", {hours:"Opens 6:00, closes ~18:00 (autumn light-up is late Nov, after this trip) · ¥500 (~£2.40)", cash:"explicitly cash-recommended — don't rely on a card at the ticket window"}),
+      activityCard("d5a13", "", "Hōkan‑ji Temple (Yasaka Pagoda)"+pin("Hokanji Yasaka Pagoda Kyoto"), "Climbing the pagoda is weekend-only (Sat–Sun, 10:00–15:00) — this visit falls on a Monday, so worth treating as an exterior/photo stop unless plans shift to a weekend.", {hours:"¥400–500 (~£1.90–£2.40) to climb, weekends only", cash:"small, manually staffed — cash advisable"}),
+      activityCard("d5a14", "", "Yasaka Shrine"+pin("Yasaka Shrine Kyoto"), "Back at hotel for rest and refresh.", {hours:"Grounds open 24/7 · free"})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d5a15", "", "Pontochō alley"+pin("Pontocho Alley Kyoto")+" for dinner", "Stroll along the river, go for a late night Gion walk around Hanamikoji Street (Geisha street)."+pin("Hanamikoji Street Gion Kyoto"))
+    ]}
+  ])
+},
+{ id:6, date:"6 October", weekday:"Tuesday", month:"OCT", num:6, city:"kyo", travel:false,
+  title:"Kyoto",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Tuesday, 6 October</div>
+    <div class="detail-title">In Kyoto</div>
+    <span class="badge kyo">KYOTO</span>
+  `, [
+    {label:"Morning — Arashiyama", cards:[
+      activityCard("d6a0", "", "Arashiyama"+pin("Arashiyama Bamboo Grove Kyoto"), "Famous for towering bamboo groves, historic Zen temples, and the iconic Togetsukyō Bridge. For over a thousand years, it has served as a celebrated natural retreat for Japanese aristocrats, blending dramatic river and mountain landscapes with rich cultural heritage."),
+      activityCard("d6a1", "", "Togetsukyō Bridge"+pin("Togetsukyo Bridge Arashiyama"), "Public bridge, free, always open."),
+      activityCard("d6a2", "", "Arashiyama Bamboo Forest"+pin("Arashiyama Bamboo Forest Kyoto"), "Free, always accessible outdoor path."),
+      activityCard("d6a3", "", "Jōjakkō‑ji Temple"+pin("Jojakkoji Temple Kyoto"), "", {hours:"9:00–17:00, last entry 16:30 · ¥500 (~£2.40)"}),
+      activityCard("d6a4", "", "Giō‑ji Temple"+pin("Giooji Temple Kyoto"), "", {hours:"9:00–16:50, last entry 16:30 · ¥500 (~£2.40)"}),
+      activityCard("d6a5", "", "Adashino Nenbutsu‑ji Temple"+pin("Adashino Nenbutsuji Temple Kyoto"), "", {hours:"9:00–17:00 · ¥500 (~£2.40)"}),
+      activityCard("d6a6", "", "Otagi Nenbutsuji"+pin("Otagi Nenbutsuji Kyoto"), "", {hours:"9:00–16:00/16:15 last entry · closed Wed AND Sat, per the temple's own site — worth checking before visiting · ¥1,000 (~£4.80)", alt:"Daikaku‑ji Temple"+pin("Daikakuji Temple Kyoto")+" (¥800/£3.85 temple, ¥500/£2.40 pond & garden)"})
+    ]},
+    {label:"Midday", cards:[
+      activityCard("d6a7", "Lunch", "Around Arashiyama by the river", "Take a boat trip along the river.", {alt:"Arashiyama Yusai‑Tei Gallery"+pin("Arashiyama Yusai-Tei Kyoto")+" — or Arashiyama Monkey Park Iwatayama"+pin("Arashiyama Monkey Park Iwatayama")})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d6a8", "", "Head back to hotel", "Rest, maybe nap — maybe look for an onsen to bathe.")
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d6a9", "", "teamLab Kyoto"+pin("teamLab Kyoto"), "Last entry at 19:00. Uses dynamic, date‑based pricing — advance online booking is standard practice; buying at the door on the day costs more and risks selling out in peak autumn season.", {hours:"9:00–21:00, last entry 19:30 (check the exact date's hours) · ~¥3,800 (~£18) baseline"})
+    ]}
+  ])
+},
+{ id:7, date:"7 October", weekday:"Wednesday", month:"OCT", num:7, city:"kyo", travel:false, trip:true,
+  title:"Kyoto (day trip: Nara)",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Wednesday, 7 October</div>
+    <div class="detail-title">Day trip to Nara</div>
+    <span class="badge kyo">MORNING/AFTERNOON · DAY TRIP TO NARA</span>
+  `, [
+    {fixed: tipBlock("Getting there", [
+      "Japan's first permanent capital. It features over a thousand free‑roaming sacred deer, the massive Tōdai‑ji Temple housing a giant bronze Buddha, and ancient shrines filled with thousands of stone and bronze lanterns.",
+      "A return train ride from Kyoto to Nara costs between ¥720 and ¥1,280 (£8 to £16) depending on the line and train type. The trip takes about 35 to 45 minutes on direct express options. Arriving in Nara we can take a 15min bus ride to the main area of Nara Park"+pin("Nara Park")+" where we can find:",
+      "Deer crackers (shika senbei) are sold from street stalls and vending machines around the park for about ¥200 (~£1) a pack — a classic small cash purchase, so a few ¥100 coins are handy."
+    ])},
+    {label:"In Nara", cards:[
+      activityCard("d7a0", "", "Nandaimon Gate"+pin("Nandaimon Gate Todaiji Nara"), ""),
+      activityCard("d7a1", "", "Tōdaiji Kagami‑ike Pond"+pin("Kagami-ike Pond Todaiji Nara"), ""),
+      activityCard("d7a2", "", "Tōdai‑ji"+pin("Todaiji Temple Nara"), "", {hours:"April–October: 7:30–17:30 · ¥800 (~£3.85)"}),
+      activityCard("d7a3", "", "Nigatsu‑do"+pin("Nigatsu-do Todaiji Nara"), ""),
+      activityCard("d7a4", "", "Higashimuki Shopping Street"+pin("Higashimuki Shopping Street Nara"), ""),
+      activityCard("d7a5", "", "Nakatanidou sweets shopping street"+pin("Nakatanidou Nara"), ""),
+      activityCard("d7a6", "", "Naramachi Historic District"+pin("Naramachi Nara"), "", {alt:"Kasugataisha Shrine"+pin("Kasuga Taisha Shrine Nara")+" (grounds free; inner sanctuary ¥700/£3.35) — Shiga Naoya's Old Residence"+pin("Shiga Naoya Old Residence Nara")})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d7a7", "", "Back in Kyoto", "Enjoy a relaxing evening around the river and hotel area, maybe enjoy an onsen.")
+    ]}
+  ])
+},
+{ id:8, date:"8 October", weekday:"Thursday", month:"OCT", num:8, city:"kyo", travel:false,
+  title:"Kyoto",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Thursday, 8 October</div>
+    <div class="detail-title">In Kyoto</div>
+    <span class="badge kyo">KYOTO</span>
+  `, [
+    {label:"Morning", cards:[
+      activityCard("d8a0", "", "Fushimi Inari"+pin("Fushimi Inari Shrine Kyoto"), "Ideally early rise to see the sunrise from Inari gates, a slow morning walk, enjoying the ambience more quiet and serene, hearing the nature surrounding and with lesser crowds. Once down find a local place to eat breakfast and carry on exploring the temples on south east of the city, such as:", {hours:"Always open, 24/7 · free"}),
+      activityCard("d8a1", "", "Tōfuku‑ji Temple"+pin("Tofukuji Temple Kyoto"), "", {hours:"Grounds free · October hours 9:00–16:00, gates close 16:30 · Hōjō garden ¥500 (~£2.40)"}),
+      activityCard("d8a2", "", "Tsuten‑kyo Bridge"+pin("Tsutenkyo Bridge Tofukuji Kyoto"), "Part of Tōfuku‑ji's paid garden viewing.", {hours:"¥600 (~£2.90) in October — rises only during the mid/late‑November autumn‑peak season"}),
+      activityCard("d8a3", "", "Reigen‑in Temple"+pin("Reigen-in Temple Kyoto"), ""),
+      activityCard("d8a4", "", "Sanjūsangendō Temple / 1001 Statues"+pin("Sanjusangendo Kyoto"), "", {hours:"8:30–17:00 (Apr 1–Nov 15 hours) · ¥600 (~£2.90)"}),
+      activityCard("d8a5", "", "Nijō Castle"+pin("Nijo Castle Kyoto"), "Do a big loop over here after Sanjūsangen‑dō.", {hours:"Grounds 8:45–16:00, gates close 17:00 · Ninomaru Palace 8:45–16:10 · grounds ¥800 (~£3.85), +¥500 (~£2.40) for the Palace, or ¥1,300 (~£6.25) combined"}),
+      activityCard("d8a6", "", "Number 12 bus to Kinkaku‑ji"+pin("Kinkaku-ji Kyoto"), "", {hours:"9:00–17:00 daily · ¥500 (~£2.40)"})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d8a7", "", "Return to the hotel", "Rest due to the early start. Enjoy the rest of the day locally, looking for last minute souvenirs, and saying bye to the city.")
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d8a8", "", "Nice dinner somewhere", "")
+    ]}
+  ])
+},
+{ id:9, date:"9 October", weekday:"Friday", month:"OCT", num:9, city:"tak", travel:true,
+  title:"Kyoto → Takayama",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Friday, 9 October</div>
+    <div class="detail-title">Kyoto → Takayama</div>
+    <span class="badge tak">TRAVEL DAY · KYOTO → TAKAYAMA</span>
+  `, [
+    {fixed: transitBlock("Train (one change)", [
+      { from:{code:"KYOTO", time:"09:33"}, to:{code:"NAGOYA", time:"10:25"}, train:"Hikari 644", dur:"52m" },
+      { from:{code:"NAGOYA", time:"10:48"}, to:{code:"TAKAYAMA", time:"13:15"}, train:"Hida 7", dur:"2h 27m", changeAt:"Nagoya", changeGap:"23 min to change" }
+    ])},
+    {fixed: tipBlock("Worth double‑checking", [
+      "The Kyoto‑side doc gives the Takayama arrival as 13:12pm; the Takayama‑side doc gives 13:15. Both say the same route (Hikari 644 to Nagoya, change to Hida 7) — just flagging the small mismatch between the two source documents rather than picking one."
+    ])},
+    {fixed: hotelBlock("Airbnb", "Takayama accommodation", null, "4:00pm", null, "Store luggage at station or in a convenient place until check‑in.")},
+    {label:"Afternoon", cards:[
+      activityCard("d9a0", "", "Wander in town", "Until check‑in time allows us inside the accommodation."),
+      activityCard("d9a1", "", "Old Town / Sanmachi Suji"+pin("Sanmachi Suji Takayama"), "Wander merchant streets, sake breweries, snacks.", {cash:"sake breweries' tasting samples (~¥100–500 / £0.50–£2.50) are commonly cash-only"}),
+      activityCard("d9a2", "~15:00", "Afternoon yatai parade + mikoshi procession", ""),
+      activityCard("d9a3", "", "Sakurayama Hachimangu Shrine"+pin("Sakurayama Hachimangu Shrine Takayama"), "Circa‑5th‑century shrine in a serene, wooded locale, known for its festivals & colorful floats. Open 24/7 — also interesting to visit later in the evening.", {hours:"Grounds free, always open"})
+    ]},
+    {label:"Check‑in — 16:00", cards:[
+      activityCard("d9a4", "", "Rest + relax", "If interested in watching the Yatai parade, arrive around 18:00 at Omotesandō Street"+pin("Omotesando Street Takayama")+" where the festival gathers and starts its procession. Parade happens from 18:30 until 21:00.", {hours:"Free to watch from the street — no fee confirmed for viewing"}),
+      activityCard("d9a5", "", "The Floats", "Handcrafted, multi‑tier festival carts decorated with intricate wood carvings and metalwork."),
+      activityCard("d9a6", "", "The Lanterns", "Around 100, flickering paper lanterns attached to each float."),
+      activityCard("d9a7", "", "The Atmosphere", "Traditional flute and drum music echoes through old‑town alleys as the glowing carts move in the night.", {cash:"festival food stalls are commonly cash-only or cash-preferred — worth carrying plenty of small notes and coins"})
+    ]}
+  ])
+},
+{ id:10, date:"10 October", weekday:"Saturday", month:"OCT", num:10, city:"tak", travel:false,
+  title:"Takayama",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Saturday, 10 October</div>
+    <div class="detail-title">In Takayama</div>
+    <span class="badge tak">TAKAYAMA</span>
+  `, [
+    {label:"Morning/Afternoon", cards:[
+      activityCard("d10a0", "", "Sakurayama Hachimangu Shrine"+pin("Sakurayama Hachimangu Shrine Takayama"), "Karakuri marionette performances — Oct 10 showings around 11:00 & 13:00, roughly 50 min each, included rather than separately ticketed."),
+      activityCard("d10a1", "", "Yatai Kaikan (Float Exhibition Hall)"+pin("Yatai Kaikan Takayama"), "Allowing visitors to view four of the town's magnificent, centuries‑old wooden festival floats.", {hours:"9:00–17:00 (Mar–Nov) · ¥900 (~£4.30)", cash:"card acceptance unclear — carry cash as backup"}),
+      activityCard("d10a2", "", "Takayama Jinya"+pin("Takayama Jinya"), "Only preserved Edo‑period government house in Japan.", {hours:"8:45–17:00 (Apr–Oct schedule) · ¥440 (~£2.10)", cash:"small municipal site — cash preferable"}),
+      activityCard("d10a3", "", "Mikoshi return parade", "A Japanese Shinto festival event where a portable shrine (mikoshi), which carries a deity temporarily housed around the city or at an interim resting place (otabisho), is triumphantly carried back to its main shrine. Expect crowds and high energy chants.", {hours:"Free to watch"})
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d10a4", "", "Reserve a restaurant", "Preferred due to festival — high density in town of tourists. Specialty: Hida wagyu.")
+    ]}
+  ])
+},
+{ id:11, date:"11 October", weekday:"Sunday", month:"OCT", num:11, city:"kan", travel:true,
+  title:"Takayama → Kanazawa",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Sunday, 11 October</div>
+    <div class="detail-title">Takayama → Kanazawa</div>
+    <span class="badge kan">TRAVEL DAY · TAKAYAMA → KANAZAWA</span>
+  `, [
+    {label:"Morning", cards:[
+      activityCard("d11a0", "", "Takayama Morning Market"+pin("Takayama Morning Market"), "Miyagawa or Jinya‑mae market along the river."),
+      activityCard("d11a1", "", "Old Town craft & sake shops"+pin("Sanmachi Suji Takayama"), "Browse shops now open (closed during festival)."),
+      activityCard("d11a2", "Check‑out by 11:00", "Drop suitcases on a storage locker", "Stroll around the city checking souvenirs and a quiet ambience post festival."),
+      activityCard("d11a3", "", "Kusakabe Heritage House"+pin("Kusakabe Heritage House Takayama"), "Local history museum in a converted merchant house."),
+      activityCard("d11a4", "", "Enako River / Nakabashi Bridge stroll"+pin("Nakabashi Bridge Takayama"), "Riverside walk lined with willows and cafes."),
+      activityCard("d11a5", "", "Higashiyama Walking Course"+pin("Higashiyama Walking Course Takayama"), "A 3.5‑kilometer (2.2 mile) self‑guided trail in Takayama. It takes about 1.5 to 2 hours to complete. The path leads through a quiet historic temple district, peaceful backstreets, and the forested hills of Shiroyama Park.")
+    ]},
+    {fixed: transitBlock("Train (one change)", [
+      { from:{code:"TAKAYAMA", time:"15:17"}, to:{code:"TOYAMA", time:"16:44"}, train:"Hida 11", dur:"1h 27m" },
+      { from:{code:"TOYAMA", time:"17:31"}, to:{code:"KANAZAWA", time:"17:53"}, train:"Tsuguri 39", dur:"22m", changeAt:"Toyama", changeGap:"47 min to change" }
+    ])},
+    {fixed: hotelBlock("Hotel Torifito Kanazawa", "Hotel Torifito Kanazawa", null, null, null)},
+    {label:"Evening", cards:[
+      activityCard("d11a6", "", "Higashi Chaya District"+pin("Higashi Chaya District Kanazawa"), "(8min bus/25 min walk) — easy stroll through the lantern‑lit teahouse streets. Walking down atmospheric Edo‑period streets lined with striking wooden lattice buildings (kimusuko) — dinner nearby. During the day the houses offer tours of preserved teahouses turned museums, experience Kanazawa's renowned gold leaf crafts shops and enjoy local treats.", {hours:"Streets free, open 24/7 · individual teahouse experiences extra (e.g. Shima ¥500/£2.55, Kaikaro ¥750/£3.85 — Kaikaro closed Wednesdays)"})
+    ]}
+  ])
+},
+{ id:12, date:"12 October", weekday:"Monday", month:"OCT", num:12, city:"kan", travel:false,
+  title:"Kanazawa",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Monday, 12 October</div>
+    <div class="detail-title">In Kanazawa</div>
+    <span class="badge kan">KANAZAWA</span>
+  `, [
+    {label:"Morning", cards:[
+      activityCard("d12a0", "", "Kenroku‑en Garden"+pin("Kenrokuen Garden Kanazawa"), "One of Japan's top three gardens, best visited right at opening.", {hours:"Mar 1–Oct 15: 7:00–18:00; Oct 16–Feb: 8:00–17:00 — this visit lands right around the seasonal change, worth a quick check on the day · ¥320 (~£1.65)"}),
+      activityCard("d12a1", "", "Kanazawa Castle Park"+pin("Kanazawa Castle Park"), "Reconstructed castle grounds next to Kenroku‑en.", {hours:"Grounds & main gates free; paid buildings 9:00–16:30, last entry 16:00 · ¥320 (~£1.65), or ¥500 combined with Kenroku‑en"})
+    ]},
+    {label:"Lunch", cards:[
+      activityCard("d12a2", "", "Ōmichō Market"+pin("Omicho Market Kanazawa"), "Kanazawa's kitchen — fresh seafood lunch and stalls.", {cash:"food stalls and small eateries here — cash strongly preferred"})
+    ]},
+    {label:"Afternoon", cards:[
+      activityCard("d12a3", "", "Nagamachi Samurai District"+pin("Nagamachi Samurai District Kanazawa"), "Beautifully preserved samurai house and old earthen‑walled streets. Earthen Wall Lanes (Nagamachi Buke Yashiki‑mura) — very picturesque and narrow cobblestone lanes, and historic water canals. It was once home to middle‑ and high‑ranking samurai families serving the Kaga Domain during the Edo period."),
+      activityCard("d12a4", "", "Nomura Samurai House (Nomura‑ke)"+pin("Nomura Samurai House Kanazawa"), "", {hours:"October–March: 8:30–16:30, last entry 30 min before close · ¥550 (~£2.80)"}),
+      activityCard("d12a5", "", "Oyama Shrine"+pin("Oyama Shrine Kanazawa"), "Striking stained‑glass gate near the castle.", {hours:"Always open · free"}),
+      activityCard("d12a6", "", "Kazuemachi Chaya District"+pin("Kazuemachi Chaya District Kanazawa"), "Riverside teahouse street.")
+    ]},
+    {label:"Evening", cards:[
+      activityCard("d12a7", "", "Nishi Chaya District"+pin("Nishi Chaya District Kanazawa"), "Quieter, smaller teahouse district for an evening wander and dinner options.")
+    ]}
+  ])
+},
+{ id:13, date:"13 October", weekday:"Tuesday", month:"OCT", num:13, city:"kan", travel:false, trip:true,
+  title:"Kanazawa (day trip: Shirakawa‑go)",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Tuesday, 13 October</div>
+    <div class="detail-title">Day trip to Shirakawa‑go</div>
+    <span class="badge kan">MORNING/EARLY AFTERNOON · DAY TRIP TO SHIRAKAWA‑GO</span>
+  `, [
+    {fixed: tipBlock("Getting there", [
+      "By bus from Kanazawa Station, about 75‑80 min each way — tickets to be booked in advance to guarantee seats (Hokutetsu/Nohi). Official adult fare: ¥2,800 one‑way / ¥5,600 return (no discounted round‑trip found) — seat reservations required, especially in October's peak foliage season, so book ahead.",
+      "Outbound: 8:40am from Kanazawa Station → Shirakawa‑go around 10:00am. Return: 15:00 from Shirakawa‑go → Kanazawa around 16:30.",
+      "Shirakawa‑go is a UNESCO World Heritage village in Gifu Prefecture famous for its gassho‑zukuri farmhouses — steep, thatched roofs (shaped like praying hands, which is what “gassho” means) built to shed heavy snow. The village features carefully preserved buildings over 250 years old. Is still a genuinely lived‑in village — around 700 people still live there — rather than a recreated museum piece, set against a dramatic mountain valley backdrop. Mostly set in Ogimachi Village."+pin("Shirakawa-go Ogimachi")+". Free to walk around — no confirmed entry fee."
+    ])},
+    {label:"In the village", cards:[
+      activityCard("d13a0", "", "Myōzen‑ji Temple"+pin("Myozenji Temple Shirakawa-go"), "A Buddhist temple notable for having the only gassho‑style bell tower and main hall in Japan.", {hours:"Apr–Nov: 8:30–17:00 · ¥300 (~£1.55)"}),
+      activityCard("d13a1", "", "Wada House"+pin("Wada House Shirakawa-go"), "One of the most prominent and largest houses in the village, open to the public. You can walk through multiple floors to see how a farming family actually lived and worked.", {hours:"9:00–17:00 · ¥400 (~£2.05)"}),
+      activityCard("d13a2", "", "Hachiman Shrine Shirakawa"+pin("Hachiman Shrine Shirakawa-go"), "A quiet shrine founded over 1,300 years ago, home to an aged cedar tree considered a local natural treasure.", {hours:"Free"}),
+      activityCard("d13a3", "", "Shiroyama Viewpoint (Observation Deck)"+pin("Shiroyama Viewpoint Shirakawa-go"), "For panoramic view of the village.", {hours:"Free via the walking path; optional shuttle bus ¥300 (~£1.55) one‑way"}),
+      activityCard("d13a4", "", "Deai Bridge"+pin("Deai Bridge Shirakawa-go"), "Pedestrian suspended bridge with good views of the Shogawa River, surrounding mountains, and traditional gassho‑style houses, with beautiful scenery.", {hours:"Free — the main public route into the village"})
+    ]},
+    {fixed: tipBlock("Lunch", [
+      "To be booked, popular village good places go very fast: specialities — Hida beef and soba.",
+      "Smaller village shops and food stalls are typically cash-only or cash-preferred — worth carrying enough yen for the day rather than counting on cards."
+    ])},
+    {label:"Evening", cards:[
+      activityCard("d13a5", "", "Stroll in our preferred areas", "Buy some souvenirs and have dinner.")
+    ]}
+  ])
+},
+{ id:14, date:"14 October", weekday:"Wednesday", month:"OCT", num:14, city:"tok", travel:true,
+  title:"Kanazawa → Tokyo",
+  render:()=>renderDayWithProverbs(`
+    <div class="detail-date">Wednesday, 14 October</div>
+    <div class="detail-title">Kanazawa → Tokyo</div>
+    <span class="badge tok">TRAVEL DAY</span>
+  `, [
+    {fixed: transitBlock("Train", [
+      { from:{code:"KANAZAWA", time:"10:05"}, to:{code:"TOKYO", time:"12:36"}, train:"Kagayaki 508", dur:"2h 31m" }
+    ])},
+    {fixed: tipBlock("Beyond this point", [
+      "The source plan doesn't yet cover onward travel or a flight home from here — nothing invented in its place."
+    ])}
+  ])
+}
+];
+
+const wordCategories = [
+  {title:"Essentials", rows:[
+    ["Hello","こんにちは","kon‑ni‑chi‑wa"],
+    ["Good morning","おはようございます","o‑ha‑yō go‑zai‑mas"],
+    ["Good evening","こんばんは","kon‑ban‑wa"],
+    ["Goodbye","さようなら","sa‑yō‑na‑ra"],
+    ["Please","お願いします","o‑ne‑gai shi‑mas"],
+    ["Thank you","ありがとうございます","a‑ri‑ga‑tō go‑zai‑mas"],
+    ["Yes / No","はい / いいえ","hai / ī‑e"],
+    ["Excuse me / Sorry","すみません","su‑mi‑ma‑sen"],
+    ["Do you speak English?","英語を話せますか？","ei‑go o ha‑na‑se‑mas ka"],
+    ["I don't understand","わかりません","wa‑ka‑ri‑ma‑sen"]
+  ]},
+  {title:"Numbers", rows:[
+    ["1 / 2 / 3","一 / 二 / 三","i‑chi / ni / san"],
+    ["4 / 5 / 6","四 / 五 / 六","yon / go / ro‑ku"],
+    ["7 / 8 / 9","七 / 八 / 九","na‑na / ha‑chi / kyū"],
+    ["10 / 100","十 / 百","jū / hya‑ku"]
+  ]},
+  {title:"Directions", rows:[
+    ["Where is...?","...はどこですか？","...wa do‑ko des ka"],
+    ["Left / Right","左 / 右","hi‑da‑ri / mi‑gi"],
+    ["Straight ahead","まっすぐ","mas‑su‑gu"],
+    ["Near / Far","近い / 遠い","chi‑kai / tō‑i"]
+  ]},
+  {title:"Trains & transport", rows:[
+    ["Station","駅","e‑ki"],
+    ["Ticket","切符","kip‑pu"],
+    ["Reserved seat","指定席","shi‑tei‑se‑ki"],
+    ["What platform?","何番線ですか？","nan‑ban‑sen des ka"],
+    ["Does this go to...?","これは...行きですか？","ko‑re wa ...yu‑ki des ka"],
+    ["Change (trains)","乗り換え","no‑ri‑ka‑e"]
+  ]},
+  {title:"Hotel", rows:[
+    ["Reservation","予約","yo‑ya‑ku"],
+    ["Room / Key","部屋 / 鍵","he‑ya / ka‑gi"],
+    ["Is breakfast included?","朝食は付いていますか？","chō‑sho‑ku wa tsu‑i‑te i‑mas ka"],
+    ["What time is check‑out?","チェックアウトは何時ですか？","chek‑ku‑au‑to wa nan‑ji des ka"]
+  ]},
+  {title:"Restaurant", rows:[
+    ["Table for two","二人です","fu‑ta‑ri des"],
+    ["Menu / Water","メニュー / お水","me‑nyū / o‑mi‑zu"],
+    ["The bill, please","お会計お願いします","o‑kai‑kei o‑ne‑gai shi‑mas"],
+    ["I'm vegetarian","ベジタリアンです","be‑ji‑ta‑ri‑an des"],
+    ["Cheers!","乾杯！","kam‑pai"],
+    ["Delicious","おいしい","oi‑shī"]
+  ]},
+  {title:"Money & shopping", rows:[
+    ["How much is this?","いくらですか？","i‑ku‑ra des ka"],
+    ["Can I pay by card?","カードで払えますか？","kā‑do de ha‑ra‑e‑mas ka"],
+    ["Receipt","領収書","ryō‑shū‑sho"]
+  ]},
+  {title:"Emergency", rows:[
+    ["Help!","助けて！","ta‑su‑ke‑te"],
+    ["I need a doctor","医者が必要です","i‑sha ga hi‑tsu‑yō des"],
+    ["Police","警察","kei‑sa‑tsu"],
+    ["Emergency number","110 (police) / 119 (ambulance, fire)",""]
+  ]}
+];
+
+const wordsLegend = `<b>How to read it</b> — the transliteration is the important bit, since kanji/kana can't be sounded out on sight. Vowels are short and pure (a‑i‑u‑e‑o, as in "father, machine, rule, met, so"); a bar or double vowel means hold it a beat longer.
+  <div class="rules">
+    <span><b>tsu</b> = quick "ts" (cats)</span>
+    <span><b>r</b> = soft, between "r" and "l"</span>
+    <span><b>fu</b> = light, breathy "f"</span>
+    <span><b>ei</b> = long "ay"</span>
+  </div>`;
+
+function renderWords(){
+  let html = `<div class="detail-date">PHRASEBOOK</div><div class="detail-title">Japanese</div>`;
+  html += `<div class="words-legend">${wordsLegend}</div>`;
+  wordCategories.forEach(cat => {
+    html += `<div class="block"><div class="block-label">${cat.title}</div>`;
+    cat.rows.forEach(r => {
+      html += `<div class="prow"><div class="pen">${r[0]}</div><div class="pnative"><div class="pjp">${r[1]}</div>${r[2] ? `<div class="proma">${r[2]}</div>` : ''}</div></div>`;
+    });
+    html += `</div>`;
+  });
+  return html;
+}
+
+// ---- timeline (proportional by day count per city) ----
+const timeline = document.getElementById('timeline');
+const cityCounts = {};
+days.forEach(d => cityCounts[d.city] = (cityCounts[d.city]||0) + 1);
+let lastCity = null;
+Object.keys(cityCounts).forEach(c => {}); // no-op, order comes from first appearance below
+const cityOrder = [];
+days.forEach(d => { if (!cityOrder.includes(d.city)) cityOrder.push(d.city); });
+cityOrder.forEach(c => {
+  const seg = document.createElement('div');
+  seg.className = `seg ${c}`;
+  seg.style.flex = cityCounts[c];
+  seg.innerHTML = `<a class="citylink" href="${CITY_WIKI[c]}" target="_blank" rel="noopener">${CITY_NAMES[c].toUpperCase()}</a>`;
+  timeline.appendChild(seg);
+});
+
+// ---- today/past highlighting (visitor's real device date) ----
+const today = new Date();
+today.setHours(0,0,0,0);
+
+days.forEach(d => {
+  const monthIdx = d.month === 'SEP' ? 8 : 9; // this trip only spans September and October
+  d.dateObj = new Date(2026, monthIdx, d.num);
+  d.dateObj.setHours(0,0,0,0);
+});
+
+let todayIdx = days.findIndex(d => d.dateObj.getTime() === today.getTime());
+let defaultId = 0;
+if (todayIdx >= 0) defaultId = todayIdx;
+else if (today.getTime() > days[days.length - 1].dateObj.getTime()) defaultId = days.length - 1;
+
+// ---- day grid ----
+const week = document.getElementById('week');
+const dayEls = [];
+days.forEach((d, i) => {
+  const el = document.createElement('div');
+  const isPast = d.dateObj.getTime() < today.getTime();
+  const isToday = i === todayIdx;
+  el.className = `day ${d.city}${d.travel ? ' travel' : ''}${d.trip ? ' trip' : ''}${isPast ? ' past' : ''}${isToday ? ' today' : ''}`;
+  el.innerHTML = `<div class="num">${d.num}</div><div class="mon">${d.month}</div><div class="dot"></div>`;
+  el.addEventListener('click', () => selectDay(d.id));
+  week.appendChild(el);
+  dayEls.push(el);
+});
+
+const panel = document.getElementById('panel');
+const linkWords = document.getElementById('linkWords');
+let selected = {type:'day', id:0};
+
+function updateSelection(){
+  dayEls.forEach((el, i) => el.classList.toggle('selected', selected.type === 'day' && selected.id === i));
+  linkWords.classList.toggle('selected', selected.type === 'words');
+}
+
+function selectDay(id){
+  selected = {type:'day', id};
+  updateSelection();
+  const d = days[id];
+  const prev = days[id-1];
+  const next = days[id+1];
+  panel.innerHTML = `
+    ${d.render()}
+    <div class="navrow">
+      <button class="navbtn ${prev ? '' : 'hidden'}" onclick="selectDay(${id-1})"><span>← Previous</span>${prev ? prev.weekday : ''}</button>
+      <button class="navbtn next ${next ? '' : 'hidden'}" onclick="selectDay(${id+1})"><span>Next →</span>${next ? next.weekday : ''}</button>
+    </div>
+  `;
+}
+
+function selectWords(){
+  selected = {type:'words', id:'words'};
+  updateSelection();
+  panel.innerHTML = renderWords();
+}
+
+selectDay(defaultId);
+
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', () => {
+  const isLight = document.documentElement.getAttribute('data-theme') === 'light'
+    || (!document.documentElement.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: light)').matches);
+  const next = isLight ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('tripTheme', next); } catch(e){}
+});
+
+// ---- currency converter: exchange rate + direction persisted, amount + tax-free price live ----
+const RATE_KEY = 'tripExchangeRate';
+const DIR_KEY = 'tripMoneyDirection';
+let exchangeRate = 200;
+try { const r = parseFloat(localStorage.getItem(RATE_KEY)); if (!isNaN(r) && r > 0) exchangeRate = r; } catch(e){}
+let moneyDirection = 'yen2gbp';
+try { const d = localStorage.getItem(DIR_KEY); if (d === 'yen2gbp' || d === 'gbp2yen') moneyDirection = d; } catch(e){}
+
+const rateInput = document.getElementById('rateInput');
+const amountInput = document.getElementById('amountInput');
+const dirYen2Gbp = document.getElementById('dirYen2Gbp');
+const dirGbp2Yen = document.getElementById('dirGbp2Yen');
+const resultMain = document.getElementById('resultMain');
+const resultSub = document.getElementById('resultSub');
+const taxFreeMain = document.getElementById('taxFreeMain');
+const taxFreeSub = document.getElementById('taxFreeSub');
+const moneyToggle = document.getElementById('moneyToggle');
+const moneyPanel = document.getElementById('moneyPanel');
+
+function fmtGBP(n){ return '£' + n.toLocaleString('en-GB', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtYen(n){ return '¥' + Math.round(n).toLocaleString('en-GB'); }
+function defaultAmountFor(dir){ return 0; }
+
+function updateDirButtons(){
+  dirYen2Gbp.classList.toggle('selected', moneyDirection === 'yen2gbp');
+  dirGbp2Yen.classList.toggle('selected', moneyDirection === 'gbp2yen');
+}
+
+function recalcMoney(){
+  const amount = parseFloat(amountInput.value);
+  if (isNaN(amount) || exchangeRate <= 0){
+    resultMain.textContent = '—'; resultSub.textContent = '';
+    taxFreeMain.textContent = '—'; taxFreeSub.textContent = '';
+    return;
+  }
+  let yenAmount, gbpAmount;
+  if (moneyDirection === 'yen2gbp'){
+    yenAmount = amount;
+    gbpAmount = amount / exchangeRate;
+    resultMain.textContent = fmtGBP(gbpAmount);
+    resultSub.textContent = fmtYen(yenAmount);
+  } else {
+    gbpAmount = amount;
+    yenAmount = amount * exchangeRate;
+    resultMain.textContent = fmtYen(yenAmount);
+    resultSub.textContent = fmtGBP(gbpAmount);
+  }
+  const taxFreeYen = yenAmount / 1.1; // Japan's 10% consumption tax removed
+  const taxFreeGbp = taxFreeYen / exchangeRate;
+  taxFreeMain.textContent = fmtYen(taxFreeYen);
+  taxFreeSub.textContent = `tax-free price (${fmtGBP(taxFreeGbp)})`;
+}
+
+rateInput.value = exchangeRate;
+amountInput.value = defaultAmountFor(moneyDirection);
+updateDirButtons();
+recalcMoney();
+
+rateInput.addEventListener('input', () => {
+  const v = parseFloat(rateInput.value);
+  if (!isNaN(v) && v > 0){
+    exchangeRate = v;
+    try { localStorage.setItem(RATE_KEY, String(v)); } catch(e){}
+    recalcMoney();
+  }
+});
+
+amountInput.addEventListener('input', recalcMoney);
+
+function setMoneyDirection(dir){
+  if (dir === moneyDirection) return;
+  const amount = parseFloat(amountInput.value);
+  let yenAmount, gbpAmount;
+  if (!isNaN(amount) && exchangeRate > 0){
+    if (moneyDirection === 'yen2gbp'){ yenAmount = amount; gbpAmount = amount / exchangeRate; }
+    else { gbpAmount = amount; yenAmount = amount * exchangeRate; }
+  }
+  moneyDirection = dir;
+  try { localStorage.setItem(DIR_KEY, dir); } catch(e){}
+  updateDirButtons();
+  amountInput.value = yenAmount !== undefined
+    ? (dir === 'yen2gbp' ? Math.round(yenAmount) : Math.round(gbpAmount * 100) / 100)
+    : defaultAmountFor(dir);
+  recalcMoney();
+}
+dirYen2Gbp.addEventListener('click', () => setMoneyDirection('yen2gbp'));
+dirGbp2Yen.addEventListener('click', () => setMoneyDirection('gbp2yen'));
+
+moneyToggle.addEventListener('click', (e) => {
+  e.stopPropagation();
+  const isHidden = moneyPanel.hasAttribute('hidden');
+  if (isHidden){ moneyPanel.removeAttribute('hidden'); moneyToggle.classList.add('selected'); }
+  else { moneyPanel.setAttribute('hidden', ''); moneyToggle.classList.remove('selected'); }
+});
+document.addEventListener('click', (e) => {
+  if (moneyPanel.hasAttribute('hidden')) return;
+  if (moneyPanel.contains(e.target) || e.target === moneyToggle) return;
+  moneyPanel.setAttribute('hidden', '');
+  moneyToggle.classList.remove('selected');
+});
+</script>
+
+</body>
+</html>
