@@ -1,39 +1,50 @@
-// Service worker for Português Drill - registered by the app itself (see
-// syncServiceWorkerRegistration() in index.html).
+// Service worker for the Japanese Drill app - opt-in only, via the "Work
+// offline" setting in the app itself (see syncServiceWorkerRegistration() in
+// index.html). Never registers itself; the app registers/unregisters it.
 //
 // Strategy: network-first, cache-fallback, for every GET request. Online
-// users always get the freshest version; the cache is only used when the
-// network request actually fails, i.e. genuinely offline.
+// users always get the freshest version (this app's biggest strength has
+// always been instant reload-to-see-changes, and this preserves that) -
+// the cache is only ever used when the network request actually fails,
+// i.e. genuinely offline.
 //
-// IMPORTANT: bump CACHE_VERSION every time the app's own version stamp (in
-// index.html) is bumped, so old cached files get cleared out.
-//
-// The prefix is 'pt-drill-' (not the Japanese apps' 'jp-drill-') on purpose:
-// on activate this deletes every OTHER cache with its own prefix, and apps
-// published under the same github.io address share one cache store - a
-// shared prefix would let this app wipe the Japanese apps' offline copies.
-const CACHE_VERSION = 'pt-drill-v261011-013';
+// IMPORTANT: CACHE_VERSION must be bumped every time the app's own version
+// stamp (in index.html) is bumped, so old cached files get cleared out and
+// replaced next time an offline-enabled user is back online. Forgetting
+// this is exactly how a PWA ends up stuck showing someone a stale version.
+const CACHE_VERSION = 'jp-drill-v260912-001';
 
 const PRECACHE_URLS = [
   './',
   './index.html',
-  './vocab.js',
-  './grammar.js',
   './instructions.html',
   './changelog.html',
-  './manifest-pt.json',
+  './manifest.json',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-512-maskable.png',
   './icons/apple-touch-icon.png',
+  // Self-hosted now (was a live Google Fonts request) - precaching it here
+  // means it's guaranteed available offline from install, rather than only
+  // getting cached opportunistically after a first successful online load.
+  './fonts/BizUDPGothic-Regular.ttf',
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_VERSION).then((cache) =>
-      // One at a time, so a single missing asset can't stop the rest caching.
+      // Cache each URL independently rather than cache.addAll(), which is
+      // all-or-nothing - if even one asset fails (a 404, not deployed yet,
+      // momentarily flaky signal), addAll rejects and NOTHING gets cached,
+      // not even index.html. That silently defeats the entire feature.
+      // Caching one at a time means a single bad asset can't take index.html
+      // down with it.
       Promise.all(
-        PRECACHE_URLS.map((url) => cache.add(url).catch(() => {}))
+        PRECACHE_URLS.map((url) => cache.add(url).catch(() => {
+          // This one asset didn't cache - the fetch handler below still
+          // opportunistically caches things as they're actually used, so
+          // partial coverage is better than none.
+        }))
       )
     )
   );
@@ -45,7 +56,7 @@ self.addEventListener('activate', (event) => {
     caches.keys()
       .then((names) => Promise.all(
         names
-          .filter((name) => name.startsWith('pt-drill-') && name !== CACHE_VERSION)
+          .filter((name) => name.startsWith('jp-drill-') && name !== CACHE_VERSION)
           .map((name) => caches.delete(name))
       ))
       .then(() => self.clients.claim())
@@ -88,7 +99,7 @@ self.addEventListener('fetch', (event) => {
   });
 
   event.respondWith(
-    Promise.race([networkFetch, timeout]).catch(() => caches.match(event.request, { ignoreSearch: true }).then((cached) => {
+    Promise.race([networkFetch, timeout]).catch(() => caches.match(event.request).then((cached) => {
       if (cached) return cached;
       // No exact match cached - if this was a page navigation (not an
       // image/font/etc.), fall back to the cached app shell rather than
