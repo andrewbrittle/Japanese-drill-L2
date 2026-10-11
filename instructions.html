@@ -1,9 +1,12 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" translate="no" class="notranslate">
 <head>
 <meta charset="UTF-8">
+<!-- Never auto-translate: the page is a Portuguese drill, a browser
+     "translate this page" would turn the answers into English. -->
+<meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Instructions — Japanese Drill</title>
+<title>Instructions — Português Drill</title>
 <style>
   :root {
     --bg: #0f0f0f;
@@ -72,224 +75,55 @@
 <div class="wrap">
   <a class="back-link" href="./index.html">← Back to the app</a>
 
-  <h1>A simple Japanese <span>language drilling app</span></h1>
+  <h1>A simple Portuguese <span>drilling app</span></h1>
   <div class="byline">Andrew Brittle, 2026</div>
-  <p class="intro">
-    I started putting this together as a simple tool to help me drill Japanese —
-    I have a trip to Japan coming up, and I've tried to learn hiragana and katakana
-    a few times and failed miserably. This time I did it as part of Japanese
-    language lessons. As the lessons went on I expanded it to cover the vocabulary
-    we were covering in class, and started building some extra bits for myself
-    that were outside the scope of the lessons.
-  </p>
-  <p class="intro">
-    What you see here is that development to date. It's changing all the time and
-    new bits are being added, but in theory you can turn off all of the "Untaught"
-    stuff and focus just on what's being taught in class.
-  </p>
+  <p class="intro">European Portuguese vocabulary, drilled the same way as the Japanese drill app: pick some words, answer four-option questions or type the answers, and the app keeps a confidence score for every word so the weak ones come round more often.</p>
 
-  <h2>Settings</h2>
-  <div class="setting">
-    <div class="setting-name">Light theme</div>
-    <div class="setting-desc">Switches from a dark to light theme.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Show kanji content</div>
-    <div class="setting-desc">At the beginning of this project I collected together a small set of survival kanji, as things I might encounter on my trip. The list grew and eventually there was significant overlap with N5 kanji. The collection here is now genuinely N5-complete, plus a handful of common N4 characters (colours, seasons) that are useful enough to include despite sitting just past N5. You can turn this off if you don't want to see it.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Half credit for hinted answers</div>
-    <div class="setting-desc">All drilling offers an audio clip to help you answer, but some people might think that's cheating. If you agree, you can penalise yourself by only getting half marks if you listen to a hint before answering. You can still listen as many times as you like afterwards.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Fade confidence colours over time</div>
-    <div class="setting-desc">Confidence scores now quietly fade back toward neutral the longer a word goes unpractised — never past neutral, and never for words you've actually got wrong (those stay exactly as they are until you're tested on them again, not gradually recovering just by being left alone, and not getting worse for it either). This always affects which words come up more often in the random drills. This setting is just about whether it also affects the colours you see on tiles and cards — off by default, so colours only ever change when you're actually tested.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Work offline</div>
-    <div class="setting-desc">Caches the application so it doesn't need to be online to work. It's a very small app so this doesn't really get in the way. It's a Progressive Web App, which means it's just a webpage that tries to pretend it's not in a browser.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Untaught vocabulary</div>
-    <div class="setting-desc">Everything outside the taught Level 1/2 course lives behind this one switch — trip words (food, money, directions, emergencies, tourist phrases) plus real words and phrases pulled from photos I've actually taken in Japan (signs, menus, receipts, announcements). This used to be two separate switches — "Trip vocabulary" and "Andrew mode" — split by where the content came from. That split didn't actually mean anything useful any more (every word already says whether it's curated or encountered, right there on the drill card), so they merged into this one toggle. This entire section will only appear if you turn it on — otherwise the whole app will act as if none of this exists.</div>
-  </div>
-  <div class="setting">
-    <div class="setting-name">Activate Andrew mode</div>
-    <div class="setting-desc">Whatever mad scheme I'm working on next will be visible by turning this on. Its last occupant — "Materials", the photo-sourced vocab — graduated into Untaught vocabulary above, so this is currently empty. That's expected, not a bug: it's a standing staging area for whatever comes next (an intensive N5 course is the most likely next tenant), not a fixed content bucket. It's turned off by default.</div>
-  </div>
+  <h2>Finding words</h2>
+  <p><strong>Groups</strong> are collections that cut across topics: <em>Latest words</em>, <em>Trip essentials</em> (greetings, useful phrases and signs), <em>Eating &amp; drinking out</em>, <em>Getting around town</em>, <em>Core words</em>, and <em>Portugal vs Brazil</em> (every word where Brazil says it differently).</p>
+  <p><strong>Basics</strong>, <strong>Travel</strong> and <strong>Life</strong> hold the word lists themselves, split into three so each is a short list. <strong>Search</strong> looks in the Portuguese, the English and the Brazilian forms, and ignores accents, so <em>nao</em> finds <em>não</em>.</p>
+  <p>The <strong>dice</strong> opens the random drills: 20 words from everything, your weakest 20, or 20 you haven't been tested on yet.</p>
 
-  <h3>Keyboard</h3>
-  <p>Not a setting, but if you're using the app on something with a physical keyboard: you can use 1–4 to select the cards, and space to move to the next one.</p>
+  <h2>Drilling</h2>
+  <p>Tap words to select them, or use Select all / Random 20, then <strong>Drill with this selection</strong>. Hold a card to hear it and see any notes; with <em>Tap a card to hear it</em> on, the page becomes a talking phrasebook.</p>
+  <div class="setting"><div class="setting-name">Reverse the drill direction</div><div class="setting-desc">See the English and pick the Portuguese.</div></div>
+  <div class="setting"><div class="setting-name">Type the answer instead of choosing</div><div class="setting-desc">Type the Portuguese yourself. On its own it shows you the English; with Listen on, it's dictation — write down what you hear.</div></div>
+  <div class="setting"><div class="setting-name">Listen instead of reading</div><div class="setting-desc">Hear the word instead of seeing it. Needs a Portuguese voice on your phone (see below).</div></div>
+  <div class="setting"><div class="setting-name">Say it out loud</div><div class="setting-desc">See the English and say the Portuguese out loud. Tap Show answer (or press Space) to see and hear it, then mark yourself: Got it (1) or Not this time (2). Your mark is scored like any other answer. Also on the Verbs and Grammar screens.</div></div>
 
-  <h2>Scoring</h2>
-  <p>
-    In the background everything is scored 0.5 for a correct answer and -0.75 for
-    an incorrect one. The lower limit for scoring is -2 and the upper limit is +2.
-    The score will show as a shade of red or green (or blue if it's back to zero
-    again).
-  </p>
+  <h2>How typed answers are marked</h2>
+  <ul>
+    <li>Capitals, extra spaces and punctuation never matter.</li>
+    <li>Nouns come with their article (<em>o comboio</em>, <em>a estação</em>) because that's how the gender gets learnt. Leaving the article off still counts, with a reminder. The wrong article (<em>a comboio</em>) is marked wrong.</li>
+    <li>Right letters but wrong or missing accents (<em>voce</em>) counts, with a reminder and half the usual confidence boost — unless you turn on <em>Accents must be right when typing</em> in Settings.</li>
+    <li>Where Brazil uses a different word (<em>o trem</em> for <em>o comboio</em>), the Brazilian form counts, with a note giving the Portuguese one.</li>
+    <li>Entries like <em>obrigado / obrigada</em> accept either form.</li>
+  </ul>
 
-  <h2>Hiragana drilling</h2>
-  <p>Select whether you want the base set of characters, dakuten/handakuten, or contracted.</p>
-  <p>There's a handy reference card to show the kana and corresponding dakuten kana.</p>
-  <p>You can either select the whole set for drilling, or individual rows.</p>
-  <p>There's a toggle before you start to drill that lets you decide whether to have the kana character as the big one on screen and choose from 4 romaji options, or romaji as the big character and choose from 4 hiragana.</p>
-  <p>You can click to hear an audio clip.</p>
-  <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
+  <h2>Getting a Portuguese (Portugal) voice</h2>
+  <p>Listening and tap-to-hear use your phone's own text-to-speech. A Brazilian voice sounds very different from Portugal, so the app looks for a <strong>Portuguese (Portugal)</strong> voice first. On an iPhone or iPad: Settings → Accessibility → Spoken Content → Voices → Portuguese (Portugal), and download Joana or Catarina. On Android: the Google text-to-speech settings, language Portuguese (Portugal).</p>
 
-  <h2>Katakana drilling</h2>
-  <p>Select whether you want the base set of characters, dakuten/handakuten, or contracted.</p>
-  <p>There's a handy reference card to show the kana and corresponding dakuten kana.</p>
-  <p>You can either select the whole set for drilling, or individual rows.</p>
-  <p>There's a toggle before you start to drill that lets you decide whether to have the kana character as the big one on screen and choose from 4 romaji options, or romaji as the big character and choose from 4 katakana.</p>
-  <p>There's another toggle that will replace the romaji completely and only show a comparison between katakana and hiragana. It felt like it might be a nice challenge to remove the romaji from this, if you feel brave.</p>
-  <p>You can click to hear an audio clip.</p>
-  <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
-
-  <h2>Kanji drilling</h2>
-  <p>This will only appear if you have kanji switched on.</p>
-  <p>Select which set you want — numbers, nature, travel, food, places, people, general, verbs.</p>
-  <p>You can either select individual kanji or the whole set for drilling. Yes, you can game the system by selecting one and continuously drilling it, because there's only one right answer. But that's just letting yourself down.</p>
-  <p>There's another toggle that will replace the romaji with English and only show a large kanji, with the options shown in English and hiragana — so there's no romaji to immediately match with the audio clip.</p>
-  <p>You can click to hear an audio clip.</p>
-  <p>You'll get your score at the end of the session and an option to either drill the same overall set of characters again, or just the ones you got wrong.</p>
+  <h2>Verbs</h2>
+  <p>Pick one or more tenses at the top, tap the verbs you want (or Select all), then <strong>Drill 20 forms</strong>. Each question gives a person and a verb - <em>nós · falar</em> - with the tense and the English, and you pick or type the form. Every person-and-tense combination has its own confidence score, so the forms you get wrong come back more often. <strong>Hold</strong> a verb to see its full table; tap a row there to hear it.</p>
 
   <h2>Numbers</h2>
-  <p>This brings together some functions that deal with reading numbers, times, and counters.</p>
+  <p><strong>Reading times</strong> and <strong>Reading numbers</strong> make up 10 new questions every round. Times come two ways: everyday, as people say them (<em>São três menos vinte da tarde</em>), and timetable, as stations and opening hours give them (<em>às quinze e quarenta</em>). Both use <em>às / até às / a partir das / por volta das</em>, which is the contractions rule in action. The look-up tools under each show how any number or time is said; tap the answer to hear it. These two have one confidence score each rather than one per question.</p>
 
-  <h3>Reading numbers</h3>
-  <p>Presents 10 random numbers. These are mostly 1–9,999 but there's a 1 in 20 chance of a bigger number up to 50,000, to practice <em>man</em>. Correct answers score 0.1, incorrect answers score -0.1.</p>
+  <h2>Grammar</h2>
+  <p>Short rule cards, each with the pattern, the exceptions worth knowing and what Portugal does differently from Brazil. Most end with a drill of just that rule. The <strong>contractions drill</strong> puts <em>no, na, do, ao, pelo…</em> into real sentences.</p>
+  <p>At the top of the Grammar page (and on the daily greeting) is <strong>a sentence</strong> or short exchange, built fresh from the app's people, places, times and verbs, to show the grammar working together. Tap a line to hear it; tap ↻ for another.</p>
 
-  <h3>Specific number</h3>
-  <p>Instead of a random number, you can put an actual number in here and it will tell you how that number would be read.</p>
-
-  <h3>Reading times</h3>
-  <p>Presents 10 times with from/until/at and around qualifiers, and am/pm indicators. Correct answers score 0.1, incorrect answers score -0.1.</p>
-
-  <h3>Specific time</h3>
-  <p>Instead of a random time, you can put an actual time in here together with the qualifiers, and it will tell you how that time would be read. It starts with the current time and has a refresh button.</p>
-
-  <h3>Counters</h3>
-  <p><strong>Random counter challenge</strong> — pick exactly four counter types, then work through 10 rounds reading a romaji phrase like "six eggs" and matching it to the right counter. Correct answers score 0.1, incorrect answers score -0.1, the same as Reading numbers and Reading times.</p>
-  <p>There's also a couple of reference pages for different types of counters — one for people, objects, and animals, and one for minutes/hours/days/weeks/months/years. I know we haven't covered these in the lessons but they're easily ignored and don't feed into anything else — I was just curious.</p>
-  <p><strong>Specific counter</strong> — choose a counter type and enter a number (1–50, or 1–10 for つ, since native Japanese counting stops at とお) and it'll show you how it's written.</p>
-  <p>You don't have to turn this off if you don't want it — just ignore it.</p>
-
-  <h3>Money</h3>
-  <p>An editable GBP↔JPY exchange rate — starts off around the going rate, but you can update it any time — plus a two-way currency converter: put in a value in either currency and see the other straight away.</p>
-  <p>Alongside the conversion there's also a tax-free price, working out what you'd pay with Japan's 10% consumption tax taken off (¥ ÷ 1.1) — handy for checking whether a price you're looking at already has tax included.</p>
-
-  <h2>Vocab</h2>
-  <p>This has a few options.</p>
-
-  <h3>Search</h3>
-  <p>There's a search pill next to the level tabs (it takes the full width unless Andrew mode is switched on, in which case the Andrew pill moves to its right). Type at least two characters and press enter — it only searches when you submit, not as you type. It matches the start of any word in the English meaning or the romaji, so partial words still work ("cred" finds "credit card") but coincidental letter runs in the middle of a word don't ("up" won't match inside "supermarket" just because the letters happen to sit next to each other). It only searches real taught or added vocabulary, never the extra background sentences shown as context on some Untaught cards. Results respect whatever you've currently got switched on — Untaught and Andrew words only turn up if those are on — and take you to the normal selection screen to drill whichever ones you pick, colour-coded by which level they're from.</p>
-
-  <h3>Collections</h3>
-  <p>The normal reading challenges work on individual categories in one level of the course. Collections can go across levels and can also include words from any additional categories that you've got turned on. This pulls together combinations like "All vocabulary" and "All kanji" (if you have it turned on) as well as more specific collections of categories like "Transport and UK Places", "Around the world" (countries and cities), and so on.</p>
-  <p>Note that the size of the collection will depend on whether you're just using vocab from the lesson or including other categories too.</p>
-  <p><strong>All vocabulary</strong> — picks 20 random words from across all categories that are visible to you. Works the same way as everything else.</p>
-  <p><strong>All kanji</strong> — picks 20 random words from across all kanji categories, if you have kanji turned on. Works the same way as everything else.</p>
-  <p>Other collections include:</p>
-  <ul>
-    <li>Transport and UK Places</li>
-    <li>Around the world</li>
-    <li>Everyday items, clothing &amp; general vocab</li>
-    <li>Core grammar words — Verbs, Adjectives, and Question &amp; location words: the "functional" categories that build a sentence, rather than themed nouns</li>
-    <li>Getting around — Transport, Places to go, and Directions, brought together. Transport and Places to go are ordinary taught Level 2 words, always here; Directions is Untaught, so that slice only appears once Untaught vocabulary is switched on — the card itself never disappears, it just has fewer words in it</li>
-    <li>Question words — every word tagged as a question word, wherever it actually lives, rather than a fixed list of categories. Right now that's a handful already taught in Question &amp; location words plus a set pulled from an outside reference source (only in Untaught vocabulary). Nothing's duplicated — a word that's taught in the lessons and also tagged here is still just one word with one score, it just shows up in both places. If Untaught vocabulary is off, this collection quietly shrinks to only the taught ones rather than disappearing outright.</li>
-  </ul>
-  <p>And if you have Untaught vocabulary turned on you'll also see a further set of collections gathering together everything encountered on the trip so far — see "Untaught vocabulary" below.</p>
-  <p><strong>Highlight the meaning instead of sound</strong> — sounds complicated but it just changes the emphasis on the four answer cards. By default you could look at the kana and think "that starts with 'mi'" and guess the word from there by looking at the four romaji alternatives and choosing the one where the it starts with 'mi'. Highlighting the meaning, in English, means you can read and recognise the word but to get it right you need to know the meaning as well – it starts with "mi", but what does it mean? The romaji is still there down below and slightly less visible so it doesn't actually stop you doing it the easy way, but it's a mild deterrent.</p>
-  <p><strong>Reverse the drill direction</strong> — shows the English word as the big word and four kana words as the options.</p>
-
-  <h3>Level 1</h3>
-  <p>Sets of words covered in Level 1 of the course. These all work in the same way.</p>
-  <ul>
-    <li>Greetings and phrases</li>
-    <li>Countries</li>
-    <li>Occupations</li>
-    <li>Everyday items</li>
-    <li>Clothing and accessories</li>
-    <li>Places &amp; around the building</li>
-    <li>Numbers</li>
-    <li>Colours</li>
-  </ul>
-  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
-
-  <h3>Level 2</h3>
-  <p>Sets of words covered in Level 2 of the course, so still developing. These all work in the same way.</p>
-  <ul>
-    <li>General vocabulary</li>
-    <li>Question &amp; location words</li>
-    <li>Verbs — now two batches: the original nine (none of which take a direct object) plus Week 6's set introduced alongside を, the object particle — eat/drink/read/watch/listen/write/buy/smoke/take (a photo)/do/meet. あいます (to meet) is the one exception that takes に instead of を.</li>
-    <li>Family — father, mother, older/younger brother, older/younger sister, grandfather, grandmother</li>
-    <li>Food and drink — a Level 2 set of everyday food and drink words taught in class, separate from Trip's own "Food and drink" category</li>
-    <li>Animals — the 12 everyday zodiac animal words, with a reference page for the Japanese zodiac clock they're tied to (the animal hours behind 午前/午後, "before/after the horse"), plus ねこ (cat) as a 13th bonus entry — famously not one of the 12 zodiac animals, so it's deliberately left out of that reference page</li>
-    <li>Adjectives — long/short and old/new as antonym pairs, plus "cute"</li>
-    <li>Transport</li>
-    <li>Places to go</li>
-    <li>UK Places</li>
-    <li>World Cities — also covers Kyoto, Osaka, Hokkaido, Yokohama, and Nagoya alongside the international cities</li>
-    <li>Months — the twelve month names, fully regular (number + がつ)</li>
-    <li>Days of the month — 1st–31st, drillable rather than just a lookup, since this set has real irregularities worth testing yourself on (14th/19th/20th/24th/29th keep native-style readings instead of the expected pattern); has its own reference page above the category too, and the tile-selection screen lets you drill just the five irregular ones in isolation if that's what needs the practice</li>
-    <li>Time vocabulary — there are reference pages for the endings of the minute words, and for day/week/month/year against past/present/future</li>
-    <li>Days of the week — there's a reference page with the days of the week listed in order</li>
-    <li>Horse racing — not covered in the lessons, added after a classmate asked the tutor about it</li>
-  </ul>
-  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
-
-  <h3>Grammar notes</h3>
-  <p>A "Grammar notes" card sits above the Level 2 category list, gathering every sentence/particle reference in one place rather than leaving them scattered near whichever category happened to be nearby when each one was added:</p>
-  <ul>
-    <li>を — the object particle, with the one exception in this batch called out (あいます, "to meet", takes に instead)</li>
-    <li>で — its two separate jobs: the method or tool used to get somewhere (でんしゃで, "by train"), and where an action takes place — easily confused with に, which marks where something exists or a destination, never where an action happens</li>
-    <li>だれも/どこも/なにも + negative — "nobody" / "nowhere" / "nothing", flags いつ as the one exception (いつも is a fixed idiom meaning "always", not part of this pattern)</li>
-    <li>Sentence order (motion sentences) — breaks down the standard sentence order for simple motion sentences (topic/time/companion/means/destination/verb), including a shuffle button that builds random example sentences from the app's own vocabulary</li>
-    <li>Sentence order (を + object) — the same tap-to-cycle, shuffle-a-new-example format, but for the genuinely different pattern that を introduces: topic/time/location-of-action/object/verb, with each object-taking verb paired only with objects that actually make sense with it (no "drink a photograph")</li>
-    <li>Verb tense &amp; affirmative/negative — two cards, one for the original nine verbs and one for the newer object-taking set, each switchable with pills at the top (sorted alphabetically by meaning) and each verb showing its たい ("want to") form alongside the plain ます-form, since たい conjugates differently (like an adjective, not a verb)</li>
-  </ul>
-  <p>Two more links appear at the bottom of this list, but only once Untaught vocabulary is switched on: standalone notes pages on Japanese sentence structure, and Japanese vs English structure. They used to live only in Andrew mode; they moved here once every word had a clear taught/untaught status of its own and there was no longer a good reason to keep them tucked away from anyone doing the course.</p>
-
-  <h3>Untaught vocabulary</h3>
-  <p>Only appears if you've got it switched on. Everything outside the taught Level 1/2 course — trip vocabulary and real words and phrases pulled from photos taken in Japan itself (signs, menus, receipts, announcements), now brought together into one tier rather than the two separate ones ("Trip vocabulary" and "Andrew mode") this used to be split across. Cards work the same way as Level 1/2: tap a category, pick which words to drill (or select them all), then go. The list is alphabetical, currently:</p>
-  <ul>
-    <li>Accommodation</li>
-    <li>Airport & flights</li>
-    <li>Dining phrases — things you'd actually say at a restaurant (asking for the bill, whether there's an English menu, cheers), as opposed to Food/Drink below, which are the nouns for what's on the table</li>
-    <li>Drink</li>
-    <li>Emergency & survival</li>
-    <li>Entertainment</li>
-    <li>Food</li>
-    <li>Food descriptions — the adjectives that show up on menus and signs (spicy, rich, freshly made, and so on), split out from Food itself since they're a different kind of word to actually drill against</li>
-    <li>Hotel appliances & machines — has its own reference page grouping words by which device they were actually seen on: air conditioning, TV remote, laundry (the washing machine's own panel plus things like detergent bottle labels), microwave, door lock/key card, toilet/bidet. Lookup-only, not drillable on its own — the words themselves are still scored through the main Hotel appliances category, this is just a filtered, grouped view over that same list. Words that aren't literally on a panel/button/dispenser (payment logistics, warning text, and so on) aren't tagged, so they don't show up here</li>
-    <li>Polite tourist phrases</li>
-    <li>Preparation & cooking — the verbs (grill, simmer, deep-fry) and cooking-process words (fermented, aged, smoked) that showed up on menus and signs</li>
-    <li>Profile & self-introduction words — pulled from a self-introduction/idol-profile card rather than a menu or a sign, split out separately since it's a genuinely different kind of vocabulary</li>
-    <li>Service & shop operations</li>
-    <li>Shopping</li>
-    <li>Signage & warnings</li>
-    <li>Stations & trains</li>
-    <li>Street & neighbourhood — signage and notices run into incidentally while wandering a town on foot (historical plaques, shopfronts, community noticeboards), as opposed to the other categories here which are mostly places gone to on purpose</li>
-    <li>Weather and seasons</li>
-  </ul>
-  <p>Food, Drink, Food descriptions, Preparation & cooking, and Dining phrases used to be one single "Food and drink" card. It grew to 218 words - by far the biggest pool in the app - and mixed genuinely different kinds of word together (dish names, drink names, adjectives, cooking verbs, whole phrases), which made for a worse multiple-choice pool than five smaller, more focused ones. Nothing was deleted or re-tagged to do this split - the five sub-categories these all sort into already existed.</p>
-  <p>These are genuinely two different kinds of word, sitting together under one toggle: some were curated ahead of time as generally useful for the trip, others were properly encountered and photographed on the trip itself. Each card shows which a given word is. Where a word was seen as part of a longer sentence or sign, that context shows on the drill card itself (and again after answering) since it's just background that might help it stick, not something to test on — and for words with photo evidence, roughly where and when it was photographed. Quite a few of these words only exist as kanji, with no kana form recorded — rather than leaving them undrillable, the app has a per-character reading breakdown for the ones that have been worked out, and an honest explanation on the ones that genuinely don't have a clean one yet (irregular readings, sound changes the matching script doesn't model, and so on).</p>
-  <p>If you have Untaught turned on, this vocabulary will feed into the Collections above, into search, and into the "random words" tests. If it's turned off you'll never see it, in any of those places.</p>
-  <div class="note">"Highlight the meaning instead of sound" and "Reverse the drill direction" are both available here.</div>
-
-  <h3>Andrew mode</h3>
-  <p>Only appears if you've got it switched on. Whatever mad scheme I'm testing at the moment, kept separate from Untaught vocabulary above since it's a genuinely different kind of thing — a workbench, not a finished tier. Its last occupant, "Materials" (the photo-sourced vocab), graduated into Untaught vocabulary, so it's currently empty. That's the expected steady state between experiments, not a bug — whatever lands here next is being tried out before it's decided whether it becomes core, or its own gated tier the way Untaught vocabulary did.</p>
+  <h2>Your progress</h2>
+  <p>Everything is stored on this device only. Settings has Download backup / Restore from backup to move your scores to another phone.</p>
 
   <div class="footer">
     <a class="back-link" href="./index.html">← Back to the app</a>
   </div>
 </div>
 <script>
-  // Match whichever theme the app itself is currently set to, since this page
-  // shares localStorage with index.html on the same origin.
+  // Match whichever theme the app itself is set to (same localStorage).
   try {
-    const s = JSON.parse(localStorage.getItem('jpDrillSettings') || '{}');
+    const s = JSON.parse(localStorage.getItem('ptDrillSettings') || '{}');
     if (s.theme === 'light') document.documentElement.setAttribute('data-theme', 'light');
   } catch (e) {}
 </script>
